@@ -1,4 +1,4 @@
-package com.a106.rightlife.global.commom.response;
+package com.a106.rightlife.global.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

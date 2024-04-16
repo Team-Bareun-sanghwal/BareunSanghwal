@@ -1,6 +1,6 @@
-package com.a106.rightlife.global.commom.exception;
+package com.a106.rightlife.global.common.exception;
 
-import com.a106.rightlife.global.commom.response.BaseResponse;
+import com.a106.rightlife.global.common.response.BaseResponse;
 import com.a106.rightlife.member.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
