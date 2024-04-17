@@ -1,4 +1,4 @@
-package com.a106.rightlife.member.exception;
+package life.bareun.diary.member.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.a106.rightlife.global.common.exception;
+package life.bareun.diary.global.common.exception;
 
-import com.a106.rightlife.global.common.response.BaseResponse;
-import com.a106.rightlife.member.exception.MemberException;
+import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.member.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
