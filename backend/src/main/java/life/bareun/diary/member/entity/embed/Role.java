@@ -1,4 +1,4 @@
-package life.bareun.diary.member.embed;
+package life.bareun.diary.member.entity.embed;
 
 
 import lombok.RequiredArgsConstructor;

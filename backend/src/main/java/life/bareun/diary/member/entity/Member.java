@@ -3,15 +3,18 @@ package life.bareun.diary.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
-import life.bareun.diary.member.embed.Gender;
-import life.bareun.diary.member.embed.Role;
+import life.bareun.diary.member.entity.embed.Gender;
+import life.bareun.diary.member.entity.embed.Role;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,7 +32,10 @@ public class Member {
 
     @Column(name = "tree_id")
     @Min(0)
-    private Long treeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tree_id")
+    private Tree tree;
 
     @Column(name = "email")
     private String email;
