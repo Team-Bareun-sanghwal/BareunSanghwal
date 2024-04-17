@@ -1,0 +1,33 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'pretendard', sans-serif;
+    font-size: 62.5%;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .custom-bold-text {
+    font-weight: 700;
+    font-size: 2rem;
+  }
+  .custom-semibold-text {
+    font-weight: 500;
+    font-size: 1.6rem;
+  }
+  .custom-medium-text {
+    font-weight: 400;
+    font-size: 1.4rem;
+  }
+  .custom-light-text {
+    font-weight: 200;
+    font-size: 1.2rem;
+  }
+}
