@@ -1,32 +1,53 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './Button';
+import { LoginButton } from './LoginButton';
 
 const meta = {
-  title: 'Common/Button',
-  component: Button,
+  title: 'Loading/LoginButton',
+  component: LoginButton,
   parameters: {
     layout: 'centered',
+    nextRouter: {
+      pathname: '/profile/[id]',
+      asPath: '/profile/lifeiscontent',
+      query: {
+        id: 'lifeiscontent',
+      },
+    },
+    nextjs: {
+      appDirectory: true,
+    },
   },
   tags: ['autodocs'],
   argTypes: {
-    isActivated: { description: '버튼 활성화 여부' },
-    label: { description: '버튼에 들어갈 텍스트' },
+    platform: { description: 'OAuth 플랫폼(카카오/구글)' },
   },
-} satisfies Meta<typeof Button>;
+} satisfies Meta<typeof LoginButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Activated: Story = {
+export const Kakao: Story = {
   args: {
-    isActivated: true,
-    label: '확인',
+    platform: 'kakao',
+  },
+  parameters: {
+    nextjs: {
+      router: {
+        pathname: 'https://www.kakaocorp.com/page/',
+      },
+    },
   },
 };
 
-export const NonActivated: Story = {
+export const Google: Story = {
   args: {
-    isActivated: false,
-    label: '취소',
+    platform: 'google',
+  },
+  parameters: {
+    nextjs: {
+      router: {
+        pathname: 'https://www.google.co.kr/?hl=ko',
+      },
+    },
   },
 };
