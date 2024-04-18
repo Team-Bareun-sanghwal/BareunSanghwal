@@ -132,7 +132,7 @@ function generateStreakColorSafelist() {
       dayVariations.forEach((day) => {
         opacities.forEach((opacity) => {
           safelist.push(
-            `bg-streak-${color}-${day} opacity-${opacity} text-white text-xl aspect-square rounded-lg`,
+            `bg-streak-${color}-${day} opacity-${opacity} text-white text-xl aspect-square rounded-lg relative`,
           );
         });
       });
@@ -140,7 +140,7 @@ function generateStreakColorSafelist() {
       // Common/Rare Colors
       opacities.forEach((opacity) => {
         safelist.push(
-          `bg-streak-${color} opacity-${opacity} text-white text-xl aspect-square rounded-lg`,
+          `bg-streak-${color} opacity-${opacity} text-white text-xl aspect-square rounded-lg relative`,
         );
       });
     }
