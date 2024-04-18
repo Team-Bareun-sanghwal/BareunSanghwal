@@ -12,6 +12,13 @@ const preview: Preview = {
     backgrounds: {
       default: 'dark',
     },
+    nextjs: {
+      router: {
+        push(...args) {
+          return Promise.resolve(true);
+        },
+      },
+    },
   },
 };
 

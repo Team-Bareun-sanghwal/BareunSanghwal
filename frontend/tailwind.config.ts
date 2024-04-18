@@ -26,6 +26,8 @@ const config: Config = {
         'custom-sky': '#5a9ed0',
         'custom-black-with-opacity': 'rgba(39, 39, 42, 0.8)',
         'custom-matcha-with-opacity': 'rgba(21, 72, 27, 0.8)',
+        'custom-kakao': '#FEE500',
+        'custom-google': '#FFFFFF',
       },
     },
   },
