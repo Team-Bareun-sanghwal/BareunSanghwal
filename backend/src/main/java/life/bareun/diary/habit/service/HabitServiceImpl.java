@@ -8,6 +8,8 @@ import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
+import life.bareun.diary.habit.exception.HabitErrorCode;
+import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
@@ -35,8 +37,11 @@ public class HabitServiceImpl implements HabitService {
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
         // 멤버, 해빗 가져오기
-        Habit habit = habitRepository.findById(habitCreateReqDto.habitId()).orElseThrow();
-        Member member = memberRepository.findById(1L).orElseThrow();
+        Habit habit = habitRepository.findById(habitCreateReqDto.habitId())
+            .orElseThrow(() -> new HabitException(
+                HabitErrorCode.NOT_FOUND_HABIT));
+        Member member = memberRepository.findById(1L)
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
         // 오늘 연, 월, 일 가져오기
         LocalDate lastDay = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth())
             .atEndOfMonth();

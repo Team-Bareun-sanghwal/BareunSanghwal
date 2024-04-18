@@ -5,6 +5,8 @@ import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
+import life.bareun.diary.habit.exception.HabitErrorCode;
+import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,13 +48,15 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
 
     @Override
     public void deleteAllHabitTracker(Long memberHabitId) {
-        MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId).orElseThrow();
+        MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
         habitTrackerRepository.deleteAllByMemberHabit(memberHabit);
     }
 
     @Override
     public void deleteAfterHabitTracker(Long memberHabitId) {
-        MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId).orElseThrow();
+        MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT));
         LocalDate today = LocalDate.now();
         habitTrackerRepository.deleteAfterHabitTracker(
             HabitTrackerDeleteDto.builder().memberHabit(memberHabit).year(today.getYear())
