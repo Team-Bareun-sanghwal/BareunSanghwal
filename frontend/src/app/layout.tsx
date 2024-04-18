@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="bg-custom-black-with-opacity">
-        <div className="w-[36rem] h-full bg-custom-white mx-auto pb-[10rem]">
+        <div className="w-[36rem] min-h-screen bg-custom-white mx-auto pb-[10rem]">
           {children}
         </div>
       </body>
