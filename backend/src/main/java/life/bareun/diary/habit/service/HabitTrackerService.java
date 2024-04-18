@@ -1,6 +1,8 @@
 package life.bareun.diary.habit.service;
 
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
+import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface HabitTrackerService {
 
@@ -11,4 +13,6 @@ public interface HabitTrackerService {
     void deleteAllHabitTracker(Long memberHabitId);
 
     void deleteAfterHabitTracker(Long memberHabitId);
+
+    void modifyHabitTracker(MultipartFile image, HabitTrackerModifyReqDto habitTrackerModifyReqDto);
 }

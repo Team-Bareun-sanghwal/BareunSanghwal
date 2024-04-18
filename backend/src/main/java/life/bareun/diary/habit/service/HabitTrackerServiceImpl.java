@@ -1,8 +1,11 @@
 package life.bareun.diary.habit.service;
 
 import java.time.LocalDate;
+import life.bareun.diary.global.config.ImageConfig;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
+import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.exception.HabitErrorCode;
@@ -13,12 +16,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class HabitTrackerServiceImpl implements HabitTrackerService {
+
+    private final ImageConfig imageConfig;
 
     private final HabitTrackerRepository habitTrackerRepository;
 
@@ -61,5 +67,20 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitTrackerRepository.deleteAfterHabitTracker(
             HabitTrackerDeleteDto.builder().memberHabit(memberHabit).year(today.getYear())
                 .month(today.getMonth().getValue()).day(today.getDayOfMonth()).build());
+    }
+
+    @Override
+    public void modifyHabitTracker(MultipartFile image,
+        HabitTrackerModifyReqDto habitTrackerModifyReqDto) {
+        String imageUrl = null;
+        if (image != null) {
+            imageUrl = imageConfig.uploadImage(image);
+        }
+
+        habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
+            .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
+            .content(habitTrackerModifyReqDto.content()).build());
+
+
     }
 }
