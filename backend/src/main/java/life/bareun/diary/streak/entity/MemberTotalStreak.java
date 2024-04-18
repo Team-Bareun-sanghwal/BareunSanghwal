@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class MemberTotalStreak {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
