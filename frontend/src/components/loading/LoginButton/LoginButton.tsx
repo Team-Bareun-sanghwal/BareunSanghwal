@@ -14,10 +14,12 @@ export const LoginButton = ({ platform }: ILoginButtonProps) => {
       ? 'https://www.kakaocorp.com/page/'
       : 'https://www.google.co.kr/?hl=ko';
 
+  const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
+
   return (
     <button
       onClick={() => router.push(url)}
-      className={`w-[34rem] h-[3rem] bg-custom-${platform} rounded-[0.8rem] flex items-center justify-center`}
+      className={`w-[34rem] h-[3rem] ${bgColor} rounded-[0.8rem] flex items-center justify-center`}
     >
       <Image
         src={`/images/icon-login-${platform}.png`}

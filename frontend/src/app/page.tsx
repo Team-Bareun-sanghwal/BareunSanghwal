@@ -1,13 +1,12 @@
-import { LoginButton } from '@/components/loading/LoginButton/LoginButton';
+import { StatisticsPieChart } from '@/components/statistics/StatisticsPieChart/StatisticsPieChart';
 
 export default function Home() {
   return (
-    <div className="bg-custom-matcha">
+    <div>
       <main className="custom-bold-text text-custom-light-green">
         hello, world!
       </main>
-      <LoginButton platform="kakao" />
-      <LoginButton platform="google" />
+      <StatisticsPieChart />
     </div>
   );
 }
