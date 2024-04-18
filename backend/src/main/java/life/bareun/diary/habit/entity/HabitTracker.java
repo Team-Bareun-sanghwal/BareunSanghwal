@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import life.bareun.diary.member.entity.Member;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +21,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Table(name = "habit_tracker")
 public class HabitTracker {
 
@@ -65,5 +62,18 @@ public class HabitTracker {
     @Column(name = "created_day")
     @Max(31)
     private int createdDay;
+
+    @Builder
+    public HabitTracker(Member member, MemberHabit memberHabit, String content, String image,
+        int day, int createdYear, int createdMonth, int createdDay) {
+        this.member = member;
+        this.memberHabit = memberHabit;
+        this.content = content;
+        this.image = image;
+        this.day = day;
+        this.createdYear = createdYear;
+        this.createdMonth = createdMonth;
+        this.createdDay = createdDay;
+    }
 
 }
