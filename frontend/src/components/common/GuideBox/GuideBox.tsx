@@ -1,11 +1,11 @@
 import Image from 'next/image';
 
-interface GuideBoxProps {
+interface IGuideBoxProps {
   guideText: string;
   onClick?: () => void;
 }
 
-export const GuideBox = ({ guideText, ...props }: GuideBoxProps) => {
+export const GuideBox = ({ guideText, ...props }: IGuideBoxProps) => {
   return (
     <section
       className={
