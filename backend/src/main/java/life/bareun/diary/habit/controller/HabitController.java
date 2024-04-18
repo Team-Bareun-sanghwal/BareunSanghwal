@@ -2,6 +2,7 @@ package life.bareun.diary.habit.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
+import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.service.HabitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,5 +27,12 @@ public class HabitController {
         habitService.createMemberHabit(habitCreateReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(BaseResponse.success(HttpStatus.CREATED.value(), "생성이 완료되었습니다.", null));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<BaseResponse<String>> deleteMemberHabit(@RequestBody HabitDeleteReqDto habitDeleteReqDto) {
+        habitService.deleteMemberHabit(habitDeleteReqDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "삭제가 완료되었습니다.", null));
     }
 }

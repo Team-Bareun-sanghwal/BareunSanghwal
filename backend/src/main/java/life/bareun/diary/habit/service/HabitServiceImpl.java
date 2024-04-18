@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
+import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
@@ -14,10 +15,12 @@ import life.bareun.diary.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class HabitServiceImpl implements HabitService {
 
     private final HabitRepository habitRepository;
@@ -51,7 +54,7 @@ public class HabitServiceImpl implements HabitService {
             for (LocalDate nowDay = startDay; !nowDay.isAfter(lastDay);
                 nowDay = nowDay.plusDays(habitCreateReqDto.period())) {
                 habitTrackerService.createHabitTrackerByPeriod(
-                    HabitTrackerCreateDto.builder().memberHabit(memberHabit)
+                    HabitTrackerCreateDto.builder().member(member).memberHabit(memberHabit)
                         .amount(habitCreateReqDto.period()).targetDay(nowDay)
                         .build());
             }
@@ -68,15 +71,26 @@ public class HabitServiceImpl implements HabitService {
                 plusDay++;
             }
 
-            // 하루씩 증가시키며 생성
+            // 일주일씩 증가시키며 생성
             LocalDate startDay = LocalDate.now().plusDays(plusDay);
             for (LocalDate nowDay = startDay; !nowDay.isAfter(lastDay);
                 nowDay = nowDay.plusDays(7L)) {
                 habitTrackerService.createHabitTrackerByDay(
-                    HabitTrackerCreateDto.builder().memberHabit(memberHabit)
+                    HabitTrackerCreateDto.builder().member(member).memberHabit(memberHabit)
                         .amount(habitCreateReqDto.dayOfWeek()).targetDay(nowDay)
                         .build());
             }
+        }
+    }
+
+    @Override
+    public void deleteMemberHabit(HabitDeleteReqDto habitDeleteReqDto) {
+        if (Boolean.TRUE.equals(habitDeleteReqDto.isDeleteAll())) {
+            habitTrackerService.deleteAllHabitTracker(habitDeleteReqDto.memberHabitId());
+            memberHabitRepository.deleteById(habitDeleteReqDto.memberHabitId());
+        } else {
+            habitTrackerService.deleteAfterHabitTracker(habitDeleteReqDto.memberHabitId());
+            memberHabitRepository.modifyStatus(habitDeleteReqDto.memberHabitId());
         }
     }
 }
