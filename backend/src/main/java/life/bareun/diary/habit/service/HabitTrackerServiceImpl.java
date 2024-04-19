@@ -7,6 +7,7 @@ import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.exception.HabitErrorCode;
@@ -91,5 +92,11 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
+    }
+
+    @Override
+    public HabitTrackerTodayResDto findAllTodayHabitTracker() {
+
+        return null;
     }
 }
