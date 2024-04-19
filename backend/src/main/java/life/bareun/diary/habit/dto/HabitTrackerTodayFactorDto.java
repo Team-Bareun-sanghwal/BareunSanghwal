@@ -1,8 +1,11 @@
 package life.bareun.diary.habit.dto;
 
+import lombok.Builder;
+
+@Builder
 public record HabitTrackerTodayFactorDto(
 
-    Long memberHabitId,
+    Long memberId,
 
     int createdYear,
 
