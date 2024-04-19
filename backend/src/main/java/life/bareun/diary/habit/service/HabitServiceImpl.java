@@ -89,10 +89,13 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    // 사용자 해빗을 삭제
     public void deleteMemberHabit(HabitDeleteReqDto habitDeleteReqDto) {
+        // 만약 모두 삭제한다고 하면 이전 기록들까지 전부 삭제
         if (Boolean.TRUE.equals(habitDeleteReqDto.isDeleteAll())) {
             habitTrackerService.deleteAllHabitTracker(habitDeleteReqDto.memberHabitId());
             memberHabitRepository.deleteById(habitDeleteReqDto.memberHabitId());
+            // 아니라면 이전 것들은 유지
         } else {
             habitTrackerService.deleteAfterHabitTracker(habitDeleteReqDto.memberHabitId());
             memberHabitRepository.modifyStatus(habitDeleteReqDto.memberHabitId());

@@ -1,6 +1,7 @@
 package life.bareun.diary.habit.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import life.bareun.diary.global.config.ImageConfig;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
@@ -31,6 +32,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     private final MemberHabitRepository memberHabitRepository;
 
     @Override
+    // 요일 기준으로 해빗 트래커 생성
     public void createHabitTrackerByDay(HabitTrackerCreateDto habitTrackerCreateDto) {
         habitTrackerRepository.save(
             HabitTracker.builder().member(habitTrackerCreateDto.member())
@@ -42,6 +44,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     @Override
+    // 주기 기준으로 해빗 트래커 생성
     public void createHabitTrackerByPeriod(HabitTrackerCreateDto habitTrackerCreateDto) {
         habitTrackerRepository.save(
             HabitTracker.builder().member(habitTrackerCreateDto.member())
@@ -53,13 +56,20 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     @Override
+    // 모든 해빗 트래커들을 삭제
     public void deleteAllHabitTracker(Long memberHabitId) {
         MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
-        habitTrackerRepository.deleteAllByMemberHabit(memberHabit);
+        // 사진도 삭제해야하기 때문에 목록을 불러와서 하나씩 삭제
+        List<HabitTracker> habitTrackerList = habitTrackerRepository.findAllByMemberHabit(memberHabit);
+        for (HabitTracker habitTracker : habitTrackerList) {
+            imageConfig.deleteImage(habitTracker.getImage());
+            habitTrackerRepository.delete(habitTracker);
+        }
     }
 
     @Override
+    // 이후 해빗 트래커들을 삭제
     public void deleteAfterHabitTracker(Long memberHabitId) {
         MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT));
@@ -70,6 +80,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     @Override
+    // 해빗 트래커 완료
     public void modifyHabitTracker(MultipartFile image,
         HabitTrackerModifyReqDto habitTrackerModifyReqDto) {
         String imageUrl = null;
@@ -80,7 +91,5 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
-
-
     }
 }
