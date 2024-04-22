@@ -23,28 +23,28 @@ export const Statistics_PieChart: Story = {
   args: {
     data: [
       {
-        x: '위스키 마시기',
-        y: 27,
+        habit: '위스키 마시기',
+        value: 27,
       },
       {
-        x: '와인 마시기',
-        y: 21,
+        habit: '와인 마시기',
+        value: 21,
       },
       {
-        x: '악기 연주',
-        y: 18,
+        habit: '악기 연주',
+        value: 18,
       },
       {
-        x: '요리하기',
-        y: 15,
+        habit: '요리하기',
+        value: 15,
       },
       {
-        x: '축구',
-        y: 11,
+        habit: '축구',
+        value: 11,
       },
       {
-        x: '기타',
-        y: 8,
+        habit: '기타',
+        value: 8,
       },
     ],
   },

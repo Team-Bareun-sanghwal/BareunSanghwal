@@ -12,12 +12,8 @@ import {
 import { registerLicense } from '@syncfusion/ej2-base';
 
 interface IHabitType {
-  x: string;
-  y: number;
-}
-
-interface IDataType {
-  data: IHabitType[];
+  habit: string;
+  value: number;
 }
 
 registerLicense(
@@ -26,11 +22,11 @@ registerLicense(
     : '',
 );
 
-export const StatisticsPieChart = ({ data }: IDataType) => {
+export const StatisticsPieChart = ({ data }: { data: IHabitType[] }) => {
   const labelSettings = {
     visible: true,
     position: 'Inside',
-    name: 'p',
+    name: 'percentage',
     font: {
       fontFamily: 'pretendard, sans-serif',
       fontWeight: '200',
@@ -52,7 +48,7 @@ export const StatisticsPieChart = ({ data }: IDataType) => {
   };
 
   const processedData = data.map((habit) => {
-    return { ...habit, p: habit.y + '%' };
+    return { ...habit, percentage: habit.value + '%' };
   });
 
   return (
@@ -64,8 +60,8 @@ export const StatisticsPieChart = ({ data }: IDataType) => {
       <AccumulationSeriesCollectionDirective>
         <AccumulationSeriesDirective
           dataSource={processedData}
-          xName="x"
-          yName="y"
+          xName="habit"
+          yName="value"
           explode={true}
           explodeOffset="10%"
           explodeIndex={0}
