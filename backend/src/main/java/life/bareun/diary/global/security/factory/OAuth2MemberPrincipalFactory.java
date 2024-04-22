@@ -1,19 +1,14 @@
 package life.bareun.diary.global.security.factory;
 
 import java.util.List;
-
 import life.bareun.diary.global.security.embed.OAuth2MemberAuthority;
-import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import life.bareun.diary.member.dto.MemberPrincipal;
+import life.bareun.diary.member.entity.embed.Role;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
-import life.bareun.diary.member.dto.MemberPrincipal;
-import life.bareun.diary.member.entity.Member;
-import life.bareun.diary.member.entity.embed.Role;
-
 public class OAuth2MemberPrincipalFactory {
-    
+
     // 신규 사용자
     public static OAuth2MemberPrincipal firstAuth(
         MemberPrincipal memberPrincipal,
@@ -36,6 +31,6 @@ public class OAuth2MemberPrincipalFactory {
             List.of(new OAuth2MemberAuthority(role))
         );
     }
-    
-    
+
+
 }

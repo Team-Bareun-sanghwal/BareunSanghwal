@@ -8,7 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MemberPrincipal {
-	private Long id;
-	private Role role;
-	private OAuth2Provider provider;
+
+    private Long id;
+    private Role role;
+    private OAuth2Provider provider;
 }

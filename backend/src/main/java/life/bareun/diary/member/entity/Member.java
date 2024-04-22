@@ -1,12 +1,5 @@
 package life.bareun.diary.member.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
@@ -27,6 +22,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @AllArgsConstructor
@@ -35,78 +32,79 @@ import lombok.NoArgsConstructor;
 @Table(name = "member")
 
 public class Member {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
 
-	@Column(name = "sub", nullable = false)
-	private String sub;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-	@Column(name = "nickname")
-	private String nickname;
+    @Column(name = "sub", nullable = false)
+    private String sub;
 
-	@Column(name = "gender")
-	private Gender gender;
+    @Column(name = "nickname")
+    private String nickname;
 
-	@Column(name = "job")
-	@Enumerated(EnumType.STRING)
-	private Job job;
+    @Column(name = "gender")
+    private Gender gender;
 
-	@Column(name = "birth")
-	private LocalDate birth;
+    @Column(name = "job")
+    @Enumerated(EnumType.STRING)
+    private Job job;
 
-	@Column(name = "provider", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private OAuth2Provider provider;
+    @Column(name = "birth")
+    private LocalDate birth;
 
-	@Column(name = "role")
-	@Enumerated(EnumType.STRING)
-	private Role role;
+    @Column(name = "provider", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OAuth2Provider provider;
 
-	@Column(name = "point")
-	@Min(0)
-	private Integer point;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-	@Column(name = "current_theme_id")
-	@Min(0)
-	private Integer currentThemeId;
+    @Column(name = "point")
+    @Min(0)
+    private Integer point;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "current_tree_id")
-	private Tree tree;
+    @Column(name = "current_theme_id")
+    @Min(0)
+    private Integer currentThemeId;
 
-	@Column(name = "daily_point")
-	@Min(0)
-	private Integer dailyPoint;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_tree_id")
+    private Tree tree;
 
-	@Column(name = "current_tree_point")
-	@Min(0)
-	private Integer currentTreePoint;
+    @Column(name = "daily_point")
+    @Min(0)
+    private Integer dailyPoint;
 
-	@Column(name = "created_datetime", updatable = false)
-	@CreationTimestamp
-	private LocalDateTime createdDateTime;
+    @Column(name = "current_tree_point")
+    @Min(0)
+    private Integer currentTreePoint;
 
-	@Column(name = "updated_datetime")
-	@UpdateTimestamp
-	private LocalDateTime updatedDateTime;
+    @Column(name = "created_datetime", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
 
-	private Member(String sub, OAuth2Provider oAuth2Provider) {
-		this.sub = sub;
-		this.provider = oAuth2Provider;
+    @Column(name = "updated_datetime")
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
 
-		this.role = Role.ROLE_USER;
-		this.point = 0;
-		this.currentThemeId = 1;
-		this.currentTreePoint = 0;
-		this.dailyPoint = 0;
-	}
+    private Member(String sub, OAuth2Provider oAuth2Provider) {
+        this.sub = sub;
+        this.provider = oAuth2Provider;
 
-	public static Member create(
-		String sub,
-		OAuth2Provider oAuth2Provider
-	) {
-		return new Member(sub, oAuth2Provider);
-	}
+        this.role = Role.ROLE_USER;
+        this.point = 0;
+        this.currentThemeId = 1;
+        this.currentTreePoint = 0;
+        this.dailyPoint = 0;
+    }
+
+    public static Member create(
+        String sub,
+        OAuth2Provider oAuth2Provider
+    ) {
+        return new Member(sub, oAuth2Provider);
+    }
 }

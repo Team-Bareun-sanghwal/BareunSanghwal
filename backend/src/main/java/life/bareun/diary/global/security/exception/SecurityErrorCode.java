@@ -1,11 +1,8 @@
 package life.bareun.diary.global.security.exception;
 
-import org.springframework.http.HttpStatus;
-
-import life.bareun.diary.global.security.embed.OAuth2Provider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
