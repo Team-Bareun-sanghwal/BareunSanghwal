@@ -7,6 +7,7 @@ import {
   AccumulationSeriesCollectionDirective,
   AccumulationSeriesDirective,
   Inject,
+  LegendPosition,
 } from '@syncfusion/ej2-react-charts';
 
 import { registerLicense } from '@syncfusion/ej2-base';
@@ -14,6 +15,19 @@ import { registerLicense } from '@syncfusion/ej2-base';
 interface IHabitType {
   habit: string;
   value: number;
+}
+
+interface legendSettingsType {
+  visible: boolean;
+  shapeHeight: number;
+  shapeWidth: number;
+  position: LegendPosition;
+  width: string;
+  textStyle: {
+    fontFamily: string;
+    fontWeight: string;
+    size: string;
+  };
 }
 
 registerLicense(
@@ -34,7 +48,7 @@ export const StatisticsPieChart = ({ data }: { data: IHabitType[] }) => {
     },
   };
 
-  const legendSettings = {
+  const legendSettings: legendSettingsType = {
     visible: true,
     shapeHeight: 10,
     shapeWidth: 10,
