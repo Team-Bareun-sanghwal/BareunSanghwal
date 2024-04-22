@@ -5,6 +5,7 @@ import java.util.List;
 import life.bareun.diary.global.config.ImageConfig;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
+import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
@@ -139,6 +140,11 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     // 한 번이라도 스트릭 기록한 적이 있는지 확인
     public Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit) {
         return habitTrackerRepository.existsByMemberHabitAndSucceededTimeIsNotNull(memberHabit);
+    }
+
+    @Override
+    public HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto) {
+        return habitTrackerRepository.findLastHabitTracker(habitTrackerLastDto);
     }
 
     private String loadCreatedDate(int year, int month, int day) {

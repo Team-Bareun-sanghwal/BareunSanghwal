@@ -6,11 +6,13 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
+import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.MemberHabitDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.entity.Habit;
+import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.exception.HabitErrorCode;
@@ -47,7 +49,7 @@ public class HabitServiceImpl implements HabitService {
                 HabitErrorCode.NOT_FOUND_HABIT));
         Member member = memberRepository.findById(1L)
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
-        // 오늘 연, 월, 일 가져오기
+        // 달의 마지막 연, 월, 일 가져오기
         LocalDate lastDay = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth())
             .atEndOfMonth();
         // 만약 말일이라면 아무것도 안함
@@ -128,5 +130,63 @@ public class HabitServiceImpl implements HabitService {
             }
         }
         return MemberHabitResDto.builder().memberHabitDtoList(memberHabitDtoList).build();
+    }
+
+    @Override
+    public void connectHabitList() {
+        // 이번 달의 마지막 날
+        LocalDate nowMonth = LocalDate.now();
+        int lastDayOfNowMonth = nowMonth.getDayOfMonth();
+
+        // 다음 달
+        LocalDate nextMonth = LocalDate.now().plusMonths(1L);
+
+        // 다음 날의 마지막 일
+        LocalDate lastDay = YearMonth.of(nextMonth.getYear(), nextMonth.getMonth()).atEndOfMonth();
+
+        // 이번 달에 유지중인 memberHabit을 모두 가져오기
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeleted(false);
+        for (MemberHabit memberHabit : memberHabitList) {
+            // 만약 유지 방법이 요일이라면
+            if (memberHabit.getMaintainWay() == MaintainWay.DAY) {
+                // 요일 방식으로 트래커 목록 생성
+                long plusDay = 0L;
+                while (nextMonth.plusDays(plusDay).getDayOfWeek().getValue()
+                    != memberHabit.getMaintainAmount()) {
+                    plusDay++;
+                }
+
+                // 일주일씩 증가시키며 생성
+                LocalDate startDay = nextMonth.plusDays(plusDay);
+                for (LocalDate nowDay = startDay; !nowDay.isAfter(lastDay);
+                    nowDay = nowDay.plusDays(7L)) {
+                    habitTrackerService.createHabitTrackerByDay(
+                        HabitTrackerCreateDto.builder().member(memberHabit.getMember())
+                            .memberHabit(memberHabit).amount(memberHabit.getMaintainAmount())
+                            .targetDay(nowDay).build());
+                }
+                // 만약 유지 방법이 주기라면
+            } else {
+                // 가장 마지막 생성된 해빗 트래커 가져오기
+                HabitTracker habitTracker = habitTrackerService.findLastHabitTracker(
+                    HabitTrackerLastDto.builder().memberHabit(memberHabit).build());
+
+                // 만약 주기를 더한 날이 오늘보다 전이라면
+                int startDay = habitTracker.getCreatedDay() + memberHabit.getMaintainAmount();
+                while (startDay < lastDayOfNowMonth) {
+                    startDay += memberHabit.getMaintainAmount();
+                }
+                startDay -= lastDayOfNowMonth;
+                LocalDate startDate = LocalDate.of(nowMonth.getYear(),
+                    nextMonth.getMonth().getValue(), startDay);
+                for (LocalDate nowDay = startDate; !nowDay.isAfter(lastDay);
+                    nowDay = nowDay.plusDays(memberHabit.getMaintainAmount())) {
+                    habitTrackerService.createHabitTrackerByPeriod(
+                        HabitTrackerCreateDto.builder().member(memberHabit.getMember())
+                            .memberHabit(memberHabit).amount(memberHabit.getMaintainAmount())
+                            .targetDay(nowDay).build());
+                }
+            }
+        }
     }
 }

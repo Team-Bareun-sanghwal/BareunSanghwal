@@ -11,4 +11,6 @@ public interface MemberHabitRepository extends JpaRepository<MemberHabit, Long>,
 
     List<MemberHabit> findAllByMemberAndCreatedDatetimeBetween(Member member,
         LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    List<MemberHabit> findAllByIsDeleted(boolean isDeleted);
 }

@@ -12,4 +12,6 @@ public interface HabitService {
 
     MemberHabitResDto findAllMonthMemberHabit(String monthValue);
 
+    void connectHabitList();
+
 }
