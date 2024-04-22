@@ -5,8 +5,7 @@ import life.bareun.diary.member.dto.MemberPrincipal;
 
 public interface MemberService {
 
-    // String login(String sub);
-    MemberPrincipal register(String sub, OAuth2Provider oAuth2Provider);
+    MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider);
 
     void update();
 

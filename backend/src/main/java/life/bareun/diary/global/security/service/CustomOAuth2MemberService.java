@@ -83,8 +83,7 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
     }
 
     // 로그인 또는 회원가입
-    // 새로 등록된 회원 또는 이미 존재하는 회원의 memberId를 반환한다.
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
-        return memberService.register(sub, oAuth2Provider);
+        return memberService.loginOrRegister(sub, oAuth2Provider);
     }
 }

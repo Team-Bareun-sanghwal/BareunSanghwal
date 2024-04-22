@@ -25,20 +25,10 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsBySub(sub);
     }
 
-    // @Override
-    // @Transactional
-    // public String login(String sub) {
-    // 	Member member = memberRepository.findBySub(sub)
-    // 		.orElseThrow(
-    // 			() -> new MemberException(MemberErrorCode.NO_SUCH_USER)
-    // 		);
-    //
-    // 	return tokenProvider.createToken(member.getId(), member.getRole());
-    // }
 
     @Override
     @Transactional
-    public MemberPrincipal register(String sub, OAuth2Provider oAuth2Provider) {
+    public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
 		/* todo
 		1. member 존재 유무 검사
 		  1-1. 있으면 그냥 그 member를 가져온다.
