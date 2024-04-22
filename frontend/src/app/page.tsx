@@ -1,12 +1,12 @@
-import { StatisticsPieChart } from '@/components/statistics/StatisticsPieChart/StatisticsPieChart';
+import { NavBar } from '@/components/common/NavBar/NavBar';
 
 export default function Home() {
   return (
-    <div>
+    <>
       <main className="custom-bold-text text-custom-light-green">
         hello, world!
       </main>
-      <StatisticsPieChart />
-    </div>
+      <NavBar mode="HOME" />
+    </>
   );
 }
