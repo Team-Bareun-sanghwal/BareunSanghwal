@@ -2,6 +2,7 @@ package life.bareun.diary.habit.repository;
 
 import java.util.List;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
+import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
@@ -13,6 +14,9 @@ public interface HabitTrackerRepositoryCustom {
 
     void modifyHabitTracker(HabitTrackerModifyDto habitTrackerModifyDto);
 
-    List<HabitTrackerTodayDto> findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto);
+    List<HabitTrackerTodayDto>
+        findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto);
+
+    HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto);
 
 }

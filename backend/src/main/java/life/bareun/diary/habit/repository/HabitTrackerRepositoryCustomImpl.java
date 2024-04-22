@@ -6,9 +6,11 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
+import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
+import life.bareun.diary.habit.entity.HabitTracker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +37,8 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<HabitTrackerTodayDto> findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
+    public List<HabitTrackerTodayDto>
+        findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
         return queryFactory.select(
                 Projections.constructor(HabitTrackerTodayDto.class,
                     habitTracker.memberHabit.habit.name, habitTracker.memberHabit.alias,
@@ -46,5 +49,16 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 .and(habitTracker.createdYear.eq(habitTrackerTodayFactorDto.createdYear()))
                 .and(habitTracker.createdMonth.eq(habitTrackerTodayFactorDto.createdMonth()))
                 .and(habitTracker.createdDay.eq(habitTrackerTodayFactorDto.createdDay()))).fetch();
+    }
+
+    @Override
+    public HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto) {
+        return queryFactory.selectFrom(habitTracker)
+            .where(habitTracker.createdDay.eq(
+                queryFactory.select(habitTracker.createdDay.max())
+                    .from(habitTracker)
+                    .where(habitTracker.memberHabit.eq(habitTrackerLastDto.memberHabit()))
+            ).and(habitTracker.memberHabit.eq(habitTrackerLastDto.memberHabit())))
+            .fetchOne();
     }
 }
