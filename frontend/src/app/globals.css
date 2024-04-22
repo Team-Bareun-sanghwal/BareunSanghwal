@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  html, pre {
     font-family: 'pretendard', sans-serif;
     font-size: 62.5%;
   }
