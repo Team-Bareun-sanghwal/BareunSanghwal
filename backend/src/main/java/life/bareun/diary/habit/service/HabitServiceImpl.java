@@ -45,8 +45,7 @@ public class HabitServiceImpl implements HabitService {
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
         // 멤버, 해빗 가져오기
         Habit habit = habitRepository.findById(habitCreateReqDto.habitId())
-            .orElseThrow(() -> new HabitException(
-                HabitErrorCode.NOT_FOUND_HABIT));
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
         Member member = memberRepository.findById(1L)
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
         // 달의 마지막 연, 월, 일 가져오기
