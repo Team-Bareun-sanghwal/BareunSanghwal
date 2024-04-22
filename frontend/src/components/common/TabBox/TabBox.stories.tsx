@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TabBox } from './TabBox';
 import { TextAreaBox } from '../TextAreaBox/TextAreaBox';
+import { ImageUploadBox } from '../ImageUploadBox/ImageUploadBox';
 
 const meta = {
   title: 'Common/TabBox',
@@ -25,7 +26,7 @@ export const HabitWrite: Story = {
       },
       {
         title: '이미지 첨부',
-        component: <div>이미지 첨부</div>,
+        component: <ImageUploadBox />,
       },
     ],
   },

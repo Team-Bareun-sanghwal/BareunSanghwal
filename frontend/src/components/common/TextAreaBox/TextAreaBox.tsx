@@ -16,7 +16,7 @@ export const TextAreaBox = () => {
       <GuideText text="작성한 내용은 추후에 목록에서 확인할 수 있어요." />
 
       <textarea
-        className={`${outlineColor} h-[25rem] p-[1rem] pb-[2rem] text-custom-black rounded-[1rem] resize-none custom-semibold-text`}
+        className={`${outlineColor} h-[25rem] p-[1rem] pb-[2rem] text-custom-black rounded-[1rem] resize-none custom-semibold-text bg-custom-light-gray`}
         placeholder="내용을 작성해주세요."
         maxLength={100}
         onChange={(event) => {
