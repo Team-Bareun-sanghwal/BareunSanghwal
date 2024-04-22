@@ -5,8 +5,10 @@ import java.util.List;
 import life.bareun.diary.global.config.ImageConfig;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
+import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.exception.HabitErrorCode;
@@ -91,5 +93,17 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
+    }
+
+    @Override
+    // 오늘 사용자의 해빗 트래커 리스트를 반환
+    public HabitTrackerTodayResDto findAllTodayHabitTracker() {
+        // security 로직 추가되면 memberId 변경
+        LocalDate localDate = LocalDate.now();
+        return HabitTrackerTodayResDto.builder()
+            .habitTrackerTodayDtoList(habitTrackerRepository.findAllTodayHabitTracker(
+                HabitTrackerTodayFactorDto.builder().memberId(1L).createdYear(localDate.getYear())
+                    .createdMonth(localDate.getMonthValue())
+                    .createdDay(localDate.getDayOfMonth()).build())).build();
     }
 }

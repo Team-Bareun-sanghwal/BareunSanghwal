@@ -45,7 +45,6 @@ public class HabitServiceImpl implements HabitService {
         // 오늘 연, 월, 일 가져오기
         LocalDate lastDay = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth())
             .atEndOfMonth();
-
         // 만약 말일이라면 아무것도 안함
         // 말일이 아니라면 말일까지 증가시키면서 맞는 조건에만 생성
         if (habitCreateReqDto.dayOfWeek() == null) {
@@ -53,7 +52,6 @@ public class HabitServiceImpl implements HabitService {
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
                         MaintainWay.PERIOD).maintainAmount(habitCreateReqDto.period()).build());
-
             // 주기 방식으로 트래커 목록 생성
             LocalDate startDay = LocalDate.now().plusDays(habitCreateReqDto.period());
             for (LocalDate nowDay = startDay; !nowDay.isAfter(lastDay);

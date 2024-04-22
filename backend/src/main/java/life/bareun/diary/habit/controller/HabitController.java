@@ -4,12 +4,14 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.service.HabitService;
 import life.bareun.diary.habit.service.HabitTrackerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +53,13 @@ public class HabitController {
         habitTrackerService.modifyHabitTracker(image, habitTrackerModifyReqDto);
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "해빗 트래커를 완료하였습니다.", null));
+    }
+
+    @GetMapping("/today")
+    public ResponseEntity<BaseResponse<HabitTrackerTodayResDto>> findAllTodayHabitTracker() {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "오늘의 해빗 트래커 리스트 조회를 성공하였습니다.",
+                habitTrackerService.findAllTodayHabitTracker()));
     }
 
 }
