@@ -69,6 +69,7 @@ export const StatisticsPieChart = ({ data }: { data: IHabitType[] }) => {
     <AccumulationChartComponent
       id="statisticsPieChart"
       legendSettings={legendSettings}
+      className="w-[34rem]"
     >
       <Inject services={[AccumulationLegend, AccumulationDataLabel]} />
       <AccumulationSeriesCollectionDirective>

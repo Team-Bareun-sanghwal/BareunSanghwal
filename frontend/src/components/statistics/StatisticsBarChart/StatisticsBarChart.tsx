@@ -97,6 +97,7 @@ export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
       primaryYAxis={yAxisConfig}
       chartArea={chatAreaConfig}
       legendSettings={legendSettings}
+      className="w-[34rem]"
     >
       <Inject services={[ColumnSeries, Legend, Tooltip, DataLabel, Category]} />
       <SeriesCollectionDirective>
