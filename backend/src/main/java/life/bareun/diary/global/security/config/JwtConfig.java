@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JwtConfig {
+
     @Value("${jwt.secret-key}")
     private String secretKey;
 
