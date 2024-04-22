@@ -89,10 +89,9 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     public void modifyHabitTracker(MultipartFile image,
         HabitTrackerModifyReqDto habitTrackerModifyReqDto) {
         String imageUrl = null;
-        if (image != null) {
+        if (image != null && !image.isEmpty()) {
             imageUrl = imageConfig.uploadImage(image);
         }
-
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
@@ -125,6 +124,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     @Override
+    // 요일 별 해빗 트래커 개수 리스트 조회
     public HabitTrackerWeekResDto findAllWeekHabitTracker() {
         int[] dayList = new int[8];
         for (int i = 1; i < 8; i++) {
@@ -133,6 +133,12 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         return HabitTrackerWeekResDto.builder().monday(dayList[1]).tuesday(dayList[2])
             .wednesday(dayList[3]).thursday(dayList[4]).friday(dayList[5]).saturday(dayList[6])
             .sunday(dayList[7]).build();
+    }
+
+    @Override
+    // 한 번이라도 스트릭 기록한 적이 있는지 확인
+    public Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit) {
+        return habitTrackerRepository.existsByMemberHabitAndSucceededTimeIsNotNull(memberHabit);
     }
 
     private String loadCreatedDate(int year, int month, int day) {

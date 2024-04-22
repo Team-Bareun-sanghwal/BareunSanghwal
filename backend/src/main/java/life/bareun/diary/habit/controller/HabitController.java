@@ -4,9 +4,10 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
-import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
+import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.service.HabitService;
 import life.bareun.diary.habit.service.HabitTrackerService;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +80,14 @@ public class HabitController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "요일 별 해빗 트래커 개수 조회를 성공하였습니다.",
                 habitTrackerService.findAllWeekHabitTracker()));
+    }
+
+    @GetMapping("/month/{monthValue}")
+    public ResponseEntity<BaseResponse<MemberHabitResDto>> findAllMonthMemberHabit(
+        @PathVariable("monthValue") String monthValue) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "이번 달 사용자 해빗 리스트 조회를 성공하였습니다.",
+                habitService.findAllMonthMemberHabit(monthValue)));
     }
 
 }

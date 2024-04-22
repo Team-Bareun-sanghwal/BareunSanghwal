@@ -12,4 +12,6 @@ public interface HabitTrackerRepository extends JpaRepository<HabitTracker, Long
 
     int countByDay(int day);
 
+    Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit);
+
 }

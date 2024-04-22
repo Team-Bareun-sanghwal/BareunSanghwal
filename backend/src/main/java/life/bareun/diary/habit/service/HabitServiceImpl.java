@@ -1,10 +1,15 @@
 package life.bareun.diary.habit.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
+import life.bareun.diary.habit.dto.MemberHabitDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
+import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
@@ -98,5 +103,30 @@ public class HabitServiceImpl implements HabitService {
             habitTrackerService.deleteAfterHabitTracker(habitDeleteReqDto.memberHabitId());
             memberHabitRepository.modifyStatus(habitDeleteReqDto.memberHabitId());
         }
+    }
+
+    @Override
+    // 이번 달에 한 번이라도 유지한 적이 있는 사용자 해빗 가져오기
+    public MemberHabitResDto findAllMonthMemberHabit(String monthValue) {
+        // security logic이 완성되면 변경
+        Member member = memberRepository.findById(1L)
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
+        YearMonth yearMonth = YearMonth.of(Integer.parseInt(monthValue.substring(0, 4)),
+            Integer.parseInt(monthValue.substring(5)));
+        LocalDateTime startDateTime = yearMonth.atDay(1).atStartOfDay();
+        LocalDateTime endDateTime = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+        List<MemberHabit> memberHabitList = memberHabitRepository
+            .findAllByMemberAndCreatedDatetimeBetween(member, startDateTime, endDateTime);
+
+        List<MemberHabitDto> memberHabitDtoList = new ArrayList<>();
+        for (MemberHabit memberHabit : memberHabitList) {
+            if (Boolean.TRUE.equals(habitTrackerService
+                .existsByMemberHabitAndSucceededTimeIsNotNull(memberHabit))) {
+                memberHabitDtoList.add(
+                    MemberHabitDto.builder().memberHabitId(memberHabit.getId())
+                        .alias(memberHabit.getAlias()).icon(memberHabit.getIcon()).build());
+            }
+        }
+        return MemberHabitResDto.builder().memberHabitDtoList(memberHabitDtoList).build();
     }
 }

@@ -5,6 +5,7 @@ import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
+import life.bareun.diary.habit.entity.MemberHabit;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface HabitTrackerService {
@@ -24,4 +25,6 @@ public interface HabitTrackerService {
     HabitTrackerDetailResDto findDetailHabitTracker(Long habitTrackerId);
 
     HabitTrackerWeekResDto findAllWeekHabitTracker();
+
+    Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit);
 }
