@@ -52,7 +52,6 @@ public class MemberHabit {
     @Size(min = 1, max = 63)
     private String icon;
 
-    @ColumnDefault("FALSE")
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 

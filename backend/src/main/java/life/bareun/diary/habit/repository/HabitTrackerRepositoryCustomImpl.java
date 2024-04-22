@@ -42,7 +42,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                     habitTracker.memberHabit.id, habitTracker.id, habitTracker.memberHabit.icon,
                     habitTracker.succeededTime, habitTracker.day))
             .from(habitTracker)
-            .where(habitTracker.memberHabit.id.eq(habitTrackerTodayFactorDto.memberHabitId())
+            .where(habitTracker.memberHabit.member.id.eq(habitTrackerTodayFactorDto.memberId())
                 .and(habitTracker.createdYear.eq(habitTrackerTodayFactorDto.createdYear()))
                 .and(habitTracker.createdMonth.eq(habitTrackerTodayFactorDto.createdMonth()))
                 .and(habitTracker.createdDay.eq(habitTrackerTodayFactorDto.createdDay()))).fetch();

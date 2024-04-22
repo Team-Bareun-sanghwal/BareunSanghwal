@@ -10,11 +10,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
+import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
@@ -45,6 +48,7 @@ public class Member {
     private String nickname;
 
     @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(name = "job")
@@ -89,6 +93,10 @@ public class Member {
     @Column(name = "updated_datetime")
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    @Column(name = "member_habits")
+    private List<MemberHabit> memberHabitList;
 
     private Member(String sub, OAuth2Provider oAuth2Provider) {
         this.sub = sub;
