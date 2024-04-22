@@ -30,8 +30,8 @@ export const ImageUploadBox = () => {
           <div className="w-full h-[25rem] border-dashed border-[0.1rem] rounded-[1rem] border-custom-dark-gray bg-custom-light-gray flex justify-center items-center">
             <Image
               src={URL.createObjectURL(inputImageFile)}
-              width={250}
-              height={250}
+              width={200}
+              height={200}
               alt="업로드 이미지"
               className="bg-contain"
             />
