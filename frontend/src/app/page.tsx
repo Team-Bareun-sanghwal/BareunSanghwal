@@ -1,11 +1,11 @@
 import Calender from '@/components/Calender/Calender';
 import { StreaksResponse, setDayInfo } from '@/components/Calender/mockserver';
+import { ColorThemeResponse } from './mock';
 import { NavBar } from '@/components/common/NavBar/NavBar';
 
 export default function Home() {
   const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
-  const theme = 'bareun-sanghwal';
-  const theme1 = 'rose';
+  const theme = ColorThemeResponse.streak_theme;
   return (
     <>
       <>
@@ -16,7 +16,7 @@ export default function Home() {
           dayOfWeekFirst={dayOfWeekFirst}
           memberHabitList={memberHabitList}
           dayInfo={dayInfo}
-          themeColor={theme1}
+          themeColor={theme}
         />
       </>
       <NavBar mode="HOME" />

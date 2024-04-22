@@ -1,7 +1,9 @@
 import { IStreaksReponse, IMemberHabit, IDayInfo } from './mockserver';
 import Streak from '../Streak/Streak';
-import { is } from '@react-three/fiber/dist/declarations/src/core/utils';
-
+import DayLabel from './DayLabel';
+import Achievement from './Achievement';
+import MonthLabel from './MonthLabel';
+import HabitBtnList from './HabitBtnList';
 interface ICalenderProps {
   dayOfWeekFirst: number;
   memberHabitList: IMemberHabit[];
@@ -22,7 +24,10 @@ const Calender = ({
     themeColor === 'sunny-summer';
   return (
     <>
-      <div>{themeColor}</div>
+      <MonthLabel month={4} year={2024} />
+      <HabitBtnList habitList={memberHabitList} />
+      <Achievement proportion={88} themeColor={themeColor} />
+      <DayLabel />
       <div className="grid grid-cols-7 gap-4 p-1">
         {dayInfo?.map((info, index) => (
           <Streak

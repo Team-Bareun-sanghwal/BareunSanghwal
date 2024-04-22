@@ -1,3 +1,4 @@
+// 1. Streak response
 export interface IStreaksReponse {
   achieveProportion: number;
   dayOfWeekFirst: number;
@@ -35,7 +36,7 @@ export const setDayInfo = (
   }
   for (let i = 1; i <= today; i++) {
     const existingDayInfo = dayInfo.find((info) => info.day === i);
-    if (existingDayInfo) {
+    if (dayInfo.find((info) => info.day === i)) {
       dayInfoList.push(existingDayInfo);
     } else {
       dayInfoList.push({ day: i, achieveCount: 0 });
@@ -54,22 +55,17 @@ export const StreaksResponse: IStreaksReponse = {
     {
       memberHabitId: 1,
       alias: '팔굽혀펴기 100회',
-      icon: '💪',
+      icon: 'path',
     },
     {
       memberHabitId: 2,
       alias: '스쿼트 100회',
-      icon: '🦵',
+      icon: 'path',
     },
     {
       memberHabitId: 3,
       alias: '100km 달리기',
-      icon: '🏃',
-    },
-    {
-      memberHabitId: 4,
-      alias: '30분 독서',
-      icon: '📖',
+      icon: 'book',
     },
   ],
   dayInfo: setDayInfo(
@@ -141,4 +137,115 @@ export const StreaksResponse: IStreaksReponse = {
     ],
     0,
   ),
+};
+
+// habit별
+
+export const HabitStreaksResponse: IStreaksReponse = {
+  achieveProportion: 100,
+  dayOfWeekFirst: 0,
+  memberHabitList: [
+    {
+      memberHabitId: 1,
+      alias: '팔굽혀펴기 100회',
+      icon: 'path',
+    },
+    {
+      memberHabitId: 2,
+      alias: '스쿼트 100회',
+      icon: 'path',
+    },
+    {
+      memberHabitId: 3,
+      alias: '100km 달리기',
+      icon: 'book',
+    },
+  ],
+  dayInfo: setDayInfo(
+    [
+      {
+        day: 1,
+        achieveCount: 3,
+      },
+      {
+        day: 2,
+        achieveCount: 3,
+      },
+      {
+        day: 3,
+        achieveCount: 3,
+      },
+      {
+        day: 7,
+        achieveCount: 3,
+      },
+      {
+        day: 8,
+        achieveCount: 3,
+      },
+      {
+        day: 9,
+        achieveCount: 3,
+      },
+    ],
+    0,
+  ),
+};
+// 2. My Theme response
+interface IColorThemeResponse {
+  streak_theme: string;
+}
+export const ColorThemeResponse: IColorThemeResponse = {
+  streak_theme: 'minchodan',
+};
+
+// 3. My Tree response
+interface ITreeThemeResponse {
+  tree_theme: string;
+}
+export const TreeThemeResponse: ITreeThemeResponse = {
+  tree_theme: 'pink',
+};
+
+//4. Member Streak
+
+interface IMemberStreak {
+  currentTracker: number;
+  totalTracker: number;
+  currentStreak: number;
+}
+
+//5. ItemList
+
+interface IItemList {
+  recovery: IItem;
+  gotcha_streak: IItem;
+  gotcha_tree: IItem;
+}
+
+interface IItem {
+  name: string;
+  description: string;
+  price: number;
+}
+
+export const ItemListResponse: IItemList = {
+  recovery: {
+    name: '스트릭 리커버리',
+    description:
+      '최근 한 달 중 하나의 스트릭을 복구할 수 있어요. 주의! 리캡에는 포함되지 않아요.',
+    price: 140,
+  },
+  gotcha_streak: {
+    name: '알쏭달쏭 스트릭',
+    description:
+      '사용하면 프로필의 스트릭 색상을 12가지 색상과 일부 특별한 색상 중 하나로 바꿔줘요. 아이템을 구매하는 순간 스트릭 색상이 바뀌며 영구적으로 적용되고, 현재 색상은 사라져요.',
+    price: 140,
+  },
+  gotcha_tree: {
+    name: '알쏭달쏭 나무',
+    description:
+      '사용하면 나무의 색상을 12가지 색상 중 하나로 바꿔줘요. 아이템을 구매하는 순간 스트릭 색상이 바뀌며 영구적으로 적용되고, 현재 색상은 사라져요.',
+    price: 140,
+  },
 };

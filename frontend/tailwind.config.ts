@@ -25,6 +25,7 @@ const config: Config = {
         'custom-success': '#65f54d',
         'custom-pink': '#db719e',
         'custom-sky': '#5a9ed0',
+        'custom-sky-pastel': '#EDEEF7',
         'custom-black-with-opacity': 'rgba(39, 39, 42, 0.8)',
         'custom-matcha-with-opacity': 'rgba(21, 72, 27, 0.8)',
         'custom-kakao': '#FEE500',

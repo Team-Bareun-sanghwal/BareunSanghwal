@@ -1,5 +1,4 @@
 import { StarIcon } from '@heroicons/react/20/solid';
-import { Console } from 'console';
 interface StreakProps {
   themeColor: string;
   isUnique: boolean;
@@ -31,7 +30,6 @@ const Streak = ({
     }
   }
   const customClassName = getClassName();
-  console.log(customClassName);
   return (
     <button className={customClassName}>
       {day}
