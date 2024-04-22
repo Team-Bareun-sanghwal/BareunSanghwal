@@ -4,6 +4,7 @@ import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.dto.MemberPrincipal;
+import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
@@ -46,8 +47,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void update() {
-        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+    public void update(MemberUpdateDtoReq memberUpdateDtoReq) {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
+            );
+
+        member.update(memberUpdateDtoReq);
+        memberRepository.save(member);
     }
+
 }
