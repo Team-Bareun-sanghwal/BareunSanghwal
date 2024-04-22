@@ -8,6 +8,7 @@ import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
@@ -63,7 +64,8 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
         // 사진도 삭제해야하기 때문에 목록을 불러와서 하나씩 삭제
-        List<HabitTracker> habitTrackerList = habitTrackerRepository.findAllByMemberHabit(memberHabit);
+        List<HabitTracker> habitTrackerList = habitTrackerRepository
+            .findAllByMemberHabit(memberHabit);
         for (HabitTracker habitTracker : habitTrackerList) {
             imageConfig.deleteImage(habitTracker.getImage());
             habitTrackerRepository.delete(habitTracker);
@@ -105,5 +107,27 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
                 HabitTrackerTodayFactorDto.builder().memberId(1L).createdYear(localDate.getYear())
                     .createdMonth(localDate.getMonthValue())
                     .createdDay(localDate.getDayOfMonth()).build())).build();
+    }
+
+    @Override
+    // 특정 habitTracker 상세 조회
+    public HabitTrackerDetailResDto findDetailHabitTracker(Long habitTrackerId) {
+        HabitTracker habitTracker = habitTrackerRepository.findById(habitTrackerId)
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
+        String createdAt = loadCreatedDate(habitTracker.getCreatedYear(),
+            habitTracker.getCreatedMonth(), habitTracker.getCreatedDay());
+        return HabitTrackerDetailResDto.builder().habitTrackerId(habitTrackerId)
+            .alias(habitTracker.getMemberHabit().getAlias()).content(habitTracker.getContent())
+            .image(habitTracker.getImage()).day(habitTracker.getDay())
+            .succeededTime(habitTracker.getSucceededTime())
+            .createdAt(LocalDate.parse(createdAt)).build();
+    }
+
+    private String loadCreatedDate(int year, int month, int day) {
+        String createdDate = year + "-";
+        createdDate += month > 10 ? month : "0" + month;
+        createdDate += "-";
+        createdDate += day > 10 ? day : "0" + day;
+        return createdDate;
     }
 }
