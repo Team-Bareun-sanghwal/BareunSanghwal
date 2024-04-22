@@ -2,15 +2,6 @@ package life.bareun.diary.global.security.service;
 
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.exception.CustomSecurityException;
 import life.bareun.diary.global.security.exception.SecurityErrorCode;
@@ -19,6 +10,13 @@ import life.bareun.diary.member.dto.MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 /*
  여기서는 Resource server로부터 인증 정보를 받아오고
@@ -30,61 +28,63 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
-	private final MemberService memberService;
 
-	@Override
-	public OAuth2User loadUser(OAuth2UserRequest userRequest)
-		throws OAuth2AuthenticationException {
-		// 유저 정보 생성
-		OAuth2User oAuth2User = super.loadUser(userRequest);
+    private final MemberService memberService;
 
-		return process(userRequest, oAuth2User);
-	}
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest)
+        throws OAuth2AuthenticationException {
+        // 유저 정보 생성
+        OAuth2User oAuth2User = super.loadUser(userRequest);
 
-	private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-		String provider = userRequest.getClientRegistration().getClientName();
-		OAuth2Provider oAuth2Provider = null;
-		try {
-			oAuth2Provider = OAuth2Provider.valueOf(provider);
-		} catch (IllegalArgumentException e) { // 이상한 provider
-			throw new CustomSecurityException(SecurityErrorCode.BAD_AUTH_INFO);
-		}
+        return process(userRequest, oAuth2User);
+    }
 
-		System.out.println("Client name: " + provider);
-		System.out.println("Scope: " + userRequest.getClientRegistration().getScopes());
-		System.out.println("======OAuth2User START======");
-		Map<String, Object> attrs = oAuth2User.getAttributes();
-		attrs.keySet().forEach(
-			(key) -> System.out.printf(
-				"%s: %s, Type: %s\n",
-				key,
-				attrs.get(key).toString(),
-				attrs.get(key).getClass()
-			)
-		);
-		System.out.println("======OAuth2User END======");
+    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        String provider = userRequest.getClientRegistration().getClientName();
+        OAuth2Provider oAuth2Provider = null;
+        try {
+            oAuth2Provider = OAuth2Provider.valueOf(provider);
+        } catch (IllegalArgumentException e) { // 이상한 provider
+            throw new CustomSecurityException(SecurityErrorCode.BAD_AUTH_INFO);
+        }
 
-		// 역할
-		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
-		System.out.println(userRequest.getClientRegistration());
+        System.out.println("Client name: " + provider);
+        System.out.println("Scope: " + userRequest.getClientRegistration().getScopes());
+        System.out.println("======OAuth2User START======");
+        Map<String, Object> attrs = oAuth2User.getAttributes();
+        attrs.keySet().forEach(
+            (key) -> System.out.printf(
+                "%s: %s, Type: %s\n",
+                key,
+                attrs.get(key).toString(),
+                attrs.get(key).getClass()
+            )
+        );
+        System.out.println("======OAuth2User END======");
 
-		String sub = switch (oAuth2Provider) {
-			case GOOGLE -> (String) attrs.get("sub");
-			case KAKAO -> Long.toString((Long) attrs.get("id"));
-		};
+        // 역할
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
+            Role.ROLE_USER.name());
+        System.out.println(userRequest.getClientRegistration());
 
-		MemberPrincipal memberPrincipal = loginOrRegister(sub, oAuth2Provider);
+        String sub = switch (oAuth2Provider) {
+            case GOOGLE -> (String) attrs.get("sub");
+            case KAKAO -> Long.toString((Long) attrs.get("id"));
+        };
 
-		// 여기서 반환된 정보가 SecurityContext에 등록된다.
-		return OAuth2MemberPrincipalFactory.firstAuth(
-			memberPrincipal,
-			(DefaultOAuth2User) oAuth2User
-		);
-	}
+        MemberPrincipal memberPrincipal = loginOrRegister(sub, oAuth2Provider);
 
-	// 로그인 또는 회원가입
-	// 새로 등록된 회원 또는 이미 존재하는 회원의 memberId를 반환한다.
-	public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
-		return memberService.register(sub, oAuth2Provider);
-	}
+        // 여기서 반환된 정보가 SecurityContext에 등록된다.
+        return OAuth2MemberPrincipalFactory.firstAuth(
+            memberPrincipal,
+            (DefaultOAuth2User) oAuth2User
+        );
+    }
+
+    // 로그인 또는 회원가입
+    // 새로 등록된 회원 또는 이미 존재하는 회원의 memberId를 반환한다.
+    public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
+        return memberService.register(sub, oAuth2Provider);
+    }
 }
