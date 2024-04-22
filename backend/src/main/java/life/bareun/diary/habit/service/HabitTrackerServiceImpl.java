@@ -8,6 +8,7 @@ import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -55,7 +56,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
                 .createdYear(habitTrackerCreateDto.targetDay().getYear())
                 .createdMonth(habitTrackerCreateDto.targetDay().getMonthValue())
                 .createdDay(habitTrackerCreateDto.targetDay().getDayOfMonth())
-                .day(habitTrackerCreateDto.amount()).build());
+                .day(habitTrackerCreateDto.targetDay().getDayOfWeek().getValue()).build());
     }
 
     @Override
@@ -121,6 +122,17 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
             .image(habitTracker.getImage()).day(habitTracker.getDay())
             .succeededTime(habitTracker.getSucceededTime())
             .createdAt(LocalDate.parse(createdAt)).build();
+    }
+
+    @Override
+    public HabitTrackerWeekResDto findAllWeekHabitTracker() {
+        int[] dayList = new int[8];
+        for (int i = 1; i < 8; i++) {
+            dayList[i] = habitTrackerRepository.countByDay(i);
+        }
+        return HabitTrackerWeekResDto.builder().monday(dayList[1]).tuesday(dayList[2])
+            .wednesday(dayList[3]).thursday(dayList[4]).friday(dayList[5]).saturday(dayList[6])
+            .sunday(dayList[7]).build();
     }
 
     private String loadCreatedDate(int year, int month, int day) {

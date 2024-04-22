@@ -4,6 +4,7 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.service.HabitService;
@@ -51,7 +52,8 @@ public class HabitController {
     @PatchMapping("/completion")
     public ResponseEntity<BaseResponse<String>> modifyHabitTracker(
         @RequestPart(value = "image", required = false) MultipartFile image,
-        @RequestPart(value = "HabitTrackerModifyReqDto") HabitTrackerModifyReqDto habitTrackerModifyReqDto) {
+        @RequestPart(value = "HabitTrackerModifyReqDto") HabitTrackerModifyReqDto
+            habitTrackerModifyReqDto) {
         habitTrackerService.modifyHabitTracker(image, habitTrackerModifyReqDto);
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "해빗 트래커를 완료하였습니다.", null));
@@ -70,6 +72,13 @@ public class HabitController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "오늘의 해빗 트래커 상세 조회를 성공하였습니다.",
                 habitTrackerService.findDetailHabitTracker(habitTrackerId)));
+    }
+
+    @GetMapping("/day")
+    public ResponseEntity<BaseResponse<HabitTrackerWeekResDto>> findAllWeekHabitTracker() {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "요일 별 해빗 트래커 개수 조회를 성공하였습니다.",
+                habitTrackerService.findAllWeekHabitTracker()));
     }
 
 }
