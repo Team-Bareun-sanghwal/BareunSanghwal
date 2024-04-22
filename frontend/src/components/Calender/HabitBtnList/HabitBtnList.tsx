@@ -1,5 +1,5 @@
-import { IMemberHabit } from './mockserver';
-import HabitBtn from './HabitBtn';
+import { IMemberHabit } from '@/app/mock';
+import HabitBtn from '../HabitBtn/HabitBtn';
 interface IHabitList {
   habitList: IMemberHabit[];
 }

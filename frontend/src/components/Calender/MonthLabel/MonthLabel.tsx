@@ -2,7 +2,7 @@ import {
   StarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from '@heroicons/react/20/solid';
+} from '@heroicons/react/24/solid';
 interface IMonthLabel {
   year: number;
   month: number;

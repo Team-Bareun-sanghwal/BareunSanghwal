@@ -1,4 +1,8 @@
-import { StarIcon } from '@heroicons/react/20/solid';
+import {
+  StarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@heroicons/react/20/solid';
 interface StreakProps {
   themeColor: string;
   isUnique: boolean;

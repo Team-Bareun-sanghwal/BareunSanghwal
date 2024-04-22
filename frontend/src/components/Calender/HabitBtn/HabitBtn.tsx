@@ -1,4 +1,4 @@
-import { IMemberHabit } from './mockserver';
+import { IMemberHabit } from '@/app/mock';
 
 const HabitBtn = ({ memberHabitId, alias, icon }: IMemberHabit) => {
   return (

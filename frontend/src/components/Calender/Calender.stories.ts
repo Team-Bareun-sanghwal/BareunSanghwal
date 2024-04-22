@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Calender from './Calender';
-import { StreaksResponse } from './mockserver';
-import { ST } from 'next/dist/shared/lib/utils';
+import { StreaksResponse } from '@/app/mock';
 const meta = {
   title: 'Calender',
   component: Calender,

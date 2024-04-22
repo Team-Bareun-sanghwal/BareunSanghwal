@@ -1,9 +1,9 @@
-import { IStreaksReponse, IMemberHabit, IDayInfo } from './mockserver';
+import { IStreaksReponse, IMemberHabit, IDayInfo } from '@/app/mock';
 import Streak from '../Streak/Streak';
-import DayLabel from './DayLabel';
-import Achievement from './Achievement';
-import MonthLabel from './MonthLabel';
-import HabitBtnList from './HabitBtnList';
+import DayLabel from './DayLabel/DayLabel';
+import Achievement from './Acheivement/Achievement';
+import MonthLabel from './MonthLabel/MonthLabel';
+import HabitBtnList from './HabitBtnList/HabitBtnList';
 interface ICalenderProps {
   dayOfWeekFirst: number;
   memberHabitList: IMemberHabit[];
