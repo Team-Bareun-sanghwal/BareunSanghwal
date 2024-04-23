@@ -17,7 +17,7 @@ public class AuthToken {
     @Getter(AccessLevel.PACKAGE)
     private final String token;
 
-    public Claims getClaims(SecretKey key) throws ExpiredJwtException {
+    public Claims getClaims(SecretKey key) throws JwtException {
         Claims claims = null;
         try {
             claims = Jwts.parser()
@@ -25,8 +25,8 @@ public class AuthToken {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        } catch (JwtException | IllegalArgumentException ignored) {
-            log.debug("Auth Token is invalid. : {}", token);
+        } catch (IllegalArgumentException ignored) {
+            log.debug("AuthToken cannot be null");
         }
 
         return claims;
