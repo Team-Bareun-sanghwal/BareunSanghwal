@@ -63,4 +63,28 @@ public class MemberTotalStreak {
         // this.totalTrackerCount = 0;
         // this.starCount = 0;
     }
+
+    public void modifyLongestStreak(int streakCount) {
+        this.longestStreak = streakCount;
+    }
+
+    public void modifyAchieveStreakCount() {
+        this.achieveTrackerCount++;
+    }
+
+    public void modifyTotalStreakCount() {
+        this.totalTrackerCount++;
+    }
+
+    public void modifyAchieveTrackerCount() {
+        this.achieveStreakCount++;
+    }
+
+    public void modifyTotalTrackerCount(int trackerCount) {
+        this.totalStreakCount += trackerCount;
+    }
+
+    public void modifyStarCount() {
+        this.starCount++;
+    }
 }
