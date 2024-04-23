@@ -7,17 +7,10 @@ export default function Home() {
   const theme = ColorThemeResponse.streak_theme;
   return (
     <>
-      <>
-        <main className="custom-bold-text text-custom-light-green">
-          hello, world!
-        </main>
-        <Calender
-          dayOfWeekFirst={dayOfWeekFirst}
-          memberHabitList={memberHabitList}
-          dayInfo={dayInfo}
-          themeColor={theme}
-        />
-      </>
+      <main className="custom-bold-text text-custom-light-green">
+        hello, world!
+      </main>
+
       <NavBar mode="HOME" />
     </>
   );

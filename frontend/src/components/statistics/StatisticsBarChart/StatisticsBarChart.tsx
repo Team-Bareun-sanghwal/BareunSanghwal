@@ -10,6 +10,7 @@ import {
   Tooltip,
   DataLabel,
   ColumnSeries,
+  ValueType,
 } from '@syncfusion/ej2-react-charts';
 
 import { registerLicense } from '@syncfusion/ej2-base';
@@ -20,42 +21,47 @@ registerLicense(
     : '',
 );
 
-export const StatisticsBarChart = () => {
+interface IDayType {
+  day: string;
+  value: number;
+  colorIdx: number;
+}
+
+interface XAxisConfigType {
+  visible: boolean;
+  valueType: ValueType;
+  majorGridLines?: { width: number };
+  majorTickLines?: { width: number };
+  lineStyle?: { width: number };
+  labelStyle: {
+    fontFamily: string;
+    fontWeight: string;
+    size: string;
+    color: string;
+  };
+}
+
+export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
   const borderRadius = 15;
 
-  const colorBase = '#d4d4d8';
-  const colorMax = '#94439e';
-  const colorMin = '#277530';
+  const colorArr = ['#277530', '#d4d4d8', '#94439e'];
 
-  const data: any[] = [
-    { day: '월', value: 45, color: colorBase },
-    { day: '화', value: 53, color: colorBase },
-    { day: '수', value: 56, color: colorBase },
-    { day: '목', value: 61, color: colorBase },
-    { day: '금', value: 40, color: colorBase },
-    { day: '토', value: 20, color: colorBase },
-    { day: '일', value: 20, color: colorBase },
-  ];
-
-  let maxValue = -Infinity;
-  let minValue = Infinity;
-
-  // 배열을 반복하면서 최대값과 최소값 업데이트
-  data.forEach((item) => {
-    if (item.value > maxValue) {
-      maxValue = item.value;
-    }
-    if (item.value < minValue) {
-      minValue = item.value;
-    }
+  const processedData = data.map((day) => {
+    return { ...day, color: colorArr[day.colorIdx] };
   });
-  console.log(minValue);
-  console.log(maxValue);
 
-  const xAxisConfig = {
-    visible: false,
+  const xAxisConfig: XAxisConfigType = {
+    visible: true,
     valueType: 'Category',
     majorGridLines: { width: 0 },
+    majorTickLines: { width: 0 },
+    lineStyle: { width: 0 },
+    labelStyle: {
+      fontFamily: 'pretendard, sans-serif',
+      fontWeight: '400',
+      size: '12',
+      color: '#52525b',
+    },
   };
 
   const yAxisConfig = {
@@ -76,11 +82,13 @@ export const StatisticsBarChart = () => {
       font: {
         fontFamily: 'pretendard, sans-serif',
         fontWeight: '400',
-        size: '10',
-        color: colorBase,
+        size: '14',
+        color: '#52525b',
       },
     },
   };
+
+  const legendSettings = { visible: true };
 
   return (
     <ChartComponent
@@ -88,12 +96,13 @@ export const StatisticsBarChart = () => {
       primaryXAxis={xAxisConfig}
       primaryYAxis={yAxisConfig}
       chartArea={chatAreaConfig}
+      legendSettings={legendSettings}
+      className="w-[34rem]"
     >
       <Inject services={[ColumnSeries, Legend, Tooltip, DataLabel, Category]} />
       <SeriesCollectionDirective>
         <SeriesDirective
-          fill={colorBase}
-          dataSource={data}
+          dataSource={processedData}
           xName="day"
           yName="value"
           type="Column"
@@ -104,7 +113,7 @@ export const StatisticsBarChart = () => {
             bottomLeft: borderRadius,
             bottomRight: borderRadius,
           }}
-          // colorName={`${colorBase} ${colorMax} ${colorMin}`}
+          pointColorMapping="color"
         />
       </SeriesCollectionDirective>
     </ChartComponent>
