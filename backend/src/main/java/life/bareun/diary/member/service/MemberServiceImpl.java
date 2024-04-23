@@ -47,6 +47,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void update(MemberUpdateDtoReq memberUpdateDtoReq) {
         Long id = AuthUtil.getMemberIdFromAuthentication();
 
