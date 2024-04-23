@@ -7,7 +7,7 @@ import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.response.MemberStreakResponseDto;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
-import life.bareun.diary.streak.exception.StreakErrorCode;
+import life.bareun.diary.streak.exception.MemberTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,8 @@ public class MemberTotalStreakServiceImpl implements MemberTotalStreakService {
         Member member = getCurrentMember();
 
         return memberTotalStreakRepository.findByMember(member)
-            .orElseThrow(() -> new StreakException(StreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
+            .orElseThrow(() ->
+                new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
     }
 
     @Override
@@ -62,7 +63,7 @@ public class MemberTotalStreakServiceImpl implements MemberTotalStreakService {
     public void modifyMemberTotalStreakTotalField(int trackerCount) {
         MemberTotalStreak memberTotalStreak = findMemberTotalStreak();
 
-        memberTotalStreak.modifyTotalStreakCount();
+        memberTotalStreak.addTotalStreakCount();
         memberTotalStreak.modifyTotalTrackerCount(trackerCount);
     }
 
@@ -70,13 +71,13 @@ public class MemberTotalStreakServiceImpl implements MemberTotalStreakService {
     public void modifyMemberTotalStreakAchieveField(boolean streakFlag, boolean starFlag) {
         MemberTotalStreak memberTotalStreak = findMemberTotalStreak();
 
-        memberTotalStreak.modifyAchieveTrackerCount();
+        memberTotalStreak.addAchieveTrackerCount();
         if (streakFlag) {
-            memberTotalStreak.modifyAchieveStreakCount();
+            memberTotalStreak.addAchieveStreakCount();
         }
 
         if (starFlag) {
-            memberTotalStreak.modifyStarCount();
+            memberTotalStreak.addStarCount();
         }
     }
 

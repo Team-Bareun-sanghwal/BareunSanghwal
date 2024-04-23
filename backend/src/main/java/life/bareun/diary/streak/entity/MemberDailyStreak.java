@@ -47,7 +47,7 @@ public class MemberDailyStreak {
     @Column
     @NotNull
     private boolean isStared;
-    
+
     @Column
     private AchieveType achieveType;
 
@@ -65,5 +65,21 @@ public class MemberDailyStreak {
         this.isStared = false;
         this.achieveType = achieveType;
         this.currentStreak = currentStreak;
+    }
+
+    public void addAchieveTrackerCount() {
+        this.achieveTrackerCount++;
+    }
+
+    public void changeIsStared() {
+        this.isStared = true;
+    }
+
+    public void changeAchieveType() {
+        this.achieveType = AchieveType.ACHIEVE;
+    }
+
+    public void addCurrentStreak() {
+        this.currentStreak++;
     }
 }

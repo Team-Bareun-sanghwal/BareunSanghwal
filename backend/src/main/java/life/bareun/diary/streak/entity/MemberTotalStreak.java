@@ -68,15 +68,15 @@ public class MemberTotalStreak {
         this.longestStreak = streakCount;
     }
 
-    public void modifyAchieveStreakCount() {
+    public void addAchieveStreakCount() {
         this.achieveTrackerCount++;
     }
 
-    public void modifyTotalStreakCount() {
+    public void addTotalStreakCount() {
         this.totalTrackerCount++;
     }
 
-    public void modifyAchieveTrackerCount() {
+    public void addAchieveTrackerCount() {
         this.achieveStreakCount++;
     }
 
@@ -84,7 +84,7 @@ public class MemberTotalStreak {
         this.totalStreakCount += trackerCount;
     }
 
-    public void modifyStarCount() {
+    public void addStarCount() {
         this.starCount++;
     }
 }

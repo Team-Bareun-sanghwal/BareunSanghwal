@@ -8,7 +8,7 @@ import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
-import life.bareun.diary.streak.exception.StreakErrorCode;
+import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,32 +26,44 @@ public class MemberDailyStreakServiceImpl implements MemberDailyStreakService {
     private final MemberRepository memberRepository;
 
     @Override
-    public void createMemberDailyStreak(int trackerCount, AchieveType achieveType) {
+    public void createMemberDailyStreakInit() {
         Member member = getCurrentMember();
 
-        memberDailyStreakRepository.findByMemberAndCreatedDate(member, LocalDate.now()).ifPresent(memberDailyStreak -> {
-            throw new StreakException(StreakErrorCode.ALREADY_EXISTED_MEMBER_DAILY_STREAK);
-        });
-
-        memberDailyStreakRepository.findByMemberAndCreatedDate(member, LocalDate.now().minusDays(1))
-            .ifPresentOrElse(memberDailyStreakYesterday -> {
-                memberDailyStreakRepository.save(MemberDailyStreak.builder()
-                    .member(member)
-                    .createdDate(LocalDate.now())
-                    .totalTrackerCount(memberDailyStreakYesterday.getTotalTrackerCount() + trackerCount)
-                    .achieveType(achieveType)
-                    .currentStreak(memberDailyStreakYesterday.getCurrentStreak())
-                    .build()
-                );
+        memberDailyStreakRepository.findByMemberAndCreatedDate(member, LocalDate.now())
+            .ifPresentOrElse(memberDailyStreakToday -> {
+                throw new StreakException(MemberDailyStreakErrorCode.ALREADY_EXISTED_MEMBER_DAILY_STREAK_TODAY);
             }, () -> {
                 memberDailyStreakRepository.save(MemberDailyStreak.builder()
-                    .member(member)
                     .createdDate(LocalDate.now())
-                    .totalTrackerCount(trackerCount)
-                    .achieveType(achieveType)
+                    .totalTrackerCount(0)
+                    .achieveType(AchieveType.NOT_EXISTED)
                     .currentStreak(0)
                     .build()
                 );
+            });
+    }
+
+    @Override
+    public void createMemberDailyStreakSchedule(int trackerCount, AchieveType achieveType) {
+        Member member = getCurrentMember();
+
+        memberDailyStreakRepository.findByMemberAndCreatedDate(member, LocalDate.now().plusDays(1))
+            .ifPresent(memberDailyStreak -> {
+                throw new StreakException(MemberDailyStreakErrorCode.ALREADY_EXISTED_MEMBER_DAILY_STREAK_TOMORROW);
+            });
+
+        memberDailyStreakRepository.findByMemberAndCreatedDate(member, LocalDate.now())
+            .ifPresentOrElse(memberDailyStreakToday -> {
+                memberDailyStreakRepository.save(MemberDailyStreak.builder()
+                    .member(member)
+                    .createdDate(LocalDate.now().plusDays(1))
+                    .totalTrackerCount(memberDailyStreakToday.getTotalTrackerCount() + trackerCount)
+                    .achieveType(achieveType)
+                    .currentStreak(memberDailyStreakToday.getCurrentStreak())
+                    .build()
+                );
+            }, () -> {
+                throw new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK_TODAY);
             });
     }
 

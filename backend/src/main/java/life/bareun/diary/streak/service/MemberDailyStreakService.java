@@ -4,5 +4,7 @@ import life.bareun.diary.streak.entity.embed.AchieveType;
 
 public interface MemberDailyStreakService {
 
-    void createMemberDailyStreak(int trackerCount, AchieveType achieveType);
+    void createMemberDailyStreakInit();
+
+    void createMemberDailyStreakSchedule(int trackerCount, AchieveType achieveType);
 }
