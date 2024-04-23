@@ -27,7 +27,7 @@ const getHabitCheckerText = (
     habitCheckerText = '오늘 등록한 해빗이 없어요!';
     habitCheckerSubText = '새로운 해빗을 가져보는 건 어때요?';
     iconPath = '/images/icon-check-disabled.png';
-    isHabit = true;
+    isHabit = false;
   } else if (achieveCount < totalCount) {
     habitCheckerText = '아직이에요...';
     iconPath = '/images/icon-check-disabled.png';
@@ -61,7 +61,7 @@ const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
     <>
       <div className="flex w-full h-36 p-4 justify-around">
         {/* Left */}
-        <div className="flex w-7/12 bg-custom-sky-pastel overflow-hidden rounded-xl content-center">
+        <div className="flex w-7/12 bg-custom-sky-pastel overflow-hidden rounded-xl content-center max-w-96">
           {/* Image Container */}
           <div className="-ms-6 content-center">
             <Image src={iconPath} alt="1" width={60} height={60} />
@@ -75,7 +75,7 @@ const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
                 <>
                   <p>{habitCheckerSubText}</p>
                 </>
-              ) : (
+              ) : isHabit ? (
                 <>
                   <p>{hoursRemaining}</p>
                   <p>시간&nbsp;</p>
@@ -83,12 +83,14 @@ const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
                   <p>분&nbsp;</p>
                   <p>이내에&nbsp;완료해주세요!</p>
                 </>
+              ) : (
+                <p>{habitCheckerSubText}</p>
               )}
             </span>
           </div>
         </div>
         {/* Right */}
-        <div className="flex w-4/12 bg-custom-sky-pastel">s</div>
+        {/* <div className="flex w-4/12 bg-custom-sky-pastel">s</div> */}
       </div>
     </>
   );
