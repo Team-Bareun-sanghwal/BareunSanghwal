@@ -1,4 +1,6 @@
 import { getToday, getTimeRemaining } from '../util';
+import { MemberStreakResponse } from '@/app/mock';
+import LongestStreak from '../LogestStreak/LongestStreak';
 import Image from 'next/image';
 interface IHabitCheckerProps {
   achieveCount: number;
@@ -47,7 +49,6 @@ const getHabitCheckerText = (
   };
 };
 const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
-  const day = getToday();
   const { hoursRemaining, minutesRemaining } = getTimeRemaining();
   const {
     habitCheckerTitle,
@@ -59,39 +60,36 @@ const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
   } = getHabitCheckerText(achieveCount, totalCount);
   return (
     <>
-      <div className="flex w-full h-36 p-4 justify-around">
-        {/* Left */}
-        <div className="flex w-7/12 bg-custom-sky-pastel overflow-hidden rounded-xl content-center max-w-96">
-          {/* Image Container */}
-          <div className="-ms-6 content-center">
-            <Image src={iconPath} alt="1" width={60} height={60} />
-          </div>
-          {/* Text Container */}
-          <div className="content-center ms-2">
-            <p>{habitCheckerTitle}</p>
-            <p className="text-xl font-semibold">{habitCheckerText}</p>
-            <span className="flex text-sm">
-              {isAchieved ? (
-                <>
-                  <p>{habitCheckerSubText}</p>
-                </>
-              ) : isHabit ? (
-                <>
-                  <p>{hoursRemaining}</p>
-                  <p>시간&nbsp;</p>
-                  <p>{minutesRemaining}</p>
-                  <p>분&nbsp;</p>
-                  <p>이내에&nbsp;완료해주세요!</p>
-                </>
-              ) : (
-                <p>{habitCheckerSubText}</p>
-              )}
-            </span>
-          </div>
+      {/* Left */}
+      <div className="flex w-7/12 bg-custom-sky-pastel overflow-hidden rounded-xl content-center max-w-96">
+        {/* Image Container */}
+        <div className="-ms-6 content-center">
+          <Image src={iconPath} alt="1" width={60} height={60} />
         </div>
-        {/* Right */}
-        {/* <div className="flex w-4/12 bg-custom-sky-pastel">s</div> */}
+        {/* Text Container */}
+        <div className="content-center ms-2">
+          <p>{habitCheckerTitle}</p>
+          <p className="text-xl font-semibold">{habitCheckerText}</p>
+          <span className="flex text-sm">
+            {isAchieved ? (
+              <>
+                <p>{habitCheckerSubText}</p>
+              </>
+            ) : isHabit ? (
+              <>
+                <p>{hoursRemaining}</p>
+                <p>시간&nbsp;</p>
+                <p>{minutesRemaining}</p>
+                <p>분&nbsp;</p>
+                <p>이내에&nbsp;완료해주세요!</p>
+              </>
+            ) : (
+              <p>{habitCheckerSubText}</p>
+            )}
+          </span>
+        </div>
       </div>
+      {/* Right */}
     </>
   );
 };

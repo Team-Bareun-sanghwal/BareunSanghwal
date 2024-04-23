@@ -1,9 +1,9 @@
 import Calender from '@/components/Calender/Calender';
-import { StreaksResponse, setDayInfo } from '@/app/mock';
+import { StreaksResponse, MemberStreakResponse, setDayInfo } from '@/app/mock';
 import { ColorThemeResponse } from './mock';
 import { NavBar } from '@/components/common/NavBar/NavBar';
 import HabitChecker from '@/components/Calender/HabitChecker/HabitChecker';
-
+import LongestStreak from '@/components/Calender/LogestStreak/LongestStreak';
 export default function Home() {
   const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
   const theme = ColorThemeResponse.streak_theme;
@@ -13,10 +13,16 @@ export default function Home() {
         {/* <main className="custom-bold-text text-custom-light-green">
           hello, world!
         </main> */}
-        <HabitChecker
-          achieveCount={dayInfo[22].achieveCount}
-          totalCount={memberHabitList.length}
-        />
+        <div className="flex w-full h-36 p-4 justify-around">
+          <HabitChecker
+            achieveCount={dayInfo[22].achieveCount}
+            totalCount={memberHabitList.length}
+          />
+          <LongestStreak
+            longestStreakCount={MemberStreakResponse.longestStreakCount}
+          />
+        </div>
+
         <Calender
           dayOfWeekFirst={dayOfWeekFirst}
           memberHabitList={memberHabitList}

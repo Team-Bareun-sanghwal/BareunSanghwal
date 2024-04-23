@@ -241,7 +241,15 @@ interface IMemberStreak {
   currentTracker: number;
   totalTracker: number;
   currentStreak: number;
+  longestStreakCount: number;
 }
+
+export const MemberStreakResponse: IMemberStreak = {
+  currentTracker: 3,
+  totalTracker: 3,
+  currentStreak: 3,
+  longestStreakCount: 3,
+};
 
 //5. ItemList
 
