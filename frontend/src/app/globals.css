@@ -14,6 +14,8 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* 폰트 */
   .custom-bold-text {
     font-weight: 700;
     font-size: 2rem;
@@ -36,5 +38,14 @@
   }
   .custom-emphasize-text {
     font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  /* 그라데이션 테두리 */
+  .custom-gradient-border {
+    border: 0.3rem solid transparent;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(to right, #db719e 0%, #5a9ed0 100%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
   }
 }
