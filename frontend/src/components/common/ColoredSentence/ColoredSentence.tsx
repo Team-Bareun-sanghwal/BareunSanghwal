@@ -10,12 +10,12 @@ export const ColoredSentence = ({
   textBack,
 }: IColoredSentenceProps) => {
   return (
-    <div className="w-full flex justify-start">
-      <pre className="text-custom-black">{textFront}</pre>
+    <div className="w-fit flex justify-start">
+      <pre className="custom-light-text text-custom-black">{textFront}</pre>
       <pre className="text-custom-yellow-green custom-emphasize-text">
         {textMiddle}
       </pre>
-      <pre className="text-custom-black">{textBack}</pre>
+      <pre className="custom-light-text text-custom-black">{textBack}</pre>
     </div>
   );
 };
