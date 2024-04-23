@@ -10,4 +10,6 @@ public interface MemberService {
 
     void update(MemberUpdateDtoReq memberUpdateDtoReq);
 
+    void delete();
+
 }

@@ -1,5 +1,6 @@
 package life.bareun.diary.member.controller;
 
+import com.amazonaws.Response;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
 import life.bareun.diary.member.entity.Member;
@@ -7,6 +8,7 @@ import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,18 @@ public class MemberController {
             BaseResponse.success(
                 HttpStatus.OK.value(),
                 "회원 정보가 수정되었습니다",
+                null
+            )
+        );
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse<Void>> delete() {
+        memberService.delete();
+        return ResponseEntity.ok(
+            BaseResponse.success(
+                HttpStatus.OK.value(),
+                "회원 정보가 삭제되었습니다",
                 null
             )
         );

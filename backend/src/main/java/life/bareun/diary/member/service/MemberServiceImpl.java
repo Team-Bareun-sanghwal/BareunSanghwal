@@ -60,4 +60,11 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+    @Override
+    @Transactional
+    public void delete() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        memberRepository.deleteById(id);
+    }
+
 }
