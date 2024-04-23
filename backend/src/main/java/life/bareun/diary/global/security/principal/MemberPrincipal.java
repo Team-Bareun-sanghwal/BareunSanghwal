@@ -1,4 +1,4 @@
-package life.bareun.diary.member.dto;
+package life.bareun.diary.global.security.principal;
 
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.member.entity.embed.Role;
@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MemberPrincipal {
-
     private Long id;
     private Role role;
     private OAuth2Provider provider;
+    private boolean isNewMember;
 }

@@ -1,7 +1,7 @@
 package life.bareun.diary.member.service;
 
 import life.bareun.diary.global.security.embed.OAuth2Provider;
-import life.bareun.diary.member.dto.MemberPrincipal;
+import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
 
 public interface MemberService {
