@@ -37,7 +37,7 @@ const Calender = ({
             achieveCount={info.achieveCount}
             day={info.day}
             isUnique={isUnique}
-            habitCnt={memberHabitList.length}
+            habitCnt={info.totalCount}
           />
         ))}
       </div>
