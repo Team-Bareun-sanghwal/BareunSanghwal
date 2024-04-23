@@ -1,10 +1,7 @@
-import {
-  StarIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@heroicons/react/20/solid';
+import { StarIcon } from '@heroicons/react/24/solid';
+import { ThemeColor } from '../Calender/CalenderConfig';
 interface StreakProps {
-  themeColor: string;
+  themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
   day: number;

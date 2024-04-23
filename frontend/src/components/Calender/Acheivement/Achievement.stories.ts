@@ -5,7 +5,7 @@ const meta = {
   title: 'Achievement',
   component: Achievement,
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
   },
   tags: ['autodocs'],
   argTypes: {

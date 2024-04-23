@@ -47,9 +47,9 @@ const config: Config = {
         // rare
         'streak-wine': '#CF296F',
         'streak-gold': '#D38200',
-        'streak-bareun-sanghwal': '#15481B',
+        'streak-bareun_sanghwal': '#15481B',
         'streak-minchodan': '#3EB489',
-        'streak-cherry-blossom': '#FF8780',
+        'streak-cherry_blossom': '#FF8780',
         'Streak-react': '#5ED3F3',
         'streak-spring': '#6AAD3D',
 
@@ -81,7 +81,7 @@ const config: Config = {
           '6': '#F75273',
           '7': '#F7A6B6',
         },
-        'streak-sunny-summer': {
+        'streak-sunny_summer': {
           '1': '#0F4267',
           '2': '#5B87A7',
           '3': '#E0E0E0',
@@ -107,15 +107,15 @@ function generateStreakColorSafelist() {
     'black',
     'wine',
     'gold',
-    'bareun-sanghwal',
+    'bareun_sanghwal',
     'minchodan',
-    'cherry-blossom',
+    'cherry_blossom',
     'react',
     'spring',
     'dippindots',
     'rainbow',
     'rose',
-    'sunny-summer',
+    'sunny_summer',
   ];
   const dayVariations = Array.from({ length: 7 }, (_, i) => i + 1);
   const opacities = [10, 40, 55, 60, 70, 80, 90, 100];
@@ -127,7 +127,7 @@ function generateStreakColorSafelist() {
       color === 'dippindots' ||
       color === 'rainbow' ||
       color === 'rose' ||
-      color === 'sunny-summer'
+      color === 'sunny_summer'
     ) {
       // Unique Colors
       dayVariations.forEach((day) => {

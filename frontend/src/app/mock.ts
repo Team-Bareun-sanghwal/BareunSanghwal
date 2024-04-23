@@ -1,3 +1,4 @@
+import { ThemeColor } from '@/components/Calender/CalenderConfig';
 // 1. Streak response
 export interface IStreaksReponse {
   achieveProportion: number;
@@ -36,7 +37,7 @@ export const setDayInfo = (
   }
   for (let i = 1; i <= today; i++) {
     const existingDayInfo = dayInfo.find((info) => info.day === i);
-    if (dayInfo.find((info) => info.day === i)) {
+    if (existingDayInfo) {
       dayInfoList.push(existingDayInfo);
     } else {
       dayInfoList.push({ day: i, achieveCount: 0 });
@@ -193,7 +194,7 @@ export const HabitStreaksResponse: IStreaksReponse = {
 };
 // 2. My Theme response
 interface IColorThemeResponse {
-  streak_theme: string;
+  streak_theme: ThemeColor;
 }
 export const ColorThemeResponse: IColorThemeResponse = {
   streak_theme: 'minchodan',

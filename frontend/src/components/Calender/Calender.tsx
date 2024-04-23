@@ -1,14 +1,15 @@
-import { IStreaksReponse, IMemberHabit, IDayInfo } from '@/app/mock';
+import { IMemberHabit, IDayInfo } from '@/app/mock';
 import Streak from '../Streak/Streak';
 import DayLabel from './DayLabel/DayLabel';
 import Achievement from './Acheivement/Achievement';
 import MonthLabel from './MonthLabel/MonthLabel';
 import HabitBtnList from './HabitBtnList/HabitBtnList';
+import { ThemeColor } from './CalenderConfig';
 interface ICalenderProps {
   dayOfWeekFirst: number;
   memberHabitList: IMemberHabit[];
   dayInfo: IDayInfo[];
-  themeColor: string;
+  themeColor: ThemeColor;
 }
 const Calender = ({
   dayOfWeekFirst,
@@ -21,7 +22,7 @@ const Calender = ({
     themeColor === 'dippindots' ||
     themeColor === 'rainbow' ||
     themeColor === 'rose' ||
-    themeColor === 'sunny-summer';
+    themeColor === 'sunny_summer';
   return (
     <>
       <MonthLabel month={4} year={2024} />

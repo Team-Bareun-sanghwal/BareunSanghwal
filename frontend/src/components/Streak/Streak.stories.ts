@@ -6,14 +6,14 @@ const meta = {
   component: Streak,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   tags: ['autodocs'],
   argTypes: {
     themeColor: { description: '스트릭테마 색상' },
-    isUnique: { description: '희귀 색상인지 여부' },
+    isUnique: {
+      description:
+        '희귀 색상인지 여부(dippindots, rose, rainbow, sunny_summer)',
+    },
     achieveCount: { description: '해당 일 달성 해빗 갯수' },
     day: { description: '날짜(일)' },
     habitCnt: { description: '해당 일 총 해빗 갯수' },

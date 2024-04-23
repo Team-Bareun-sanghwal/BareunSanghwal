@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { HomeIcon } from '@heroicons/react/20/solid';
+import { HomeIcon } from '@heroicons/react/24/solid';
 import {
   ChartPieIcon,
   Square3Stack3DIcon,
