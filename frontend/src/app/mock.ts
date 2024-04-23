@@ -57,17 +57,37 @@ export const StreaksResponse: IStreaksReponse = {
     {
       memberHabitId: 1,
       alias: '팔굽혀펴기 100회',
-      icon: 'path',
+      icon: '💪',
     },
     {
       memberHabitId: 2,
       alias: '스쿼트 100회',
-      icon: 'path',
+      icon: '🦵',
     },
     {
       memberHabitId: 3,
       alias: '100km 달리기',
-      icon: 'book',
+      icon: '🏃',
+    },
+    {
+      memberHabitId: 4,
+      alias: '영양제',
+      icon: '🍎',
+    },
+    {
+      memberHabitId: 5,
+      alias: '기타연습',
+      icon: '🎸',
+    },
+    {
+      memberHabitId: 6,
+      alias: '5시 기상',
+      icon: '🔔',
+    },
+    {
+      memberHabitId: 7,
+      alias: '11시 취침',
+      icon: '🛏',
     },
   ],
   dayInfo: setDayInfo(

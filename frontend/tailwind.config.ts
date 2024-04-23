@@ -93,7 +93,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar-hide')],
 };
 function generateStreakColorSafelist() {
   const streakColors = [
@@ -120,7 +120,14 @@ function generateStreakColorSafelist() {
   const dayVariations = Array.from({ length: 7 }, (_, i) => i + 1);
   const opacities = [10, 40, 55, 60, 70, 80, 90, 100];
 
-  let safelist: string[] = [];
+  let safelist: string[] = [
+    'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full',
+    'bg-custom-sky-pastel text-2xl w-24 h-24 rounded-full',
+    'bg-custom-sky-pastel text-2xl w-32 h-32 rounded-full',
+    'text-xs text-center w-16 truncate ...',
+    'text-xs text-center w-24 truncate ...',
+    'text-xs text-center w-32 truncate ...',
+  ];
 
   streakColors.forEach((color) => {
     if (

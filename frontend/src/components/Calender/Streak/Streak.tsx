@@ -1,5 +1,5 @@
 import { StarIcon } from '@heroicons/react/24/solid';
-import { ThemeColor } from '../Calender/CalenderConfig';
+import { ThemeColor } from '../CalenderConfig';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;

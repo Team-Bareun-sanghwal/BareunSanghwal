@@ -20,3 +20,17 @@ export const getTimeRemaining = (): ITimeRemainig => {
 
   return { hoursRemaining, minutesRemaining };
 };
+
+export const btnSize = {
+  default: '16',
+  L: '24',
+  XL: '32',
+};
+export type BtnSize = keyof typeof btnSize;
+
+export interface HabbitBtnProps {
+  memberHabitId: number;
+  alias: string;
+  icon: string;
+  size?: BtnSize;
+}
