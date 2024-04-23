@@ -29,7 +29,7 @@ const Calender = ({
       <HabitBtnList habitList={memberHabitList} />
       <Achievement proportion={88} themeColor={themeColor} />
       <DayLabel />
-      <div className="grid grid-cols-7 gap-4 p-1">
+      <div className="grid grid-cols-7 gap-4 p-1 m-2.5">
         {dayInfo?.map((info, index) => (
           <Streak
             key={index}

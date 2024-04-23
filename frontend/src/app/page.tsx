@@ -8,9 +8,9 @@ export default function Home() {
   return (
     <>
       <>
-        <main className="custom-bold-text text-custom-light-green">
+        {/* <main className="custom-bold-text text-custom-light-green">
           hello, world!
-        </main>
+        </main> */}
         <Calender
           dayOfWeekFirst={dayOfWeekFirst}
           memberHabitList={memberHabitList}
