@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import Achievement from './Achievement';
 
 const meta = {
-  title: 'Achievement',
+  title: 'Calender/Achievement',
   component: Achievement,
   parameters: {
     layout: 'padded',

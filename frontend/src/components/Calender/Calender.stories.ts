@@ -3,7 +3,7 @@ import Calender from './Calender';
 import { StreaksResponse } from '@/app/mock';
 
 const meta = {
-  title: 'Calender',
+  title: 'Calender/Calender',
   component: Calender,
   tags: ['autodocs'],
   argTypes: {

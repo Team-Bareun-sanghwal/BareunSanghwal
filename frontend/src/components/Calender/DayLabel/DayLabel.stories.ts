@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import DayLabel from './DayLabel';
 
 const meta = {
-  title: 'DayLabel',
+  title: 'Calender/DayLabel',
   component: DayLabel,
   tags: ['autodocs'],
 } satisfies Meta<typeof DayLabel>;
