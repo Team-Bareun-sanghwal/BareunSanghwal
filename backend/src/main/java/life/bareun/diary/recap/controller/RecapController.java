@@ -1,8 +1,6 @@
 package life.bareun.diary.recap.controller;
 
-import java.util.List;
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.recap.service.RecapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +21,7 @@ public class RecapController {
     @GetMapping
     public ResponseEntity<BaseResponse<String>> findAllRecap() {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(BaseResponse.success(HttpStatus.OK.value(), "리캡 리스트 조회를 성공하였습니다.", recapService.findTemp()));
+            .body(BaseResponse.success(HttpStatus.OK.value(), "리캡 리스트 조회를 성공하였습니다.",
+                recapService.findTemp()));
     }
 }

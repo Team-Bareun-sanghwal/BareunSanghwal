@@ -122,6 +122,7 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    // 활성화된 해빗 유지하기
     public void connectHabitList() {
         // 이번 달의 마지막 날
         LocalDate nowMonth = LocalDate.now();

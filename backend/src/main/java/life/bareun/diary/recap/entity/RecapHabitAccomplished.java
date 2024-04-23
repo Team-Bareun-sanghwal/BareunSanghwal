@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.MemberHabit;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,7 +46,8 @@ public class RecapHabitAccomplished {
     private double achievementRatio;
 
     @Builder
-    public RecapHabitAccomplished(Recap recap, MemberHabit memberHabit, int createdYear, int createdMonth,
+    public RecapHabitAccomplished(Recap recap, MemberHabit memberHabit, int createdYear,
+        int createdMonth,
         Boolean isBest, double achievementRatio) {
         this.recap = recap;
         this.memberHabit = memberHabit;
