@@ -8941,6 +8941,13 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-mobile-picker-scroll@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/react-mobile-picker-scroll/-/react-mobile-picker-scroll-0.2.14.tgz#dbe82a4ea8417faac475680226de52dca119f864"
+  integrity sha512-sO5nV22dqwiU+XlBYG3Vshka7yjkhDrIwcarQmsOmGxE/pXaMq5WLCLfoN9j+/sM6cWF10DlxK3kWV0ZQfJMAQ==
+  dependencies:
+    prop-types "^15.6.0"
+
 react-reconciler@^0.26.2:
   version "0.26.2"
   resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.26.2.tgz#bbad0e2d1309423f76cf3c3309ac6c96e05e9d91"
