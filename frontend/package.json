@@ -23,6 +23,7 @@
     "prettier": "^3.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-lottie-player": "^2.0.0",
     "react-mobile-picker-scroll": "^0.2.14"
   },
   "devDependencies": {
