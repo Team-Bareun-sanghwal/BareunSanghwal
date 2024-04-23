@@ -9,6 +9,10 @@ export default function Home() {
   const theme = ColorThemeResponse.streak_theme;
   return (
     <>
+      <main className="custom-bold-text text-custom-light-green">
+        hello, world!
+      </main>
+
       <>
         {/* <main className="custom-bold-text text-custom-light-green">
           hello, world!

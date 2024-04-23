@@ -21,7 +21,7 @@ const config: Config = {
         'custom-dark-gray': '#52525b',
         'custom-medium-gray': '#d4d4d8',
         'custom-error': '#cd2626',
-        'custom-warning': '#5969ff',
+        'custom-warning': '#fee500',
         'custom-success': '#65f54d',
         'custom-pink': '#db719e',
         'custom-sky': '#5a9ed0',
