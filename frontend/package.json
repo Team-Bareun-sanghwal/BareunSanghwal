@@ -24,7 +24,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-lottie-player": "^2.0.0",
-    "react-mobile-picker-scroll": "^0.2.14"
+    "react-mobile-picker-scroll": "^0.2.14",
+    "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "1.3.3",
