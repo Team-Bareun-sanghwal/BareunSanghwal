@@ -67,6 +67,30 @@ public class MemberDailyStreakServiceImpl implements MemberDailyStreakService {
             });
     }
 
+    @Override
+    public MemberDailyStreak findMemberDailyStreak() {
+        Member member = getCurrentMember();
+
+        return memberDailyStreakRepository.findByMemberAndCreatedDate(member, LocalDate.now())
+            .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK_TODAY));
+    }
+
+    @Override
+    public void modifyMemberDailyStreak() {
+        MemberDailyStreak memberDailyStreak = findMemberDailyStreak();
+
+        memberDailyStreak.increaseAchieveTrackerCountByOne();
+
+        if (memberDailyStreak.getAchieveTrackerCount() == memberDailyStreak.getTotalTrackerCount()) {
+            memberDailyStreak.changeAchieveTypeByAchieve();
+        }
+
+        if (memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+            memberDailyStreak.changeAchieveTypeByAchieve();
+            memberDailyStreak.increaseCurrentStreakByOne();
+        }
+    }
+
     private Member getCurrentMember() {
         return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));

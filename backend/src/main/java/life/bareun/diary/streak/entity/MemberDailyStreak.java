@@ -56,8 +56,8 @@ public class MemberDailyStreak {
     private int currentStreak;
 
     @Builder
-    public MemberDailyStreak(Member member, LocalDate createdDate,
-        int totalTrackerCount, AchieveType achieveType, int currentStreak) {
+    public MemberDailyStreak(Member member, LocalDate createdDate, int totalTrackerCount, AchieveType achieveType,
+        int currentStreak) {
         this.member = member;
         this.createdDate = createdDate;
         this.achieveTrackerCount = 0;
@@ -67,19 +67,19 @@ public class MemberDailyStreak {
         this.currentStreak = currentStreak;
     }
 
-    public void addAchieveTrackerCount() {
+    public void increaseAchieveTrackerCountByOne() {
         this.achieveTrackerCount++;
     }
 
-    public void changeIsStared() {
+    public void changeIsStaredByTrue() {
         this.isStared = true;
     }
 
-    public void changeAchieveType() {
+    public void changeAchieveTypeByAchieve() {
         this.achieveType = AchieveType.ACHIEVE;
     }
 
-    public void addCurrentStreak() {
+    public void increaseCurrentStreakByOne() {
         this.currentStreak++;
     }
 }
