@@ -9,7 +9,7 @@ interface IHabitListProps {
 const HabitBtnList = ({ habitList, size }: IHabitListProps) => {
   return (
     <>
-      <div className="flex justify-center gap-4 p-1 my-4 w-full ">
+      <div className="flex justify-center gap-2 p-1 my-4 w-full ">
         {habitList?.map((habit) => (
           <HabitBtn
             key={habit.memberHabitId}

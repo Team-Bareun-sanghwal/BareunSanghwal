@@ -44,7 +44,7 @@ export default function Home() {
           <BellIcon className="w-8" />
         </button>
       </div>
-      <div className="flex overflow-x-scroll scrollbar-hide gap-4 mx-6 px-4 py-2 ">
+      <div className="flex overflow-x-scroll scrollbar-hide gap-2 mx-6 px-4 py-2 ">
         {memberHabitList.map((habit) => (
           <HabitBtn
             key={habit.memberHabitId}
