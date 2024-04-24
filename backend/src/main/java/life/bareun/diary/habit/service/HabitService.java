@@ -2,6 +2,7 @@ package life.bareun.diary.habit.service;
 
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
+import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 
 public interface HabitService {
@@ -13,5 +14,7 @@ public interface HabitService {
     MemberHabitResDto findAllMonthMemberHabit(String monthValue);
 
     void connectHabitList();
+
+    MemberHabitActiveResDto findAllActiveMemberHabit();
 
 }
