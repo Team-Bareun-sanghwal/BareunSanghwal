@@ -27,22 +27,24 @@ public class HabitDailyStreak {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_habit_id")
+    @Column(name = "member_habit")
     private MemberHabit memberHabit;
 
-    @Column
+    @Column(name = "achieve_type")
     @NotNull
     @Enumerated(EnumType.STRING)
     private AchieveType achieveType;
 
-    @Column
+    @Column(name = "current_streak")
     @NotNull
     private int currentStreak;
 
-    @Column
+    @Column(name = "create_date")
     @NotNull
     private LocalDate createdDate;
 
