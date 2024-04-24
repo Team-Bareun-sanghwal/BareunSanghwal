@@ -1,6 +1,7 @@
 'use client';
 
 import { NavBar } from '@/components/common/NavBar/NavBar';
+import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { useOverlay } from '@/hooks/use-overlay/useOverlay';
 
@@ -20,9 +21,21 @@ export default function Home() {
     ));
   };
 
+  const handleAlertBox = () => {
+    overlay.open(({ isOpen }) => (
+      <AlertBox
+        label="해빗 이름은 15자를 넘을 수 없어요. 해빗 이름은 15자가 될 수도 있어요."
+        mode="SUCCESS"
+        open={isOpen}
+      />
+    ));
+    setTimeout(() => overlay.close(), 1000);
+  };
+
   return (
     <>
-      <button onClick={handleOverlay}>모달 창 열기</button>
+      <button onClick={handleOverlay}>BottomSheet 열기</button>
+      <button onClick={handleAlertBox}>AlertBox 열기</button>
 
       <NavBar mode="HOME" />
     </>
