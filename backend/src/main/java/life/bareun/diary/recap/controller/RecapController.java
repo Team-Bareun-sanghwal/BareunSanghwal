@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,10 +18,10 @@ public class RecapController {
 
     private final RecapService recapService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<BaseResponse<String>> findAllRecap() {
+        recapService.createRecap();
         return ResponseEntity.status(HttpStatus.OK)
-            .body(BaseResponse.success(HttpStatus.OK.value(), "리캡 리스트 조회를 성공하였습니다.",
-                recapService.findTemp()));
+            .body(BaseResponse.success(HttpStatus.OK.value(), "리캡 생성을 성공하였습니다.", null));
     }
 }

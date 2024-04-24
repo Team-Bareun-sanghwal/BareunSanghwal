@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberDailyStreakRepository extends JpaRepository<MemberDailyStreak, Long> {
 
-    Integer countByIsStaredAndMemberAndCreatedDateBetween(boolean isStared, Member member,
+    int countByIsStaredAndMemberAndCreatedDateBetween(Boolean isStared, Member member,
         LocalDate startDate, LocalDate endDate);
 }
