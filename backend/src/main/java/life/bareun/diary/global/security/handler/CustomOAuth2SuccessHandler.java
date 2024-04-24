@@ -1,14 +1,18 @@
 package life.bareun.diary.global.security.handler;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
+import life.bareun.diary.global.security.util.GsonUtil;
+import life.bareun.diary.global.security.util.ResponseUtil;
+import life.bareun.diary.member.dto.request.response.MemberLoginResDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -23,19 +27,23 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         HttpServletRequest request,
         HttpServletResponse response,
         Authentication authentication
-    ) throws IOException, ServletException {
+    ) throws IOException {
+        OAuth2MemberPrincipal oAuth2MemberPrincipal = (OAuth2MemberPrincipal) authentication.getPrincipal();
+        String accessToken = authTokenProvider.createToken(oAuth2MemberPrincipal);
+        System.out.println("accessToken: " + accessToken);
 
-        System.out.println(authentication);
+        // 응답
+        int statusCode = oAuth2MemberPrincipal.isNewMember() ? HttpStatus.CREATED.value()
+            : HttpStatus.OK.value();
 
-        String token = authTokenProvider.createToken(
-            (OAuth2MemberPrincipal) authentication.getPrincipal());
-        System.out.println("Token: " + token);
-
-        // 응답은 여기서
-        ServletOutputStream outputStream = response.getOutputStream();
-        outputStream.write(token.getBytes(StandardCharsets.UTF_8));
-        outputStream.flush();
-        outputStream.close();
+        ResponseUtil.respondSuccess(
+            response,
+            BaseResponse.success(
+                statusCode,
+                "OAuth2 인증되었습니다.",
+                new MemberLoginResDto(accessToken)
+            )
+        );
     }
 }
 

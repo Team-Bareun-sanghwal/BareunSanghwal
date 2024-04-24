@@ -3,13 +3,14 @@ package life.bareun.diary.global.security.factory;
 import java.util.List;
 import life.bareun.diary.global.security.embed.OAuth2MemberAuthority;
 import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
-import life.bareun.diary.member.dto.MemberPrincipal;
+import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
 public class OAuth2MemberPrincipalFactory {
 
-    // 신규 사용자
+    // 처음 로그인에 쓰이는 팩토리
     public static OAuth2MemberPrincipal firstAuth(
         MemberPrincipal memberPrincipal,
         DefaultOAuth2User defaultOAuth2User
@@ -18,10 +19,12 @@ public class OAuth2MemberPrincipalFactory {
             memberPrincipal.getId(),
             List.of(new OAuth2MemberAuthority(memberPrincipal.getRole())),
             memberPrincipal.getProvider(),
+            memberPrincipal.isNewMember(),
             defaultOAuth2User.getAttributes()
         );
     }
 
+    // 로그인 이후에 쓰이는 팩토리
     public static OAuth2MemberPrincipal of(
         Long id,
         Role role

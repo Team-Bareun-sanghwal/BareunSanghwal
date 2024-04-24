@@ -2,6 +2,7 @@ package life.bareun.diary.global.security.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -25,24 +26,6 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
         );
 
         this.accessTokenLifetimeSeconds = accessTokenLifetime;
-    }
-
-    @Override
-    public String createToken(Long id, Role role) {
-        Date currentDate = new Date();
-        Date expiration = getExp(currentDate);
-
-        return Jwts.builder()
-            .header()
-            .add("typ", "JWT")
-            .and()
-            .claim("memberId", Long.toString(id))
-            .claim("role", role.name())
-            .issuedAt(currentDate)
-            .expiration(expiration)
-            .signWith(key, Jwts.SIG.HS256)
-            .encodePayload(true)
-            .compact();
     }
 
     @Override
@@ -76,29 +59,24 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     }
 
     @Override
-    public Long getMemberIdFromAuthToken(AuthToken token) {
-        Claims claims = token.getClaims(key);
-
-        return Long.parseLong((String) claims.get("memberId"));
-    }
-
-    @Override
-    public Authentication getOAuth2AuthenticationToken(AuthToken authToken) {
-        if (validate(authToken)) {
-            Claims claims = authToken.getClaims(key);
-
-            Long id = Long.parseLong((String) claims.get("memberId"));
-            Role role = Role.valueOf((String) claims.get("role"));
-
-            OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.of(id, role);
-            return new OAuth2AuthenticationToken(
-                oAuth2MemberPrincipal,
-                oAuth2MemberPrincipal.getAuthorities(),
-                "[PROTECTED]"
-            );
+    public Authentication getOAuth2AuthenticationToken(AuthToken authToken) throws JwtException {
+        try {
+            validate(authToken);
+        } catch (JwtException e) {
+            throw e;
         }
 
-        return null;
+        Claims claims = authToken.getClaims(key);
+
+        Long id = Long.parseLong((String) claims.get("memberId"));
+        Role role = Role.valueOf((String) claims.get("role"));
+
+        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.of(id, role);
+        return new OAuth2AuthenticationToken(
+            oAuth2MemberPrincipal,
+            oAuth2MemberPrincipal.getAuthorities(),
+            "[PROTECTED]" // OAuth2 Provider는 토큰에 포함되지 않고, 인증에 필요한 정보가 아니다.
+        );
     }
 }
 

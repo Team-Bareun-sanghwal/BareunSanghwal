@@ -6,7 +6,8 @@ import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.exception.CustomSecurityException;
 import life.bareun.diary.global.security.exception.SecurityErrorCode;
 import life.bareun.diary.global.security.factory.OAuth2MemberPrincipalFactory;
-import life.bareun.diary.member.dto.MemberPrincipal;
+import life.bareun.diary.global.security.principal.MemberPrincipal;
+import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -76,10 +77,12 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         MemberPrincipal memberPrincipal = loginOrRegister(sub, oAuth2Provider);
 
         // 여기서 반환된 정보가 SecurityContext에 등록된다.
-        return OAuth2MemberPrincipalFactory.firstAuth(
+        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.firstAuth(
             memberPrincipal,
             (DefaultOAuth2User) oAuth2User
         );
+
+        return oAuth2MemberPrincipal;
     }
 
     // 로그인 또는 회원가입

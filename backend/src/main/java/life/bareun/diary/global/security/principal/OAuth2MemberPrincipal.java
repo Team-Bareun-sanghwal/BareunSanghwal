@@ -8,18 +8,24 @@ import life.bareun.diary.global.security.embed.OAuth2MemberAuthority;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @AllArgsConstructor
+@ToString
 public class OAuth2MemberPrincipal implements OAuth2User {
-
     private final Long memberId;
     private final List<OAuth2MemberAuthority> authorities;
     @Getter
     private final OAuth2Provider oAuth2Provider;
+    @Getter
+    private final boolean isNewMember;
+
     private Map<String, Object> attributes;
 
+    
+    // 로그인 이후에만 쓰이는 생성자
     public OAuth2MemberPrincipal(
         Long memberId,
         List<OAuth2MemberAuthority> authorities
@@ -27,6 +33,7 @@ public class OAuth2MemberPrincipal implements OAuth2User {
         this.memberId = memberId;
         this.authorities = authorities;
         this.oAuth2Provider = null;
+        this.isNewMember = true;
     }
 
     @Override
