@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  html, pre {
     font-family: 'pretendard', sans-serif;
     font-size: 62.5%;
   }
@@ -33,5 +33,8 @@
   .custom-login-text {
     font-weight: 500;
     font-size: 1rem;
+  }
+  .custom-emphasize-text {
+    font-weight: 600;
   }
 }
