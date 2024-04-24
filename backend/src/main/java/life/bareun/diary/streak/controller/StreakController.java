@@ -19,7 +19,7 @@ public class StreakController {
 
     private final MemberTotalStreakService memberTotalStreakService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<MemberStreakResponseDto>> findMemberStreakCount() {
 
         MemberStreakResponseDto memberStreakResponseDto = memberTotalStreakService.getMemberStreakResponseDto();
