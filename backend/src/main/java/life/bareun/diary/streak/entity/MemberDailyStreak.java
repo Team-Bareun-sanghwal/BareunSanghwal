@@ -10,9 +10,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDate;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.streak.entity.embed.AchieveType;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +34,7 @@ public class MemberDailyStreak {
 
     @Column
     @NotNull
-    private Date createdDate;
+    private LocalDate createdDate;
 
     @Column
     @NotNull
@@ -46,25 +48,38 @@ public class MemberDailyStreak {
     @NotNull
     private boolean isStared;
 
-    /**
-     * TODO
-     * boolean to enum
-     */
     @Column
-    private boolean isAchieved;
+    private AchieveType achieveType;
 
     @Column
     @NotNull
     private int currentStreak;
 
-    public MemberDailyStreak(Member member, Date createdDate, int achieveTrackerCount,
-        int totalTrackerCount, boolean isAchieved, int currentStreak) {
+    @Builder
+    public MemberDailyStreak(Member member, LocalDate createdDate, int totalTrackerCount, AchieveType achieveType,
+        int currentStreak) {
         this.member = member;
         this.createdDate = createdDate;
         this.achieveTrackerCount = 0;
         this.totalTrackerCount = totalTrackerCount;
         this.isStared = false;
-        this.isAchieved = isAchieved;
+        this.achieveType = achieveType;
         this.currentStreak = currentStreak;
+    }
+
+    public void increaseAchieveTrackerCountByOne() {
+        this.achieveTrackerCount++;
+    }
+
+    public void changeIsStaredByTrue() {
+        this.isStared = true;
+    }
+
+    public void changeAchieveTypeByAchieve() {
+        this.achieveType = AchieveType.ACHIEVE;
+    }
+
+    public void increaseCurrentStreakByOne() {
+        this.currentStreak++;
     }
 }

@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/streak")
+@RequestMapping("/api/streaks")
 @RequiredArgsConstructor
 public class StreakController {
 
     private final MemberTotalStreakService memberTotalStreakService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<MemberStreakResponseDto>> findMemberStreakCount() {
 
         MemberStreakResponseDto memberStreakResponseDto = memberTotalStreakService.getMemberStreakResponseDto();
