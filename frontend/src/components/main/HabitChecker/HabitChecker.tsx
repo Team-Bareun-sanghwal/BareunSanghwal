@@ -1,6 +1,6 @@
-import { getToday, getTimeRemaining } from '../util';
+import { getTimeRemaining } from '@/components/calender/util';
 import { MemberStreakResponse } from '@/app/mock';
-import LongestStreak from '@/components/main/LongestStreak/LongestStreak';
+import LongestStreak from '../LongestStreak/LongestStreak';
 import Image from 'next/image';
 interface IHabitCheckerProps {
   achieveCount: number;

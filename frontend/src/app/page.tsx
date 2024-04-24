@@ -3,7 +3,7 @@ import { StreaksResponse, MemberStreakResponse, setDayInfo } from '@/app/mock';
 import { ColorThemeResponse } from './mock';
 import { NavBar } from '@/components/common/NavBar/NavBar';
 import HabitChecker from '@/components/calender/HabitChecker/HabitChecker';
-import LongestStreak from '@/components/calender/LogestStreak/LongestStreak';
+import LongestStreak from '@/components/main/LongestStreak/LongestStreak';
 import HabitBtnList from '@/components/calender/HabitBtnList/HabitBtnList';
 import HabitBtn from '@/components/calender/HabitBtn/HabitBtn';
 import { BellIcon } from '@heroicons/react/24/outline';
