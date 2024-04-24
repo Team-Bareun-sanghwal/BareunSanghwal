@@ -2,12 +2,13 @@ import Calender from '@/components/calender/Calender';
 import { StreaksResponse, MemberStreakResponse, setDayInfo } from '@/app/mock';
 import { ColorThemeResponse } from './mock';
 import { NavBar } from '@/components/common/NavBar/NavBar';
-import HabitChecker from '@/components/calender/HabitChecker/HabitChecker';
+import HabitChecker from '@/components/main/HabitChecker/HabitChecker';
 import LongestStreak from '@/components/main/LongestStreak/LongestStreak';
 import HabitBtnList from '@/components/calender/HabitBtnList/HabitBtnList';
 import HabitBtn from '@/components/calender/HabitBtn/HabitBtn';
 import { BellIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import Point from '@/components/point/Point/Point';
 export default function Home() {
   const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
   const theme = ColorThemeResponse.streak_theme;
@@ -16,7 +17,7 @@ export default function Home() {
     dayInfo[22].totalCount !== 0;
   return (
     <>
-      <div className="flex p-4 px-8 text-3xl justify-between">
+      {/* <div className="flex p-4 px-8 text-3xl justify-between">
         <div className="flex">
           <div className="w-8 h-8 content-center">
             {getStar ? (
@@ -72,7 +73,19 @@ export default function Home() {
         dayInfo={dayInfo}
         themeColor={theme}
       />
-      <NavBar mode="HOME" />
+
+      <NavBar mode="HOME" /> */}
+      <div className="flex flex-col gap-2">
+        <Point point={0} />
+        <Point point={4} />
+        <Point point={36} />
+        <Point point={88} />
+        <Point point={700} />
+        <Point point={2303} />
+        <Point point={29123} />
+        <Point point={30909} />
+        <Point point={99999} />
+      </div>
     </>
   );
 }
