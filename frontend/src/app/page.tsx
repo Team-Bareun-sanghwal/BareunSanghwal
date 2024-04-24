@@ -1,39 +1,42 @@
-import Calender from '@/components/Calender/Calender';
-import { StreaksResponse, MemberStreakResponse, setDayInfo } from '@/app/mock';
-import { ColorThemeResponse } from './mock';
+'use client';
+
 import { NavBar } from '@/components/common/NavBar/NavBar';
-import HabitChecker from '@/components/Calender/HabitChecker/HabitChecker';
-import LongestStreak from '@/components/Calender/LogestStreak/LongestStreak';
+import { AlertBox } from '@/components/common/AlertBox/AlertBox';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { useOverlay } from '@/hooks/use-overlay/useOverlay';
+
 export default function Home() {
-  const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
-  const theme = ColorThemeResponse.streak_theme;
+  const overlay = useOverlay();
+
+  const handleOverlay = () => {
+    overlay.open(({ isOpen, close }) => (
+      <BottomSheet
+        description="해빗을 삭제하면 더 이상 기록할 수 없어요. 그래도 삭제하시겠어요? 해빗을 삭제하면 더 이상 기록할 수 없어요. 그래도 삭제하시겠어요? "
+        mode="POSITIVE"
+        onClose={close}
+        onConfirm={close}
+        open={isOpen}
+        title="프로틴 주스 마시기 해빗을 삭제하시겠어요?"
+      />
+    ));
+  };
+
+  const handleAlertBox = () => {
+    overlay.open(({ isOpen }) => (
+      <AlertBox
+        label="해빗 이름은 15자를 넘을 수 없어요. 해빗 이름은 15자가 될 수도 있어요."
+        mode="SUCCESS"
+        open={isOpen}
+      />
+    ));
+    setTimeout(() => overlay.close(), 1000);
+  };
+
   return (
     <>
-      <main className="custom-bold-text text-custom-light-green">
-        hello, world!
-      </main>
+      <button onClick={handleOverlay}>BottomSheet 열기</button>
+      <button onClick={handleAlertBox}>AlertBox 열기</button>
 
-      <>
-        {/* <main className="custom-bold-text text-custom-light-green">
-          hello, world!
-        </main> */}
-        <div className="flex w-full h-36 p-4 justify-around">
-          <HabitChecker
-            achieveCount={dayInfo[22].achieveCount}
-            totalCount={memberHabitList.length}
-          />
-          <LongestStreak
-            longestStreakCount={MemberStreakResponse.longestStreakCount}
-          />
-        </div>
-
-        <Calender
-          dayOfWeekFirst={dayOfWeekFirst}
-          memberHabitList={memberHabitList}
-          dayInfo={dayInfo}
-          themeColor={theme}
-        />
-      </>
       <NavBar mode="HOME" />
     </>
   );
