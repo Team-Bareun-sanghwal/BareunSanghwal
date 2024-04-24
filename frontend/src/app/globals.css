@@ -48,4 +48,31 @@
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
+
+  /* 리캡 스포트라이트 */
+.spotlight {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: spotlight-grow 3s ease;
+  }
+
+  @keyframes spotlight-grow {
+    30% {
+      height: 0;
+      border-left: 5rem solid transparent;
+      border-right: 5rem solid transparent;
+      border-bottom: 5rem solid rgba(255, 252, 173, 0.8);
+    }
+    100% {
+      height: 50rem;
+      border-left: 15rem solid transparent;
+      border-right: 15rem solid transparent;
+      border-bottom: 60rem solid rgba(255, 252, 173, 0.8);
+    }
+  }
+
 }
