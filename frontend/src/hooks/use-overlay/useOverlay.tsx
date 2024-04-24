@@ -1,3 +1,5 @@
+'use client';
+
 import { useContext, useMemo, useRef, useState } from 'react';
 import { OverlayContext } from './OverlayProvider';
 import { OverlayController, IOverlayControlRef } from './OverlayController';
@@ -23,6 +25,7 @@ export const useOverlay = () => {
         mount(
           id,
           <OverlayController
+            key={Date.now()}
             ref={overlayRef}
             overlayElement={overlayElement}
             onExit={() => {
