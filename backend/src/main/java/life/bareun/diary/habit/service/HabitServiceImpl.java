@@ -11,10 +11,13 @@ import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.MemberHabitActiveDto;
+import life.bareun.diary.habit.dto.MemberHabitModifyDto;
 import life.bareun.diary.habit.dto.MemberHabitDto;
+import life.bareun.diary.habit.dto.MemberHabitNonActiveDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
+import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -100,7 +103,9 @@ public class HabitServiceImpl implements HabitService {
             // 아니라면 이전 것들은 유지
         } else {
             habitTrackerService.deleteAfterHabitTracker(habitDeleteReqDto.memberHabitId());
-            memberHabitRepository.modifyStatus(habitDeleteReqDto.memberHabitId());
+            memberHabitRepository.modifyStatus(
+                MemberHabitModifyDto.builder().memberHabitId(habitDeleteReqDto.memberHabitId())
+                    .succeededTime(LocalDateTime.now()).build());
         }
     }
 
@@ -212,6 +217,25 @@ public class HabitServiceImpl implements HabitService {
                     .habitTrackerId(habitTrackerId).currentStreak(currentStreak).build());
         }
         return MemberHabitActiveResDto.builder().memberHabitList(memberHabitActiveDtoList).build();
+    }
+
+    @Override
+    public MemberHabitNonActiveResDto findAllNonActiveMemberHabit() {
+        // security Logic 추가되면 수정
+        Member member = memberRepository.findById(1L)
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(true,
+            member);
+        List<MemberHabitNonActiveDto> memberHabitNonActiveDtoList = new ArrayList<>();
+        for (MemberHabit memberHabit : memberHabitList) {
+            memberHabitNonActiveDtoList.add(
+                MemberHabitNonActiveDto.builder().name(memberHabit.getHabit().getName())
+                    .alias(memberHabit.getAlias()).memberHabitId(memberHabit.getId())
+                    .icon(memberHabit.getIcon()).createdAt(memberHabit.getCreatedDatetime())
+                    .succeededTime(memberHabit.getSucceededDatetime()).build());
+        }
+        return MemberHabitNonActiveResDto.builder().memberHabitList(memberHabitNonActiveDtoList)
+            .build();
     }
 
     private void createHabitTrackerByPeriod(LocalDate startDay, LocalDate lastDay, Member member,
