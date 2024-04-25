@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.MemberHabitDto;
@@ -46,7 +47,7 @@ public class HabitServiceImpl implements HabitService {
         // 멤버, 해빗 가져오기
         Habit habit = habitRepository.findById(habitCreateReqDto.habitId())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
         // 달의 마지막 연, 월, 일 가져오기
         LocalDate lastDay = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth())
@@ -99,8 +100,7 @@ public class HabitServiceImpl implements HabitService {
     @Override
     // 이번 달에 한 번이라도 유지한 적이 있는 사용자 해빗 가져오기
     public MemberHabitResDto findAllMonthMemberHabit(String monthValue) {
-        // security logic이 완성되면 변경
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
         YearMonth yearMonth = YearMonth.of(Integer.parseInt(monthValue.substring(0, 4)),
             Integer.parseInt(monthValue.substring(5)));

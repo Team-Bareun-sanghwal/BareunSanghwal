@@ -31,12 +31,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
-        /* todo
-        1. member 존재 유무 검사
-	      1-1. 있으면 그냥 그 member를 가져온다.
-          1-2. 없으면 DB에 삽입
-          2. 인증 정보 등록을 위한 MemberPrincipal 반환
-        */
         AtomicBoolean isNewMember = new AtomicBoolean(false);
         Member member = memberRepository.findBySub(sub).orElseGet(
             () -> {
