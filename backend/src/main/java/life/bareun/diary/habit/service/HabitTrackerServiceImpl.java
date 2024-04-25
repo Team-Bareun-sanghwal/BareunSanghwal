@@ -70,7 +70,9 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         List<HabitTracker> habitTrackerList = habitTrackerRepository
             .findAllByMemberHabit(memberHabit);
         for (HabitTracker habitTracker : habitTrackerList) {
-            imageConfig.deleteImage(habitTracker.getImage());
+            if (habitTracker.getImage() != null) {
+                imageConfig.deleteImage(habitTracker.getImage());
+            }
             habitTrackerRepository.delete(habitTracker);
         }
     }

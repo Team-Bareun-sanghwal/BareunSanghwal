@@ -23,16 +23,20 @@ import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.entity.Habit;
+import life.bareun.diary.habit.entity.HabitDay;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.exception.HabitErrorCode;
 import life.bareun.diary.habit.exception.HabitException;
+import life.bareun.diary.habit.repository.HabitDayRepository;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.streak.entity.HabitDailyStreak;
+import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,6 +57,10 @@ public class HabitServiceImpl implements HabitService {
     private final HabitTrackerService habitTrackerService;
 
     private final HabitTrackerRepository habitTrackerRepository;
+
+    private final HabitDayRepository habitDayRepository;
+
+    private final HabitDailyStreakRepository habitDailyStreakRepository;
 
     @Override
     // 사용자가 해빗을 생성
@@ -80,19 +88,20 @@ public class HabitServiceImpl implements HabitService {
             MemberHabit memberHabit = memberHabitRepository.save(
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
-                        MaintainWay.DAY).maintainAmount(habitCreateReqDto.dayOfWeek()).build());
+                        MaintainWay.DAY).maintainAmount(0).build());
+            for (Integer day : habitCreateReqDto.dayOfWeek()) {
+                habitDayRepository.save(
+                    HabitDay.builder().memberHabit(memberHabit).day(day).build());
+                // 요일 방식으로 트래커 목록 생성
+                long plusDay = 1L;
 
-            // 요일 방식으로 트래커 목록 생성
-            long plusDay = 1L;
-            while (LocalDate.now().plusDays(plusDay).getDayOfWeek().getValue()
-                != habitCreateReqDto.dayOfWeek()) {
-                plusDay++;
+                while (LocalDate.now().plusDays(plusDay).getDayOfWeek().getValue() != day) {
+                    plusDay++;
+                }
+                LocalDate startDay = LocalDate.now().plusDays(plusDay);
+                // 일주일씩 증가시키며 생성
+                createHabitTrackerByDay(startDay, lastDay, member, memberHabit, day);
             }
-
-            LocalDate startDay = LocalDate.now().plusDays(plusDay);
-            // 일주일씩 증가시키며 생성
-            createHabitTrackerByDay(startDay, lastDay, member, memberHabit,
-                habitCreateReqDto.dayOfWeek());
         }
     }
 
@@ -102,9 +111,13 @@ public class HabitServiceImpl implements HabitService {
         // 만약 모두 삭제한다고 하면 이전 기록들까지 전부 삭제
         if (Boolean.TRUE.equals(habitDeleteReqDto.isDeleteAll())) {
             habitTrackerService.deleteAllHabitTracker(habitDeleteReqDto.memberHabitId());
+            MemberHabit memberHabit = memberHabitRepository.findById(
+                    habitDeleteReqDto.memberHabitId())
+                .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT));
+            habitDayRepository.deleteAllByMemberHabit(memberHabit);
             memberHabitRepository.deleteById(habitDeleteReqDto.memberHabitId());
-            // 아니라면 이전 것들은 유지
         } else {
+            // 아니라면 이전 것들은 유지
             habitTrackerService.deleteAfterHabitTracker(habitDeleteReqDto.memberHabitId());
             memberHabitRepository.modifyStatus(
                 MemberHabitModifyDto.builder().memberHabitId(habitDeleteReqDto.memberHabitId())
@@ -153,16 +166,20 @@ public class HabitServiceImpl implements HabitService {
         for (MemberHabit memberHabit : memberHabitList) {
             // 만약 유지 방법이 요일이라면
             if (memberHabit.getMaintainWay() == MaintainWay.DAY) {
+                // 여러 요일일수도 있기 때문에 요일 리스트를 조회
+                List<HabitDay> habitDayList = habitDayRepository.findAllByMemberHabit(memberHabit);
                 // 요일 방식으로 트래커 목록 생성
-                long plusDay = 1L;
-                while (nextMonth.plusDays(plusDay).getDayOfWeek().getValue()
-                    != memberHabit.getMaintainAmount()) {
-                    plusDay++;
+                for (HabitDay habitDay : habitDayList) {
+                    long plusDay = 1L;
+                    while (nextMonth.plusDays(plusDay).getDayOfWeek().getValue()
+                        != habitDay.getDay()) {
+                        plusDay++;
+                    }
+                    // 일주일씩 증가시키며 생성
+                    LocalDate startDay = nextMonth.plusDays(plusDay);
+                    createHabitTrackerByDay(startDay, lastDay, memberHabit.getMember(), memberHabit,
+                        habitDay.getDay());
                 }
-                // 일주일씩 증가시키며 생성
-                LocalDate startDay = nextMonth.plusDays(plusDay);
-                createHabitTrackerByDay(startDay, lastDay, memberHabit.getMember(), memberHabit,
-                    memberHabit.getMaintainAmount());
             } else {
                 // 만약 유지 방법이 주기라면
                 // 가장 마지막 생성된 해빗 트래커 가져오기
@@ -186,17 +203,17 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    // 모든 활성화된 사용자 해빗 리스트 조회
     public MemberHabitActiveResDto findAllActiveMemberHabit() {
-        // security Logic 추가되면 수정
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
         List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
             member);
 
-        // security Logic 추가되면 수정
         LocalDate nowMonth = LocalDate.now();
         List<HabitTrackerTodayDto> habitTrackerList = habitTrackerRepository
-            .findAllTodayHabitTracker(HabitTrackerTodayFactorDto.builder().memberId(1L)
+            .findAllTodayHabitTracker(HabitTrackerTodayFactorDto.builder()
+                .memberId(AuthUtil.getMemberIdFromAuthentication())
                 .createdYear(nowMonth.getYear()).createdMonth(nowMonth.getMonthValue())
                 .createdDay(nowMonth.getDayOfMonth()).build());
 
@@ -210,21 +227,24 @@ public class HabitServiceImpl implements HabitService {
             }
 
             // 해빗 별 일일 스트릭 레포 만들어지면 계산
-            int currentStreak = 0;
+            // 현재 사용자 해빗의 스트릭
+            HabitDailyStreak habitDailyStreak = habitDailyStreakRepository.findByMemberHabit(
+                memberHabit);
 
             memberHabitActiveDtoList.add(
                 MemberHabitActiveDto.builder().name(memberHabit.getHabit().getName())
                     .alias(memberHabit.getAlias()).memberHabitId(memberHabit.getId())
                     .icon(memberHabit.getIcon()).createdAt(memberHabit.getCreatedDatetime())
-                    .habitTrackerId(habitTrackerId).currentStreak(currentStreak).build());
+                    .habitTrackerId(habitTrackerId)
+                    .currentStreak(habitDailyStreak.getCurrentStreak()).build());
         }
         return MemberHabitActiveResDto.builder().memberHabitList(memberHabitActiveDtoList).build();
     }
 
     @Override
+    // 모든 비활성화된 사용자 해빗 리스트 조회
     public MemberHabitNonActiveResDto findAllNonActiveMemberHabit() {
-        // security Logic 추가되면 수정
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER));
         List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(true,
             member);
@@ -241,6 +261,7 @@ public class HabitServiceImpl implements HabitService {
     }
 
     @Override
+    // 해빗 검색어에 따른 검색
     public HabitMatchResDto findAllMatchHabit(String habitName) {
         List<Habit> habitList = habitRepository.findByNameContaining(habitName);
         List<HabitMatchDto> habitMatchDtoList = new ArrayList<>();
@@ -251,6 +272,7 @@ public class HabitServiceImpl implements HabitService {
         return HabitMatchResDto.builder().habitList(habitMatchDtoList).build();
     }
 
+    // 주기에 따른 해빗 트래커 생성
     private void createHabitTrackerByPeriod(LocalDate startDay, LocalDate lastDay, Member member,
         MemberHabit memberHabit, int period) {
         for (LocalDate nowDay = startDay; !nowDay.isAfter(lastDay);
@@ -262,6 +284,7 @@ public class HabitServiceImpl implements HabitService {
         }
     }
 
+    // 요일에 따른 해빗 트래커 생성
     private void createHabitTrackerByDay(LocalDate startDay, LocalDate lastDay, Member member,
         MemberHabit memberHabit, int dayOfWeek) {
         for (LocalDate nowDay = startDay; !nowDay.isAfter(lastDay);
