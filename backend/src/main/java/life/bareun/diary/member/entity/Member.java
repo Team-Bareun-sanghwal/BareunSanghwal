@@ -128,4 +128,8 @@ public class Member {
         this.gender = memberUpdateReq.getGender();
         this.job = memberUpdateReq.getJob();
     }
+
+    public void usePoint(Integer amount) {
+        this.point -= amount;
+    }
 }
