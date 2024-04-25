@@ -5,7 +5,7 @@ import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
-import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 
 public interface HabitTrackerRepositoryCustom {

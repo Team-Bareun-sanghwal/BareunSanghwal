@@ -110,6 +110,7 @@ public class Member {
         this.role = Role.ROLE_USER;
         this.point = 0;
         this.currentStreakColorId = 1;
+        this.currentTreeColorId = 1;
         this.currentTreePoint = 0;
         this.dailyPoint = 0;
     }
