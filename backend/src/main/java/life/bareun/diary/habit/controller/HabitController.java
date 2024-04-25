@@ -9,6 +9,7 @@ import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
+import life.bareun.diary.habit.dto.response.MemberHabitActiveSimpleResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.service.HabitService;
@@ -99,6 +100,13 @@ public class HabitController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "활성화된 사용자 해빗 리스트 조회를 성공하였습니다.",
                 habitService.findAllActiveMemberHabit()));
+    }
+
+    @GetMapping("/active-day")
+    public ResponseEntity<BaseResponse<MemberHabitActiveSimpleResDto>> findAllActiveSimpleMemberHabit() {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "활성화된 사용자 해빗 간단 리스트 조회를 성공하였습니다.",
+                habitService.findAllActiveSimpleMemberHabit()));
     }
 
     @GetMapping("/non-active")
