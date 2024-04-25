@@ -20,12 +20,12 @@ const Item = ({
     <>
       <div className="flex border-solid rounded-lg shadow-md">
         <div className="flex p-6 w-full">
-          <div className="content-center mx-6 ">
+          <div className="content-center">
             <Image src={iconPath} alt="" width={36} height={36}></Image>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 ml-4">
             <div className="flex">
-              <div className="text-2xl mr-4">{name}</div>
+              <div className="text-2xl mr-4 content-center">{name}</div>
               <Point point={price} />
             </div>
             <div className="text-sm w-full">{introduction}</div>
