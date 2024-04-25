@@ -7,8 +7,10 @@ import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
+import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final AuthTokenProvider authTokenProvider;
     private final MemberRepository memberRepository;
-
+    private final MemberRecoveryRepository memberRecoveryRepository;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -35,7 +37,10 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findBySub(sub).orElseGet(
             () -> {
                 isNewMember.set(true);
-                return memberRepository.save(Member.create(sub, oAuth2Provider));
+                Member savedMember = memberRepository.save(Member.create(sub, oAuth2Provider));
+                memberRecoveryRepository.save(MemberRecovery.create(savedMember));
+
+                return savedMember;
             }
         );
 
