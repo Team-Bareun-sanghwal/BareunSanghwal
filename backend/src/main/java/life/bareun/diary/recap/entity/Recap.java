@@ -2,6 +2,8 @@ package life.bareun.diary.recap.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -46,6 +48,7 @@ public class Recap {
     private String mostFrequencyWord;
 
     @Column(name = "most_frequency_time")
+    @Enumerated(EnumType.STRING)
     private Occasion mostFrequencyTime;
 
     @Builder

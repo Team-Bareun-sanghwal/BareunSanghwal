@@ -12,10 +12,12 @@ import life.bareun.diary.recap.dto.RecapMemberMonthDto;
 import life.bareun.diary.recap.dto.RecapModifyDto;
 import life.bareun.diary.recap.dto.RecapMonthDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class RecapRepositoryCustomImpl implements RecapRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;

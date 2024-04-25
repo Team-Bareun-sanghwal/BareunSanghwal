@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
@@ -16,11 +17,13 @@ import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.recap.dto.RecapDto;
 import life.bareun.diary.recap.dto.RecapMemberDto;
 import life.bareun.diary.recap.dto.RecapMemberHabitDto;
 import life.bareun.diary.recap.dto.RecapMemberMonthDto;
 import life.bareun.diary.recap.dto.RecapModifyDto;
 import life.bareun.diary.recap.dto.RecapMonthDto;
+import life.bareun.diary.recap.dto.request.RecapListResDto;
 import life.bareun.diary.recap.entity.Recap;
 import life.bareun.diary.recap.entity.RecapHabitAccomplished;
 import life.bareun.diary.recap.entity.RecapHabitRatio;
@@ -101,7 +104,9 @@ public class RecapServiceImpl implements RecapService {
                         .createdMonth(nowMonth.getMonthValue())
                         .actionCount(Math.toIntExact(recapMemberHabitDto.habitTrackerCount()))
                         .missCount((int) (totalCount - recapMemberHabitDto.habitTrackerCount()))
-                        .achievementRate((int) (((recapMemberHabitDto.habitTrackerCount() * 1.0) / totalCount) * 100))
+                        .achievementRate(
+                            (int) (((recapMemberHabitDto.habitTrackerCount() * 1.0) / totalCount)
+                                * 100))
                         .build());
 
                 habitCountMap.put(recapMemberHabitDto.memberHabit().getHabit().getId(),
@@ -141,10 +146,8 @@ public class RecapServiceImpl implements RecapService {
             }
 
             // 가장 많이 제출한 시간대 구하기
-            LocalDateTime startDateTime = nowMonth.withDayOfMonth(1).atStartOfDay();
-            int currentTime = findMostSubmitTime(startDateTime, nowMonth, member);
+            int currentTime = findMostSubmitTime(nowMonth, member);
             Occasion occasion = findOccasion(currentTime);
-
             // 별 개수 구하기
             LocalDate startDate = nowMonth.withDayOfMonth(1);
             LocalDate endDate = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth());
@@ -159,14 +162,35 @@ public class RecapServiceImpl implements RecapService {
         }
     }
 
-    private int findMostSubmitTime(LocalDateTime startDateTime, LocalDate nowMonth, Member member) {
+    @Override
+    public RecapListResDto findAllRecap() {
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
+            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
+        List<Recap> recapList = recapRepository.findAllByMember(member);
+        List<RecapDto> recapDtoList = new ArrayList<>();
+
+        for (Recap recap : recapList) {
+            recapDtoList.add(
+                RecapDto.builder().recapId(recap.getId()).image(recap.getMaxHabitImage())
+                    .period(recap.getCreatedDatetime().minusMonths(1L).toLocalDate()).build());
+        }
+        return RecapListResDto.builder().recapList(recapDtoList).build();
+    }
+
+    private int findMostSubmitTime(LocalDate nowMonth, Member member) {
         int timeMax = 0;
         int currentTime = 0;
+        int endDay = nowMonth.lengthOfMonth();
         for (int time = 5; time < 24; time += 6) {
-            LocalDateTime endDateTime = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth())
-                .atTime(time, 59, 59);
-            int timeCount = habitTrackerRepository.countByMemberAndSucceededTimeBetween(member,
-                startDateTime, endDateTime);
+            int timeCount = 0;
+            for(int day=1; day<=endDay; day++) {
+                LocalDateTime startDateTime = nowMonth.withDayOfMonth(day)
+                    .atTime(time - 5, 0, 0);
+                LocalDateTime endDateTime = nowMonth.withDayOfMonth(day)
+                    .atTime(time, 59, 59);
+                timeCount += habitTrackerRepository.countByMemberAndSucceededTimeBetween(member,
+                    startDateTime, endDateTime);
+            }
             if (timeMax < timeCount) {
                 timeMax = timeCount;
                 currentTime = time;
