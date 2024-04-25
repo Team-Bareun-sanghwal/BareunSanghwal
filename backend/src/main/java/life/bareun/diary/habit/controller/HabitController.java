@@ -4,6 +4,7 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
+import life.bareun.diary.habit.dto.response.HabitMatchResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,6 +106,14 @@ public class HabitController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "비활성화된 사용자 해빗 리스트 조회를 성공하였습니다.",
                 habitService.findAllNonActiveMemberHabit()));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<HabitMatchResDto>> findAllMatchHabit(
+        @RequestParam("habitName") String habitName) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "검색된 해빗 리스트 조회를 성공하였습니다.",
+                habitService.findAllMatchHabit(habitName)));
     }
 
 }

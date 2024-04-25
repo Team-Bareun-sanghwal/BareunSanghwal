@@ -5,18 +5,20 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import life.bareun.diary.global.security.util.AuthUtil;
 import java.util.Objects;
+import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.habit.dto.HabitMatchDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.MemberHabitActiveDto;
-import life.bareun.diary.habit.dto.MemberHabitModifyDto;
 import life.bareun.diary.habit.dto.MemberHabitDto;
+import life.bareun.diary.habit.dto.MemberHabitModifyDto;
 import life.bareun.diary.habit.dto.MemberHabitNonActiveDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
+import life.bareun.diary.habit.dto.response.HabitMatchResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
@@ -236,6 +238,17 @@ public class HabitServiceImpl implements HabitService {
         }
         return MemberHabitNonActiveResDto.builder().memberHabitList(memberHabitNonActiveDtoList)
             .build();
+    }
+
+    @Override
+    public HabitMatchResDto findAllMatchHabit(String habitName) {
+        List<Habit> habitList = habitRepository.findByNameContaining(habitName);
+        List<HabitMatchDto> habitMatchDtoList = new ArrayList<>();
+        for (Habit habit : habitList) {
+            habitMatchDtoList.add(
+                HabitMatchDto.builder().habitId(habit.getId()).habitName(habit.getName()).build());
+        }
+        return HabitMatchResDto.builder().habitList(habitMatchDtoList).build();
     }
 
     private void createHabitTrackerByPeriod(LocalDate startDay, LocalDate lastDay, Member member,
