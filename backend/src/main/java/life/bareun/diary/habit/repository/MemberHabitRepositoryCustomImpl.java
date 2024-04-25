@@ -3,6 +3,7 @@ package life.bareun.diary.habit.repository;
 import static life.bareun.diary.habit.entity.QMemberHabit.memberHabit;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import life.bareun.diary.habit.dto.MemberHabitModifyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +14,9 @@ public class MemberHabitRepositoryCustomImpl implements MemberHabitRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public void modifyStatus(Long memberHabitId) {
+    public void modifyStatus(MemberHabitModifyDto memberHabitModifyDto) {
         queryFactory.update(memberHabit).set(memberHabit.isDeleted, true)
-            .where(memberHabit.id.eq(memberHabitId)).execute();
+            .set(memberHabit.succeededDatetime, memberHabitModifyDto.succeededTime())
+            .where(memberHabit.id.eq(memberHabitModifyDto.memberHabitId())).execute();
     }
 }
