@@ -1,18 +1,15 @@
 package life.bareun.diary.global.security.handler;
 
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
-import life.bareun.diary.global.security.util.GsonUtil;
 import life.bareun.diary.global.security.util.ResponseUtil;
-import life.bareun.diary.member.dto.request.response.MemberLoginResDto;
+import life.bareun.diary.member.dto.response.MemberLoginRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -41,7 +38,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             BaseResponse.success(
                 statusCode,
                 "OAuth2 인증되었습니다.",
-                new MemberLoginResDto(accessToken)
+                new MemberLoginRes(accessToken)
             )
         );
     }

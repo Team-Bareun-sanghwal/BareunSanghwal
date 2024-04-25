@@ -1,7 +1,6 @@
 package life.bareun.diary.global.security.token;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import javax.crypto.SecretKey;

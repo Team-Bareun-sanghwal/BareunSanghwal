@@ -6,7 +6,7 @@ import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.products.dto.ProductDto;
-import life.bareun.diary.products.dto.response.ProductListResDto;
+import life.bareun.diary.products.dto.response.ProductListRes;
 import life.bareun.diary.products.mapper.ProductMapper;
 import life.bareun.diary.products.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductListResDto productList() {
+    public ProductListRes productList() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         int freeRecoveryCount = memberRecoveryRepository.findById(id)
             .orElseThrow(
@@ -41,6 +41,6 @@ public class ProductServiceImpl implements ProductService {
             )
             .toList();
 
-        return new ProductListResDto(products);
+        return new ProductListRes(products);
     }
 }
