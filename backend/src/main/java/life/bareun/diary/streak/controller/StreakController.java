@@ -2,8 +2,8 @@ package life.bareun.diary.streak.controller;
 
 import java.util.Optional;
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.streak.dto.response.MemberStreakResponseDto;
-import life.bareun.diary.streak.service.MemberTotalStreakService;
+import life.bareun.diary.streak.dto.response.MemberStreakResDto;
+import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StreakController {
 
-    private final MemberTotalStreakService memberTotalStreakService;
+    private final StreakService streakService;
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<MemberStreakResponseDto>> findMemberStreakCount() {
+    public ResponseEntity<BaseResponse<MemberStreakResDto>> findMemberStreakCount() {
 
-        MemberStreakResponseDto memberStreakResponseDto = memberTotalStreakService.getMemberStreakResponseDto();
+        MemberStreakResDto memberStreakResponseDto = streakService.getMemberStreakResDto();
 
         return ResponseEntity.status(HttpStatus.OK.value())
             .body(BaseResponse.success(HttpStatus.OK.value(), "사용자 전체 스트릭 조회에 성공했습니다.", memberStreakResponseDto));
