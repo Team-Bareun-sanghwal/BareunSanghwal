@@ -1,6 +1,5 @@
 package life.bareun.diary.habit.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -19,5 +18,7 @@ public interface HabitTrackerRepository extends JpaRepository<HabitTracker, Long
 
     Integer countByMemberAndSucceededTimeBetween(Member member, LocalDateTime startDateTime,
         LocalDateTime endDateTime);
+
+    int countByMemberHabit(MemberHabit memberHabit);
 
 }

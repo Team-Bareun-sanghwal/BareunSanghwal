@@ -42,18 +42,26 @@ public class RecapHabitAccomplished {
     @Column(name = "is_best")
     private Boolean isBest;
 
-    @Column(name = "achievement_ratio")
-    private double achievementRatio;
+    @Column(name = "action_count")
+    private int actionCount;
+
+    @Column(name = "miss_count")
+    private int missCount;
+
+    @Column(name = "achievement_rate")
+    private int achievementRate;
 
     @Builder
     public RecapHabitAccomplished(Recap recap, MemberHabit memberHabit, int createdYear,
         int createdMonth,
-        Boolean isBest, double achievementRatio) {
+        Boolean isBest, int actionCount, int missCount, int achievementRate) {
         this.recap = recap;
         this.memberHabit = memberHabit;
         this.createdYear = createdYear;
         this.createdMonth = createdMonth;
         this.isBest = isBest;
-        this.achievementRatio = achievementRatio;
+        this.actionCount = actionCount;
+        this.missCount = missCount;
+        this.achievementRate = achievementRate;
     }
 }

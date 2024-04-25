@@ -60,12 +60,6 @@ public class RecapServiceImpl implements RecapService {
 
     @Override
     public void createRecap() {
-        // security 코드 완성되면 추가
-        Member member = memberRepository.findById(1L)
-            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
-        // 처음에 recap을 생성
-        Recap recap = recapRepository.save(Recap.builder().member(member).build());
-
         // 두 번 이상 완료한 사용자 해빗을 하나라도 가지고 있는 사용자 리스트
         // 자정에 시작하기 때문에 전 달에 달성한 목록을 가져와야 함
         // LocalDate nowMonth = LocalDate.now().minusMonths(1L);
@@ -75,6 +69,11 @@ public class RecapServiceImpl implements RecapService {
                 .build());
 
         for (RecapMemberDto recapMemberDto : recapMemberList) {
+            Member member = memberRepository.findById(recapMemberDto.member().getId())
+                .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
+            // 처음에 recap을 생성
+            Recap recap = recapRepository.save(Recap.builder().member(member).build());
+
             // 사용자의 사용자 해빗 당 몇 개 했는지 가져옴(2개 이상만)
             List<RecapMemberHabitDto> recapMemberHabitDtoList =
                 recapRepository.findAllAppropriateMemberHabit(RecapMemberMonthDto.builder()
@@ -93,18 +92,21 @@ public class RecapServiceImpl implements RecapService {
                 // 만약 habitTrackerCount 값이 max와 같으면 isBest = true 아니면 false
                 // memberHabit, recap, 달성률, 년도, 월
                 boolean isBest = recapMemberHabitDto.memberHabit().getId() == bestHabitId;
-                double achievementRatio =
-                    ((double) recapMemberHabitDto.habitTrackerCount() / sum) * 100;
+                int totalCount = habitTrackerRepository.countByMemberHabit(
+                    recapMemberHabitDto.memberHabit());
                 recapHabitAccomplishedRepository.save(
                     RecapHabitAccomplished.builder().memberHabit(recapMemberHabitDto.memberHabit())
                         .recap(recap)
                         .isBest(isBest).createdYear(nowMonth.getYear())
-                        .createdMonth(nowMonth.getMonthValue()).achievementRatio(achievementRatio)
+                        .createdMonth(nowMonth.getMonthValue())
+                        .actionCount(Math.toIntExact(recapMemberHabitDto.habitTrackerCount()))
+                        .missCount((int) (totalCount - recapMemberHabitDto.habitTrackerCount()))
+                        .achievementRate((int) (((recapMemberHabitDto.habitTrackerCount() * 1.0) / totalCount) * 100))
                         .build());
 
                 habitCountMap.put(recapMemberHabitDto.memberHabit().getHabit().getId(),
                     habitCountMap.getOrDefault(recapMemberHabitDto.memberHabit().getHabit().getId(),
-                        0L) + 1);
+                        0L) + recapMemberHabitDto.habitTrackerCount());
             }
 
             for (Entry<Long, Long> entry : habitCountMap.entrySet()) {
@@ -130,6 +132,7 @@ public class RecapServiceImpl implements RecapService {
                 }
             }
             String imageUrl;
+            // 기본 이미지 url 넣기(환경변수)
             if (imageList.isEmpty()) {
                 imageUrl = "basic";
             } else {
@@ -141,7 +144,6 @@ public class RecapServiceImpl implements RecapService {
             LocalDateTime startDateTime = nowMonth.withDayOfMonth(1).atStartOfDay();
             int currentTime = findMostSubmitTime(startDateTime, nowMonth, member);
             Occasion occasion = findOccasion(currentTime);
-
 
             // 별 개수 구하기
             LocalDate startDate = nowMonth.withDayOfMonth(1);

@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberDailyStreakRepository extends JpaRepository<MemberDailyStreak, Long> {
 
+    Optional<MemberDailyStreak> findByMemberAndCreatedDate(Member member, LocalDate localDate);
+
     int countByIsStaredAndMemberAndCreatedDateBetween(Boolean isStared, Member member,
         LocalDate startDate, LocalDate endDate);
-
-    Optional<MemberDailyStreak> findByMemberAndCreatedDate(Member member, LocalDate localDate);
 }
