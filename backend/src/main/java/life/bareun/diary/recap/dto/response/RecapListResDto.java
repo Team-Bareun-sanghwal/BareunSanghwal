@@ -1,4 +1,4 @@
-package life.bareun.diary.recap.dto.request;
+package life.bareun.diary.recap.dto.response;
 
 import java.util.List;
 import life.bareun.diary.recap.dto.RecapDto;

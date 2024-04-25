@@ -18,12 +18,15 @@ import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.recap.dto.RecapDto;
+import life.bareun.diary.recap.dto.RecapHabitRateDto;
 import life.bareun.diary.recap.dto.RecapMemberDto;
 import life.bareun.diary.recap.dto.RecapMemberHabitDto;
+import life.bareun.diary.recap.dto.RecapMemberHabitRateDto;
 import life.bareun.diary.recap.dto.RecapMemberMonthDto;
 import life.bareun.diary.recap.dto.RecapModifyDto;
 import life.bareun.diary.recap.dto.RecapMonthDto;
-import life.bareun.diary.recap.dto.request.RecapListResDto;
+import life.bareun.diary.recap.dto.response.RecapDetailResDto;
+import life.bareun.diary.recap.dto.response.RecapListResDto;
 import life.bareun.diary.recap.entity.Recap;
 import life.bareun.diary.recap.entity.RecapHabitAccomplished;
 import life.bareun.diary.recap.entity.RecapHabitRatio;
@@ -177,13 +180,71 @@ public class RecapServiceImpl implements RecapService {
         return RecapListResDto.builder().recapList(recapDtoList).build();
     }
 
+    @Override
+    // 리캡 상세 조회
+    public RecapDetailResDto findDetailRecap(Long recapId) {
+        // mostSucceededMemberHabit과 rateByMemberHabitList를 구하기
+        Recap recap = recapRepository.findById(recapId)
+            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_RECAP));
+        List<RecapHabitAccomplished> recapHabitAccomplishedList = recapHabitAccomplishedRepository.findAllByRecap_OrderByActionCountDesc(
+            recap);
+
+        // ratio 비율 상위 다섯개 및 사용자 해빗 달성률의 평균 구하기
+        String mostSucceededMemberHabit = recapHabitAccomplishedRepository.findByRecapAndIsBest(
+            recap, true).getMemberHabit().getAlias();
+        int achievementRateSum = 0;
+        List<RecapMemberHabitRateDto> recapMemberHabitRateDtoList = new ArrayList<>();
+        for (RecapHabitAccomplished recapHabitAccomplished : recapHabitAccomplishedList) {
+            achievementRateSum += recapHabitAccomplished.getAchievementRate();
+            recapMemberHabitRateDtoList.add(RecapMemberHabitRateDto.builder()
+                .name(recapHabitAccomplished.getMemberHabit().getAlias())
+                .actionCount(recapHabitAccomplished.getActionCount())
+                .missCount(recapHabitAccomplished.getMissCount())
+                .ratio(recapHabitAccomplished.getAchievementRate()).build());
+        }
+        double averageRateByMemberHabit =
+            Math.round(((achievementRateSum * 1.0) / recapHabitAccomplishedList.size()) * 10) / 10.0;
+
+        // ratio 비율 내림차순으로 정렬
+        recapMemberHabitRateDtoList.sort((o1, o2) -> o2.ratio() - o1.ratio());
+
+        // 첫 5개 요소를 제외한 나머지 요소를 삭제
+        recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
+
+        // mostSucceededHabit과 rateByHabitList를 구하기
+        List<RecapHabitRatio> recapHabitRatioList = recapHabitRatioRepository.findTop4ByRecap_OrderByRatioDesc(
+            recap);
+        List<RecapHabitRateDto> recapHabitRateDtoList = new ArrayList<>();
+        int sum = 0;
+        for (RecapHabitRatio recapHabitRatio : recapHabitRatioList) {
+            int ratio = (int) recapHabitRatio.getRatio();
+            sum += ratio;
+            recapHabitRateDtoList.add(
+                RecapHabitRateDto.builder().name(recapHabitRatio.getHabit().getName()).ratio(ratio)
+                    .build());
+        }
+        recapHabitRateDtoList.add(RecapHabitRateDto.builder().name("기타").ratio(100 - sum).build());
+        String mostSucceededHabit = recapHabitRateDtoList.get(0).name();
+        String mostSubmitTime = recap.getMostFrequencyTime().name();
+        String myKeyWord = recap.getMostFrequencyWord();
+        int collectedStar = recap.getWholeStreak();
+        String image = recap.getMaxHabitImage();
+
+        return RecapDetailResDto.builder().mostSucceededHabit(mostSucceededHabit)
+            .mostSucceededMemberHabit(mostSucceededMemberHabit)
+            .averageRateByMemberHabit(averageRateByMemberHabit)
+            .rateByMemberHabitList(recapMemberHabitRateDtoList)
+            .rateByHabitList(recapHabitRateDtoList).mostSubmitTime(mostSubmitTime)
+            .collectedStar(collectedStar).myKeyWord(myKeyWord).image(image).build();
+    }
+
     private int findMostSubmitTime(LocalDate nowMonth, Member member) {
         int timeMax = 0;
         int currentTime = 0;
         int endDay = nowMonth.lengthOfMonth();
         for (int time = 5; time < 24; time += 6) {
             int timeCount = 0;
-            for(int day=1; day<=endDay; day++) {
+            for (int day = 1; day <= endDay; day++) {
                 LocalDateTime startDateTime = nowMonth.withDayOfMonth(day)
                     .atTime(time - 5, 0, 0);
                 LocalDateTime endDateTime = nowMonth.withDayOfMonth(day)
