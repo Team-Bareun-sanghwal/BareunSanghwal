@@ -8,7 +8,7 @@ import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
-import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
@@ -145,10 +145,12 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     @Override
+    // 가장 마지막에 작성한 해빗 트래커 찾기
     public HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto) {
         return habitTrackerRepository.findLastHabitTracker(habitTrackerLastDto);
     }
 
+    // 날짜 문자열 만들기
     private String loadCreatedDate(int year, int month, int day) {
         String createdDate = year + "-";
         createdDate += month > 10 ? month : "0" + month;
