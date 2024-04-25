@@ -65,7 +65,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     // 모든 해빗 트래커들을 삭제
     public void deleteAllHabitTracker(Long memberHabitId) {
         MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
-            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT));
         // 사진도 삭제해야하기 때문에 목록을 불러와서 하나씩 삭제
         List<HabitTracker> habitTrackerList = habitTrackerRepository
             .findAllByMemberHabit(memberHabit);
