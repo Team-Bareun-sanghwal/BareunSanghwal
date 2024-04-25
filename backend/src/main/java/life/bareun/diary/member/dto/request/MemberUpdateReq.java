@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class MemberUpdateDtoReq {
+public class MemberUpdateReq {
     private String nickname;
     private LocalDate birthDate;
     private Gender gender;

@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @AllArgsConstructor
 @ToString
 public class OAuth2MemberPrincipal implements OAuth2User {
+
     private final Long memberId;
     private final List<OAuth2MemberAuthority> authorities;
     @Getter
@@ -24,7 +25,7 @@ public class OAuth2MemberPrincipal implements OAuth2User {
 
     private Map<String, Object> attributes;
 
-    
+
     // 로그인 이후에만 쓰이는 생성자
     public OAuth2MemberPrincipal(
         Long memberId,

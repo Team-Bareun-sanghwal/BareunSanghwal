@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.habit.entity.MemberHabit;
-import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
+import life.bareun.diary.member.dto.request.MemberUpdateReq;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
@@ -122,10 +122,10 @@ public class Member {
         return new Member(sub, oAuth2Provider);
     }
 
-    public void update(MemberUpdateDtoReq memberUpdateDtoReq) {
-        this.nickname = memberUpdateDtoReq.getNickname();
-        this.birth = memberUpdateDtoReq.getBirthDate();
-        this.gender = memberUpdateDtoReq.getGender();
-        this.job = memberUpdateDtoReq.getJob();
+    public void update(MemberUpdateReq memberUpdateReq) {
+        this.nickname = memberUpdateReq.getNickname();
+        this.birth = memberUpdateReq.getBirthDate();
+        this.gender = memberUpdateReq.getGender();
+        this.job = memberUpdateReq.getJob();
     }
 }
