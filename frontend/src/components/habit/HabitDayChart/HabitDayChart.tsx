@@ -12,7 +12,6 @@ interface IHabitDayChartProps {
 
 const HabitDayBox = ({
   isChecked,
-  koreanDayName,
   isFocused,
 }: {
   isChecked: boolean;
@@ -24,16 +23,13 @@ const HabitDayBox = ({
       {isChecked && (
         <div
           className={`${isFocused ? 'bg-custom-light-green' : 'bg-custom-light-gray'} w-full h-full rounded-[1rem] text-[1rem] font-semibold flex items-center justify-center`}
-        >
-          {/* {koreanDayName} */}
-        </div>
+        ></div>
       )}
     </div>
   );
 };
 
 const HabitDayRow = ({
-  name,
   dayList,
   isFocused,
 }: {
@@ -43,8 +39,6 @@ const HabitDayRow = ({
 }) => {
   return (
     <div className="flex flex-col gap-[0.5rem]">
-      {/* <label className="text-[1.2rem] font-bold">{name}</label> */}
-
       <div className="flex divide-dashed divide-x-[0.1rem] divide-custom-medium-gray">
         <HabitDayBox
           isChecked={dayList.includes(1)}
