@@ -1,5 +1,6 @@
 package life.bareun.diary.habit.dto.request;
 
+import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -8,8 +9,7 @@ public record HabitCreateReqDto(
     Long habitId,
     String alias,
     String icon,
-    Integer dayOfWeek,
-
+    List<Integer> dayOfWeek,
     Integer period
 
 ) { }

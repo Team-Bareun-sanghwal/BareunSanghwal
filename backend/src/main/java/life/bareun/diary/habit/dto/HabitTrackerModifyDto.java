@@ -1,4 +1,4 @@
-package life.bareun.diary.habit.dto.request;
+package life.bareun.diary.habit.dto;
 
 import lombok.Builder;
 

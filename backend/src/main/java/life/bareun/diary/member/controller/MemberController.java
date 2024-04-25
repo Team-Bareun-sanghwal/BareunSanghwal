@@ -1,9 +1,7 @@
 package life.bareun.diary.member.controller;
 
-import com.amazonaws.Response;
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
-import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.dto.request.MemberUpdateReq;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,9 +21,9 @@ public class MemberController {
     @PatchMapping
     public ResponseEntity<BaseResponse<Void>> update(
         @RequestBody
-        MemberUpdateDtoReq memberUpdateDtoReq
+        MemberUpdateReq memberUpdateReq
     ) {
-        memberService.update(memberUpdateDtoReq);
+        memberService.update(memberUpdateReq);
 
         return ResponseEntity.ok(
             BaseResponse.success(

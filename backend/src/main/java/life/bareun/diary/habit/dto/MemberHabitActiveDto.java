@@ -1,6 +1,7 @@
 package life.bareun.diary.habit.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -18,6 +19,8 @@ public record MemberHabitActiveDto(
 
     Long habitTrackerId,
 
-    int currentStreak
+    int currentStreak,
+
+    List<Integer> dayList
 
 ) { }
