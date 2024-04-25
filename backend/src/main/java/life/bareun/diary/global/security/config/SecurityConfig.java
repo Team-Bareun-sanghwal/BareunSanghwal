@@ -1,5 +1,6 @@
 package life.bareun.diary.global.security.config;
 
+import life.bareun.diary.global.security.filter.AuthTokenFilter;
 import life.bareun.diary.global.security.handler.CustomOAuth2FailureHandler;
 import life.bareun.diary.global.security.handler.CustomOAuth2SuccessHandler;
 import life.bareun.diary.global.security.handler.JwtAccessDeniedHandler;
@@ -14,7 +15,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity(debug = false)
@@ -33,7 +36,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         // Filter 순서 설정
-        // http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter(),  OAuth2LoginAuthenticationFilter.class);
 
         // 요청 필터링
         // 개발 초기이므로 모든 요청에 대해 인증 요구를 해제한다.
@@ -68,10 +71,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // @Bean
-    // public AuthTokenFilter authTokenFilter() {
-    // 	return new AuthTokenFilter(authTokenProvider);
-    // }
+    @Bean
+    public AuthTokenFilter authTokenFilter() {
+    	return new AuthTokenFilter(authTokenProvider);
+    }
 
     @Bean
     public CustomOAuth2MemberService customOAuth2MemberService() {
