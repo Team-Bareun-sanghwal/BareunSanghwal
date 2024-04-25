@@ -1,7 +1,7 @@
 const Point = ({ point }: { point: number }) => {
   return (
-    <div className="flex border-solid border-4 border-custom-matcha p-2 text-2xl text-center content-center max-w-36 min-w-20 rounded-full">
-      <div className="bg-custom-matcha w-8 h-8 rounded-full text-white text-center content-center">
+    <div className="flex border-solid border-2 border-custom-matcha p-1 text-l text-center content-center max-w-20 min-w-16 rounded-full">
+      <div className="bg-custom-matcha w-6 h-6 rounded-full text-white text-center content-center mr-2">
         P
       </div>
       <p className="flex text-right ml-auto mr-1 text-custom-matcha">{point}</p>

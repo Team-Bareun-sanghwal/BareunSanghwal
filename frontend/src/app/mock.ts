@@ -273,14 +273,15 @@ export const MemberStreakResponse: IMemberStreak = {
 
 //5. ItemList
 
-interface IItemList {
+export interface IItemList {
   recovery: IItem;
   gotcha_streak: IItem;
   gotcha_tree: IItem;
 }
 
-interface IItem {
+export interface IItem {
   name: string;
+  introduction: string;
   description: string;
   price: number;
 }
@@ -288,20 +289,24 @@ interface IItem {
 export const ItemListResponse: IItemList = {
   recovery: {
     name: '스트릭 리커버리',
-    description:
-      '최근 한 달 중 하나의 스트릭을 복구할 수 있어요. 주의! 리캡에는 포함되지 않아요.',
-    price: 140,
+    introduction: '최근 한 달 중 하나의 스트릭을 복구할 수 있어요',
+    description: ' 주의! 리캡에는 포함되지 않아요',
+    price: 400,
   },
   gotcha_streak: {
     name: '알쏭달쏭 스트릭',
+    introduction:
+      // '사용하면 프로필의 스트릭 색상을 12가지 색상과 일부 특별한 색상 중 하나로 바꿔줘요',
+      '스트릭 색상을 바꿀 수 있어요',
     description:
-      '사용하면 프로필의 스트릭 색상을 12가지 색상과 일부 특별한 색상 중 하나로 바꿔줘요. 아이템을 구매하는 순간 스트릭 색상이 바뀌며 영구적으로 적용되고, 현재 색상은 사라져요.',
-    price: 140,
+      '아이템을 구매하는 순간 스트릭 색상이 바뀌며 영구적으로 적용되고, 현재 색상은 사라져요',
+    price: 20,
   },
   gotcha_tree: {
     name: '알쏭달쏭 나무',
+    introduction: '사용하면 나무의 색상을 12가지 색상 중 하나로 바꿔줘요',
     description:
-      '사용하면 나무의 색상을 12가지 색상 중 하나로 바꿔줘요. 아이템을 구매하는 순간 스트릭 색상이 바뀌며 영구적으로 적용되고, 현재 색상은 사라져요.',
-    price: 140,
+      '아이템을 구매하는 순간 스트릭 색상이 바뀌며 영구적으로 적용되고, 현재 색상은 사라져요.',
+    price: 20,
   },
 };

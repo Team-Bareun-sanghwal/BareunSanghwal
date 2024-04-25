@@ -9,6 +9,8 @@ import HabitBtn from '@/components/calender/HabitBtn/HabitBtn';
 import { BellIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Point from '@/components/point/Point/Point';
+import Item from '@/components/point/Item/Item';
+import { ItemListResponse } from '@/app/mock';
 export default function Home() {
   const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
   const theme = ColorThemeResponse.streak_theme;
@@ -75,7 +77,7 @@ export default function Home() {
       />
 
       <NavBar mode="HOME" /> */}
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <Point point={0} />
         <Point point={4} />
         <Point point={36} />
@@ -85,6 +87,29 @@ export default function Home() {
         <Point point={29123} />
         <Point point={30909} />
         <Point point={99999} />
+      </div> */}
+      <div className="flex flex-col gap-4 p-4">
+        <Item
+          name={ItemListResponse.gotcha_streak.name}
+          introduction={ItemListResponse.gotcha_streak.introduction}
+          description={ItemListResponse.gotcha_streak.description}
+          price={ItemListResponse.gotcha_streak.price}
+          iconPath="/images/icon-item-streak-color.png"
+        />
+        <Item
+          name={ItemListResponse.gotcha_tree.name}
+          introduction={ItemListResponse.gotcha_tree.introduction}
+          description={ItemListResponse.gotcha_tree.description}
+          price={ItemListResponse.gotcha_tree.price}
+          iconPath="/images/icon-item-tree.png"
+        />
+        <Item
+          name={ItemListResponse.recovery.name}
+          introduction={ItemListResponse.recovery.introduction}
+          description={ItemListResponse.recovery.description}
+          price={ItemListResponse.recovery.price}
+          iconPath="/images/icon-item-recovery.png"
+        />
       </div>
     </>
   );
