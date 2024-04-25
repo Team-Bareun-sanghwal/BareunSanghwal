@@ -2,10 +2,9 @@ package life.bareun.diary.global.security.factory;
 
 import java.util.List;
 import life.bareun.diary.global.security.embed.OAuth2MemberAuthority;
-import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
+import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
 public class OAuth2MemberPrincipalFactory {
