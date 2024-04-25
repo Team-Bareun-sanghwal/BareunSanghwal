@@ -71,13 +71,17 @@ public class Member {
     @Min(0)
     private Integer point;
 
-    @Column(name = "current_theme_id")
+    @Column(name = "current_streak_color_id")
     @Min(0)
-    private Integer currentThemeId;
+    private Integer currentStreakColorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_tree_id")
     private Tree tree;
+
+    @Column(name = "current_tree_color_id")
+    @Min(0)
+    private Integer currentTreeColorId;
 
     @Column(name = "daily_point")
     @Min(0)
@@ -105,7 +109,8 @@ public class Member {
 
         this.role = Role.ROLE_USER;
         this.point = 0;
-        this.currentThemeId = 1;
+        this.currentStreakColorId = 1;
+        this.currentTreeColorId = 1;
         this.currentTreePoint = 0;
         this.dailyPoint = 0;
     }
