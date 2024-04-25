@@ -10,6 +10,7 @@ import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final AuthTokenProvider authTokenProvider;
     private final MemberRepository memberRepository;
-
+    private final StreakService streakService;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -31,26 +32,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
-        /* todo
-        1. member 존재 유무 검사
-	      1-1. 있으면 그냥 그 member를 가져온다.
-          1-2. 없으면 DB에 삽입
-          2. 인증 정보 등록을 위한 MemberPrincipal 반환
-        */
         AtomicBoolean isNewMember = new AtomicBoolean(false);
-        Member member = memberRepository.findBySub(sub).orElseGet(
-            () -> {
-                isNewMember.set(true);
-                return memberRepository.save(Member.create(sub, oAuth2Provider));
-            }
-        );
+        Member member = memberRepository.findBySub(sub).orElseGet(() -> {
+            isNewMember.set(true);
+            Member saveMember = memberRepository.save(Member.create(sub, oAuth2Provider));
 
-        return new MemberPrincipal(
-            member.getId(),
-            member.getRole(),
-            member.getProvider(),
-            isNewMember.get()
-        );
+            streakService.createInitialMemberStreak(saveMember);
+
+            return saveMember;
+        });
+
+        return new MemberPrincipal(member.getId(), member.getRole(), member.getProvider(), isNewMember.get());
     }
 
     @Override
