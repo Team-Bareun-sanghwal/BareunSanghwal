@@ -70,6 +70,9 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void delete() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
+
+        //제약조건으로 인해 member_recovery를 먼저 삭제해야 한다.
+        memberRecoveryRepository.deleteByMemberId(id);
         memberRepository.deleteById(id);
     }
 
