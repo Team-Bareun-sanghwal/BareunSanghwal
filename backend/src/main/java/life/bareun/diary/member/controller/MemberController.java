@@ -3,6 +3,7 @@ package life.bareun.diary.member.controller;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReq;
 import life.bareun.diary.member.dto.response.MemberInfoRes;
+import life.bareun.diary.member.dto.response.MemberStreakColorRes;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,18 @@ public class MemberController {
                 HttpStatus.OK.value(),
                 "회원 정보를 읽어왔습니다.",
                 info
+            )
+        );
+    }
+
+    @GetMapping("/color/streak")
+    public ResponseEntity<BaseResponse<MemberStreakColorRes>> streakColor() {
+        MemberStreakColorRes memberStreakColorRes = memberService.streakColor();
+        return ResponseEntity.ok(
+            BaseResponse.success(
+                HttpStatus.OK.value(),
+                "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
+                memberStreakColorRes
             )
         );
     }

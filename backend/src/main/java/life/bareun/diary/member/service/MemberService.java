@@ -4,6 +4,7 @@ import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReq;
 import life.bareun.diary.member.dto.response.MemberInfoRes;
+import life.bareun.diary.member.dto.response.MemberStreakColorRes;
 
 public interface MemberService {
 
@@ -14,4 +15,6 @@ public interface MemberService {
     void delete();
 
     MemberInfoRes info();
+
+    MemberStreakColorRes streakColor();
 }
