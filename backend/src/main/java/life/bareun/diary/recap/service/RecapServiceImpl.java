@@ -98,10 +98,10 @@ public class RecapServiceImpl implements RecapService {
 
         // 기간 내에 작성한 해빗 트래커들만 가져오기 위해 범위 지정
         LocalDateTime startDateTime = nowMonth.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime endDateTime = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth()).atTime(23, 59, 59);
+        LocalDateTime endDateTime = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth())
+            .atTime(23, 59, 59);
         for (RecapMemberDto recapMemberDto : recapMemberList) {
-            Member member = memberRepository.findById(recapMemberDto.member().getId())
-                .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
+            Member member = findMember();
             // 처음에 recap을 생성
             Recap recap = recapRepository.save(Recap.builder().member(member).build());
 
@@ -177,32 +177,34 @@ public class RecapServiceImpl implements RecapService {
 
     @Override
     public RecapListResDto findAllRecap() {
-        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
-            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
+        Member member = findMember();
         List<Recap> recapList = recapRepository.findAllByMember(member);
 
         Set<Integer> yearSet = new HashSet<>();
-        for(Recap recap : recapList) {
+        for (Recap recap : recapList) {
             yearSet.add(recap.getCreatedDatetime().getYear());
         }
         Map<Integer, Object> yearRecapMap = new HashMap<>();
         List<Integer> yearList = new ArrayList<>();
-        for(Integer year : yearSet) {
+        for (Integer year : yearSet) {
             List<RecapSimpleDto> recapSimpleDtoList = new ArrayList<>();
             yearRecapMap.put(year, recapSimpleDtoList);
             yearList.add(year);
         }
         for (Recap recap : recapList) {
-            List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) yearRecapMap.get(recap.getCreatedDatetime().minusMonths(1L).getYear());
-            recapSimpleDtoList.add(RecapSimpleDto.builder().recapId(recap.getId()).image(recap.getMaxHabitImage())
-                .period(recap.getCreatedDatetime().minusMonths(1L).toLocalDate()).build());
+            List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) yearRecapMap.get(
+                recap.getCreatedDatetime().minusMonths(1L).getYear());
+            recapSimpleDtoList.add(
+                RecapSimpleDto.builder().recapId(recap.getId()).image(recap.getMaxHabitImage())
+                    .period(recap.getCreatedDatetime().minusMonths(1L).toLocalDate()).build());
         }
 
         List<RecapDto> recapDtoList = new ArrayList<>();
-        for(Entry<Integer, Object> entry : yearRecapMap.entrySet()) {
+        for (Entry<Integer, Object> entry : yearRecapMap.entrySet()) {
             List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) entry.getValue();
             recapSimpleDtoList.sort((o1, o2) -> o2.period().compareTo(o1.period()));
-            recapDtoList.add(RecapDto.builder().year(entry.getKey()).recapList(recapSimpleDtoList).build());
+            recapDtoList.add(
+                RecapDto.builder().year(entry.getKey()).recapList(recapSimpleDtoList).build());
         }
 
         // 연도 내림차순으로 정렬
@@ -236,10 +238,12 @@ public class RecapServiceImpl implements RecapService {
                 .ratio(recapHabitAccomplished.getAchievementRate()).build());
         }
         double averageRateByMemberHabit =
-            Math.round(((achievementRateSum * 1.0) / recapHabitAccomplishedList.size()) * 10) / 10.0;
+            Math.round(((achievementRateSum * 1.0) / recapHabitAccomplishedList.size()) * 10)
+                / 10.0;
 
-        // ratio 비율 내림차순으로 정렬
-        recapMemberHabitRateDtoList.sort((o1, o2) -> o2.ratio() - o1.ratio());
+        // totalCount 내림차순으로 정렬
+        recapMemberHabitRateDtoList.sort(
+            (o1, o2) -> (o2.actionCount() + o2.missCount()) - (o1.actionCount() + o1.missCount()));
 
         // 첫 5개 요소를 제외한 나머지 요소를 삭제
         recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
@@ -263,12 +267,17 @@ public class RecapServiceImpl implements RecapService {
         int collectedStar = recap.getWholeStreak();
         String image = recap.getMaxHabitImage();
 
+        Member member = findMember();
+
         return RecapDetailResDto.builder().mostSucceededHabit(mostSucceededHabit)
             .mostSucceededMemberHabit(mostSucceededMemberHabit)
             .averageRateByMemberHabit(averageRateByMemberHabit)
             .rateByMemberHabitList(recapMemberHabitRateDtoList)
             .rateByHabitList(recapHabitRateDtoList).mostSubmitTime(mostSubmitTime)
-            .collectedStar(collectedStar).myKeyWord(myKeyWord).image(image).build();
+            .collectedStar(collectedStar).myKeyWord(myKeyWord).image(image)
+            .year(recap.getCreatedDatetime().getYear())
+            .month(recap.getCreatedDatetime().getMonthValue())
+            .memberName(member.getNickname()).build();
     }
 
     private GptResDto createKeyWord(String totalContent) {
@@ -281,7 +290,7 @@ public class RecapServiceImpl implements RecapService {
             .header("Authorization", "Bearer " + apiKey)
             .bodyValue(gptReqDto)
             .retrieve().bodyToMono(JsonNode.class).<GptResDto>handle((response, sink) -> {
-                if(response.get("choices").get(0).get("message").get("content") == null) {
+                if (response.get("choices").get(0).get("message").get("content") == null) {
                     sink.error(new RecapException(RecapErrorCode.NOT_CREATE_RECAP_CONTENT));
                     return;
                 }
@@ -387,7 +396,8 @@ public class RecapServiceImpl implements RecapService {
         }
     }
 
-    private void createRecapHabitRatio(Map<Long, Long> habitCountMap, long sum,  Recap recap, LocalDate nowMonth) {
+    private void createRecapHabitRatio(Map<Long, Long> habitCountMap, long sum, Recap recap,
+        LocalDate nowMonth) {
         for (Entry<Long, Long> entry : habitCountMap.entrySet()) {
             Habit habit = habitRepository.findById(entry.getKey())
                 .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_HABIT));
@@ -407,5 +417,10 @@ public class RecapServiceImpl implements RecapService {
             case 17 -> Occasion.EVENING;
             default -> Occasion.NIGHT;
         };
+    }
+
+    private Member findMember() {
+        return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
+            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
     }
 }

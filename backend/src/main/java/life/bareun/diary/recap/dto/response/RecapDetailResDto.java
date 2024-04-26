@@ -24,6 +24,12 @@ public record RecapDetailResDto(
 
     String myKeyWord,
 
-    String image
+    String image,
+
+    int year,
+
+    int month,
+
+    String memberName
 
 ) { }
