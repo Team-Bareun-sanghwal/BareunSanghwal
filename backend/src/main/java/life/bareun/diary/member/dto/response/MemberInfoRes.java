@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MemberInfoRes {
+
     private String nickname;
     private Gender gender;
     private Job job;
