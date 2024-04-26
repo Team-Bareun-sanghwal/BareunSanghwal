@@ -1,11 +1,7 @@
 package life.bareun.diary.product.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public record ProductStreakThemeUpdateRes(
+    String streakColorName
+) {
 
-@AllArgsConstructor
-@Getter
-public class ProductStreakThemeUpdateRes {
-
-    private String streakColorName;
 }
