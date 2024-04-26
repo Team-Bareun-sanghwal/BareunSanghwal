@@ -12,9 +12,9 @@ import {
   Highlight3D,
   Chart3DAxisModel,
   StackingColumnSeries3D,
-  LegendPosition,
 } from '@syncfusion/ej2-react-charts';
 import { registerLicense } from '@syncfusion/ej2-base';
+import { GradientBar } from '../GradientBar/GradientBar';
 
 registerLicense(
   process.env.NEXT_PUBLIC_SYNCFUSION_KEY
@@ -29,26 +29,17 @@ interface IDataType {
   ratio: number;
 }
 
-// interface legendSettingsType {
-//   visible: boolean;
-//   shapeHeight: number;
-//   shapeWidth: number;
-//   position: LegendPosition;
-//   width: string;
-//   textStyle: {
-//     fontFamily: string;
-//     fontWeight: string;
-//     size: string;
-//   };
-// }
-
-// const legendSettings = {
-//   visible: false,
-// };
-
 const xAxisConfig: Chart3DAxisModel = {
-  valueType: 'Category',
   visible: true,
+  valueType: 'Category',
+  labelStyle: {
+    fontFamily: 'pretendard, sans-serif',
+    fontWeight: '200',
+    size: '12',
+    color: 'white',
+  },
+  labelIntersectAction: 'Wrap',
+  labelPadding: 25,
   majorGridLines: { width: 0 },
   majorTickLines: { width: 0 },
 };
@@ -59,30 +50,72 @@ const yAxisConfig: Chart3DAxisModel = {
   majorTickLines: { width: 0 },
 };
 
-const pointRender = (args) => {
+const pointRender = (args: {
+  fill: string;
+  point: { index: number; series: { index: number } };
+}) => {
   let seriesColor = [
-    '#00bdae',
-    '#404041',
-    '#357cd2',
-    '#e56590',
-    '#f8b883',
-    '#70ad47',
-    '#dd8abd',
-    '#7f84e8',
-    '#7bb4eb',
-    '#ea7a57',
+    '#357CD2',
+    '#FFFFFF',
+    '#E56590',
+    '#FFFFFF',
+    '#8BD173',
+    '#FFFFFF',
+    '#00BDAE',
+    '#FFFFFF',
+    '#F8B883',
+    '#FFFFFF',
+    '#DD8ABD',
+    '#FFFFFF',
   ];
-  args.fill = seriesColor[2 * args.point.index + args.point.series.index];
 
-  // console.log(args.point.series.properties.dataLabel.properties.format);
-  // args.point.series.properties.dataLabel.properties.format = '{value}잉잉';
+  args.fill = seriesColor[2 * args.point.index + args.point.series.index];
 };
 
-const textRender = (args) => {
-  console.log(args.point.index);
-  console.log(args.point.series.properties.dataSource[args.point.index]);
+const textRender = (args: {
+  point: {
+    series: {
+      properties: {
+        dataSource: { ratio: number; missCount: number; actionCount: number }[];
+      };
+    };
+    index: number;
+  };
+  text: string;
+  series: { index: number };
+  textStyle: {
+    fontFamily: string;
+    fontWeight: string;
+    size: string;
+    color: string;
+  };
+}) => {
   const indexedData = args.point.series.properties.dataSource[args.point.index];
-  args.text = `${indexedData.habit} <br> ${indexedData.ratio}%`;
+  if (args.series.index === 2) {
+    let maxRatio = -Infinity;
+
+    for (const item of args.point.series.properties.dataSource) {
+      if (item.ratio > maxRatio) {
+        maxRatio = item.ratio;
+      }
+    }
+
+    args.text = `${indexedData.ratio}%`;
+    args.textStyle = {
+      fontFamily: 'pretendard, sans-serif',
+      fontWeight: '400',
+      size: '16',
+      color: indexedData.ratio === maxRatio ? '#5bb227' : 'white',
+    };
+  } else {
+    args.text = `${indexedData.missCount + indexedData.actionCount}일 중`;
+    args.textStyle = {
+      fontFamily: 'pretendard, sans-serif',
+      fontWeight: '200',
+      size: '10',
+      color: 'white',
+    };
+  }
 };
 
 const labelSettings = {
@@ -94,59 +127,87 @@ const labelSettings = {
     size: '12',
     color: 'white',
   },
-  margin: {
-    bottom: 20,
-  },
 };
 
 export const RecapBarChart = ({
-  rateByHabitList,
+  rateByMemberHabitList,
+  averageRateByMemberHabit,
 }: {
-  rateByHabitList: IDataType[];
+  rateByMemberHabitList: IDataType[];
+  averageRateByMemberHabit: number;
 }) => {
+  const processedData = rateByMemberHabitList.map((data) => {
+    return { ...data, size: 5 };
+  });
+
   return (
-    <Chart3DComponent
-      id="RecapBarChart"
-      primaryXAxis={xAxisConfig}
-      primaryYAxis={yAxisConfig}
-      pointRender={pointRender}
-      textRender={textRender}
-      wallColor="transparent"
-      enableRotation={false}
-      rotation={20}
-      perspectiveAngle={300}
-      depth={100}
-      className="w-full bg-custom-black"
-    >
-      <Inject
-        services={[
-          StackingColumnSeries3D,
-          Category3D,
-          Legend3D,
-          Tooltip3D,
-          DataLabel3D,
-          Highlight3D,
-        ]}
-      />
-      <Chart3DSeriesCollectionDirective>
-        <Chart3DSeriesDirective
-          dataSource={rateByHabitList}
-          xName="habit"
-          yName="actionCount"
-          type="StackingColumn"
-          columnSpacing={-0.4}
-          fill="red"
-        ></Chart3DSeriesDirective>
-        <Chart3DSeriesDirective
-          dataSource={rateByHabitList}
-          xName="habit"
-          yName="missCount"
-          type="StackingColumn"
-          columnSpacing={-0.4}
-          fill="green"
-          dataLabel={labelSettings}
-        ></Chart3DSeriesDirective>
-      </Chart3DSeriesCollectionDirective>
-    </Chart3DComponent>
+    <div className="w-full flex flex-col items-center">
+      <Chart3DComponent
+        id="RecapBarChart"
+        primaryXAxis={xAxisConfig}
+        primaryYAxis={yAxisConfig}
+        pointRender={pointRender}
+        textRender={textRender}
+        perspectiveAngle={120}
+        depth={200}
+        tilt={-20}
+        width="360"
+        height="500"
+        wallColor="transparent"
+      >
+        <Inject
+          services={[
+            StackingColumnSeries3D,
+            Category3D,
+            Legend3D,
+            Tooltip3D,
+            DataLabel3D,
+            Highlight3D,
+          ]}
+        />
+        <Chart3DSeriesCollectionDirective>
+          <Chart3DSeriesDirective
+            dataSource={processedData}
+            xName="habit"
+            yName="actionCount"
+            type="StackingColumn"
+            columnSpacing={-0.2}
+          ></Chart3DSeriesDirective>
+          <Chart3DSeriesDirective
+            dataSource={processedData}
+            xName="habit"
+            yName="missCount"
+            type="StackingColumn"
+            opacity={0.1}
+            columnSpacing={-0.2}
+          ></Chart3DSeriesDirective>
+          <Chart3DSeriesDirective
+            dataSource={processedData}
+            xName="habit"
+            yName="size"
+            type="StackingColumn"
+            opacity={0}
+            columnSpacing={-0.2}
+            dataLabel={labelSettings}
+          ></Chart3DSeriesDirective>
+          <Chart3DSeriesDirective
+            dataSource={processedData}
+            xName="habit"
+            yName="size"
+            type="StackingColumn"
+            opacity={0}
+            columnSpacing={-0.2}
+            dataLabel={labelSettings}
+          ></Chart3DSeriesDirective>
+        </Chart3DSeriesCollectionDirective>
+      </Chart3DComponent>
+      <div className="w-full">
+        <GradientBar
+          textFront="대단한데요! 평균적으로 "
+          textMiddle={`${averageRateByMemberHabit}%`}
+          textBack="를 달성했어요!"
+        />
+      </div>
+    </div>
   );
 };
