@@ -6,10 +6,12 @@ import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.dto.request.MemberUpdateReq;
+import life.bareun.diary.member.dto.response.MemberInfoRes;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
+import life.bareun.diary.member.mapper.MemberMapper;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,4 +78,15 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public MemberInfoRes info() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            );
+
+        return MemberMapper.INSTANCE.toMemberInfoRes(member);
+    }
 }
