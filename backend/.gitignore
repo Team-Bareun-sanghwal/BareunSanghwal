@@ -41,4 +41,4 @@ application.yml
 application.yaml
 
 ### FireBase SDK ###
-/firebase/**
+**/src/main/resources/firebase/**
