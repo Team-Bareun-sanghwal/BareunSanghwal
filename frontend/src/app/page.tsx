@@ -12,6 +12,7 @@ import Point from '@/components/point/Point/Point';
 import Item from '@/components/point/Item/Item';
 import { ItemListResponse } from '@/app/mock';
 import Pallete from '@/components/point/Pallete/Pallete';
+import ColoredText from '@/components/point/ColoredText/ColoredText';
 export default function Home() {
   const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
   const theme = ColorThemeResponse.streak_theme;
@@ -112,7 +113,18 @@ export default function Home() {
           iconPath="/images/icon-item-recovery.png"
         />
       </div>
+      <ColoredText color="minchodan" />
+      <Pallete color="minchodan" />
+      <ColoredText color="red" />
       <Pallete color="red" />
+      <ColoredText color="rose" />
+      <Pallete color="rose" />
+      <ColoredText color="dippindots" />
+      <Pallete color="dippindots" />
+      <ColoredText color="rainbow" />
+      <Pallete color="rainbow" />
+      <ColoredText color="sunny_summer" />
+      <Pallete color="sunny_summer" />
     </>
   );
 }
