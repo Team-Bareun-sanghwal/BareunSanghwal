@@ -1,6 +1,8 @@
 package life.bareun.diary.global.common.exception;
 
 import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.global.notification.entity.Notification;
+import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.recap.exception.RecapException;
@@ -26,8 +28,14 @@ public class GlobalExceptionHandler {
             .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
     }
 
+    @ExceptionHandler(NotificationException.class)
+    public ResponseEntity<?> notificationExceptionHandler(NotificationException e) {
+        return ResponseEntity.status(e.getErrorCode().getStatus())
+            .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
+    }
+
     @ExceptionHandler(RecapException.class)
-    public ResponseEntity<?> habitExceptionHandler(RecapException e) {
+    public ResponseEntity<?> recapExceptionHandler(RecapException e) {
         return ResponseEntity.status(e.getErrorCode().getStatus())
             .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
     }

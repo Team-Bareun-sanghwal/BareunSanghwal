@@ -64,6 +64,8 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    implementation 'com.google.firebase:firebase-admin:7.1.1'
 }
 
 tasks.named('test') {
