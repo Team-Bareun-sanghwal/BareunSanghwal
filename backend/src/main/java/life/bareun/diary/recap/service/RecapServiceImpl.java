@@ -5,9 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.config.WebClientConfig;
 import life.bareun.diary.global.security.util.AuthUtil;
@@ -28,6 +31,7 @@ import life.bareun.diary.recap.dto.RecapMemberHabitRateDto;
 import life.bareun.diary.recap.dto.RecapMemberMonthDto;
 import life.bareun.diary.recap.dto.RecapModifyDto;
 import life.bareun.diary.recap.dto.RecapMonthDto;
+import life.bareun.diary.recap.dto.RecapSimpleDto;
 import life.bareun.diary.recap.dto.request.GptReqDto;
 import life.bareun.diary.recap.dto.response.GptResDto;
 import life.bareun.diary.recap.dto.response.RecapDetailResDto;
@@ -176,14 +180,37 @@ public class RecapServiceImpl implements RecapService {
         Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
         List<Recap> recapList = recapRepository.findAllByMember(member);
-        List<RecapDto> recapDtoList = new ArrayList<>();
 
-        for (Recap recap : recapList) {
-            recapDtoList.add(
-                RecapDto.builder().recapId(recap.getId()).image(recap.getMaxHabitImage())
-                    .period(recap.getCreatedDatetime().minusMonths(1L).toLocalDate()).build());
+        Set<Integer> yearSet = new HashSet<>();
+        for(Recap recap : recapList) {
+            yearSet.add(recap.getCreatedDatetime().getYear());
         }
-        return RecapListResDto.builder().recapList(recapDtoList).build();
+        Map<Integer, Object> yearRecapMap = new HashMap<>();
+        List<Integer> yearList = new ArrayList<>();
+        for(Integer year : yearSet) {
+            List<RecapSimpleDto> recapSimpleDtoList = new ArrayList<>();
+            yearRecapMap.put(year, recapSimpleDtoList);
+            yearList.add(year);
+        }
+        for (Recap recap : recapList) {
+            List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) yearRecapMap.get(recap.getCreatedDatetime().minusMonths(1L).getYear());
+            recapSimpleDtoList.add(RecapSimpleDto.builder().recapId(recap.getId()).image(recap.getMaxHabitImage())
+                .period(recap.getCreatedDatetime().minusMonths(1L).toLocalDate()).build());
+        }
+
+        List<RecapDto> recapDtoList = new ArrayList<>();
+        for(Entry<Integer, Object> entry : yearRecapMap.entrySet()) {
+            List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) entry.getValue();
+            recapSimpleDtoList.sort((o1, o2) -> o2.period().compareTo(o1.period()));
+            recapDtoList.add(RecapDto.builder().year(entry.getKey()).recapList(recapSimpleDtoList).build());
+        }
+
+        // 연도 내림차순으로 정렬
+        recapDtoList.sort((o1, o2) -> o2.year() - o1.year());
+        yearList.sort((o1, o2) -> o2 - o1);
+
+        return RecapListResDto.builder().recapGroupList(recapDtoList).yearList(yearList).build();
+
     }
 
     @Override

@@ -1,15 +1,13 @@
 package life.bareun.diary.recap.dto;
 
-import java.time.LocalDate;
+import java.util.List;
 import lombok.Builder;
 
 @Builder
 public record RecapDto(
 
-    Long recapId,
+    int year,
 
-    String image,
-
-    LocalDate period
+    List<RecapSimpleDto> recapList
 
 ) { }

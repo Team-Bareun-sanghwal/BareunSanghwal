@@ -7,6 +7,8 @@ import lombok.Builder;
 @Builder
 public record RecapListResDto(
 
-    List<RecapDto> recapList
+    List<RecapDto> recapGroupList,
+
+    List<Integer> yearList
 
 ) { }
