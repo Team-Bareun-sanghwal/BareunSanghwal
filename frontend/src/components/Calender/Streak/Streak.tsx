@@ -4,8 +4,8 @@ interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
-  day: number;
-  habitCnt: number;
+  habitCnt?: number;
+  day?: number;
   onClick?: () => void;
 }
 

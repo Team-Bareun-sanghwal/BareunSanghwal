@@ -11,6 +11,7 @@ import Image from 'next/image';
 import Point from '@/components/point/Point/Point';
 import Item from '@/components/point/Item/Item';
 import { ItemListResponse } from '@/app/mock';
+import Pallete from '@/components/point/Pallete/Pallete';
 export default function Home() {
   const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
   const theme = ColorThemeResponse.streak_theme;
@@ -111,6 +112,7 @@ export default function Home() {
           iconPath="/images/icon-item-recovery.png"
         />
       </div>
+      <Pallete color="red" />
     </>
   );
 }
