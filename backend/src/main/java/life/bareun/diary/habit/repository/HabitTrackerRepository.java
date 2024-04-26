@@ -21,4 +21,7 @@ public interface HabitTrackerRepository extends JpaRepository<HabitTracker, Long
 
     int countByMemberHabit(MemberHabit memberHabit);
 
+    List<HabitTracker> findAllByMemberHabitAndContentIsNotNullAndSucceededTimeBetween(
+        MemberHabit memberHabit, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
 }

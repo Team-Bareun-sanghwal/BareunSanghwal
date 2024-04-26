@@ -1,5 +1,6 @@
 package life.bareun.diary.recap.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import life.bareun.diary.global.config.WebClientConfig;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -17,6 +19,7 @@ import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.recap.dto.MessageDto;
 import life.bareun.diary.recap.dto.RecapDto;
 import life.bareun.diary.recap.dto.RecapHabitRateDto;
 import life.bareun.diary.recap.dto.RecapMemberDto;
@@ -25,6 +28,8 @@ import life.bareun.diary.recap.dto.RecapMemberHabitRateDto;
 import life.bareun.diary.recap.dto.RecapMemberMonthDto;
 import life.bareun.diary.recap.dto.RecapModifyDto;
 import life.bareun.diary.recap.dto.RecapMonthDto;
+import life.bareun.diary.recap.dto.request.GptReqDto;
+import life.bareun.diary.recap.dto.response.GptResDto;
 import life.bareun.diary.recap.dto.response.RecapDetailResDto;
 import life.bareun.diary.recap.dto.response.RecapListResDto;
 import life.bareun.diary.recap.entity.Recap;
@@ -39,6 +44,8 @@ import life.bareun.diary.recap.repository.RecapRepository;
 import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +71,17 @@ public class RecapServiceImpl implements RecapService {
 
     private final MemberHabitRepository memberHabitRepository;
 
+    private final WebClientConfig webClient;
+
+    @Value("${gpt.api.key}")
+    private String apiKey;
+
+    @Value("${gpt.api.model}")
+    private String apiModel;
+
+    private static final String PROMPT = " 라는 내용을 가장 핵심이 되는 한 단어로 요약해주세요. 반드시 명사여야 하고, 가장 많이 언급되는 단어를 기반으로 해야 합니다. 특수기호가 없어야 합니다.";
+    private static final String IMAGE_BASIC = "basic";
+
     @Override
     public void createRecap() {
         // 두 번 이상 완료한 사용자 해빗을 하나라도 가지고 있는 사용자 리스트
@@ -74,6 +92,9 @@ public class RecapServiceImpl implements RecapService {
             RecapMonthDto.builder().year(nowMonth.getYear()).month(nowMonth.getMonth().getValue())
                 .build());
 
+        // 기간 내에 작성한 해빗 트래커들만 가져오기 위해 범위 지정
+        LocalDateTime startDateTime = nowMonth.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDateTime = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth()).atTime(23, 59, 59);
         for (RecapMemberDto recapMemberDto : recapMemberList) {
             Member member = memberRepository.findById(recapMemberDto.member().getId())
                 .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER));
@@ -93,6 +114,7 @@ public class RecapServiceImpl implements RecapService {
             // 베스트 해빗 찾기
             long bestHabitId = findBestHabit(recapMemberHabitDtoList, sum);
             Map<Long, Long> habitCountMap = new ConcurrentHashMap<>();
+            StringBuilder totalContent = new StringBuilder();
             for (RecapMemberHabitDto recapMemberHabitDto : recapMemberHabitDtoList) {
                 // recapHabitAccomplished 생성
                 // 만약 habitTrackerCount 값이 max와 같으면 isBest = true 아니면 false
@@ -115,38 +137,20 @@ public class RecapServiceImpl implements RecapService {
                 habitCountMap.put(recapMemberHabitDto.memberHabit().getHabit().getId(),
                     habitCountMap.getOrDefault(recapMemberHabitDto.memberHabit().getHabit().getId(),
                         0L) + recapMemberHabitDto.habitTrackerCount());
-            }
 
-            for (Entry<Long, Long> entry : habitCountMap.entrySet()) {
-                Habit habit = habitRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_HABIT));
-                double ratio = ((double) entry.getValue() / sum) * 100;
-                // recapHabitRatio 생성
-                recapHabitRatioRepository.save(
-                    RecapHabitRatio.builder().habit(habit)
-                        .recap(recap).createdYear(nowMonth.getYear())
-                        .createdMonth(nowMonth.getMonthValue()).ratio(ratio).build());
-            }
-
-            // 베스트 해빗의 이미지 중 랜덤으로 하나 가져오기
-            MemberHabit memberHabit = memberHabitRepository.findById(bestHabitId)
-                .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER_HABIT));
-            List<HabitTracker> habitTrackerList = habitTrackerRepository.findAllByMemberHabit(
-                memberHabit);
-            List<String> imageList = new ArrayList<>();
-            for (HabitTracker habitTracker : habitTrackerList) {
-                if (habitTracker.getImage() != null) {
-                    imageList.add(habitTracker.getImage());
+                // 키워드 생성할 텍스트 파일 만들기
+                List<HabitTracker> habitTrackerList = habitTrackerRepository.findAllByMemberHabitAndContentIsNotNullAndSucceededTimeBetween(
+                    recapMemberHabitDto.memberHabit(), startDateTime, endDateTime);
+                for (HabitTracker habitTracker : habitTrackerList) {
+                    totalContent.append(habitTracker.getContent()).append("\n");
                 }
             }
-            String imageUrl;
-            // 기본 이미지 url 넣기(환경변수)
-            if (imageList.isEmpty()) {
-                imageUrl = "basic";
-            } else {
-                Collections.sort(imageList);
-                imageUrl = imageList.get(0);
-            }
+
+            // recapHabitRatio 생성
+            createRecapHabitRatio(habitCountMap, sum, recap, nowMonth);
+
+            // 베스트 해빗의 이미지 중 랜덤으로 하나 가져오기
+            String imageUrl = findRandomImage(bestHabitId);
 
             // 가장 많이 제출한 시간대 구하기
             int currentTime = findMostSubmitTime(nowMonth, member);
@@ -157,10 +161,12 @@ public class RecapServiceImpl implements RecapService {
             int wholeStreak = memberDailyStreakRepository
                 .countByIsStaredAndMemberAndCreatedDateBetween(true, member, startDate,
                     endDate);
+
             // 키워드 생성
+            String keyword = createKeyWord(totalContent.toString()).content();
             recapRepository.modifyRecap(
                 RecapModifyDto.builder().recap(recap).wholeStreak(wholeStreak)
-                    .maxHabitImage(imageUrl).mostFrequencyWord("keyword")
+                    .maxHabitImage(imageUrl).mostFrequencyWord(keyword)
                     .mostFrequencyTime(occasion).build());
         }
     }
@@ -238,6 +244,26 @@ public class RecapServiceImpl implements RecapService {
             .collectedStar(collectedStar).myKeyWord(myKeyWord).image(image).build();
     }
 
+    private GptResDto createKeyWord(String totalContent) {
+        MessageDto messageDto = MessageDto.builder().role("user")
+            .content(totalContent + PROMPT).build();
+        GptReqDto gptReqDto = GptReqDto.builder().model(apiModel).message(messageDto)
+            .temperature(1).max_tokens(16).build();
+        return webClient.webClient().post()
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + apiKey)
+            .bodyValue(gptReqDto)
+            .retrieve().bodyToMono(JsonNode.class).<GptResDto>handle((response, sink) -> {
+                if(response.get("choices").get(0).get("message").get("content") == null) {
+                    sink.error(new RecapException(RecapErrorCode.NOT_CREATE_RECAP_CONTENT));
+                    return;
+                }
+                sink.next(GptResDto.builder()
+                    .content(response.get("choices").get(0).get("message").get("content").asText())
+                    .build());
+            }).block();
+    }
+
     private int findMostSubmitTime(LocalDate nowMonth, Member member) {
         int timeMax = 0;
         int currentTime = 0;
@@ -312,6 +338,39 @@ public class RecapServiceImpl implements RecapService {
             }
         }
         return memberHabitId;
+    }
+
+    private String findRandomImage(Long bestHabitId) {
+        MemberHabit memberHabit = memberHabitRepository.findById(bestHabitId)
+            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_MEMBER_HABIT));
+        List<HabitTracker> habitTrackerList = habitTrackerRepository.findAllByMemberHabit(
+            memberHabit);
+        List<String> imageList = new ArrayList<>();
+        for (HabitTracker habitTracker : habitTrackerList) {
+            if (habitTracker.getImage() != null) {
+                imageList.add(habitTracker.getImage());
+            }
+        }
+        // 기본 이미지 url 넣기(환경변수)
+        if (imageList.isEmpty()) {
+            return IMAGE_BASIC;
+        } else {
+            Collections.sort(imageList);
+            return imageList.get(0);
+        }
+    }
+
+    private void createRecapHabitRatio(Map<Long, Long> habitCountMap, long sum,  Recap recap, LocalDate nowMonth) {
+        for (Entry<Long, Long> entry : habitCountMap.entrySet()) {
+            Habit habit = habitRepository.findById(entry.getKey())
+                .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_HABIT));
+            double ratio = ((double) entry.getValue() / sum) * 100;
+            // recapHabitRatio 생성
+            recapHabitRatioRepository.save(
+                RecapHabitRatio.builder().habit(habit)
+                    .recap(recap).createdYear(nowMonth.getYear())
+                    .createdMonth(nowMonth.getMonthValue()).ratio(ratio).build());
+        }
     }
 
     private Occasion findOccasion(int currentTime) {
