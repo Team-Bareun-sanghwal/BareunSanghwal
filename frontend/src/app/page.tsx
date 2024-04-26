@@ -1,48 +1,83 @@
 import { NavBar } from '@/components/common/NavBar/NavBar';
-import { RecapBarChart } from '@/components/recap/RecapBarChart/RecapBarChart';
+import { ProgressBar } from '@/components/recap/ProgressBar/ProgressBar';
+import { RecapContent } from '@/components/recap/RecapContent/RecapContent';
+import { RecapHeader } from '@/components/recap/RecapHeader/RecapHeader';
 
-const data = [
-  {
-    habit: '12시 취침',
-    missCount: 2,
-    actionCount: 15,
-    ratio: 80,
-  },
-  {
-    habit: '영양제 먹기',
-    missCount: 3,
-    actionCount: 27,
-    ratio: 90,
-  },
-  {
-    habit: '점심 샐러드 먹기',
-    missCount: 8,
-    actionCount: 27,
-    ratio: 78,
-  },
-  {
-    habit: '강의장 계단으로 가기',
-    missCount: 3,
-    actionCount: 37,
-    ratio: 93,
-  },
-  {
-    habit: '웨이트 1시간',
-    missCount: 5,
-    actionCount: 37,
-    ratio: 89,
-  },
-];
+const data = {
+  year: 2024,
+  month: 1,
+  memberName: '감자도리',
+  mostSucceededHabit: '자연 체험하기',
+  mostSucceededMemberHabit: '점심 샐러드 먹기',
+  averageRateByMemberHabit: 63.3,
+  rateByMemberHabitList: [
+    {
+      name: 'heewoong',
+      missCount: 1,
+      actionCount: 4,
+      ratio: 80,
+    },
+    {
+      name: 'heewoong',
+      missCount: 2,
+      actionCount: 3,
+      ratio: 60,
+    },
+    {
+      name: 'heewoong',
+      missCount: 2,
+      actionCount: 3,
+      ratio: 60,
+    },
+    {
+      name: 'heewoong',
+      missCount: 3,
+      actionCount: 2,
+      ratio: 40,
+    },
+    {
+      name: 'heewoong',
+      missCount: 3,
+      actionCount: 2,
+      ratio: 40,
+    },
+  ],
+  rateByHabitList: [
+    {
+      name: '자연 체험하기',
+      ratio: 25,
+    },
+    {
+      name: '디지털디톡스',
+      ratio: 18,
+    },
+    {
+      name: '오디오북 듣기',
+      ratio: 18,
+    },
+    {
+      name: '감사하기',
+      ratio: 12,
+    },
+    {
+      name: '기타',
+      ratio: 27,
+    },
+  ],
+  mostSubmitTime: 'EVENING',
+  collectedStar: 0,
+  myKeyWord: 'keyword',
+  image: 'basic',
+};
 
 export default function Home() {
   return (
     <div>
-      <div className="h-72 bg-custom-black"></div>
-      <RecapBarChart rateByHabitList={data} />
+      <RecapContent data={data} />
       {/* <main className="custom-bold-text text-custom-light-green">
         hello, world!
       </main> */}
-
+      {/* <ProgressBar duration={storyDuration} /> */}
       {/* <NavBar mode="HOME" /> */}
     </div>
   );
