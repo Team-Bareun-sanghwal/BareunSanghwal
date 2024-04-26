@@ -10,6 +10,8 @@ import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.dto.ProductDto;
 import life.bareun.diary.product.dto.response.ProductListRes;
+import life.bareun.diary.product.dto.response.ProductStreakColorUpdateRes;
+import life.bareun.diary.product.dto.response.ProductTreeColorUpdateRes;
 import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
 import life.bareun.diary.product.entity.TreeColor;
@@ -69,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String buyStreakGotcha() {
+    public ProductStreakColorUpdateRes buyStreakGotcha() {
         // 1. 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
         List<StreakColorGrade> streakColorGrades = streakColorGradeRepository.findAll()
             .stream()
@@ -117,18 +119,18 @@ public class ProductServiceImpl implements ProductService {
         member.usePoint(amount);
         memberRepository.save(member);
 
-        return gotchaStreakColor.getName();
+        return new ProductStreakColorUpdateRes(gotchaStreakColor.getName());
     }
 
     @Override
     @Transactional
-    public String buyTreeGotcha() {
+    public ProductTreeColorUpdateRes buyTreeGotcha() {
         // 1. 나무 색 전체 불러오기
         List<TreeColor> treeColors = treeColorRepository.findAll();
 
         // 2. 랜덤 뽑기
         int treeColorCount = treeColors.size();
-        TreeColor gotchTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
+        TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 3. 나무 색 변경권 가격 정보 얻기
         Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
@@ -146,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
         member.usePoint(amount);
 
         // 5. 사용자 나무 색 변경
-        Integer treeColorId = treeColorRepository.findById(gotchTreeColor.getId())
+        Integer treeColorId = treeColorRepository.findById(gotchaTreeColor.getId())
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_TREE_COLOR)
             )
@@ -156,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
         // 6. 결과 반영
         memberRepository.save(member);
 
-        return gotchTreeColor.getName();
+        return new ProductTreeColorUpdateRes(gotchaTreeColor.getName());
     }
 
 }

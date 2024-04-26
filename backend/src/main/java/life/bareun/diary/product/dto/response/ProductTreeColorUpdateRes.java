@@ -1,7 +1,7 @@
 package life.bareun.diary.product.dto.response;
 
 
-public record ProductTreeThemeUpdateRes(
+public record ProductTreeColorUpdateRes(
     String treeColorName
 ) {
 
