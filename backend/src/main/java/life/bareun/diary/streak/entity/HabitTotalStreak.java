@@ -28,7 +28,6 @@ public class HabitTotalStreak {
 
     @OneToOne
     @JoinColumn(name = "member_habit_id")
-    @Column(name = "member_habit")
     private MemberHabit memberHabit;
 
     @Column(name = "longest_streak")

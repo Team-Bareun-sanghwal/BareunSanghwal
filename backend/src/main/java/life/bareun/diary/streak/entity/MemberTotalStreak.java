@@ -28,7 +28,6 @@ public class MemberTotalStreak {
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    @Column(name = "member")
     private Member member;
 
     @Column(name = "longest_streak")

@@ -32,7 +32,6 @@ public class HabitDailyStreak {
 
     @ManyToOne
     @JoinColumn(name = "member_habit_id")
-    @Column(name = "member_habit")
     private MemberHabit memberHabit;
 
     @Column(name = "achieve_type")
