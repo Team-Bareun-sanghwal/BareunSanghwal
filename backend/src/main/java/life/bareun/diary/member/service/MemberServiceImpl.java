@@ -8,6 +8,7 @@ import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.dto.request.MemberUpdateReq;
 import life.bareun.diary.member.dto.response.MemberInfoRes;
 import life.bareun.diary.member.dto.response.MemberStreakColorRes;
+import life.bareun.diary.member.dto.response.MemberTreeColorRes;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
@@ -18,6 +19,7 @@ import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
     private final StreakColorRepository streakColorRepository;
+    private final TreeColorRepository treeColorRepository;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -112,5 +115,24 @@ public class MemberServiceImpl implements MemberService {
             .getName();
 
         return new MemberStreakColorRes(streakColorName);
+    }
+
+    @Override
+    public MemberTreeColorRes treeColor() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            );
+
+        String treeColorName = treeColorRepository.findById(
+                member.getCurrentStreakColorId()
+            )
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_STREAK_COLOR)
+            )
+            .getName();
+
+        return new MemberTreeColorRes(treeColorName);
     }
 }
