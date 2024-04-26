@@ -1,4 +1,4 @@
-package life.bareun.diary.products.entity;
+package life.bareun.diary.product.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

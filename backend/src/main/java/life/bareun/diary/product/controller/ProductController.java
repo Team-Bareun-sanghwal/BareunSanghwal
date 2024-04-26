@@ -1,9 +1,9 @@
-package life.bareun.diary.products.controller;
+package life.bareun.diary.product.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.products.dto.response.ProductListRes;
-import life.bareun.diary.products.dto.response.ProductStreakThemeUpdateRes;
-import life.bareun.diary.products.service.ProductService;
+import life.bareun.diary.product.dto.response.ProductListRes;
+import life.bareun.diary.product.dto.response.ProductStreakThemeUpdateRes;
+import life.bareun.diary.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

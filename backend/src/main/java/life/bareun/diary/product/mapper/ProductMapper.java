@@ -1,7 +1,7 @@
-package life.bareun.diary.products.mapper;
+package life.bareun.diary.product.mapper;
 
-import life.bareun.diary.products.dto.ProductDto;
-import life.bareun.diary.products.entity.Product;
+import life.bareun.diary.product.dto.ProductDto;
+import life.bareun.diary.product.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

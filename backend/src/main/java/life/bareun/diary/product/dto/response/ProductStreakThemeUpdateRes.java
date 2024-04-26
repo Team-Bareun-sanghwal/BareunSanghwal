@@ -1,4 +1,4 @@
-package life.bareun.diary.products.dto.response;
+package life.bareun.diary.product.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,5 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ProductStreakThemeUpdateRes {
+
     private String streakColorName;
 }

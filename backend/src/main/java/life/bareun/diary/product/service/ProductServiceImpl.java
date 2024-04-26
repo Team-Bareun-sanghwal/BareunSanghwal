@@ -1,4 +1,4 @@
-package life.bareun.diary.products.service;
+package life.bareun.diary.product.service;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -10,14 +10,14 @@ import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.StreakColorGradeRepository;
 import life.bareun.diary.member.repository.StreakColorRepository;
-import life.bareun.diary.products.dto.ProductDto;
-import life.bareun.diary.products.dto.response.ProductListRes;
-import life.bareun.diary.products.entity.StreakColor;
-import life.bareun.diary.products.entity.StreakColorGrade;
-import life.bareun.diary.products.exception.ProductErrorCode;
-import life.bareun.diary.products.exception.ProductException;
-import life.bareun.diary.products.mapper.ProductMapper;
-import life.bareun.diary.products.repository.ProductRepository;
+import life.bareun.diary.product.dto.ProductDto;
+import life.bareun.diary.product.dto.response.ProductListRes;
+import life.bareun.diary.product.entity.StreakColor;
+import life.bareun.diary.product.entity.StreakColorGrade;
+import life.bareun.diary.product.exception.ProductErrorCode;
+import life.bareun.diary.product.exception.ProductException;
+import life.bareun.diary.product.mapper.ProductMapper;
+import life.bareun.diary.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         Integer amount = productRepository.findByKey("gotcha_streak")
             .orElseThrow(() -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY))
             .getPrice();
-        if(member.getPoint() < amount) {
+        if (member.getPoint() < amount) {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
         }
 
