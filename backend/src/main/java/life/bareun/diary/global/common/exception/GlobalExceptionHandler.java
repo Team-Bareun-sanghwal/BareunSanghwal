@@ -5,6 +5,7 @@ import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.streak.exception.StreakException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,5 +30,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> streakExceptionHandler(StreakException e) {
         return ResponseEntity.status(e.getErrorCode().getStatus())
             .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
+    }
+
+    /**
+     * 예외 코드를 unExpectedExceptionHandler 위에 작성해주세요.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> unexpectedExceptionHandler(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(
+                BaseResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상 못한 오류가 발생했습니다. " + e.getMessage()));
     }
 }
