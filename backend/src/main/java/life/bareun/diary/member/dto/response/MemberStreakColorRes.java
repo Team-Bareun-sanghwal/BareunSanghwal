@@ -1,10 +1,7 @@
 package life.bareun.diary.member.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public record MemberStreakColorRes(
+    String streakName
+) {
 
-@AllArgsConstructor
-@Getter
-public class MemberStreakColorRes {
-    private String streakName;
 }

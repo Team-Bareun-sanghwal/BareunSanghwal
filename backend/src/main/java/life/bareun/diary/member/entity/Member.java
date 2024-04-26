@@ -123,10 +123,10 @@ public class Member {
     }
 
     public void update(MemberUpdateReq memberUpdateReq) {
-        this.nickname = memberUpdateReq.getNickname();
-        this.birth = memberUpdateReq.getBirthDate();
-        this.gender = memberUpdateReq.getGender();
-        this.job = memberUpdateReq.getJob();
+        this.nickname = memberUpdateReq.nickname();
+        this.birth = memberUpdateReq.birthDate();
+        this.gender = memberUpdateReq.gender();
+        this.job = memberUpdateReq.job();
     }
 
     public void usePoint(Integer amount) {
