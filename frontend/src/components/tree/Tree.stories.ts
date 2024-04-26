@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Tree from './Tree';
 const meta = {
-  title: 'Tree/Tree',
+  title: 'tree/Tree',
   component: Tree,
 
   tags: ['autodocs'],
@@ -20,7 +20,7 @@ export const GreenTree: Story = {
 };
 export const RedTree: Story = {
   args: {
-    color: 'red',
+    color: '#303030',
   },
 };
 

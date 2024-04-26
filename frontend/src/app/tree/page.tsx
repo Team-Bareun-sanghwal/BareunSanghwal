@@ -1,9 +1,9 @@
-import TreeModel from '@/components/tree/Tree';
+import Tree from '@/components/tree/Tree';
 
 export default function Page() {
   return (
     <div>
-      <TreeModel color="red" />
+      <Tree color="#ff7644" />
     </div>
   );
 }
