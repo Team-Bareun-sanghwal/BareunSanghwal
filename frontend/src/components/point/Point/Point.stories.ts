@@ -50,3 +50,8 @@ export const Story6: Story = {
     point: 99999,
   },
 };
+export const Recovery_FREE: Story = {
+  args: {
+    point: -1,
+  },
+};
