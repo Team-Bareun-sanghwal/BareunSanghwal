@@ -3,6 +3,7 @@ package life.bareun.diary.product.controller;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.product.dto.response.ProductListRes;
 import life.bareun.diary.product.dto.response.ProductStreakThemeUpdateRes;
+import life.bareun.diary.product.dto.response.ProductTreeThemeUpdateRes;
 import life.bareun.diary.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,19 @@ public class ProductController {
                     HttpStatus.OK.value(),
                     "스트릭 변경권을 구매했습니다.",
                     new ProductStreakThemeUpdateRes(streakColorName)
+                )
+            );
+    }
+
+    @PatchMapping("/theme/tree")
+    public ResponseEntity<BaseResponse<ProductTreeThemeUpdateRes>> gotchaTree() {
+        String treeColorName = productService.buyTreeGotcha();
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "나무 테마 변경권을 구매했습니다.",
+                    new ProductTreeThemeUpdateRes(treeColorName)
                 )
             );
     }

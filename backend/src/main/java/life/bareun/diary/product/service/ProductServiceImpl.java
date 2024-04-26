@@ -8,16 +8,18 @@ import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
-import life.bareun.diary.product.repository.StreakColorGradeRepository;
-import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.dto.ProductDto;
 import life.bareun.diary.product.dto.response.ProductListRes;
 import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
+import life.bareun.diary.product.entity.TreeColor;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.mapper.ProductMapper;
 import life.bareun.diary.product.repository.ProductRepository;
+import life.bareun.diary.product.repository.StreakColorGradeRepository;
+import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +28,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final String GOTCHA_TREE_KEY = "gotcha_tree";
+
     private final static SecureRandom RANDOM = new SecureRandom();
 
     private final ProductRepository productRepository;
     private final StreakColorRepository streakColorRepository;
     private final StreakColorGradeRepository streakColorGradeRepository;
+    private final TreeColorRepository treeColorRepository;
+
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
 
@@ -102,6 +108,45 @@ public class ProductServiceImpl implements ProductService {
         memberRepository.save(member);
 
         return gotchaStreakColor.getName();
+    }
+
+    @Override
+    @Transactional
+    public String buyTreeGotcha() {
+        // 1. 나무 색 전체 불러오기
+        List<TreeColor> treeColors = treeColorRepository.findAll();
+
+        // 2. 랜덤 뽑기
+        int treeColorCount = treeColors.size();
+        TreeColor gotchTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
+
+        // 3. 나무 색 변경권 가격 정보 얻기
+        Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY)
+            )
+            .getPrice();
+
+        // 4. 포인트 사용하기
+        Long memberId = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            );
+        member.usePoint(amount);
+
+        // 5. 사용자 나무 색 변경
+        Integer treeColorId = treeColorRepository.findById(gotchTreeColor.getId())
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_TREE_COLOR)
+            )
+            .getId();
+        member.changeTreeColor(treeColorId);
+
+        // 6. 결과 반영
+        memberRepository.save(member);
+
+        return gotchTreeColor.getName();
     }
 
     // private double randomDouble(double from, double to) {

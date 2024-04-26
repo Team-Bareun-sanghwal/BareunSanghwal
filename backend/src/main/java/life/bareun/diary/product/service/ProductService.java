@@ -8,4 +8,6 @@ public interface ProductService {
 
     String buyStreakGotcha();
 
+    String buyTreeGotcha();
+
 }
