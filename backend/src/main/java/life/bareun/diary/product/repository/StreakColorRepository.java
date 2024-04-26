@@ -1,4 +1,4 @@
-package life.bareun.diary.member.repository;
+package life.bareun.diary.product.repository;
 
 import java.util.List;
 import life.bareun.diary.product.entity.StreakColor;

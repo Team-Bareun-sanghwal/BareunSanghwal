@@ -1,4 +1,4 @@
-package life.bareun.diary.member.repository;
+package life.bareun.diary.product.repository;
 
 import life.bareun.diary.product.entity.StreakColorGrade;
 import org.springframework.data.jpa.repository.JpaRepository;
