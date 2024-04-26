@@ -238,8 +238,8 @@ public class RecapServiceImpl implements RecapService {
         double averageRateByMemberHabit =
             Math.round(((achievementRateSum * 1.0) / recapHabitAccomplishedList.size()) * 10) / 10.0;
 
-        // ratio 비율 내림차순으로 정렬
-        recapMemberHabitRateDtoList.sort((o1, o2) -> o2.ratio() - o1.ratio());
+        // totalCount 내림차순으로 정렬
+        recapMemberHabitRateDtoList.sort((o1, o2) -> (o2.actionCount()+o2.missCount()) - (o1.actionCount()+o1.missCount()));
 
         // 첫 5개 요소를 제외한 나머지 요소를 삭제
         recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
