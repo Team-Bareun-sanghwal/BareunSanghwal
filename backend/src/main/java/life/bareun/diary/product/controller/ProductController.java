@@ -28,13 +28,13 @@ public class ProductController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "상품 목록 받아라",
+                    "상품 목록을 읽어왔습니다.",
                     products
                 )
             );
     }
 
-    @PatchMapping("/theme/streak")
+    @PatchMapping("/color/streak")
     public ResponseEntity<BaseResponse<ProductStreakThemeUpdateRes>> gotchaStreak() {
         String streakColorName = productService.buyStreakGotcha();
         return ResponseEntity.status(HttpStatus.OK)
@@ -47,7 +47,7 @@ public class ProductController {
             );
     }
 
-    @PatchMapping("/theme/tree")
+    @PatchMapping("/color/tree")
     public ResponseEntity<BaseResponse<ProductTreeThemeUpdateRes>> gotchaTree() {
         String treeColorName = productService.buyTreeGotcha();
         return ResponseEntity.status(HttpStatus.OK)
