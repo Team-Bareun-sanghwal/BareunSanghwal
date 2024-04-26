@@ -149,11 +149,4 @@ public class ProductServiceImpl implements ProductService {
         return gotchTreeColor.getName();
     }
 
-    // private double randomDouble(double from, double to) {
-    //     return from + (RANDOM.nextDouble() * (to - from));
-    // }
-
-    // private int randomInt(int from, int to) {
-    //     return RANDOM.nextInt(from, to);
-    // }
 }
