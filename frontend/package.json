@@ -18,6 +18,7 @@
     "@react-three/gltfjsx": "^4.3.4",
     "@syncfusion/ej2-react-charts": "^25.1.40",
     "autoprefixer": "^10.4.19",
+    "emoji-picker-react": "^4.9.2",
     "framer-motion": "^11.1.1",
     "next": "14.2.1",
     "prettier": "^3.2.5",
