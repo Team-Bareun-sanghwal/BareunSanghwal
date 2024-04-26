@@ -1,12 +1,8 @@
 package life.bareun.diary.product.dto.response;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public record ProductTreeThemeUpdateRes(
+    String treeColorName
+) {
 
-@AllArgsConstructor
-@Getter
-public class ProductTreeThemeUpdateRes {
-
-    private String treeColorName;
 }

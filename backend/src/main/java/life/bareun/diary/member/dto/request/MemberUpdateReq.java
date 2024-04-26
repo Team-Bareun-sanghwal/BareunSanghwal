@@ -3,16 +3,12 @@ package life.bareun.diary.member.dto.request;
 import java.time.LocalDate;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
 
-@AllArgsConstructor
-@Getter
-@ToString
-public class MemberUpdateReq {
-    private String nickname;
-    private LocalDate birthDate;
-    private Gender gender;
-    private Job job;
+public record MemberUpdateReq(
+    String nickname,
+    LocalDate birthDate,
+    Gender gender,
+    Job job
+) {
+
 }

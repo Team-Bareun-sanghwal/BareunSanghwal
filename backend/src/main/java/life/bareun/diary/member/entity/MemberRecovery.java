@@ -31,12 +31,13 @@ public class MemberRecovery {
 
     @Column(name = "free_recovery")
     private Integer freeRecovery;
+
     private MemberRecovery(Member member, Integer freeRecovery) {
         this.member = member;
         this.freeRecovery = freeRecovery;
     }
 
-    public static MemberRecovery create(Member member){
+    public static MemberRecovery create(Member member) {
         return new MemberRecovery(member, 1);
     }
 }
