@@ -1,7 +1,7 @@
-package life.bareun.diary.products.dto.response;
+package life.bareun.diary.product.dto.response;
 
 import java.util.List;
-import life.bareun.diary.products.dto.ProductDto;
+import life.bareun.diary.product.dto.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

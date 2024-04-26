@@ -1,4 +1,4 @@
-package life.bareun.diary.products.exception;
+package life.bareun.diary.product.exception;
 
 import lombok.Getter;
 

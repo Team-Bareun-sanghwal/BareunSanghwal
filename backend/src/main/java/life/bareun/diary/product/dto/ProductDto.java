@@ -1,4 +1,4 @@
-package life.bareun.diary.products.dto;
+package life.bareun.diary.product.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

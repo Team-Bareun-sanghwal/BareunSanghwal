@@ -1,25 +1,23 @@
-package life.bareun.diary.products.entity;
+package life.bareun.diary.product.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
-@Table(name = "streak_color")
-public class StreakColor {
+@Table(name = "streak_color_grade")
+public class StreakColorGrade {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,8 +26,6 @@ public class StreakColor {
     @Column(name = "name")
     private String name;
 
-    @JoinColumn(name = "grade_id")
-    @ManyToOne
-    private StreakColorGrade streakColorGrade;
+    @Column(name = "weight")
+    private Float weight;
 }
-

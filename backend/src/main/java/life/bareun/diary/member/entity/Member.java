@@ -132,4 +132,8 @@ public class Member {
     public void usePoint(Integer amount) {
         this.point -= amount;
     }
+
+    public void changeTreeColor(Integer id) {
+        this.currentTreeColorId = id;
+    }
 }
