@@ -28,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
     private static final String GOTCHA_TREE_KEY = "gotcha_tree";
+    private static final String STREAK_RECOVERY = "streak_recovery";
 
     private final static SecureRandom RANDOM = new SecureRandom();
 
@@ -54,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
             .map(ProductMapper.INSTANCE::toProductDto)
             .peek(
                 productDto -> {
-                    if (productDto.getKey().equals("streak_recovery") && freeRecoveryCount > 0) {
+                    if (productDto.getKey().equals(STREAK_RECOVERY) && freeRecoveryCount > 0) {
                         productDto.setPrice(0);
                     }
                 }
@@ -68,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public String buyStreakGotcha() {
+        // 1. 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
         List<StreakColorGrade> streakColorGrades = streakColorGradeRepository.findAll()
             .stream()
             .sorted(
@@ -75,29 +78,36 @@ public class ProductServiceImpl implements ProductService {
             )
             .toList();
 
-        double origin = 0;  // 시작 범위
+        // 끝 범위는 전체 색상 가중치의 합
         double bound = streakColorGrades.stream()
             .mapToDouble(val -> Double.valueOf(val.getWeight()))
             .sum();
 
-        double gotchaGradeWeight = RANDOM.nextDouble(origin, bound); // randomDouble(from, to);
+        // origin 이상 bound 미만의 무작위 실수 값
+        // 구간 [1.0, 101.0)의 수 중 랜덤 값을 추출하고
+        // 열린 구간 (100.0, 101.0) 사이의 수가 추출되면 100.0으로 치환한다.
+        double gotchaGradeWeight = Math.min(RANDOM.nextDouble(bound) + 1, bound);
+
+        // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
+        double weightSum = 0.0;
         StreakColorGrade gotchaGrade = null;
-        for (int i = 0; i < streakColorGrades.size(); ++i) {
-            if (gotchaGradeWeight < streakColorGrades.get(i).getWeight()) {
-                gotchaGrade = streakColorGrades.get(i);
+        for (StreakColorGrade streakColorGrade : streakColorGrades) {
+            weightSum += streakColorGrade.getWeight();
+            if (gotchaGradeWeight < weightSum) {
+                gotchaGrade = streakColorGrade;
                 break;
             }
         }
 
         List<StreakColor> streakColors = streakColorRepository.findByStreakColorGrade(gotchaGrade);
-        StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(1, streakColors.size()));
+        StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
 
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id).orElseThrow(
             () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
         );
 
-        Integer amount = productRepository.findByKey("gotcha_streak")
+        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
             .orElseThrow(() -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY))
             .getPrice();
         if (member.getPoint() < amount) {
@@ -149,11 +159,4 @@ public class ProductServiceImpl implements ProductService {
         return gotchTreeColor.getName();
     }
 
-    // private double randomDouble(double from, double to) {
-    //     return from + (RANDOM.nextDouble() * (to - from));
-    // }
-
-    // private int randomInt(int from, int to) {
-    //     return RANDOM.nextInt(from, to);
-    // }
 }
