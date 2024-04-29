@@ -49,6 +49,7 @@ import { HabitChecker } from './calendar/HabitChecker/HabitChecker';
 import { LongestStreak } from './calendar/LogestStreak/LongestStreak';
 import { MonthLabel } from './calendar/MonthLabel/MonthLabel';
 import { Calender } from './calendar/Calender';
+import { PlusButton } from './common/PlusButton/PlusButton';
 
 export {
   AlertBox,
@@ -102,4 +103,5 @@ export {
   RecapTitle,
   Trophy,
   ReportOnlyText,
+  PlusButton,
 };
