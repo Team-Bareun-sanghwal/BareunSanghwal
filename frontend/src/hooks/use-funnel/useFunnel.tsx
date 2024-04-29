@@ -1,26 +1,37 @@
-import { useState, PropsWithChildren } from 'react';
+import { ReactNode, isValidElement, FC, useState } from 'react';
 
-type ChildrenType = {
+type StepProps = {
   name: string;
+  children: ReactNode;
 };
 
-export const useFunnel = (initialStep: string) => {
-  const [step, setStep] = useState<string>(initialStep);
+type FunnelProps = {
+  children: ReactNode[];
+};
 
-  const Step = (props: PropsWithChildren<ChildrenType>) => {
-    return <>{props.children}</>;
+interface FunnelComponent extends FC<FunnelProps> {
+  Step: FC<StepProps>;
+}
+
+type UseFunnelReturn<T> = {
+  Funnel: FunnelComponent;
+  setStep: (step: T) => void;
+};
+
+export function useFunnel<T>(initialStep: T): UseFunnelReturn<T> {
+  const [step, setStep] = useState<T>(initialStep);
+
+  const Step: FC<StepProps> = ({ children }) => {
+    return <>{children}</>;
   };
 
-  const Funnel = ({
-    children,
-  }: {
-    children: PropsWithChildren<ChildrenType>[];
-  }) => {
-    const targetStep = children?.find((props) => props.name === step);
-    return { ...targetStep };
+  const Funnel: FunnelComponent = ({ children }) => {
+    const currentStep = children.find(
+      (child: ReactNode) => isValidElement(child) && child.props.name === step,
+    );
+    return <>{currentStep}</> || <></>;
   };
 
   Funnel.Step = Step;
-
-  return [Funnel, setStep];
-};
+  return { Funnel, setStep };
+}
