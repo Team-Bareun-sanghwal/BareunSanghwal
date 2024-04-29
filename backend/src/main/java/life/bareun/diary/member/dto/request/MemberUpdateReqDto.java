@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 
-public record MemberUpdateReq(
+public record MemberUpdateReqDto(
     String nickname,
     LocalDate birthDate,
     Gender gender,

@@ -1,6 +1,6 @@
 package life.bareun.diary.member.dto.response;
 
-public record MemberTreeColorRes(
+public record MemberTreeColorResDto(
     String streakName
 ) {
 

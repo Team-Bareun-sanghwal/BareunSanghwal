@@ -1,6 +1,6 @@
 package life.bareun.diary.product.dto.response;
 
-public record ProductStreakColorUpdateRes(
+public record ProductStreakColorUpdateResDto(
     String streakColorName
 ) {
 

@@ -1,10 +1,10 @@
 package life.bareun.diary.member.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.member.dto.request.MemberUpdateReq;
-import life.bareun.diary.member.dto.response.MemberInfoRes;
-import life.bareun.diary.member.dto.response.MemberStreakColorRes;
-import life.bareun.diary.member.dto.response.MemberTreeColorRes;
+import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,9 @@ public class MemberController {
     @PatchMapping
     public ResponseEntity<BaseResponse<Void>> update(
         @RequestBody
-        MemberUpdateReq memberUpdateReq
+        MemberUpdateReqDto memberUpdateReqDto
     ) {
-        memberService.update(memberUpdateReq);
+        memberService.update(memberUpdateReqDto);
 
         return ResponseEntity.ok(
             BaseResponse.success(
@@ -52,8 +52,8 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<MemberInfoRes>> info() {
-        MemberInfoRes info = memberService.info();
+    public ResponseEntity<BaseResponse<MemberInfoResDto>> info() {
+        MemberInfoResDto info = memberService.info();
         return ResponseEntity.ok(
             BaseResponse.success(
                 HttpStatus.OK.value(),
@@ -64,25 +64,25 @@ public class MemberController {
     }
 
     @GetMapping("/color/streak")
-    public ResponseEntity<BaseResponse<MemberStreakColorRes>> streakColor() {
-        MemberStreakColorRes memberStreakColorRes = memberService.streakColor();
+    public ResponseEntity<BaseResponse<MemberStreakColorResDto>> streakColor() {
+        MemberStreakColorResDto memberStreakColorResDto = memberService.streakColor();
         return ResponseEntity.ok(
             BaseResponse.success(
                 HttpStatus.OK.value(),
                 "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                memberStreakColorRes
+                memberStreakColorResDto
             )
         );
     }
 
     @GetMapping("/color/tree")
-    public ResponseEntity<BaseResponse<MemberTreeColorRes>> treeColor() {
-        MemberTreeColorRes memberTreeColorRes = memberService.treeColor();
+    public ResponseEntity<BaseResponse<MemberTreeColorResDto>> treeColor() {
+        MemberTreeColorResDto memberTreeColorResDto = memberService.treeColor();
         return ResponseEntity.ok(
             BaseResponse.success(
                 HttpStatus.OK.value(),
                 "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                memberTreeColorRes
+                memberTreeColorResDto
             )
         );
     }

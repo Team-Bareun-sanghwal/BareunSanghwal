@@ -2,7 +2,7 @@ package life.bareun.diary.global.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.global.security.dto.response.AuthAccessTokenRes;
+import life.bareun.diary.global.security.dto.response.AuthAccessTokenResDto;
 import life.bareun.diary.global.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,17 +20,17 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/access-token")
-    public ResponseEntity<BaseResponse<AuthAccessTokenRes>> accessToken(
+    public ResponseEntity<BaseResponse<AuthAccessTokenResDto>> accessToken(
         HttpServletRequest request
     ) {
-        AuthAccessTokenRes authAccessTokenRes = authService.issueAccessToken(
+        AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(
             request.getHeader("Authorization-Refresh")
         );
         return ResponseEntity.ok(
             BaseResponse.success(
                 HttpStatus.OK.value(),
                 "액세스 토큰이 발급되었습니다.",
-                authAccessTokenRes
+                authAccessTokenResDto
             )
         );
     }

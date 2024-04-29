@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class MemberInfoRes {
+public class MemberInfoResDto {
 
     private String nickname;
     private Gender gender;

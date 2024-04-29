@@ -2,7 +2,7 @@ package life.bareun.diary.global.security.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import life.bareun.diary.global.security.dto.response.AuthAccessTokenRes;
+import life.bareun.diary.global.security.dto.response.AuthAccessTokenResDto;
 import life.bareun.diary.global.security.exception.CustomSecurityException;
 import life.bareun.diary.global.security.exception.SecurityErrorCode;
 import life.bareun.diary.global.security.token.AuthToken;
@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthTokenService authTokenService;
 
     @Override
-    public AuthAccessTokenRes issueAccessToken(String refreshToken) {
+    public AuthAccessTokenResDto issueAccessToken(String refreshToken) {
         if(refreshToken == null) {
             throw new CustomSecurityException(SecurityErrorCode.UNAUTHENTICATED);
         }
@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
             .getRole()
             .name();
 
-        return new AuthAccessTokenRes(
+        return new AuthAccessTokenResDto(
             authTokenProvider.createAccessToken(
                 Long.toString(memberId),
                 role

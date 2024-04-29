@@ -1,9 +1,9 @@
 package life.bareun.diary.product.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.product.dto.response.ProductListRes;
-import life.bareun.diary.product.dto.response.ProductStreakColorUpdateRes;
-import life.bareun.diary.product.dto.response.ProductTreeColorUpdateRes;
+import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
+import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse<ProductListRes>> productList() {
-        ProductListRes products = productService.productList();
+    public ResponseEntity<BaseResponse<ProductListResDto>> productList() {
+        ProductListResDto products = productService.productList();
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(
@@ -35,8 +35,8 @@ public class ProductController {
     }
 
     @PatchMapping("/color/streak")
-    public ResponseEntity<BaseResponse<ProductStreakColorUpdateRes>> gotchaStreak() {
-        ProductStreakColorUpdateRes streakColorUpdateRes = productService.buyStreakGotcha();
+    public ResponseEntity<BaseResponse<ProductStreakColorUpdateResDto>> gotchaStreak() {
+        ProductStreakColorUpdateResDto streakColorUpdateRes = productService.buyStreakGotcha();
         return ResponseEntity.status(HttpStatus.OK)
             .body(
                 BaseResponse.success(
@@ -48,8 +48,8 @@ public class ProductController {
     }
 
     @PatchMapping("/color/tree")
-    public ResponseEntity<BaseResponse<ProductTreeColorUpdateRes>> gotchaTree() {
-        ProductTreeColorUpdateRes treeColorUpdateRes = productService.buyTreeGotcha();
+    public ResponseEntity<BaseResponse<ProductTreeColorUpdateResDto>> gotchaTree() {
+        ProductTreeColorUpdateResDto treeColorUpdateRes = productService.buyTreeGotcha();
         return ResponseEntity.status(HttpStatus.OK)
             .body(
                 BaseResponse.success(

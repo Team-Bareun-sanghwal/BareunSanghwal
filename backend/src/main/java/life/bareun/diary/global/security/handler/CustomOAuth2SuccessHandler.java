@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.global.security.dto.response.AuthLoginRes;
+import life.bareun.diary.global.security.dto.response.AuthLoginResDto;
 import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.ResponseUtil;
@@ -39,7 +39,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         // 응답
         int statusCode = oAuth2MemberPrincipal.isNewMember() ? HttpStatus.CREATED.value()
             : HttpStatus.OK.value();
-        AuthLoginRes authLoginRes = AuthLoginRes.builder()
+        AuthLoginResDto authLoginRes = AuthLoginResDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .build();

@@ -1,15 +1,15 @@
 package life.bareun.diary.product.service;
 
-import life.bareun.diary.product.dto.response.ProductListRes;
-import life.bareun.diary.product.dto.response.ProductStreakColorUpdateRes;
-import life.bareun.diary.product.dto.response.ProductTreeColorUpdateRes;
+import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
+import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 
 public interface ProductService {
 
-    ProductListRes productList();
+    ProductListResDto productList();
 
-    ProductStreakColorUpdateRes buyStreakGotcha();
+    ProductStreakColorUpdateResDto buyStreakGotcha();
 
-    ProductTreeColorUpdateRes buyTreeGotcha();
+    ProductTreeColorUpdateResDto buyTreeGotcha();
 
 }

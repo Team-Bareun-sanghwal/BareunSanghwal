@@ -1,8 +1,8 @@
 package life.bareun.diary.global.security.service;
 
-import life.bareun.diary.global.security.dto.response.AuthAccessTokenRes;
+import life.bareun.diary.global.security.dto.response.AuthAccessTokenResDto;
 
 public interface AuthService {
-    AuthAccessTokenRes issueAccessToken(String refreshToken);
+    AuthAccessTokenResDto issueAccessToken(String refreshToken);
 
 }
