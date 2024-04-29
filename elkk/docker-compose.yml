@@ -25,9 +25,9 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     init: true
     volumes:
-      - /var/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh
-      - /var/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh
-      - /var/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -48,8 +48,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /var/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - /var/jenkins_home/workspace/ELKK/elkk/elasticsearch:/usr/share/elasticsearch/data
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - ${ELASTIC_PORT_1}:${ELASTIC_PORT_1}
       - ${ELASTIC_PORT_2}:${ELASTIC_PORT_2}
@@ -73,8 +73,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /var/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - /var/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/usr/share/logstash/pipeline
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/tcp
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/udp
@@ -93,7 +93,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /var/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - ${KIBANA_PORT}:${KIBANA_PORT}
     environment:
