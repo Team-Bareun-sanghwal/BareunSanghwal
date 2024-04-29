@@ -12,7 +12,7 @@ interface ITinyButtonProps {
   onClick?: () => void;
 }
 
-export const TinyButton = ({ mode, label, ...props }: ITinyButtonProps) => {
+export const TinyButton = ({ mode, label, onClick }: ITinyButtonProps) => {
   const buttonColor =
     mode === 'MODIFY' ? 'bg-custom-light-gray' : 'bg-custom-matcha';
   const textColor =
@@ -21,7 +21,7 @@ export const TinyButton = ({ mode, label, ...props }: ITinyButtonProps) => {
   return (
     <button
       className={`${buttonColor} ${textColor} w-fit h-[2.5rem] px-[1rem] py-[0.5rem] custom-light-text rounded-[0.8rem] flex items-center gap-[0.5rem]`}
-      {...props}
+      onClick={onClick}
     >
       {mode === 'MODIFY' ? (
         <PencilIcon className="w-[1.5rem] h-[1.5rem] text-custom-black" />

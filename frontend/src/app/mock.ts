@@ -1,4 +1,4 @@
-import { ThemeColor } from '@/components/Calender/CalenderConfig';
+import { ThemeColor } from '@/components/calendar/CalenderConfig';
 // 1. Streak response
 export interface IStreaksReponse {
   achieveProportion: number;

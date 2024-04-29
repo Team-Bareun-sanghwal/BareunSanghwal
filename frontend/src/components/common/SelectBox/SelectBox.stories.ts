@@ -27,3 +27,9 @@ export const Job: Story = {
     options: ['학생', '회사원', '주부', '취준생', '자영업'],
   },
 };
+
+export const NoLabel: Story = {
+  args: {
+    options: ['학생', '회사원', '주부', '취준생', '자영업'],
+  },
+};

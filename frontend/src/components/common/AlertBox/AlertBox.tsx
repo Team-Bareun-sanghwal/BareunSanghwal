@@ -1,3 +1,5 @@
+'use client';
+
 import { motion } from 'framer-motion';
 import {
   CheckBadgeIcon,
@@ -12,7 +14,7 @@ interface IAlertBoxProps {
 }
 
 const container = {
-  show: { y: 0, opacity: 1 },
+  show: { y: '-150%', opacity: 1 },
   hidden: { y: '100%', opacity: 0 },
 };
 
@@ -28,7 +30,7 @@ export const AlertBox = ({ mode, label, open }: IAlertBoxProps) => {
         damping: 40,
         stiffness: 400,
       }}
-      className="fixed w-full bottom-[10rem] flex justify-center items-center"
+      className="fixed w-full bottom-0 flex justify-center items-center"
     >
       <div className="px-[1.5rem] py-[1rem] flex items-center gap-[0.8rem] bg-custom-black-with-opacity rounded-[2rem]">
         {mode === 'SUCCESS' ? (
