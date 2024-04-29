@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 interface SelectBoxProps {
-  label: string;
+  label?: string;
   options: string[];
 }
 
@@ -12,7 +12,11 @@ export const SelectBox = ({ label, options }: SelectBoxProps) => {
 
   return (
     <section className="w-full flex flex-col gap-[1rem]">
-      <label className="custom-semibold-text text-custom-black">{label}</label>
+      {label && (
+        <label className="custom-semibold-text text-custom-black">
+          {label}
+        </label>
+      )}
 
       <ul className="rounded-[0.8rem] list-none flex border-[0.15rem] border-custom-dark-gray custom-light-text overflow-hidden">
         {options.map((option, index) => {
