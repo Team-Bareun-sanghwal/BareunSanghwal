@@ -2,6 +2,7 @@ package life.bareun.diary.global.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.global.security.config.SecurityConfig;
 import life.bareun.diary.global.security.dto.response.AuthAccessTokenResDto;
 import life.bareun.diary.global.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,11 +23,11 @@ public class AuthController {
 
     @GetMapping("/access-token")
     public ResponseEntity<BaseResponse<AuthAccessTokenResDto>> accessToken(
+        @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
+        String refreshToken,
         HttpServletRequest request
     ) {
-        AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(
-            request.getHeader("Authorization-Refresh")
-        );
+        AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
         return ResponseEntity.ok(
             BaseResponse.success(
                 HttpStatus.OK.value(),
