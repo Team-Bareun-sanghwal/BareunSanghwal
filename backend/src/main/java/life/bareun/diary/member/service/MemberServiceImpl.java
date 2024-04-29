@@ -5,10 +5,10 @@ import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
-import life.bareun.diary.member.dto.request.MemberUpdateReq;
-import life.bareun.diary.member.dto.response.MemberInfoRes;
-import life.bareun.diary.member.dto.response.MemberStreakColorRes;
-import life.bareun.diary.member.dto.response.MemberTreeColorRes;
+import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
@@ -67,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void update(MemberUpdateReq memberUpdateReq) {
+    public void update(MemberUpdateReqDto memberUpdateReqDto) {
         Long id = AuthUtil.getMemberIdFromAuthentication();
 
         Member member = memberRepository.findById(id)
@@ -75,7 +75,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
             );
 
-        member.update(memberUpdateReq);
+        member.update(memberUpdateReqDto);
         memberRepository.save(member);
     }
 
@@ -91,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberInfoRes info() {
+    public MemberInfoResDto info() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
             .orElseThrow(
@@ -102,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberStreakColorRes streakColor() {
+    public MemberStreakColorResDto streakColor() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
             .orElseThrow(
@@ -117,11 +117,11 @@ public class MemberServiceImpl implements MemberService {
             )
             .getName();
 
-        return new MemberStreakColorRes(streakColorName);
+        return new MemberStreakColorResDto(streakColorName);
     }
 
     @Override
-    public MemberTreeColorRes treeColor() {
+    public MemberTreeColorResDto treeColor() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
             .orElseThrow(
@@ -136,6 +136,6 @@ public class MemberServiceImpl implements MemberService {
             )
             .getName();
 
-        return new MemberTreeColorRes(treeColorName);
+        return new MemberTreeColorResDto(treeColorName);
     }
 }

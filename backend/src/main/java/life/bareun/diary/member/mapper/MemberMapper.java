@@ -1,6 +1,6 @@
 package life.bareun.diary.member.mapper;
 
-import life.bareun.diary.member.dto.response.MemberInfoRes;
+import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.entity.Member;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,5 +15,5 @@ public interface MemberMapper {
     @Mapping(source = "gender", target = "gender")
     @Mapping(source = "job", target = "job")
     @Mapping(source = "birth", target = "birthDate")
-    MemberInfoRes toMemberInfoRes(Member member);
+    MemberInfoResDto toMemberInfoRes(Member member);
 }

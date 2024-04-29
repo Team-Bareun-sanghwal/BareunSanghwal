@@ -9,9 +9,9 @@ import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.dto.ProductDto;
-import life.bareun.diary.product.dto.response.ProductListRes;
-import life.bareun.diary.product.dto.response.ProductStreakColorUpdateRes;
-import life.bareun.diary.product.dto.response.ProductTreeColorUpdateRes;
+import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
+import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
 import life.bareun.diary.product.entity.TreeColor;
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductListRes productList() {
+    public ProductListResDto productList() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         int freeRecoveryCount = memberRecoveryRepository.findById(id)
             .orElseThrow(
@@ -65,13 +65,13 @@ public class ProductServiceImpl implements ProductService {
             )
             .toList();
 
-        return new ProductListRes(products);
+        return new ProductListResDto(products);
     }
 
 
     @Override
     @Transactional
-    public ProductStreakColorUpdateRes buyStreakGotcha() {
+    public ProductStreakColorUpdateResDto buyStreakGotcha() {
         // 1. 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
         List<StreakColorGrade> streakColorGrades = streakColorGradeRepository.findAll()
             .stream()
@@ -119,12 +119,12 @@ public class ProductServiceImpl implements ProductService {
         member.usePoint(amount);
         memberRepository.save(member);
 
-        return new ProductStreakColorUpdateRes(gotchaStreakColor.getName());
+        return new ProductStreakColorUpdateResDto(gotchaStreakColor.getName());
     }
 
     @Override
     @Transactional
-    public ProductTreeColorUpdateRes buyTreeGotcha() {
+    public ProductTreeColorUpdateResDto buyTreeGotcha() {
         // 1. 나무 색 전체 불러오기
         List<TreeColor> treeColors = treeColorRepository.findAll();
 
@@ -158,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
         // 6. 결과 반영
         memberRepository.save(member);
 
-        return new ProductTreeColorUpdateRes(gotchaTreeColor.getName());
+        return new ProductTreeColorUpdateResDto(gotchaTreeColor.getName());
     }
 
 }

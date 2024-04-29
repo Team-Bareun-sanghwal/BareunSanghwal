@@ -1,7 +1,7 @@
 package life.bareun.diary.product.dto.response;
 
 
-public record ProductTreeColorUpdateRes(
+public record ProductTreeColorUpdateResDto(
     String treeColorName
 ) {
 
