@@ -1,6 +1,6 @@
 'use client';
-import { Environment } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
+import { CameraControls } from './CameraControls';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { OrbitControls, Loader, useGLTF } from '@react-three/drei';
 import { MeshStandardMaterial } from 'three';
@@ -18,7 +18,7 @@ function SkyDome() {
     </mesh>
   );
 }
-function Model({ color, rotation }: { color: string; rotation: number }) {
+function Model({ color }: { color: string }) {
   const { scene } = useGLTF('/assets/orgTree.glb');
   scene.position.set(-4.2, 0.2, -3);
   scene.scale.set(1.6, 1.6, 1.6);
@@ -56,7 +56,7 @@ function Model({ color, rotation }: { color: string; rotation: number }) {
       }
     }
   });
-  return <primitive object={scene} rotation={[0, rotation, 0]} />;
+  return <primitive object={scene} />;
 }
 function OutDoor() {
   const { scene } = useGLTF('/assets/outdoor.glb');
@@ -70,15 +70,18 @@ function GiftBox() {
   return <primitive object={scene} />;
 }
 export default function Tree({ color }: { color: string }) {
-  const [rotation, setRotation] = useState(0);
-  const rotateRef = useRef({ rotate: false, direction: 0 });
+  const [position, setPosition] = useState({ x: 20, y: 16, z: 24 });
+  const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
 
-  const startRotation = (direction: number) => {
-    console.log('startRotation');
-    rotateRef.current = { rotate: true, direction };
-    requestAnimationFrame(() => {});
+  const handleOnclick1 = () => {
+    setPosition({ x: 5, y: 2, z: 0 });
+    setTarget({ x: 10, y: 2, z: 0 });
   };
 
+  const handleOnclick2 = () => {
+    setPosition({ x: 3, y: 2, z: 0 });
+    setTarget({ x: 5, y: 2, z: 0 });
+  };
   return (
     <>
       <div
@@ -95,12 +98,12 @@ export default function Tree({ color }: { color: string }) {
           <directionalLight position={[-10, 10, 10]} intensity={2} />
           <pointLight position={[-10, -10, -10]} />
           <Suspense fallback={null}>
-            <Model color={color} rotation={rotation} />
+            <Model color={color} />
             <GiftBox />
             <OutDoor />
             <SkyDome />
           </Suspense>
-          <OrbitControls />
+          <CameraControls position={position} target={target} />
         </Canvas>
         <Loader />
       </div>

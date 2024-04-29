@@ -10,9 +10,9 @@ import Item from '@/components/point/Item/Item';
 export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [showLoader, setShowLoader] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (isLoading) {
       const timer = setTimeout(() => {
         setIsLoading(false);
@@ -20,7 +20,7 @@ export default function Page() {
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [isLoading]);
+  }, [isLoading]);*/
   return (
     <div>
       {showLoader ? (
