@@ -16,11 +16,11 @@ import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.mapper.MemberMapper;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
-import life.bareun.diary.streak.service.StreakService;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
+import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,19 +50,24 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findBySub(sub).orElseGet(
             () -> {
                 isNewMember.set(true);
-                Member savedMember = memberRepository.save(Member.create(sub, oAuth2Provider));
-                memberRecoveryRepository.save(MemberRecovery.create(savedMember));
+                Member savedMember = memberRepository.save(
+                    Member.create(sub, oAuth2Provider)
+                );
+                memberRecoveryRepository.save(
+                    MemberRecovery.create(savedMember)
+                );
 
+                streakService.createInitialMemberStreak(savedMember);
                 return savedMember;
             }
         );
 
-            streakService.createInitialMemberStreak(saveMember);
-
-            return saveMember;
-        });
-
-        return new MemberPrincipal(member.getId(), member.getRole(), member.getProvider(), isNewMember.get());
+        return new MemberPrincipal(
+            member.getId(),
+            member.getRole(),
+            member.getProvider(),
+            isNewMember.get()
+        );
     }
 
     @Override
