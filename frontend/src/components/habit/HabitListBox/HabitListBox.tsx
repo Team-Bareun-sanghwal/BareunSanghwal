@@ -15,6 +15,8 @@ interface IHabitListBoxProps {
   dayList?: string[];
   createdAt: Date;
   completedAt?: Date;
+  onDeleteClick?: () => void;
+  onCompleteClick?: () => void;
 }
 
 export const HabitListBox = ({
@@ -25,6 +27,8 @@ export const HabitListBox = ({
   dayList,
   createdAt,
   completedAt,
+  onDeleteClick,
+  onCompleteClick,
 }: IHabitListBoxProps) => {
   return (
     <section className="w-full rounded-[1rem] p-[1rem] flex flex-col gap-[1rem] bg-custom-light-gray">
@@ -104,11 +108,17 @@ export const HabitListBox = ({
             </>
           ) : (
             <ul className="flex divide-x-[0.1rem] divide-custom-medium-gray">
-              <li className="flex items-center pr-[1rem]">
+              <li
+                className="flex items-center pr-[1rem]"
+                onClick={onCompleteClick}
+              >
                 <ArrowPathIcon className="w-[1.8rem] h-[1.8rem] mr-[0.3rem]" />
                 <span>종료하기</span>
               </li>
-              <li className="flex items-center text-custom-error pl-[1rem]">
+              <li
+                className="flex items-center text-custom-error pl-[1rem]"
+                onClick={onDeleteClick}
+              >
                 <XMarkIcon className="w-[1.8rem] h-[1.8rem]" />
                 <span>삭제하기</span>
               </li>
