@@ -62,7 +62,7 @@ function wait_for_elasticsearch {
 function wait_for_builtin_users {
 	local elasticsearch_host="bareun.life"
 
-	local -a args=( '-s' '-D-' '-m15' "--insecure"  "http://${elasticsearch_host}:9200/_security/user?pretty" )
+	local -a args=( '-s' '-D-' '-m15' "--insecure"  "https://${elasticsearch_host}:9200/_security/user?pretty" )
 
 	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
 		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
@@ -112,7 +112,7 @@ function check_user_exists {
 	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'  "--insecure" 
-		"http://${elasticsearch_host}:9200/_security/user/${username}"
+		"https://${elasticsearch_host}:9200/_security/user/${username}"
 		)
 
 	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
@@ -148,7 +148,7 @@ function set_user_password {
 	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'  "--insecure" 
-		"http://${elasticsearch_host}:9200/_security/user/${username}/_password"
+		"https://${elasticsearch_host}:9200/_security/user/${username}/_password"
 		'-X' 'POST'
 		'-H' 'Content-Type: application/json'
 		'-d' "{\"password\" : \"${password}\"}"
@@ -182,7 +182,7 @@ function create_user {
 	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'  "--insecure" 
-		"http://${elasticsearch_host}:9200/_security/user/${username}"
+		"https://${elasticsearch_host}:9200/_security/user/${username}"
 		'-X' 'POST'
 		'-H' 'Content-Type: application/json'
 		'-d' "{\"password\":\"${password}\",\"roles\":[\"${role}\"]}"
@@ -215,7 +215,7 @@ function ensure_role {
 	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'  "--insecure" 
-		"http://${elasticsearch_host}:9200/_security/role/${name}"
+		"https://${elasticsearch_host}:9200/_security/role/${name}"
 		'-X' 'POST'
 		'-H' 'Content-Type: application/json'
 		'-d' "$body"
