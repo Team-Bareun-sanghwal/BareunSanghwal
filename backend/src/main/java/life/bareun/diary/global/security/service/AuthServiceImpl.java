@@ -22,7 +22,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthAccessTokenResDto issueAccessToken(String refreshToken) {
-        if(refreshToken == null) {
+        if (refreshToken == null) {
             throw new CustomSecurityException(SecurityErrorCode.UNAUTHENTICATED);
         }
 
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomSecurityException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
 
-        if(authTokenService.isRevoked(refreshToken)) {
+        if (authTokenService.isRevoked(refreshToken)) {
             throw new CustomSecurityException(SecurityErrorCode.REVOKED_REFRESH_TOKEN);
         }
 
