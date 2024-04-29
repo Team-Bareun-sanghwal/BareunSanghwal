@@ -21,7 +21,7 @@ function SkyDome() {
 function Model({ color, rotation }: { color: string; rotation: number }) {
   const { scene } = useGLTF('/assets/orgTree.glb');
   scene.position.set(-4.2, 0.2, -3);
-  scene.scale.set(1.4, 1.4, 1.4);
+  scene.scale.set(1.6, 1.6, 1.6);
   scene.traverse((child: THREE.Object3D) => {
     if ((child as THREE.Mesh).isMesh) {
       const name = child.name;
@@ -56,11 +56,17 @@ function Model({ color, rotation }: { color: string; rotation: number }) {
       }
     }
   });
-
   return <primitive object={scene} rotation={[0, rotation, 0]} />;
 }
 function OutDoor() {
   const { scene } = useGLTF('/assets/outdoor.glb');
+  return <primitive object={scene} />;
+}
+
+function GiftBox() {
+  const { scene } = useGLTF('/assets/giftbox.glb');
+  scene.position.set(-1.2, 1, 4.8);
+  scene.scale.set(0.8, 0.8, 0.8);
   return <primitive object={scene} />;
 }
 export default function Tree({ color }: { color: string }) {
@@ -75,14 +81,22 @@ export default function Tree({ color }: { color: string }) {
 
   return (
     <>
-      <div style={{ width: '100%', height: '100vh', margin: 0 }}>
-        <Canvas camera={{ position: [4, 4, 14], fov: 90, near: 1, far: 1000 }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <Canvas camera={{ position: [10, 1, 14], fov: 95, near: 1, far: 1000 }}>
           <ambientLight intensity={0.6} />
           <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
           <directionalLight position={[-10, 10, 10]} intensity={2} />
           <pointLight position={[-10, -10, -10]} />
           <Suspense fallback={null}>
             <Model color={color} rotation={rotation} />
+            <GiftBox />
             <OutDoor />
             <SkyDome />
           </Suspense>

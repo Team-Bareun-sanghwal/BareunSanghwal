@@ -1,0 +1,42 @@
+export default function page() {
+  return (
+    <>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+      <div>sample</div>
+    </>
+  );
+}
