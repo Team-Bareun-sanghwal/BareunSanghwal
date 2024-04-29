@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect } from 'react';
+
 interface IPropType {
   nowIdx: number;
   pageIdx: number;
@@ -11,16 +15,29 @@ export const ProgressBlock = ({
 }: IPropType) => {
   const bgColor = nowIdx <= pageIdx ? 'bg-white' : 'bg-custom-dark-gray';
 
-  const interval = 1000; // 1초마다 갱신
+  // useEffect(() => {
+  //   let pageIdxTimer: NodeJS.Timeout;
 
-  // progress 상태를 1초마다 갱신
-  if (nowIdx < pageIdx) {
-    setInterval(() => {
-      increasePageIdx();
-    }, interval);
-  }
+  //   if (nowIdx === pageIdx) {
+  //     if (pageIdx < 9) {
+  //       pageIdxTimer = setInterval(() => {
+  //         increasePageIdx();
+  //       }, 10000);
+  //     }
 
-  // 언마운트 시 타이머 해제
+  //     return () => {
+  //       clearInterval(pageIdxTimer);
+  //     };
+  //   }
+  // }, [increasePageIdx, nowIdx, pageIdx]);
 
-  return <div className={`${bgColor} w-[3.3rem] h-[0.5rem] rounded-full`} />;
+  return (
+    <div className={`bg-custom-dark-gray w-[3.3rem] h-[0.5rem] rounded-full`}>
+      {nowIdx === pageIdx ? (
+        <div className="progressBlock rounded-full" />
+      ) : (
+        <div className={`${bgColor} w-[3.3rem] h-[0.5rem] rounded-full`} />
+      )}
+    </div>
+  );
 };
