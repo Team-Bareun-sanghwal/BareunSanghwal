@@ -24,7 +24,7 @@ function suberr {
 function wait_for_elasticsearch {
 	local elasticsearch_host="bareun.life"
 	
-	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}' "https://${elasticsearch_host}:9200/" )
+	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}' "--insecure" "https://${elasticsearch_host}:9200/" )
 
 	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
 		args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
