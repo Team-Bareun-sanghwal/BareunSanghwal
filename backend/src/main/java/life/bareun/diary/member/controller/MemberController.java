@@ -1,6 +1,7 @@
 package life.bareun.diary.member.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.global.security.config.SecurityConfig;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +40,27 @@ public class MemberController {
                 null
             )
         );
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse<Void>> logout(
+        @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
+        String refreshToken
+    ) {
+        memberService.logout(refreshToken);
+
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "나 너무 많은 일이 잇엇어 힘들다 진짜",
+                    null
+                )
+            );
     }
 
     @DeleteMapping
