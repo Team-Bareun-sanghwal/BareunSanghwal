@@ -2,6 +2,8 @@ package life.bareun.diary.streak.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,32 +28,34 @@ public class MemberDailyStreak {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column
+    @Column(name = "created_date")
     @NotNull
     private LocalDate createdDate;
 
-    @Column
+    @Column(name = "achieve_tracker_count")
     @NotNull
     private int achieveTrackerCount;
 
-    @Column
+    @Column(name = "total_tracker_count")
     @NotNull
     private int totalTrackerCount;
 
-    @Column
+    @Column(name = "is_stared")
     @NotNull
     private boolean isStared;
 
-    @Column
+    @Column(name = "achieve_type")
+    @Enumerated(EnumType.STRING)
     private AchieveType achieveType;
 
-    @Column
+    @Column(name = "current_streak")
     @NotNull
     private int currentStreak;
 

@@ -23,21 +23,22 @@ public class HabitTotalStreak {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "member_habit_id")
     private MemberHabit memberHabit;
 
-    @Column
+    @Column(name = "longest_streak")
     @NotNull
     private int longestStreak;
 
-    @Column
+    @Column(name = "achieve_tracker_count")
     @NotNull
     private int achieveTrackerCount;
 
-    @Column
+    @Column(name = "total_tracker_count")
     @NotNull
     private int totalTrackerCount;
 

@@ -23,64 +23,59 @@ public class MemberTotalStreak {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column
+    @Column(name = "longest_streak")
     @NotNull
     private int longestStreak;
 
-    @Column
+    @Column(name = "achieve_streak_count")
     @NotNull
     private int achieveStreakCount;
 
-    @Column
+    @Column(name = "total_streak_count")
     @NotNull
     private int totalStreakCount;
 
-    @Column
+    @Column(name = "achieve_tracker_count")
     @NotNull
     private int achieveTrackerCount;
 
-    @Column
+    @Column(name = "total_tracker_count")
     @NotNull
     private int totalTrackerCount;
 
-    @Column
+    @Column(name = "star_count")
     @NotNull
     private int starCount;
 
     @Builder
     public MemberTotalStreak(Member member) {
         this.member = member;
-        // this.longestStreak = 0;
-        // this.achieveStreakCount = 0;
-        // this.totalStreakCount = 0;
-        // this.achieveTrackerCount = 0;
-        // this.totalTrackerCount = 0;
-        // this.starCount = 0;
     }
 
     public void modifyLongestStreak(int streakCount) {
         this.longestStreak = streakCount;
     }
 
-    public void addAchieveStreakCount() {
+    public void increaseAchieveStreakCountByOne() {
         this.achieveTrackerCount++;
     }
 
-    public void addTotalStreakCount() {
+    public void increaseTotalStreakCountByOne() {
         this.totalTrackerCount++;
     }
 
-    public void addAchieveTrackerCount() {
+    public void increaseAchieveTrackerCountByOne() {
         this.achieveStreakCount++;
     }
 
-    public void modifyTotalTrackerCount(int trackerCount) {
+    public void increaseTotalTrackerCount(int trackerCount) {
         this.totalStreakCount += trackerCount;
     }
 

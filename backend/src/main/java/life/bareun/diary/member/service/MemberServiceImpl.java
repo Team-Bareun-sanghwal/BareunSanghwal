@@ -16,6 +16,7 @@ import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.mapper.MemberMapper;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.streak.service.StreakService;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
@@ -30,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final AuthTokenProvider authTokenProvider;
     private final MemberRepository memberRepository;
+    private final StreakService streakService;
     private final MemberRecoveryRepository memberRecoveryRepository;
     private final StreakColorRepository streakColorRepository;
     private final TreeColorRepository treeColorRepository;
@@ -44,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
         AtomicBoolean isNewMember = new AtomicBoolean(false);
+
         Member member = memberRepository.findBySub(sub).orElseGet(
             () -> {
                 isNewMember.set(true);
@@ -54,12 +57,12 @@ public class MemberServiceImpl implements MemberService {
             }
         );
 
-        return new MemberPrincipal(
-            member.getId(),
-            member.getRole(),
-            member.getProvider(),
-            isNewMember.get()
-        );
+            streakService.createInitialMemberStreak(saveMember);
+
+            return saveMember;
+        });
+
+        return new MemberPrincipal(member.getId(), member.getRole(), member.getProvider(), isNewMember.get());
     }
 
     @Override
