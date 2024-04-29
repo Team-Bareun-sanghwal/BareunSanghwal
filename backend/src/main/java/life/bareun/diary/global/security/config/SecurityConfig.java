@@ -23,6 +23,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    public final static String REFRESH_TOKEN_HEADER = "RefreshToken";
+
     private final AuthTokenProvider authTokenProvider;
     private final MemberService memberService;
 
