@@ -17,12 +17,16 @@ public class JwtConfig {
     @Value("${jwt.access-token.lifetime}")
     private String accessTokenLifetimeSeconds;
 
-    // @Value("${jwt.refresh-token.lifetime}")
-    // private String refreshTokenLifetimeSeconds;
+    @Value("${jwt.refresh-token.lifetime}")
+    private String refreshTokenLifetimeSeconds;
 
     @Bean
     public AuthTokenProvider authTokenProvider() {
-        return new AuthTokenProviderImpl(secretKey, Long.parseLong(accessTokenLifetimeSeconds));
+        return new AuthTokenProviderImpl(
+            secretKey,
+            Long.parseLong(accessTokenLifetimeSeconds),
+            Long.parseLong(refreshTokenLifetimeSeconds)
+        );
     }
 }
 
