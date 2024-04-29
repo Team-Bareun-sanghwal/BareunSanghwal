@@ -15,7 +15,7 @@ export const TabBox = ({ tabs }: TabBoxProps) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
 
   return (
-    <section className={`flex flex-col justify-center gap-[2rem]`}>
+    <section className={`flex flex-col justify-center gap-[1rem]`}>
       <ul
         className={`w-full py-[1rem] custom-semibold-text flex list-none border-b-[0.15rem] border-custom-medium-gray`}
       >
