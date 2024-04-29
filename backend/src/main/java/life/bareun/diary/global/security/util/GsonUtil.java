@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GsonUtil {
+
     private static Gson instance;
 
     public static String toJson(Object src) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Gson();
         }
 
@@ -18,7 +19,7 @@ public class GsonUtil {
     }
 
     public static byte[] toJsonBytesUtf8(Object src) {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Gson();
         }
 

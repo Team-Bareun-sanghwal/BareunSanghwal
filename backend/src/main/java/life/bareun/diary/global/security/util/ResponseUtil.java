@@ -38,7 +38,7 @@ public class ResponseUtil {
             .body(baseResponse));
 
         try (
-            ServletOutputStream outputStream = response.getOutputStream();
+            ServletOutputStream outputStream = response.getOutputStream()
         ) {
             response.setStatus(baseResponse.getStatus());
             response.setContentType("application/json");

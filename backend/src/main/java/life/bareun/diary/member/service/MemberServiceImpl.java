@@ -5,12 +5,22 @@ import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
-import life.bareun.diary.member.dto.request.MemberUpdateDtoReq;
+import life.bareun.diary.member.dto.request.MemberUpdateReq;
+import life.bareun.diary.member.dto.response.MemberInfoRes;
+import life.bareun.diary.member.dto.response.MemberStreakColorRes;
+import life.bareun.diary.member.dto.response.MemberTreeColorRes;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
+import life.bareun.diary.member.mapper.MemberMapper;
+import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.service.StreakService;
+import life.bareun.diary.product.exception.ProductErrorCode;
+import life.bareun.diary.product.exception.ProductException;
+import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +32,9 @@ public class MemberServiceImpl implements MemberService {
     private final AuthTokenProvider authTokenProvider;
     private final MemberRepository memberRepository;
     private final StreakService streakService;
+    private final MemberRecoveryRepository memberRecoveryRepository;
+    private final StreakColorRepository streakColorRepository;
+    private final TreeColorRepository treeColorRepository;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -33,9 +46,16 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
         AtomicBoolean isNewMember = new AtomicBoolean(false);
-        Member member = memberRepository.findBySub(sub).orElseGet(() -> {
-            isNewMember.set(true);
-            Member saveMember = memberRepository.save(Member.create(sub, oAuth2Provider));
+
+        Member member = memberRepository.findBySub(sub).orElseGet(
+            () -> {
+                isNewMember.set(true);
+                Member savedMember = memberRepository.save(Member.create(sub, oAuth2Provider));
+                memberRecoveryRepository.save(MemberRecovery.create(savedMember));
+
+                return savedMember;
+            }
+        );
 
             streakService.createInitialMemberStreak(saveMember);
 
@@ -47,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void update(MemberUpdateDtoReq memberUpdateDtoReq) {
+    public void update(MemberUpdateReq memberUpdateReq) {
         Long id = AuthUtil.getMemberIdFromAuthentication();
 
         Member member = memberRepository.findById(id)
@@ -55,7 +75,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
             );
 
-        member.update(memberUpdateDtoReq);
+        member.update(memberUpdateReq);
         memberRepository.save(member);
     }
 
@@ -63,7 +83,59 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void delete() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
+
+        // 제약조건으로 인해 member_recovery를 먼저 삭제해야 한다.
+        memberRecoveryRepository.deleteByMemberId(id);
         memberRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public MemberInfoRes info() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            );
+
+        return MemberMapper.INSTANCE.toMemberInfoRes(member);
+    }
+
+    @Override
+    public MemberStreakColorRes streakColor() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            );
+
+        String streakColorName = streakColorRepository.findById(
+                member.getCurrentStreakColorId()
+            )
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_STREAK_COLOR)
+            )
+            .getName();
+
+        return new MemberStreakColorRes(streakColorName);
+    }
+
+    @Override
+    public MemberTreeColorRes treeColor() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            );
+
+        String treeColorName = treeColorRepository.findById(
+                member.getCurrentStreakColorId()
+            )
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_STREAK_COLOR)
+            )
+            .getName();
+
+        return new MemberTreeColorRes(treeColorName);
+    }
 }

@@ -3,11 +3,12 @@ package life.bareun.diary.habit.service;
 import java.time.LocalDate;
 import java.util.List;
 import life.bareun.diary.global.config.ImageConfig;
+import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
-import life.bareun.diary.habit.dto.request.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
@@ -64,12 +65,14 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     // 모든 해빗 트래커들을 삭제
     public void deleteAllHabitTracker(Long memberHabitId) {
         MemberHabit memberHabit = memberHabitRepository.findById(memberHabitId)
-            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT));
         // 사진도 삭제해야하기 때문에 목록을 불러와서 하나씩 삭제
         List<HabitTracker> habitTrackerList = habitTrackerRepository
             .findAllByMemberHabit(memberHabit);
         for (HabitTracker habitTracker : habitTrackerList) {
-            imageConfig.deleteImage(habitTracker.getImage());
+            if (habitTracker.getImage() != null) {
+                imageConfig.deleteImage(habitTracker.getImage());
+            }
             habitTrackerRepository.delete(habitTracker);
         }
     }
@@ -101,11 +104,10 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     @Override
     // 오늘 사용자의 해빗 트래커 리스트를 반환
     public HabitTrackerTodayResDto findAllTodayHabitTracker() {
-        // security 로직 추가되면 memberId 변경
         LocalDate localDate = LocalDate.now();
         return HabitTrackerTodayResDto.builder()
             .habitTrackerTodayDtoList(habitTrackerRepository.findAllTodayHabitTracker(
-                HabitTrackerTodayFactorDto.builder().memberId(1L).createdYear(localDate.getYear())
+                HabitTrackerTodayFactorDto.builder().memberId(AuthUtil.getMemberIdFromAuthentication()).createdYear(localDate.getYear())
                     .createdMonth(localDate.getMonthValue())
                     .createdDay(localDate.getDayOfMonth()).build())).build();
     }
@@ -143,10 +145,12 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     }
 
     @Override
+    // 가장 마지막에 작성한 해빗 트래커 찾기
     public HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto) {
         return habitTrackerRepository.findLastHabitTracker(habitTrackerLastDto);
     }
 
+    // 날짜 문자열 만들기
     private String loadCreatedDate(int year, int month, int day) {
         String createdDate = year + "-";
         createdDate += month > 10 ? month : "0" + month;
