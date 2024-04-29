@@ -1,4 +1,4 @@
-version: '3.7'
+# version: '3.7'
 
 services:
 
@@ -25,9 +25,9 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     init: true
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles:ro,Z
+      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./setup/lib.sh:/lib.sh:ro,Z
+      - ./setup/roles:/roles:ro,Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -48,8 +48,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch:/usr/share/elasticsearch/data:Z
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
+      - elasticsearch:/usr/share/elasticsearch/data:Z
     ports:
       - ${ELASTIC_PORT_1}:${ELASTIC_PORT_1}
       - ${ELASTIC_PORT_2}:${ELASTIC_PORT_2}
@@ -73,8 +73,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
     ports:
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/tcp
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/udp
@@ -93,7 +93,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
     ports:
       - ${KIBANA_PORT}:${KIBANA_PORT}
     environment:
@@ -104,35 +104,35 @@ services:
       - elasticsearch
     restart: unless-stopped
 
-  zookeeper:
-    container_name: zookeeper
-    image: confluentinc/cp-zookeeper:latest
-    ports:
-      - "${ZOOKEEPER_PORT}:${ZOOKEEPER_CLIENT_PORT}"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
-      ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
-    networks:
-      - elk
+  # zookeeper:
+  #   container_name: zookeeper
+  #   image: confluentinc/cp-zookeeper:latest
+  #   ports:
+  #     - "${ZOOKEEPER_PORT}:${ZOOKEEPER_CLIENT_PORT}"
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+  #     ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
+  #   networks:
+  #     - elk
 
-  kafka:
-    container_name: kafka
-    image: confluentinc/cp-kafka:latest
-    depends_on:
-      - zookeeper
-    ports:
-      - "${KAFKA_PORT}:${KAFKA_PORT}"
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_CLIENT_PORT}
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:${KAFKA_SUB_PORT},PLAINTEXT_HOST://${SERVER_IP}:${KAFKA_PORT}
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CREATE_TOPICS: "${RANK_LOG}:1:1"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - elk
+  # kafka:
+  #   container_name: kafka
+  #   image: confluentinc/cp-kafka:latest
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "${KAFKA_PORT}:${KAFKA_PORT}"
+  #   environment:
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:${ZOOKEEPER_CLIENT_PORT}
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:${KAFKA_SUB_PORT},PLAINTEXT_HOST://${SERVER_IP}:${KAFKA_PORT}
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #     KAFKA_CREATE_TOPICS: "${RANK_LOG}:1:1"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - elk
 
 networks:
   elk:
