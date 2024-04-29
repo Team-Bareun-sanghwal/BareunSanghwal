@@ -1,32 +1,43 @@
-import Calender from '@/components/calender/Calender';
-import { StreaksResponse, MemberStreakResponse, setDayInfo } from '@/app/mock';
-import { ColorThemeResponse } from './mock';
+'use client';
+
 import { NavBar } from '@/components/common/NavBar/NavBar';
-import HabitChecker from '@/components/main/HabitChecker/HabitChecker';
-import LongestStreak from '@/components/main/LongestStreak/LongestStreak';
-import HabitBtnList from '@/components/calender/HabitBtnList/HabitBtnList';
-import HabitBtn from '@/components/calender/HabitBtn/HabitBtn';
-import { BellIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
-import Point from '@/components/point/Point/Point';
-import Item from '@/components/point/Item/Item';
-import { ItemListResponse } from '@/app/mock';
-import Pallete from '@/components/point/Pallete/Pallete';
-import ColoredText from '@/components/point/ColoredText/ColoredText';
-import { Picker } from '@/components/common/EmojiPicker/Picker';
+import { AlertBox } from '@/components/common/AlertBox/AlertBox';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { useOverlay } from '@/hooks/use-overlay/useOverlay';
+
 export default function Home() {
-  const { dayOfWeekFirst, memberHabitList, dayInfo } = StreaksResponse;
-  const theme = ColorThemeResponse.streak_theme;
-  const getStar =
-    dayInfo[22].achieveCount === dayInfo[22].totalCount &&
-    dayInfo[22].totalCount !== 0;
+  const overlay = useOverlay();
+
+  const handleOverlay = () => {
+    overlay.open(({ isOpen, close }) => (
+      <BottomSheet
+        description="해빗을 삭제하면 더 이상 기록할 수 없어요. 그래도 삭제하시겠어요? 해빗을 삭제하면 더 이상 기록할 수 없어요. 그래도 삭제하시겠어요? "
+        mode="POSITIVE"
+        onClose={close}
+        onConfirm={close}
+        open={isOpen}
+        title="프로틴 주스 마시기 해빗을 삭제하시겠어요?"
+      />
+    ));
+  };
+
+  const handleAlertBox = () => {
+    overlay.open(({ isOpen }) => (
+      <AlertBox
+        label="해빗 이름은 15자를 넘을 수 없어요. 해빗 이름은 15자가 될 수도 있어요."
+        mode="SUCCESS"
+        open={isOpen}
+      />
+    ));
+    setTimeout(() => overlay.close(), 1000);
+  };
+
   return (
     <>
-      <div className="w-full h-40 bg-blue-300" />
-      <div className="w-full h-40 bg-blue-300" />
-      <div className="w-full h-40 bg-blue-300" />
-      <div className="w-full h-40 bg-blue-300" />
-      <Picker label={'해빗 아이콘을 지정해주세요'} />
+      <button onClick={handleOverlay}>BottomSheet 열기</button>
+      <button onClick={handleAlertBox}>AlertBox 열기</button>
+
+      <NavBar mode="HOME" />
     </>
   );
 }
