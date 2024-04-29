@@ -25,9 +25,9 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     init: true
     volumes:
-      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
-      - ./setup/lib.sh:/lib.sh:ro,Z
-      - ./setup/roles:/roles:ro,Z
+      - /var/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh
+      - /var/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh
+      - /var/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -48,8 +48,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - elasticsearch:/usr/share/elasticsearch/data
+      - /var/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /var/jenkins_home/workspace/ELKK/elkk/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - ${ELASTIC_PORT_1}:${ELASTIC_PORT_1}
       - ${ELASTIC_PORT_2}:${ELASTIC_PORT_2}
@@ -73,8 +73,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - /var/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - /var/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/tcp
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/udp
@@ -93,7 +93,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - /var/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - ${KIBANA_PORT}:${KIBANA_PORT}
     environment:
