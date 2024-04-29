@@ -5,10 +5,8 @@ const meta = {
   title: 'Recap/RecapTitle',
   component: RecapTitle,
   parameters: {
-    layout: 'centered',
-
     backgrounds: {
-      default: 'light',
+      default: 'dark',
     },
   },
   tags: ['autodocs'],

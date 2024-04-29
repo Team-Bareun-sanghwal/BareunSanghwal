@@ -23,7 +23,7 @@ export const Trophy = ({ mainHabit }: IHabitType) => {
         <>
           <Confetti
             width={360}
-            height={500}
+            height={800}
             gravity={0.1}
             numberOfPieces={200}
             opacity={0.5}
