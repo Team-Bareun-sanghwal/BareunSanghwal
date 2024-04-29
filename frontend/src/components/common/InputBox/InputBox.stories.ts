@@ -15,12 +15,21 @@ type Story = StoryObj<typeof meta>;
 
 export const Nickname: Story = {
   args: {
+    isLabel: true,
     mode: 'NICKNAME',
   },
 };
 
 export const HabitNickname: Story = {
   args: {
+    isLabel: true,
     mode: 'HABITNICKNAME',
+  },
+};
+
+export const NoLabel: Story = {
+  args: {
+    isLabel: false,
+    mode: 'NICKNAME',
   },
 };
