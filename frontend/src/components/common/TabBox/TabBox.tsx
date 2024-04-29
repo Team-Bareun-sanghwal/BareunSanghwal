@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactElement, useState } from 'react';
 
 type TabLists = {
