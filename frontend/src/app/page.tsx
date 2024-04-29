@@ -12,31 +12,31 @@ const data = {
   averageRateByMemberHabit: 63.3,
   rateByMemberHabitList: [
     {
-      name: 'heewoong',
+      name: '점심 샐러드 먹기',
       missCount: 1,
       actionCount: 4,
       ratio: 80,
     },
     {
-      name: 'heewoong',
+      name: '12시 취침',
       missCount: 2,
       actionCount: 3,
       ratio: 60,
     },
     {
-      name: 'heewoong',
+      name: '영양제 먹기',
       missCount: 2,
       actionCount: 3,
       ratio: 60,
     },
     {
-      name: 'heewoong',
+      name: '웨이트 1시간',
       missCount: 3,
       actionCount: 2,
       ratio: 40,
     },
     {
-      name: 'heewoong',
+      name: '강의장 계단으로 가기',
       missCount: 3,
       actionCount: 2,
       ratio: 40,
@@ -65,7 +65,7 @@ const data = {
     },
   ],
   mostSubmitTime: 'EVENING',
-  collectedStar: 0,
+  collectedStar: 13,
   myKeyWord: 'keyword',
   image: 'basic',
 };
