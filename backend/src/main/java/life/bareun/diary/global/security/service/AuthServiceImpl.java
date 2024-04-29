@@ -2,6 +2,7 @@ package life.bareun.diary.global.security.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import java.util.Date;
 import life.bareun.diary.global.security.dto.response.AuthAccessTokenResDto;
 import life.bareun.diary.global.security.exception.CustomSecurityException;
 import life.bareun.diary.global.security.exception.SecurityErrorCode;
@@ -34,6 +35,10 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomSecurityException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
 
+        if(authTokenService.isRevoked(refreshToken)) {
+            throw new CustomSecurityException(SecurityErrorCode.REVOKED_REFRESH_TOKEN);
+        }
+
         Long memberId = authTokenProvider.getMemberIdFromToken(refreshAuthToken);
         String role = memberRepository.findById(memberId)
             .orElseThrow(
@@ -44,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
 
         return new AuthAccessTokenResDto(
             authTokenProvider.createAccessToken(
+                new Date(),
                 Long.toString(memberId),
                 role
             )

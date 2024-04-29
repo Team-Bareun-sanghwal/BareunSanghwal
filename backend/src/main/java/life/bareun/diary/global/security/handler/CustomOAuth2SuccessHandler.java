@@ -3,6 +3,7 @@ package life.bareun.diary.global.security.handler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.security.dto.response.AuthLoginResDto;
 import life.bareun.diary.global.security.principal.OAuth2MemberPrincipal;
@@ -30,8 +31,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         OAuth2MemberPrincipal oAuth2MemberPrincipal = (OAuth2MemberPrincipal) authentication.getPrincipal();
         String id = oAuth2MemberPrincipal.getName();
         String role = oAuth2MemberPrincipal.getAuthority();
-        String accessToken = authTokenProvider.createAccessToken(id, role);
-        String refreshToken = authTokenProvider.createRefreshToken(id);
+
+        Date currentDate = new Date();
+        String accessToken = authTokenProvider.createAccessToken(currentDate, id, role);
+        String refreshToken = authTokenProvider.createRefreshToken(currentDate, id);
         // System.out.println("accessToken: " + accessToken);
         log.debug("accessToken: {}", accessToken);
         log.debug("refreshToken: {}", refreshToken);
