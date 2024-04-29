@@ -23,7 +23,7 @@ function suberr {
 # Poll the 'elasticsearch' service until it responds with HTTP code 200.
 function wait_for_elasticsearch {
 	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
-	echo "${ELASTIC_PASSWORD:-}"
+	
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}' "http://${elasticsearch_host}:9200/" )
 
 	if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
@@ -46,7 +46,8 @@ function wait_for_elasticsearch {
 			result=0
 			break
 		fi
-
+		echo "${output}"
+		echo "${result}"
 		sleep 5
 	done
 
