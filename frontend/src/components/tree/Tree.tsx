@@ -1,13 +1,27 @@
 'use client';
+import { Environment } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { OrbitControls, Loader, useGLTF } from '@react-three/drei';
 import { MeshStandardMaterial } from 'three';
 import * as THREE from 'three';
 
+import { useLoader } from '@react-three/fiber';
+import { TextureLoader, BackSide } from 'three';
+
+function SkyDome() {
+  const texture = useLoader(TextureLoader, '/assets/sky.jpg');
+  return (
+    <mesh>
+      <sphereGeometry args={[500, 60, 40]} />
+      <meshBasicMaterial map={texture} side={BackSide} />
+    </mesh>
+  );
+}
 function Model({ color, rotation }: { color: string; rotation: number }) {
   const { scene } = useGLTF('/assets/orgTree.glb');
   scene.position.set(-4.2, 0.2, -3);
+  scene.scale.set(1.4, 1.4, 1.4);
   scene.traverse((child: THREE.Object3D) => {
     if ((child as THREE.Mesh).isMesh) {
       const name = child.name;
@@ -61,16 +75,7 @@ export default function Tree({ color }: { color: string }) {
 
   return (
     <>
-      <div style={{ height: '500px', width: '100%' }}>
-        <button
-          onClick={() => console.log('hi')}
-          className="text-3xl border-2 border-black w-10 h-10 rounded-full text-center content-center top-10 ml-8"
-        >
-          A
-        </button>
-        <button className="text-3xl border-2 border-black w-10 h-10 rounded-full text-center content-center top-10 ml-28">
-          B
-        </button>
+      <div style={{ width: '100%', height: '100vh', margin: 0 }}>
         <Canvas camera={{ position: [4, 4, 14], fov: 90, near: 1, far: 1000 }}>
           <ambientLight intensity={0.6} />
           <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
@@ -79,6 +84,7 @@ export default function Tree({ color }: { color: string }) {
           <Suspense fallback={null}>
             <Model color={color} rotation={rotation} />
             <OutDoor />
+            <SkyDome />
           </Suspense>
           <OrbitControls />
         </Canvas>
