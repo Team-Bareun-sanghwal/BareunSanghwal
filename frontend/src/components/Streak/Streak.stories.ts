@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Streak from './Streak';
+import { Streak } from './Streak';
 
 const meta = {
   title: 'Calender/Streak',
