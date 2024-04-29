@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import LongestStreak from './LongestStreak';
+import { LongestStreak } from './LongestStreak';
 const meta = {
   title: 'Main/LongestStreak',
   component: LongestStreak,

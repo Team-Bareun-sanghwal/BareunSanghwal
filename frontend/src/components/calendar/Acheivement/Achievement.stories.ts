@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Achievement from './Achievement';
+import { Achievement } from './Achievement';
 
 const meta = {
   title: 'Calender/Achievement',

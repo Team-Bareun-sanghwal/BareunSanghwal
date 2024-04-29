@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import DayLabel from './DayLabel';
+import { DayLabel } from './DayLabel';
 
 const meta = {
   title: 'Calender/DayLabel',
