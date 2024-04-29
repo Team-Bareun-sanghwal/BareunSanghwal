@@ -25,9 +25,9 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     init: true
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh:ro,Z
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh:ro,Z
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles:ro,Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -39,7 +39,6 @@ services:
       BEATS_SYSTEM_PASSWORD: ${BEATS_SYSTEM_PASSWORD:-}
     networks:
       - elk
-      - ubuntu_infra
     depends_on:
       - elasticsearch
 
@@ -49,8 +48,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/var/elasticsearch/config/elasticsearch.yml
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch:/var/elasticsearch/data
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/var/elasticsearch/config/elasticsearch.yml:ro,Z
+      - elasticsearch:/var/elasticsearch/data:Z
     ports:
       - ${ELASTIC_PORT_1}:${ELASTIC_PORT_1}
       - ${ELASTIC_PORT_2}:${ELASTIC_PORT_2}
@@ -75,8 +74,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/var/logstash/config/logstash.yml
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/var/logstash/pipeline
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/var/logstash/config/logstash.yml:ro,Z
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/var/logstash/pipeline:ro,Z
     ports:
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/tcp
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/udp
@@ -96,7 +95,7 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/var/kibana/config/kibana.yml
+      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/var/kibana/config/kibana.yml:ro,Z
     ports:
       - ${KIBANA_PORT}:${KIBANA_PORT}
     environment:
@@ -134,6 +133,8 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: "${RANK_LOG}:1:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - elk
       - ubuntu_infra
