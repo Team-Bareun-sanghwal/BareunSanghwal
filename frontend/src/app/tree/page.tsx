@@ -10,9 +10,9 @@ import Item from '@/components/point/Item/Item';
 export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [showLoader, setShowLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (isLoading) {
       const timer = setTimeout(() => {
         setIsLoading(false);
@@ -20,7 +20,15 @@ export default function Page() {
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [isLoading]);*/
+  }, [isLoading]);
+
+  const Exit = () => {
+    setIsLoading(true);
+    setShowLoader(true);
+    setTimeout(() => {
+      router.back();
+    }, 2000);
+  };
   return (
     <div>
       {showLoader ? (
@@ -34,7 +42,7 @@ export default function Page() {
         </div>
       ) : (
         <div className="w-full h-screen overflow-hidden relative">
-          <button onClick={router.back} className="absolute z-10 m-4 text-lg">
+          <button onClick={Exit} className="absolute z-10 m-4 text-lg">
             {'<'} 뒤로가기
           </button>
           <Tree color="red" />
