@@ -22,7 +22,7 @@ function suberr {
 
 # Poll the 'elasticsearch' service until it responds with HTTP code 200.
 function wait_for_elasticsearch {
-	local elasticsearch_host="${ELASTICSEARCH_HOST}"
+	local elasticsearch_host="bareun.life"
 	
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}' "https://${elasticsearch_host}:9200/" )
 
@@ -60,7 +60,7 @@ function wait_for_elasticsearch {
 
 # Poll the Elasticsearch users API until it returns users.
 function wait_for_builtin_users {
-	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' "http://${elasticsearch_host}:9200/_security/user?pretty" )
 
@@ -109,7 +109,7 @@ function wait_for_builtin_users {
 function check_user_exists {
 	local username=$1
 
-	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'
 		"http://${elasticsearch_host}:9200/_security/user/${username}"
@@ -145,7 +145,7 @@ function set_user_password {
 	local username=$1
 	local password=$2
 
-	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'
 		"http://${elasticsearch_host}:9200/_security/user/${username}/_password"
@@ -179,7 +179,7 @@ function create_user {
 	local password=$2
 	local role=$3
 
-	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'
 		"http://${elasticsearch_host}:9200/_security/user/${username}"
@@ -212,7 +212,7 @@ function ensure_role {
 	local name=$1
 	local body=$2
 
-	local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
+	local elasticsearch_host="bareun.life"
 
 	local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'
 		"http://${elasticsearch_host}:9200/_security/role/${name}"
