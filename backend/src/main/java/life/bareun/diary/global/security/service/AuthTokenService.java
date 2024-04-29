@@ -7,7 +7,7 @@ import java.time.Duration;
 // Redis에 있으면 에러를 응답한다.
 public interface AuthTokenService {
 
-    void add(Long id, String value, Duration expiry);
+    void revoke(Long id, String value);
 
-    boolean isExpired(Long id);
+    boolean isRevoked(String refreshToken);
 }
