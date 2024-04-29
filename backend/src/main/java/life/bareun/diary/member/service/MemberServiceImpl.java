@@ -2,7 +2,11 @@ package life.bareun.diary.member.service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
+import life.bareun.diary.global.security.exception.CustomSecurityException;
+import life.bareun.diary.global.security.exception.SecurityErrorCode;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
+import life.bareun.diary.global.security.service.AuthTokenService;
+import life.bareun.diary.global.security.token.AuthToken;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
@@ -30,8 +34,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final AuthTokenProvider authTokenProvider;
-    private final MemberRepository memberRepository;
     private final StreakService streakService;
+    private final AuthTokenService authTokenService;
+
+    private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
     private final StreakColorRepository streakColorRepository;
     private final TreeColorRepository treeColorRepository;
@@ -68,6 +74,20 @@ public class MemberServiceImpl implements MemberService {
             member.getProvider(),
             isNewMember.get()
         );
+    }
+
+    @Override
+    public void logout(String refreshToken) {
+        AuthToken refreshAuthToken = authTokenProvider.tokenToAuthToken(refreshToken);
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Long targetId = authTokenProvider.getMemberIdFromToken(refreshAuthToken);
+
+        // Access token과 refresh token의 사용자 정보가 다르면 예외 발생
+        if (!id.equals(targetId)) {
+            throw new CustomSecurityException(SecurityErrorCode.UNMATCHED_AUTHENTICATION);
+        }
+
+        authTokenService.revoke(id, refreshToken);
     }
 
     @Override

@@ -11,6 +11,8 @@ public interface MemberService {
 
     MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider);
 
+    void logout(String refreshToken);
+
     void update(MemberUpdateReqDto memberUpdateReqDto);
 
     void delete();

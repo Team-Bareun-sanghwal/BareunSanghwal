@@ -1,11 +1,12 @@
 package life.bareun.diary.global.security.token;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.MacAlgorithm;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -46,9 +47,8 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
 
 
     @Override
-    public String createAccessToken(String memberId, String role) {
-        Date currentDate = new Date();
-        Date expiration = getAccessTokenExp(currentDate);
+    public String createAccessToken(Date from, String memberId, String role) {
+        Date expiration = getAccessTokenExp(from);
 
         return Jwts.builder()
             .header()
@@ -57,7 +57,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
             .and()
             .claim(CLAIM_MEMBER_ID, memberId)
             .claim(CLAIM_ROLE, role)
-            .issuedAt(currentDate)
+            .issuedAt(from)
             .expiration(expiration)
             .signWith(key, macAlgorithm)
             .encodePayload(true)
@@ -65,9 +65,8 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     }
 
     @Override
-    public String createRefreshToken(String memberId) {
-        Date currentDate = new Date();
-        Date expiration = getRefreshTokenExp(currentDate);
+    public String createRefreshToken(Date from, String memberId) {
+        Date expiration = getRefreshTokenExp(from);
 
         // Refresh token은 access token 재발급만이 목적이므로
         // claim에 포함되는 정보를 최소화한다(역할 정보는 제외한다).
@@ -77,7 +76,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
             .add("typ", "JWT")
             .and()
             .claim(CLAIM_MEMBER_ID, memberId)
-            .issuedAt(currentDate)
+            .issuedAt(from)
             .expiration(expiration)
             .signWith(key, macAlgorithm)
             .encodePayload(true)
@@ -98,7 +97,6 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
         // 단 ExpiredJwtException 예외는 무시되고, 반환값은 null이 된다.
         // 즉 예외로 취급되지 않으면서 검증 결과는 false가 된다.
         Claims claims = authToken.getClaims(this.key);
-
     }
 
     @Override
@@ -137,8 +135,19 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
 
             return Long.parseLong(memberId);
         } catch (JwtException | NumberFormatException | NullPointerException e) {
+
             throw new CustomSecurityException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
+    }
+
+    @Override
+    public Duration getExpiry(AuthToken refreshAuthToken) {
+        Claims claims = refreshAuthToken.getClaims(key);
+
+        Instant curr = new Date().toInstant();
+        Instant exp = claims.getExpiration().toInstant();
+
+        return Duration.between(curr, exp);
     }
 }
 
