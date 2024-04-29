@@ -2,14 +2,24 @@
 
 import { useState } from 'react';
 
-interface SelectBoxProps {
-  label?: string;
-  options: string[];
+interface IOptionType {
+  key: string;
+  value: string;
 }
 
-export const SelectBox = ({ label, options }: SelectBoxProps) => {
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
+interface SelectBoxProps {
+  label?: string;
+  options: IOptionType[];
+  defaultValue: string;
+  setDefaultValue: (newValue: string) => void;
+}
 
+export const SelectBox = ({
+  label,
+  options,
+  defaultValue,
+  setDefaultValue,
+}: SelectBoxProps) => {
   return (
     <section className="w-full flex flex-col gap-[1rem]">
       {label && (
@@ -23,10 +33,10 @@ export const SelectBox = ({ label, options }: SelectBoxProps) => {
           return (
             <li
               key={`option-${index}`}
-              className={`${index !== options.length - 1 && 'border-r-[0.15rem]'} ${selectedValue === option ? 'bg-custom-dark-gray' : 'bg-none'} ${selectedValue === option ? 'text-custom-white' : 'text-custom-black'} border-custom-dark-gray py-[0.8rem] text-center flex-grow cursor-pointer`}
-              onClick={() => setSelectedValue(option)}
+              className={`${index !== options.length - 1 && 'border-r-[0.15rem]'} ${defaultValue === option.key ? 'bg-custom-dark-gray' : 'bg-none'} ${defaultValue === option.key ? 'text-custom-white' : 'text-custom-black'} border-custom-dark-gray py-[0.8rem] text-center flex-grow cursor-pointer`}
+              onClick={() => setDefaultValue(option.key)}
             >
-              {option}
+              {option.value}
             </li>
           );
         })}
