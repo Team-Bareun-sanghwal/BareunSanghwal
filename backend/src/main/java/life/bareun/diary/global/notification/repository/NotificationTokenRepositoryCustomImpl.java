@@ -23,6 +23,5 @@ public class NotificationTokenRepositoryCustomImpl implements NotificationTokenR
     public NotificationTokenDto findNotificationTokenById(String id) {
         Map<String, Object> entries = hashOperations.entries(id);
         return NotificationTokenDto.builder().id(id).token((String) entries.get("token")).build();
-
     }
 }

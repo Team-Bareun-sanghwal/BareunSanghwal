@@ -13,13 +13,14 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash(value = "notificationToken", timeToLive = 60 * 60 * 3) //3시간
 @ToString
 public class NotificationToken {
+
     @Id
-    String id;
+    Long id;
 
     String token;
 
     @Builder
-    public NotificationToken(String id, String token) {
+    public NotificationToken(Long id, String token) {
         this.id = id;
         this.token = token;
     }
