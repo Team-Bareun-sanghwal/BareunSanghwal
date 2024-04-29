@@ -25,9 +25,9 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     init: true
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/entrypoint.sh:/entrypoint.sh:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/lib.sh:/lib.sh:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/setup/roles:/roles:ro,Z
+      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./setup/lib.sh:/lib.sh:ro,Z
+      - ./setup/roles:/roles:ro,Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
@@ -48,8 +48,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/elasticsearch/config/elasticsearch.yml:/var/elasticsearch/config/elasticsearch.yml:ro,Z
-      - elasticsearch:/var/elasticsearch/data:Z
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
+      - elasticsearch:/usr/share/elasticsearch/data:Z
     ports:
       - ${ELASTIC_PORT_1}:${ELASTIC_PORT_1}
       - ${ELASTIC_PORT_2}:${ELASTIC_PORT_2}
@@ -65,7 +65,6 @@ services:
       discovery.type: single-node
     networks:
       - elk
-      - ubuntu_infra
     restart: unless-stopped
 
   logstash:
@@ -74,8 +73,8 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/config/logstash.yml:/var/logstash/config/logstash.yml:ro,Z
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/logstash/pipeline:/var/logstash/pipeline:ro,Z
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
     ports:
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/tcp
       - ${LOGSTASH_PORT}:${LOGSTASH_PORT}/udp
@@ -84,7 +83,6 @@ services:
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
     networks:
       - elk
-      - ubuntu_infra
     depends_on:
       - elasticsearch
     restart: unless-stopped
@@ -95,14 +93,13 @@ services:
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
-      - /home/ubuntu/jenkins_home/workspace/ELKK/elkk/kibana/config/kibana.yml:/var/kibana/config/kibana.yml:ro,Z
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
     ports:
       - ${KIBANA_PORT}:${KIBANA_PORT}
     environment:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
     networks:
       - elk
-      - ubuntu_infra
     depends_on:
       - elasticsearch
     restart: unless-stopped
@@ -117,7 +114,6 @@ services:
       ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
     networks:
       - elk
-      - ubuntu_infra
 
   kafka:
     container_name: kafka
@@ -137,13 +133,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - elk
-      - ubuntu_infra
 
 networks:
   elk:
     driver: bridge
-  ubuntu_infra:
-    external: true
 
 volumes:
   elasticsearch:
