@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 interface IInputBoxProps {
+  isLabel: boolean;
   mode: 'NICKNAME' | 'HABITNICKNAME';
 }
 
-export const InputBox = ({ mode }: IInputBoxProps) => {
+export const InputBox = ({ isLabel, mode }: IInputBoxProps) => {
   const label = mode === 'NICKNAME' ? '닉네임' : '해빗 별칭';
   const placeholder =
     mode === 'NICKNAME'
@@ -32,7 +33,12 @@ export const InputBox = ({ mode }: IInputBoxProps) => {
 
   return (
     <section className="w-[34rem] flex flex-col items-start gap-[0.5rem]">
-      <label className="custom-semibold-text text-custom-matcha">{label}</label>
+      {isLabel && (
+        <label className="custom-semibold-text text-custom-matcha">
+          {label}
+        </label>
+      )}
+
       <input
         className={`${lineColor} w-[34rem] bg-transparent custom-medium-text outline-none py-[0.5rem] border-b-[0.2rem]`}
         placeholder={placeholder}
