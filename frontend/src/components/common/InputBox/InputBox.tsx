@@ -5,9 +5,16 @@ import { useState } from 'react';
 interface IInputBoxProps {
   isLabel: boolean;
   mode: 'NICKNAME' | 'HABITNICKNAME';
+  defaultValue: string;
+  setDefaultValue: (newValue: string) => void;
 }
 
-export const InputBox = ({ isLabel, mode }: IInputBoxProps) => {
+export const InputBox = ({
+  isLabel,
+  mode,
+  defaultValue,
+  setDefaultValue,
+}: IInputBoxProps) => {
   const label = mode === 'NICKNAME' ? '닉네임' : '해빗 별칭';
   const placeholder =
     mode === 'NICKNAME'
@@ -18,18 +25,21 @@ export const InputBox = ({ isLabel, mode }: IInputBoxProps) => {
       ? /^[A-Za-z0-9ㄱ-ㅎ가-힣!?@#$%^&*\s]{2,12}$/
       : /^[A-Za-z0-9ㄱ-ㅎ가-힣!?@#$%^&*\s]{1,15}$/;
 
-  const [lineColor, setLineColor] = useState<string>('border-b-custom-error');
+  const [lineColor, setLineColor] = useState<string>(
+    defaultValue ? 'border-b-custom-success' : 'border-b-custom-error',
+  );
 
   const [guideText, setGuideText] = useState<string>(() =>
     mode === 'NICKNAME'
-      ? '닉네임이 없습니다. 입력해주세요.'
+      ? defaultValue
+        ? ''
+        : '닉네임이 없습니다. 입력해주세요.'
       : '해빗 별칭이 없습니다. 입력해주세요.',
   );
 
-  const [guideTextColor, setGuideTextColor] =
-    useState<string>('text-custom-error');
-
-  const [userInputData, setUserInputData] = useState<string | null>(null);
+  const [guideTextColor, setGuideTextColor] = useState<string>(
+    defaultValue ? 'text-custom-success' : 'text-custom-error',
+  );
 
   return (
     <section className="w-[34rem] flex flex-col items-start gap-[0.5rem]">
@@ -42,13 +52,14 @@ export const InputBox = ({ isLabel, mode }: IInputBoxProps) => {
       <input
         className={`${lineColor} w-[34rem] bg-transparent custom-medium-text outline-none py-[0.5rem] border-b-[0.2rem]`}
         placeholder={placeholder}
+        defaultValue={defaultValue}
         onChange={(event) => {
           if (
             event.target.value.length !== 0 &&
             event.target.value.replaceAll(' ', '').length !== 0
           ) {
             if (regExp.test(event.target.value)) {
-              setUserInputData(event.target.value);
+              setDefaultValue(event.target.value);
               setLineColor('border-b-custom-success');
               setGuideTextColor('text-custom-success');
               if (mode === 'NICKNAME') {
@@ -57,7 +68,7 @@ export const InputBox = ({ isLabel, mode }: IInputBoxProps) => {
                 setGuideText('좋은 해빗 별칭입니다!');
               }
             } else {
-              setUserInputData(null);
+              setDefaultValue('');
               setLineColor('border-b-custom-error');
               setGuideTextColor('text-custom-error');
               if (mode === 'NICKNAME') {
