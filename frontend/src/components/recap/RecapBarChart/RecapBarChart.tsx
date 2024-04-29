@@ -23,7 +23,7 @@ registerLicense(
 );
 
 interface IDataType {
-  habit: string;
+  name: string;
   missCount: number;
   actionCount: number;
   ratio: number;
@@ -137,11 +137,11 @@ export const RecapBarChart = ({
   averageRateByMemberHabit: number;
 }) => {
   const processedData = rateByMemberHabitList.map((data) => {
-    return { ...data, size: 5 };
+    return { ...data, size: 1 };
   });
 
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col h-[50rem] items-center justify-between">
       <Chart3DComponent
         id="RecapBarChart"
         primaryXAxis={xAxisConfig}
@@ -152,7 +152,7 @@ export const RecapBarChart = ({
         depth={200}
         tilt={-20}
         width="360"
-        height="500"
+        height="450"
         wallColor="transparent"
       >
         <Inject
@@ -168,14 +168,14 @@ export const RecapBarChart = ({
         <Chart3DSeriesCollectionDirective>
           <Chart3DSeriesDirective
             dataSource={processedData}
-            xName="habit"
+            xName="name"
             yName="actionCount"
             type="StackingColumn"
             columnSpacing={-0.2}
           ></Chart3DSeriesDirective>
           <Chart3DSeriesDirective
             dataSource={processedData}
-            xName="habit"
+            xName="name"
             yName="missCount"
             type="StackingColumn"
             opacity={0.1}
@@ -183,7 +183,7 @@ export const RecapBarChart = ({
           ></Chart3DSeriesDirective>
           <Chart3DSeriesDirective
             dataSource={processedData}
-            xName="habit"
+            xName="name"
             yName="size"
             type="StackingColumn"
             opacity={0}
@@ -192,7 +192,7 @@ export const RecapBarChart = ({
           ></Chart3DSeriesDirective>
           <Chart3DSeriesDirective
             dataSource={processedData}
-            xName="habit"
+            xName="name"
             yName="size"
             type="StackingColumn"
             opacity={0}
