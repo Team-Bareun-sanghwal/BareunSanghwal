@@ -50,7 +50,7 @@ const config: Config = {
         'streak-bareun_sanghwal': '#15481B',
         'streak-minchodan': '#3EB489',
         'streak-cherry_blossom': '#FF8780',
-        'Streak-react': '#5ED3F3',
+        'streak-react': '#5ED3F3',
         'streak-spring': '#6AAD3D',
 
         //unique
@@ -127,6 +127,7 @@ function generateStreakColorSafelist() {
     'text-xs text-center w-16 truncate ...',
     'text-xs text-center w-24 truncate ...',
     'text-xs text-center w-32 truncate ...',
+    'text-2xl font-bold mr-2',
   ];
 
   streakColors.forEach((color) => {
@@ -152,6 +153,8 @@ function generateStreakColorSafelist() {
         );
       });
     }
+    safelist.push(`text-2xl font-bold mr-2 text-streak-${color}`);
+    safelist.push(`text-2xl font-bold mr-2 text-streak-${color}-4`);
   });
   return safelist;
 }

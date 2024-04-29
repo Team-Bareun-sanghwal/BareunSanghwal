@@ -4,9 +4,9 @@ import Point from './Point';
 const meta = {
   title: 'point/Point',
   component: Point,
-  // parameters: {
-  //   layout: 'centered',
-  // },
+  parameters: {
+    layout: 'centered',
+  },
   tags: ['autodocs'],
   argTypes: {
     point: { description: '포인트' },
@@ -16,37 +16,42 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Story1: Story = {
+export const Zero: Story = {
   args: {
     point: 0,
   },
 };
 
-export const Story2: Story = {
+export const Digits2: Story = {
   args: {
     point: 24,
   },
 };
 
-export const Story3: Story = {
+export const Digits3: Story = {
   args: {
     point: 441,
   },
 };
-export const Story4: Story = {
+export const Digits4: Story = {
   args: {
     point: 1920,
   },
 };
 
-export const Story5: Story = {
+export const Digits5: Story = {
   args: {
     point: 38018,
   },
 };
 
-export const Story6: Story = {
+export const Digits6: Story = {
   args: {
     point: 99999,
+  },
+};
+export const FREE: Story = {
+  args: {
+    point: -1,
   },
 };

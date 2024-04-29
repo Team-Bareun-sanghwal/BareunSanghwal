@@ -18,7 +18,7 @@ const Item = ({
 }: IItemProps) => {
   return (
     <>
-      <div className="flex border-solid rounded-lg shadow-md">
+      <div className="flex border-solid rounded-lg shadow-md bg-custom-white">
         <div className="flex p-6 w-full">
           <div className="content-center">
             <Image src={iconPath} alt="" width={36} height={36}></Image>
