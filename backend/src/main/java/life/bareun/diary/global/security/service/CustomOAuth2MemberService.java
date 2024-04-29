@@ -47,7 +47,7 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         try {
             oAuth2Provider = OAuth2Provider.valueOf(provider);
         } catch (IllegalArgumentException e) { // 이상한 provider
-            throw new CustomSecurityException(SecurityErrorCode.BAD_AUTH_INFO);
+            throw new CustomSecurityException(SecurityErrorCode.BAD_OAUTH_INFO);
         }
 
         System.out.println("Client name: " + provider);
