@@ -120,7 +120,7 @@ public class MemberServiceImpl implements MemberService {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
             .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
 
         return MemberMapper.INSTANCE.toMemberInfoRes(member);
@@ -131,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
             .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
 
         String streakColorName = streakColorRepository.findById(
@@ -150,7 +150,7 @@ public class MemberServiceImpl implements MemberService {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
             .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
 
         String treeColorName = treeColorRepository.findById(
