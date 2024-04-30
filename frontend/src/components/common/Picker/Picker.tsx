@@ -4,11 +4,6 @@ import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { EmojiClickData } from 'emoji-picker-react';
 
-const filteredEmojis = [
-  { id: 'smile', emoji: '😄' },
-  { id: 'sad', emoji: '😢' },
-  { id: 'heart', emoji: '❤️' },
-];
 export const Picker = ({ label }: { label: string }) => {
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
@@ -20,14 +15,14 @@ export const Picker = ({ label }: { label: string }) => {
     setEmojiOpen(true);
   };
   return (
-    <section className="w-full flex flex-col gap-[1rem]">
+    <section className="w-full flex flex-col gap-[0.5rem]">
       <label className="custom-semibold-text text-custom-black">{label}</label>
       <div className="flex w-full relative">
         <div
-          className="w-[6rem] h-[6rem] border-2 border-custom-dark-gray bg-custom-white rounded-full content-center text-center text-4xl select-none m-1"
+          className="w-[5rem] h-[5rem] border-2 border-custom-dark-gray bg-custom-white rounded-full flex items-center justify-center text-4xl select-none m-1"
           onClick={toggleEmoji}
         >
-          {!selectedEmoji && 'NO'}
+          {!selectedEmoji && '😀'}
           {selectedEmoji}
         </div>
         {emojiOpen && (

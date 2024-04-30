@@ -48,7 +48,10 @@ const getHabitCheckerText = (
     isHabit,
   };
 };
-const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
+export const HabitChecker = ({
+  achieveCount,
+  totalCount,
+}: IHabitCheckerProps) => {
   const { hoursRemaining, minutesRemaining } = getTimeRemaining();
   const {
     habitCheckerTitle,
@@ -93,4 +96,3 @@ const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
     </>
   );
 };
-export default HabitChecker;
