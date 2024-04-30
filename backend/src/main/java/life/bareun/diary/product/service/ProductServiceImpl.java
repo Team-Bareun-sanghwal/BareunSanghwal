@@ -30,9 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
-    private static final String GOTCHA_TREE_KEY = "gotcha_tree";
-    private static final String STREAK_RECOVERY = "streak_recovery";
+    private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
+    private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
+    private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
 
     private final static SecureRandom RANDOM = new SecureRandom();
 
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
             .map(ProductMapper.INSTANCE::toProductDto)
             .peek(
                 productDto -> {
-                    if (productDto.getKey().equals(STREAK_RECOVERY) && freeRecoveryCount > 0) {
+                    if (productDto.getName().equals(STREAK_RECOVERY_NAME) && freeRecoveryCount > 0) {
                         productDto.setPrice(0);
                     }
                 }
@@ -109,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
             () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
         );
 
-        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
+        Integer amount = productRepository.findByName(GOTCHA_STREAK_NAME)
             .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
@@ -133,7 +133,7 @@ public class ProductServiceImpl implements ProductService {
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 3. 나무 색 변경권 가격 정보 얻기
-        Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
+        Integer amount = productRepository.findByName(GOTCHA_TREE_NAME)
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
