@@ -5119,6 +5119,13 @@ elliptic@^6.5.3, elliptic@^6.5.5:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
+emoji-picker-react@^4.9.2:
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.9.2.tgz#5118c5e1028ce4a96c94eb7c9bef09d30b08742c"
+  integrity sha512-pdvLKpto0DMrjE+/8V9QeYjrMcOkJmqBn3GyCSG2zanY32rN2cnWzBUmzArvapAjzBvgf7hNmJP8xmsdu0cmJA==
+  dependencies:
+    flairup "0.0.38"
+
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
@@ -5920,6 +5927,11 @@ find-up@^6.3.0:
     locate-path "^7.1.0"
     path-exists "^5.0.0"
 
+flairup@0.0.38:
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/flairup/-/flairup-0.0.38.tgz#62216990a8317a1b07d1d816033624c5b2130f31"
+  integrity sha512-W9QA5TM7eYNlGoBYwfVn/o6v4yWBCxfq4+EJ5w774oFeyWvVWnYq6Dgt4CJltjG9y/lPwbOqz3jSSr8K66ToGg==
+
 flat-cache@^3.0.4:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.2.0.tgz#2c0c2d5040c99b1632771a9d105725c0115363ee"
@@ -6313,6 +6325,11 @@ graphemer@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
+
+gsap@^3.12.5:
+  version "3.12.5"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.12.5.tgz#136c02dad4c673b441bdb1ca00104bfcb4eae7f4"
+  integrity sha512-srBfnk4n+Oe/ZnMIOXt3gT605BX9x5+rh/prT2F1SsNJsU1XuMiP0E2aptW481OnonOGACZWBqseH5Z7csHxhQ==
 
 gunzip-maybe@^1.4.2:
   version "1.4.2"
@@ -8946,13 +8963,6 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
-react-mobile-picker-scroll@^0.2.14:
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/react-mobile-picker-scroll/-/react-mobile-picker-scroll-0.2.14.tgz#dbe82a4ea8417faac475680226de52dca119f864"
-  integrity sha512-sO5nV22dqwiU+XlBYG3Vshka7yjkhDrIwcarQmsOmGxE/pXaMq5WLCLfoN9j+/sM6cWF10DlxK3kWV0ZQfJMAQ==
-  dependencies:
-    prop-types "^15.6.0"
-
 react-lottie-player@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-lottie-player/-/react-lottie-player-2.0.0.tgz#a301d5baf0bf5a79973b915a7643d24f631d83c4"
@@ -8961,6 +8971,13 @@ react-lottie-player@^2.0.0:
     fast-deep-equal "^3.1.3"
     lottie-web "^5.12.2"
     rfdc "^1.3.0"
+
+react-mobile-picker-scroll@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/react-mobile-picker-scroll/-/react-mobile-picker-scroll-0.2.14.tgz#dbe82a4ea8417faac475680226de52dca119f864"
+  integrity sha512-sO5nV22dqwiU+XlBYG3Vshka7yjkhDrIwcarQmsOmGxE/pXaMq5WLCLfoN9j+/sM6cWF10DlxK3kWV0ZQfJMAQ==
+  dependencies:
+    prop-types "^15.6.0"
 
 react-reconciler@^0.26.2:
   version "0.26.2"
@@ -10020,6 +10037,11 @@ symbol-tree@^3.2.4:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
+tailwind-scrollbar-hide@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/tailwind-scrollbar-hide/-/tailwind-scrollbar-hide-1.1.7.tgz#90b481fb2e204030e3919427416650c54f56f847"
+  integrity sha512-X324n9OtpTmOMqEgDUEA/RgLrNfBF/jwJdctaPZDzB3mppxJk7TLIDmOreEDm1Bq4R9LSPu4Epf8VSdovNU+iA==
+
 tailwindcss@^3.4.1:
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.3.tgz#be48f5283df77dfced705451319a5dffb8621519"
@@ -10197,6 +10219,11 @@ three@0.122.0:
   version "0.122.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.122.0.tgz#bd9ed8a8820074856e8ba7b63fe0a65176e01aeb"
   integrity sha512-bgYMo0WdaQhf7DhLE8OSNN/rVFO5J4K1A2VeeKqoV4MjjuHjfCP6xLpg8Xedhns7NlEnN3sZ6VJROq19Qyl6Sg==
+
+three@^0.163.0:
+  version "0.163.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.163.0.tgz#cbfefbfd64a1353ab7cc8bf0fc396ddca1875a49"
+  integrity sha512-HlMgCb2TF/dTLRtknBnjUTsR8FsDqBY43itYop2+Zg822I+Kd0Ua2vs8CvfBVefXkBdNDrLMoRTGCIIpfCuDew==
 
 through2@^2.0.3:
   version "2.0.5"

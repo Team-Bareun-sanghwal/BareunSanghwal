@@ -1,6 +1,6 @@
-import { getToday, getTimeRemaining } from '../util';
+import { getTimeRemaining } from '@/components/calendar/util';
 import { MemberStreakResponse } from '@/app/mock';
-import { LongestStreak } from '../LogestStreak/LongestStreak';
+import { LongestStreak } from '../LongestStreak/LongestStreak';
 import Image from 'next/image';
 interface IHabitCheckerProps {
   achieveCount: number;
@@ -48,10 +48,7 @@ const getHabitCheckerText = (
     isHabit,
   };
 };
-export const HabitChecker = ({
-  achieveCount,
-  totalCount,
-}: IHabitCheckerProps) => {
+const HabitChecker = ({ achieveCount, totalCount }: IHabitCheckerProps) => {
   const { hoursRemaining, minutesRemaining } = getTimeRemaining();
   const {
     habitCheckerTitle,
@@ -96,3 +93,4 @@ export const HabitChecker = ({
     </>
   );
 };
+export default HabitChecker;
