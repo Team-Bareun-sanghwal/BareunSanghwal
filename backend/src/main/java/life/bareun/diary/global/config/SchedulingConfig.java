@@ -1,6 +1,7 @@
 package life.bareun.diary.global.config;
 
 import life.bareun.diary.habit.service.HabitService;
+import life.bareun.diary.member.service.MemberService;
 import life.bareun.diary.recap.service.RecapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class SchedulingConfig {
 
     private final RecapService recapService;
 
+    private final MemberService memberService;
     // 월 말에 현재 활성화된 사용자 해빗 그대로 연장하기
     @Scheduled(cron = "0 59 23 L * ?")
     public void connectHabitList() {
@@ -26,5 +28,11 @@ public class SchedulingConfig {
     @Scheduled(cron = "0 0 0 1 * ?")
     public void createRecap() {
         recapService.createRecap();
+    }
+
+    // 매 월 00시에 무료 리커버리 지급
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void provideFreeRecovery() {
+        memberService.grantFreeRecoveryToAllMembers();
     }
 }
