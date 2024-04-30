@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ProgressBar } from '../ProgressBar/ProgressBar';
 import { RecapHeader } from '../RecapHeader/RecapHeader';
 import { RecapTitle } from '../RecapTitle/RecapTitle';
+import { RecapHabitList } from '../RecapHabitList/RecapHabitList';
 import { Trophy } from '../Trophy/Trophy';
 import { RecapBarChart } from '../RecapBarChart/RecapBarChart';
 import { RecapPieChart } from '../RecapPieChart/RecapPieChart';
@@ -54,9 +55,7 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     {
       title: '이번 달에 실천한 해빗이에요',
       content: (
-        <div key={0} className="text-white">
-          이거이거 했넹
-        </div>
+        <RecapHabitList key={0} rateByMemberHabitList={rateByMemberHabitList} />
       ),
     },
     {
@@ -132,7 +131,7 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
   };
 
   return (
-    <div className="bg-custom-black w-full h-screen flex flex-col">
+    <div className="bg-custom-black w-full h-[screen] flex flex-col">
       <ProgressBar pageIdx={pageIdx} increasePageIdx={increasePageIdx} />
       <RecapHeader memberName={memberName} year={year} month={month} />
       <RecapTitle title={recapContentArr[pageIdx].title} />
