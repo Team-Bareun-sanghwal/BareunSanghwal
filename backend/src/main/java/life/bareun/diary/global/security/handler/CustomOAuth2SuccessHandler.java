@@ -35,7 +35,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         Date currentDate = new Date();
         String accessToken = authTokenProvider.createAccessToken(currentDate, id, role);
         String refreshToken = authTokenProvider.createRefreshToken(currentDate, id);
-        // System.out.println("accessToken: " + accessToken);
+
         log.debug("accessToken: {}", accessToken);
         log.debug("refreshToken: {}", refreshToken);
 
