@@ -1,5 +1,6 @@
 package life.bareun.diary.member.service;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.exception.CustomSecurityException;
@@ -162,5 +163,18 @@ public class MemberServiceImpl implements MemberService {
             .getName();
 
         return new MemberTreeColorResDto(treeColorName);
+    }
+
+    @Override
+    @Transactional
+    public void grantFreeRecoveryToAllMembers() {
+        // 회원 탈퇴 시 MemberRecovery가 먼저 삭제되므로
+        // memberRecovery의 memberId가 Member 테이블에 있는지 확인할 필요가 없다.
+        List<MemberRecovery> memberRecoveries = memberRecoveryRepository.findAll();
+
+        for (MemberRecovery memberRecovery : memberRecoveries) {
+            memberRecovery.sendFreeRecovery();
+            memberRecoveryRepository.save(memberRecovery);
+        }
     }
 }

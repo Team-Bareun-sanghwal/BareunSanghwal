@@ -20,7 +20,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "member_recovery")
 public class MemberRecovery {
+
     private static final int MAX_PRICE = 2_000_000_000;
+    private static final int MAX_FREE_RECOVERY_COUNT = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +53,12 @@ public class MemberRecovery {
             currentRecoveryPrice *= factor;
         } else {
             currentRecoveryPrice = MAX_PRICE;
+        }
+    }
+
+    public void sendFreeRecovery() {
+        if (freeRecoveryCount < MAX_FREE_RECOVERY_COUNT) {
+            freeRecoveryCount += 1;
         }
     }
 }
