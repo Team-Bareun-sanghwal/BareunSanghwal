@@ -28,10 +28,6 @@ public class Product {
     private Long id;
 
     @Length(min = 1, max = 30)
-    @Column(name = "key")
-    private String key;
-
-    @Length(min = 1, max = 30)
     @Column(name = "name")
     private String name;
 

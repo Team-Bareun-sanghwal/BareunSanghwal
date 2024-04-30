@@ -10,6 +10,7 @@ import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.dto.ProductDto;
 import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductRecoveryPurchaseResDto;
 import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
 import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.entity.StreakColor;
@@ -30,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
-    private static final String GOTCHA_TREE_KEY = "gotcha_tree";
-    private static final String STREAK_RECOVERY = "streak_recovery";
+    private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
+    private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
+    private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
 
     private final static SecureRandom RANDOM = new SecureRandom();
 
@@ -58,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
             .map(ProductMapper.INSTANCE::toProductDto)
             .peek(
                 productDto -> {
-                    if (productDto.getKey().equals(STREAK_RECOVERY) && freeRecoveryCount > 0) {
+                    if (productDto.getName().equals(STREAK_RECOVERY_NAME) && freeRecoveryCount > 0) {
                         productDto.setPrice(0);
                     }
                 }
@@ -109,8 +110,8 @@ public class ProductServiceImpl implements ProductService {
             () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
         );
 
-        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
-            .orElseThrow(() -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY))
+        Integer amount = productRepository.findByName(GOTCHA_STREAK_NAME)
+            .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
@@ -133,9 +134,9 @@ public class ProductServiceImpl implements ProductService {
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 3. 나무 색 변경권 가격 정보 얻기
-        Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
+        Integer amount = productRepository.findByName(GOTCHA_TREE_NAME)
             .orElseThrow(
-                () -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY)
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
             .getPrice();
 
@@ -161,4 +162,34 @@ public class ProductServiceImpl implements ProductService {
         return new ProductTreeColorUpdateResDto(gotchaTreeColor.getName());
     }
 
+    @Override
+    @Transactional
+    public ProductRecoveryPurchaseResDto buyRecovery() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
+            );
+
+        Integer price = productRepository.findByName(STREAK_RECOVERY_NAME)
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
+            )
+            .getPrice();
+        Integer point = member.getPoint();
+        
+        // 사용자 보유 포인트가 부족한 경우 예외 발생
+        if(point < price) {
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
+        }
+
+        // 구매 후 상태 반영
+        member.buyRecovery(price);
+        Member updatedMember = memberRepository.save(member);
+
+        // 반영된 후의 정보 반환
+        return ProductRecoveryPurchaseResDto.builder()
+            .paidRecoveryCount(updatedMember.getPaidRecoveryCount())
+            .build();
+    }
 }
