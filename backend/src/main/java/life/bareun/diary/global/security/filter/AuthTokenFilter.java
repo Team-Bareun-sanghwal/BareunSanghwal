@@ -51,7 +51,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             String accessToken = request.getHeader("Authorization");
             log.debug("Requested token: {}", accessToken);
 
-            if(accessToken != null) {
+            if (accessToken != null) {
                 accessToken = accessToken.replace(AuthTokenProvider.ACCESS_TOKEN_PREFIX, "");
             }
 

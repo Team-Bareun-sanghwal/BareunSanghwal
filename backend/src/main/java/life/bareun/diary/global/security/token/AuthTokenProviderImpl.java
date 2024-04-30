@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 public class AuthTokenProviderImpl implements AuthTokenProvider {
+
     private static final String CLAIM_MEMBER_ID = "memberId";
     private static final String CLAIM_ROLE = "role";
     private static final MacAlgorithm macAlgorithm = Jwts.SIG.HS256;

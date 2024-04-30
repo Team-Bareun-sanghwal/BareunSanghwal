@@ -40,7 +40,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         log.debug("refreshToken: {}", refreshToken);
 
         // 응답
-        int statusCode = oAuth2MemberPrincipal.isNewMember() ? HttpStatus.CREATED.value()
+        int statusCode = oAuth2MemberPrincipal.isNewMember()
+            ? HttpStatus.CREATED.value()
             : HttpStatus.OK.value();
         AuthLoginResDto authLoginRes = AuthLoginResDto.builder()
             .accessToken(accessToken)
