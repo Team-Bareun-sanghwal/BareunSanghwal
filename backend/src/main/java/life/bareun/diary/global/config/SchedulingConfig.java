@@ -18,6 +18,19 @@ public class SchedulingConfig {
     private final RecapService recapService;
 
     private final MemberService memberService;
+
+    // ┌───────────── second (0-59)
+    // │ ┌───────────── minute (0–59)
+    // │ │ ┌───────────── hour (0–23)
+    // │ │ │ ┌───────────── day of the month (1–31)
+    // │ │ │ │ ┌───────────── month (1–12)
+    // │ │ │ │ │ ┌───────────── day of the week (0–6) (일~토, 시스템에 따라 7도 일요일일 수 있음)
+    // │ │ │ │ │ │
+    // │ │ │ │ │ │
+    // │ │ │ │ │ │
+    // │ │ │ │ │ │
+    // * * * * * *
+
     // 월 말에 현재 활성화된 사용자 해빗 그대로 연장하기
     @Scheduled(cron = "0 59 23 L * ?")
     public void connectHabitList() {
