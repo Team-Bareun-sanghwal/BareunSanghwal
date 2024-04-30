@@ -7,6 +7,7 @@ import {
   PieSeries3D,
   CircularChartDataLabel3D,
   Inject,
+  CircularChartLegend3D,
 } from '@syncfusion/ej2-react-charts';
 import { registerLicense } from '@syncfusion/ej2-base';
 import { GradientBar } from '../GradientBar/GradientBar';
@@ -18,8 +19,8 @@ registerLicense(
 );
 
 interface IHabitType {
-  habit: string;
-  rate: number;
+  name: string;
+  ratio: number;
 }
 
 interface IPropType {
@@ -27,19 +28,28 @@ interface IPropType {
   mostSuccessedHabit: string;
 }
 
+const legendSettings = {
+  visible: true,
+  width: '300',
+  textStyle: {
+    fontFamily: 'pretendard, sans-serif',
+    color: 'white',
+    size: '12px',
+    opacity: 0.8,
+  },
+  toggleVisibility: false,
+  textOverflow: 'Clip',
+};
+
 const labelConfig = {
   visible: true,
-  position: 'Outside',
-  template:
-    '<div style="text-align: center; max-width: 6rem; font-weight:200; font-size:1.2rem;"><p>${point.x}</p><p style="font-weight:400; font-size:1.6rem;">${point.y}%</p></div>',
+  position: 'Inside',
+  format: '{value}%',
   font: {
     fontFamily: 'pretendard, sans-serif',
     color: 'white',
-  },
-  connectorStyle: {
-    width: 1,
-    color: 'rgba(255, 255, 255, 0.5)',
-    length: '20',
+    size: '20px',
+    opacity: 0.8,
   },
 };
 
@@ -48,23 +58,31 @@ export const RecapPieChart = ({
   mostSuccessedHabit,
 }: IPropType) => {
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex h-[50rem] flex-col items-center overflow-hidden">
       <CircularChart3DComponent
         id="RecapPieChart"
         rotation={30}
         tilt={5}
         depth={40}
-        width="300"
+        width="400"
+        legendSettings={legendSettings}
       >
-        <Inject services={[PieSeries3D, CircularChartDataLabel3D]} />
+        <Inject
+          services={[
+            PieSeries3D,
+            CircularChartDataLabel3D,
+            CircularChartLegend3D,
+          ]}
+        />
         <CircularChart3DSeriesCollectionDirective>
           <CircularChart3DSeriesDirective
             dataSource={rateByHabitList}
-            xName="habit"
-            yName="rate"
+            xName="name"
+            yName="ratio"
             radius="80%"
             innerRadius="40%"
             dataLabel={labelConfig}
+            legendShape="Rectangle"
           ></CircularChart3DSeriesDirective>
         </CircularChart3DSeriesCollectionDirective>
       </CircularChart3DComponent>

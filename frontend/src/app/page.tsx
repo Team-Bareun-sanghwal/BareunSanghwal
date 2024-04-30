@@ -4,10 +4,10 @@ import { NavBar } from '@/components/common/NavBar/NavBar';
 import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { useOverlay } from '@/hooks/use-overlay/useOverlay';
-
+import { useRouter } from 'next/navigation';
 export default function Home() {
   const overlay = useOverlay();
-
+  const router = useRouter();
   const handleOverlay = () => {
     overlay.open(({ isOpen, close }) => (
       <BottomSheet
@@ -36,7 +36,7 @@ export default function Home() {
     <>
       <button onClick={handleOverlay}>BottomSheet 열기</button>
       <button onClick={handleAlertBox}>AlertBox 열기</button>
-
+      <button onClick={() => router.push('/tree')}>나무로가기</button>
       <NavBar mode="HOME" />
     </>
   );

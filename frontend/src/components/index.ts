@@ -11,7 +11,7 @@ import { InputBox } from './common/InputBox/InputBox';
 import { NavBar } from './common/NavBar/NavBar';
 import { ProgressBox } from './common/ProgressBox/ProgressBox';
 import { RecapContentBox } from './common/RecapContentBox/RecapContentBox';
-import { ScrollDatePicker } from './common/ScrollDatePicker/ScrollDatePicker';
+// import { ScrollDatePicker } from './common/ScrollDatePicker/ScrollDatePicker';
 import { SelectBox } from './common/SelectBox/SelectBox';
 import { TabBox } from './common/TabBox/TabBox';
 import { TextAreaBox } from './common/TextAreaBox/TextAreaBox';
@@ -40,15 +40,15 @@ import { ReportOnlyText } from './statistics/ReportOnlyText/ReportOnlyText';
 import { StatisticsBarChart } from './statistics/StatisticsBarChart/StatisticsBarChart';
 import { StatisticsPieChart } from './statistics/StatisticsPieChart/StatisticsPieChart';
 import { StatisticsSpineAreaGraph } from './statistics/StatisticsSpineAreaGraph/StatisticsSpineAreaGraph';
-import { Streak } from './calendar/streak/Streak';
+import { Streak } from './calendar/Streak/Streak';
 import { Achievement } from './calendar/Acheivement/Achievement';
 import { DayLabel } from './calendar/DayLabel/DayLabel';
 import { HabitBtn } from './calendar/HabitBtn/HabitBtn';
 import { HabitBtnList } from './calendar/HabitBtnList/HabitBtnList';
-import { HabitChecker } from './calendar/HabitChecker/HabitChecker';
-import { LongestStreak } from './calendar/LogestStreak/LongestStreak';
+import { HabitChecker } from './main/HabitChecker/HabitChecker';
+import { LongestStreak } from './main/LongestStreak/LongestStreak';
 import { MonthLabel } from './calendar/MonthLabel/MonthLabel';
-import { Calender } from './calendar/Calender';
+import { Calender } from './calendar/Calender/Calender';
 import { PlusButton } from './common/PlusButton/PlusButton';
 
 export {
@@ -65,7 +65,7 @@ export {
   NavBar,
   ProgressBox,
   RecapContentBox,
-  ScrollDatePicker,
+  // ScrollDatePicker,
   SelectBox,
   TabBox,
   TextAreaBox,
