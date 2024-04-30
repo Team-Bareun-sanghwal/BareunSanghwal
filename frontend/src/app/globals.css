@@ -60,7 +60,7 @@
     animation: spotlight-grow 3s ease;
   }
 
-  @keyframes spotlight-grow {
+  @keyframes spotlight-grow {                                                                                                                                                                                                                                                                                                                          
     0% {
       border-left: 5rem solid transparent;
       border-right: 5rem solid transparent;
@@ -71,6 +71,25 @@
       border-left: 15rem solid transparent;
       border-right: 15rem solid transparent;
       border-bottom: 40rem solid rgba(255, 252, 173, 0.8);
+    }
+  }
+
+  /* 리캡 진행 블록*/
+.progressBlock {
+    width: 3.3rem;
+    height: 0.5rem;
+    background-color: white;
+    transform-origin: left;
+    transition: width 10s ease-in-out;
+    animation: progressBlock-grow 10s linear forwards;
+  }
+
+  @keyframes progressBlock-grow {
+    0% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
     }
   }
 

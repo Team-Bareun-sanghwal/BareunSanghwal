@@ -40,7 +40,7 @@ import { ReportOnlyText } from './statistics/ReportOnlyText/ReportOnlyText';
 import { StatisticsBarChart } from './statistics/StatisticsBarChart/StatisticsBarChart';
 import { StatisticsPieChart } from './statistics/StatisticsPieChart/StatisticsPieChart';
 import { StatisticsSpineAreaGraph } from './statistics/StatisticsSpineAreaGraph/StatisticsSpineAreaGraph';
-import { Streak } from './streak/Streak';
+import { Streak } from './calendar/Streak/Streak';
 import { Achievement } from './calendar/Acheivement/Achievement';
 import { DayLabel } from './calendar/DayLabel/DayLabel';
 import { HabitBtn } from './calendar/HabitBtn/HabitBtn';
@@ -48,7 +48,7 @@ import { HabitBtnList } from './calendar/HabitBtnList/HabitBtnList';
 import { HabitChecker } from './calendar/HabitChecker/HabitChecker';
 import { LongestStreak } from './calendar/LogestStreak/LongestStreak';
 import { MonthLabel } from './calendar/MonthLabel/MonthLabel';
-import { Calender } from './calendar/Calender';
+import { Calender } from './calendar/Calender/Calender';
 import { PlusButton } from './common/PlusButton/PlusButton';
 
 export {
