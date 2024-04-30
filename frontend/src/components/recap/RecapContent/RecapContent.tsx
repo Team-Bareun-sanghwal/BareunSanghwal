@@ -10,6 +10,7 @@ import { RecapBarChart } from '../RecapBarChart/RecapBarChart';
 import { RecapPieChart } from '../RecapPieChart/RecapPieChart';
 import { RecapStars } from '../RecapStars/RecapStars';
 import { RecapKeyword } from '../RecapKeyword/RecapKeyword';
+import { RecapFinish } from '../RecapFinish/RecapFinish';
 
 interface IPropType {
   year: number;
@@ -108,23 +109,15 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     },
     {
       title: `${month}월도 너무 잘했어요!`,
-      content: (
-        <div key={8} className="text-white">
-          잘해써어
-        </div>
-      ),
+      content: <RecapFinish month={month} key={8} />,
     },
     {
-      title: `끝나따 !`,
-      content: (
-        <div key={9} className="text-white">
-          끝이야용
-        </div>
-      ),
+      title: ``,
+      content: null,
     },
   ];
 
-  const [pageIdx, setPageIdx] = useState(0);
+  const [pageIdx, setPageIdx] = useState(8);
 
   const increasePageIdx = () => {
     setPageIdx((prev) => prev + 1);
@@ -134,7 +127,10 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     <div className="bg-custom-black w-full h-[screen] flex flex-col">
       <ProgressBar pageIdx={pageIdx} increasePageIdx={increasePageIdx} />
       <RecapHeader memberName={memberName} year={year} month={month} />
-      <RecapTitle title={recapContentArr[pageIdx].title} />
+      {pageIdx === 8 ? null : (
+        <RecapTitle title={recapContentArr[pageIdx].title} />
+      )}
+
       {recapContentArr[pageIdx].content}
     </div>
   );
