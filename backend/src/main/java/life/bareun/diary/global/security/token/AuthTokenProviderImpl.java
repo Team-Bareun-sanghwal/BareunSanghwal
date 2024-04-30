@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 public class AuthTokenProviderImpl implements AuthTokenProvider {
-
     private static final String CLAIM_MEMBER_ID = "memberId";
     private static final String CLAIM_ROLE = "role";
     private static final MacAlgorithm macAlgorithm = Jwts.SIG.HS256;
@@ -50,7 +49,8 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     public String createAccessToken(Date from, String memberId, String role) {
         Date expiration = getAccessTokenExp(from);
 
-        return Jwts.builder()
+        return ACCESS_TOKEN_PREFIX
+            + Jwts.builder()
             .header()
             .add("alg", macAlgorithm.getId())
             .add("typ", "JWT")
