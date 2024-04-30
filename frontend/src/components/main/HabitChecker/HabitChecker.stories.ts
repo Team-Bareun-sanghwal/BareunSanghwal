@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import HabitChecker from './HabitChecker';
+import { HabitChecker } from './HabitChecker';
 const meta = {
   title: 'main/HabitChecker',
   component: HabitChecker,

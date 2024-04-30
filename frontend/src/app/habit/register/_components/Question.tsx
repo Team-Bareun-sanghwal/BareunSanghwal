@@ -37,7 +37,14 @@ export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
           className="w-[15rem] h-[15rem]"
         />
 
-        <SelectBox options={['네', '아니오']} />
+        <SelectBox
+          options={[
+            { key: 'YES', value: '네' },
+            { key: 'NO', value: '아니오' },
+          ]}
+          defaultValue=""
+          setDefaultValue={() => {}}
+        />
       </div>
 
       <Button

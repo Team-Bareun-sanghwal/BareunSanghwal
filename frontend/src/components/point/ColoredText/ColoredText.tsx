@@ -1,4 +1,4 @@
-import { ThemeColor } from '@/components/calender/CalenderConfig';
+import { ThemeColor } from '@/components/calendar/CalenderConfig';
 
 const ColoredText = ({ color }: { color: ThemeColor }) => {
   const isUnique =
