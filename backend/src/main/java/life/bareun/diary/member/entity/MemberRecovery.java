@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "member_recovery")
 public class MemberRecovery {
+    private static final int MAX_PRICE = 2_000_000_000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +43,14 @@ public class MemberRecovery {
 
     public static MemberRecovery create(Member member) {
         return new MemberRecovery(member, 1);
+    }
+
+    public void afterPurchaseRecovery(int factor) {
+        // 나머지는 버리므로 <가 아닌 <=를 사용한다.
+        if (currentRecoveryPrice <= Integer.MAX_VALUE / factor) {
+            currentRecoveryPrice *= factor;
+        } else {
+            currentRecoveryPrice = MAX_PRICE;
+        }
     }
 }
