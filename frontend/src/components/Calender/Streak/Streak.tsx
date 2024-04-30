@@ -1,5 +1,5 @@
 import { StarIcon } from '@heroicons/react/24/solid';
-import { ThemeColor } from '../CalenderConfig';
+import { ThemeColor } from '@/components/calendar/CalenderConfig';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
@@ -9,7 +9,7 @@ interface StreakProps {
   onClick?: () => void;
 }
 
-const Streak = ({
+export const Streak = ({
   themeColor,
   achieveCount,
   day,
@@ -40,4 +40,3 @@ const Streak = ({
     </button>
   );
 };
-export default Streak;
