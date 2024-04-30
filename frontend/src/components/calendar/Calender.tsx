@@ -1,5 +1,5 @@
 import { IMemberHabit, IDayInfo } from '@/app/mock';
-import { Streak } from '../streak/Streak';
+import { Streak } from './streak/Streak';
 import { DayLabel } from './DayLabel/DayLabel';
 import { Achievement } from './Acheivement/Achievement';
 import { MonthLabel } from './MonthLabel/MonthLabel';
