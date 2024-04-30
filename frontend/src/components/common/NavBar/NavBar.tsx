@@ -16,11 +16,17 @@ interface INavBarProps {
 
 export const NavBar = ({ mode, ...props }: INavBarProps) => {
   const menus = {
-    HOME: [<HomeIcon className="w-[3rem] h-[3rem]" />, '홈'],
-    HABIT: [<Square3Stack3DIcon className="w-[3rem] h-[3rem]" />, '해빗'],
-    REWARD: [<GiftIcon className="w-[3rem] h-[3rem]" />, '보상'],
-    REPORT: [<ChartPieIcon className="w-[3rem] h-[3rem]" />, '리포트'],
-    MY_INFO: [<UserIcon className="w-[3rem] h-[3rem]" />, '내 정보'],
+    HOME: [<HomeIcon key={mode} className="w-[3rem] h-[3rem]" />, '홈'],
+    HABIT: [
+      <Square3Stack3DIcon key={mode} className="w-[3rem] h-[3rem]" />,
+      '해빗',
+    ],
+    REWARD: [<GiftIcon key={mode} className="w-[3rem] h-[3rem]" />, '보상'],
+    REPORT: [
+      <ChartPieIcon key={mode} className="w-[3rem] h-[3rem]" />,
+      '리포트',
+    ],
+    MY_INFO: [<UserIcon key={mode} className="w-[3rem] h-[3rem]" />, '내 정보'],
   };
 
   const [focusedMenu, setFocusedMenu] = useState('HOME');
