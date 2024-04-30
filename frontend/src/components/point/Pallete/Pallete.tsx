@@ -1,5 +1,5 @@
-import { ThemeColor } from '@/components/calender/CalenderConfig';
-import Streak from '@/components/calender/Streak/Streak';
+import { ThemeColor } from '@/components/calendar/CalenderConfig';
+import { Streak } from '@/components/calendar/Streak/Streak';
 
 const Pallete = ({ color }: { color: ThemeColor }) => {
   const isUnique =

@@ -24,3 +24,4 @@ export const LongestStreak = ({ longestStreakCount }: ILogestStreakProps) => {
     </>
   );
 };
+export default LongestStreak;
