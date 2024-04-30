@@ -133,6 +133,11 @@ public class Member {
         this.point -= amount;
     }
 
+    public void buyRecovery(Integer price) {
+        usePoint(price);
+        this.paidRecoveryCount += 1;
+    }
+
     public void changeTreeColor(Integer id) {
         this.currentTreeColorId = id;
     }
