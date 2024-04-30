@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { LongestStreak } from './LongestStreak';
 const meta = {
-  title: 'Main/LongestStreak',
+  title: 'main/LongestStreak',
   component: LongestStreak,
   tags: ['autodocs'],
   argTypes: {
