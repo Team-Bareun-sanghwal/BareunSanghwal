@@ -2,6 +2,7 @@ import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { Button, ProgressBox, HabitSearchBox, InputBox } from '@/components';
 import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
+import { Picker } from '@/components/common/Picker/Picker';
 
 export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
@@ -36,6 +37,8 @@ export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
         />
 
         <InputBox isLabel={true} mode="HABITNICKNAME" />
+
+        <Picker label="해빗 아이콘을 골라주세요" />
       </div>
 
       <Button
