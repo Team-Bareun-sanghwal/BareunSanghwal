@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="bg-custom-black-with-opacity">
         <OverlayProvider>
-          <div className="w-[36rem] min-h-screen bg-custom-white mx-auto pb-[10rem]">
+          <div className="w-[36rem] min-h-screen bg-custom-white mx-auto">
             {children}
           </div>
         </OverlayProvider>
