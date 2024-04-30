@@ -1,18 +1,14 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
-import { Button, ProgressBox, SelectBox } from '@/components';
-import dynamic from 'next/dynamic';
-import lottieJson from '@/../public/lotties/lottie-note.json';
+import { Button, ProgressBox, HabitSearchBox, InputBox } from '@/components';
 import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
 
-const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
-
-export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
+export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col items-center justify-center gap-[3rem]">
+      <div className="w-full flex flex-col gap-[3rem]">
         <nav className="flex self-start gap-[0.5rem] items-center">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
@@ -23,21 +19,23 @@ export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
 
         <ProgressBox
           stages={['추천', '카테고리/별칭 설정', '요일 설정', '완료']}
-          beforeStageIndex={-1}
+          beforeStageIndex={1}
         ></ProgressBox>
 
-        <label className="custom-bold-text text-custom-matcha">
-          어떤 습관을 지킬지 정하셨나요?
-        </label>
-
-        <LottieBox
-          loop
-          animationData={lottieJson}
-          play
-          className="w-[15rem] h-[15rem]"
+        <HabitSearchBox
+          searchedList={[
+            {
+              habitId: 1,
+              name: '운동하기',
+            },
+            {
+              habitId: 2,
+              name: '생활 운동',
+            },
+          ]}
         />
 
-        <SelectBox options={['네', '아니오']} />
+        <InputBox isLabel={true} mode="HABITNICKNAME" />
       </div>
 
       <Button
