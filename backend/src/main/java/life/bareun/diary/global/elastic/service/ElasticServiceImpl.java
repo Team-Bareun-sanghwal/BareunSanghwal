@@ -3,15 +3,11 @@ package life.bareun.diary.global.elastic.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import life.bareun.diary.global.elastic.exception.ElasticErrorCode;
 import life.bareun.diary.global.elastic.exception.ElasticException;
@@ -55,15 +51,15 @@ public class ElasticServiceImpl implements ElasticService {
                     .must(QueryBuilders.matchQuery("log_name.keyword", "rank-log"))
                     .filter(QueryBuilders.rangeQuery("@timestamp")
                         .gte("now-168h")
-                        .lte("now")
-            ));
+                        .lte("now"))
+            );
             searchSourceBuilder.size(100);
             searchRequest.source(searchSourceBuilder);
 
             SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
             scrollId = searchResponse.getScrollId();
             SearchHit[] searchHits = searchResponse.getHits().getHits();
-
+            log.info("검색 완료");
             refineLog(searchHits, logList);
             while (searchHits.length > 0) {
                 SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);
@@ -75,6 +71,7 @@ public class ElasticServiceImpl implements ElasticService {
                 refineLog(searchHits, logList);
             }
         } catch (IOException e) {
+            log.error("FAIL_COLLECT_ELASTIC_LOG", e);
             throw new ElasticException(ElasticErrorCode.FAIL_COLLECT_ELASTIC_LOG);
         } finally {
             // Scroll 컨텍스트 정리
@@ -85,7 +82,9 @@ public class ElasticServiceImpl implements ElasticService {
                 while(retries-- > 0) {
                     try {
                         client.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
+                        break;
                     } catch (IOException e) {
+                        log.error("FAIL_SCROLL_ELASTIC_LOG", e);
                         log.error(ElasticErrorCode.FAIL_SCROLL_ELASTIC_LOG.getMessage());
                     }
                 }
@@ -101,12 +100,18 @@ public class ElasticServiceImpl implements ElasticService {
                 // 히트의 소스를 JsonNode로 파싱
                 JsonNode jsonNode = objectMapper.readTree(hit.getSourceAsString());
                 // 필요한 필드 추출
-                Long cocktailId = Long.parseLong(jsonNode.path("habit_id").asText());
-                LocalDateTime localDateTime = LocalDateTime.parse(jsonNode.path("timestamp").asText());
+                Long habitId = Long.parseLong(jsonNode.path("habit_id").asText());
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(jsonNode.path("@timestamp").asText(), formatter.withZone(ZoneOffset.UTC));
+
+                // ZonedDateTime을 LocalDateTime으로 변환
+                LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
                 // 추출한 값 로깅
-                logList.add(new ElasticDto(cocktailId, localDateTime));
+                logList.add(new ElasticDto(habitId, localDateTime));
             }
             catch (Exception e) {
+                log.error("FAIL_REFINE_ELASTIC_LOG", e);
                 throw new ElasticException(ElasticErrorCode.FAIL_REFINE_ELASTIC_LOG);
             }
         }

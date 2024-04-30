@@ -25,4 +25,6 @@ public interface HabitService {
     HabitMatchResDto findAllMatchHabit(String habitName);
 
     MemberHabitActiveSimpleResDto findAllActiveSimpleMemberHabit();
+
+    void renewHabitRank();
 }

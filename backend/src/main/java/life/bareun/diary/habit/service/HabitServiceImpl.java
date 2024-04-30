@@ -1,11 +1,20 @@
 package life.bareun.diary.habit.service;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import life.bareun.diary.global.elastic.dto.ElasticDto;
+import life.bareun.diary.global.elastic.service.ElasticService;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitMatchDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
@@ -26,12 +35,14 @@ import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitDay;
+import life.bareun.diary.habit.entity.HabitRecommend;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.exception.HabitErrorCode;
 import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.habit.repository.HabitDayRepository;
+import life.bareun.diary.habit.repository.HabitRecommendRepository;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
@@ -65,6 +76,10 @@ public class HabitServiceImpl implements HabitService {
     private final HabitDayRepository habitDayRepository;
 
     private final HabitDailyStreakRepository habitDailyStreakRepository;
+
+    private final ElasticService elasticService;
+
+    private final HabitRecommendRepository habitRecommendRepository;
 
     private final Logger rankLogger = LoggerFactory.getLogger("rank-log");
 
@@ -299,6 +314,52 @@ public class HabitServiceImpl implements HabitService {
         }
         return MemberHabitActiveSimpleResDto.builder()
             .memberHabitList(memberHabitActiveSimpleDtoList).build();
+    }
+
+    @Override
+    public void renewHabitRank() {
+        List<ElasticDto> logList = elasticService.findAllElasticLog();
+        Map<Long, Long> logMap = new ConcurrentHashMap<>();
+        for (ElasticDto elasticDto : logList) {
+            logMap.put(elasticDto.habitId(),
+                logMap.getOrDefault(elasticDto.habitId(), 0L) + 1L);
+        }
+        PriorityQueue<long[]> priorityQueue = new PriorityQueue<>((o1, o2) -> {
+            // index=1의 값에 따라 내림차순 정렬
+            return Long.compare(o2[1], o1[1]);
+        });
+
+        for (Long id : logMap.keySet()) {
+            priorityQueue.offer(new long[]{id, logMap.get(id)});
+        }
+
+        habitRecommendRepository.deleteAll();
+        int totalCount = 10;
+        Set<Long> set = new ConcurrentSkipListSet<>();
+        while (!priorityQueue.isEmpty() && totalCount-- > 0) {
+            long[] habitCount = priorityQueue.poll();
+            Habit habit = habitRepository.findById(habitCount[0])
+                .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
+            habitRecommendRepository.save(HabitRecommend.builder().habit(habit).build());
+            set.add(habitCount[0]);
+            log.info(Arrays.toString(habitCount));
+        }
+
+        // 만약 총 10개가 되지 않으면
+        if (totalCount > 0) {
+            SecureRandom secureRandom = new SecureRandom();
+            while (totalCount > 0) {
+                Long randomNumber = secureRandom.nextLong(313L) + 1L;
+                if (set.contains(randomNumber)) {
+                    continue;
+                }
+                totalCount--;
+                set.add(randomNumber);
+                Habit habit = habitRepository.findById(randomNumber)
+                    .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
+                habitRecommendRepository.save(HabitRecommend.builder().habit(habit).build());
+            }
+        }
     }
 
     // 주기에 따른 해빗 트래커 생성
