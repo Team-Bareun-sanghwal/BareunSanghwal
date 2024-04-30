@@ -17,6 +17,7 @@ import life.bareun.diary.global.elastic.dto.ElasticDto;
 import life.bareun.diary.global.elastic.service.ElasticService;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitMatchDto;
+import life.bareun.diary.habit.dto.HabitRecommendDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
@@ -29,6 +30,7 @@ import life.bareun.diary.habit.dto.MemberHabitNonActiveDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.response.HabitMatchResDto;
+import life.bareun.diary.habit.dto.response.HabitRankResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveSimpleResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
@@ -360,6 +362,18 @@ public class HabitServiceImpl implements HabitService {
                 habitRecommendRepository.save(HabitRecommend.builder().habit(habit).build());
             }
         }
+    }
+
+    @Override
+    public HabitRankResDto findAllHabitRank() {
+        List<HabitRecommend> habitRecommendList = habitRecommendRepository.findAllByOrderByIdAsc();
+        List<HabitRecommendDto> habitRecommendDtoList = new ArrayList<>();
+        for (HabitRecommend habitRecommend : habitRecommendList) {
+            habitRecommendDtoList.add(
+                HabitRecommendDto.builder().habitId(habitRecommend.getHabit().getId())
+                    .name(habitRecommend.getHabit().getName()).build());
+        }
+        return HabitRankResDto.builder().habitList(habitRecommendDtoList).build();
     }
 
     // 주기에 따른 해빗 트래커 생성

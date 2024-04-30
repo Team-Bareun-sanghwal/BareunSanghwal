@@ -5,6 +5,7 @@ import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.dto.response.HabitMatchResDto;
+import life.bareun.diary.habit.dto.response.HabitRankResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
@@ -122,6 +123,13 @@ public class HabitController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "검색된 해빗 리스트 조회를 성공하였습니다.",
                 habitService.findAllMatchHabit(habitName)));
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<BaseResponse<HabitRankResDto>> findAllHabitRank() {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "해빗 랭킹 리스트 조회를 성공하였습니다.",
+                habitService.findAllHabitRank()));
     }
 
 }

@@ -29,7 +29,6 @@ public class SchedulingConfig {
     }
 
     // 6시간마다
-    @Scheduled(cron = "0 * * * * ?")
-//    @Scheduled(cron = "0 0 */6 * * ?")
+    @Scheduled(cron = "0 0 */6 * * ?")
     public void renewHabitRank() { habitService.renewHabitRank(); }
 }
