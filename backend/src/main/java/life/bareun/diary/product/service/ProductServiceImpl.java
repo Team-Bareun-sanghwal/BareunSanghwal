@@ -10,6 +10,7 @@ import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.dto.ProductDto;
 import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductRecoveryPurchaseResDto;
 import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
 import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.entity.StreakColor;
@@ -161,4 +162,34 @@ public class ProductServiceImpl implements ProductService {
         return new ProductTreeColorUpdateResDto(gotchaTreeColor.getName());
     }
 
+    @Override
+    @Transactional
+    public ProductRecoveryPurchaseResDto buyRecovery() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
+            );
+
+        Integer price = productRepository.findByName(STREAK_RECOVERY_NAME)
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
+            )
+            .getPrice();
+        Integer point = member.getPoint();
+        
+        // 사용자 보유 포인트가 부족한 경우 예외 발생
+        if(point < price) {
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
+        }
+
+        // 구매 후 상태 반영
+        member.buyRecovery(price);
+        Member updatedMember = memberRepository.save(member);
+
+        // 반영된 후의 정보 반환
+        return ProductRecoveryPurchaseResDto.builder()
+            .paidRecoveryCount(updatedMember.getPaidRecoveryCount())
+            .build();
+    }
 }
