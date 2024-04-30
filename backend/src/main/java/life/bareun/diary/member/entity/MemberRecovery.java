@@ -29,12 +29,15 @@ public class MemberRecovery {
     @OneToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @Column(name = "free_recovery")
-    private Integer freeRecovery;
+    @Column(name = "free_recovery_count")
+    private Integer freeRecoveryCount;
 
-    private MemberRecovery(Member member, Integer freeRecovery) {
+    @Column(name = "current_recovery_price")
+    private Integer currentRecoveryPrice;
+
+    private MemberRecovery(Member member, Integer freeRecoveryCount) {
         this.member = member;
-        this.freeRecovery = freeRecovery;
+        this.freeRecoveryCount = freeRecoveryCount;
     }
 
     public static MemberRecovery create(Member member) {
