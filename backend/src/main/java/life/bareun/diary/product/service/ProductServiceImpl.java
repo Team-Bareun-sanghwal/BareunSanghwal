@@ -110,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
         );
 
         Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
-            .orElseThrow(() -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY))
+            .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
@@ -135,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
         // 3. 나무 색 변경권 가격 정보 얻기
         Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
             .orElseThrow(
-                () -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY)
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
             .getPrice();
 
