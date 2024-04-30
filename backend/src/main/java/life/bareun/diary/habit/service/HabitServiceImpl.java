@@ -41,6 +41,8 @@ import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,9 +66,12 @@ public class HabitServiceImpl implements HabitService {
 
     private final HabitDailyStreakRepository habitDailyStreakRepository;
 
+    private final Logger rankLogger = LoggerFactory.getLogger("rank-log");
+
     @Override
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
+        rankLogger.info("rank-log {} {}", habitCreateReqDto.habitId(), "랭킹 순위에 반영됩니다.");
         // 멤버, 해빗 가져오기
         Habit habit = habitRepository.findById(habitCreateReqDto.habitId())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
