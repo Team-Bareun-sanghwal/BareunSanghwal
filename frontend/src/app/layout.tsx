@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { OverlayProvider } from '@/hooks/use-overlay';
+import dynamic from 'next/dynamic';
+const Provider = dynamic(() => import('../app/_component/Provider'), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,11 +18,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="bg-custom-black-with-opacity">
-        <OverlayProvider>
+        <Provider>
           <div className="w-[36rem] min-h-screen bg-custom-white mx-auto">
             {children}
           </div>
-        </OverlayProvider>
+        </Provider>
       </body>
     </html>
   );

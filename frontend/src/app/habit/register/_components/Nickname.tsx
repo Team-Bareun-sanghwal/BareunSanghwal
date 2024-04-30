@@ -36,7 +36,12 @@ export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
           ]}
         />
 
-        <InputBox isLabel={true} mode="HABITNICKNAME" />
+        <InputBox
+          isLabel={true}
+          mode="HABITNICKNAME"
+          defaultValue=""
+          setDefaultValue={() => {}}
+        />
 
         <Picker label="해빗 아이콘을 골라주세요" />
       </div>

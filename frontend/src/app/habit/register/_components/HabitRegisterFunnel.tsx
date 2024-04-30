@@ -11,16 +11,14 @@ export const HabitRegisterFunnel = () => {
   const [data, setData] = useState({}); // 누적 데이터
   const router = useRouter();
 
-  const goToBack = router.back;
-
   return (
     <Funnel>
       <Funnel.Step name="QUESTION_STEP">
-        <Question onPrev={goToBack} onNext={() => {}} />
+        <Question onPrev={() => router.back()} onNext={() => {}} />
       </Funnel.Step>
 
       <Funnel.Step name="NICKNAME_STEP">
-        <Nickname onPrev={goToBack} onNext={() => {}} />
+        <Nickname onPrev={() => router.back()} onNext={() => {}} />
       </Funnel.Step>
     </Funnel>
   );

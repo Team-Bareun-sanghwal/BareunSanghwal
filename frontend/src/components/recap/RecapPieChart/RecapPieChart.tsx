@@ -8,6 +8,7 @@ import {
   CircularChartDataLabel3D,
   Inject,
   CircularChartLegend3D,
+  CircularChart3DLegendSettingsModel,
 } from '@syncfusion/ej2-react-charts';
 import { registerLicense } from '@syncfusion/ej2-base';
 import { GradientBar } from '../GradientBar/GradientBar';
@@ -28,7 +29,7 @@ interface IPropType {
   mostSuccessedHabit: string;
 }
 
-const legendSettings = {
+const legendSetting: CircularChart3DLegendSettingsModel = {
   visible: true,
   width: '300',
   textStyle: {
@@ -65,7 +66,7 @@ export const RecapPieChart = ({
         tilt={5}
         depth={40}
         width="400"
-        legendSettings={legendSettings}
+        legendSettings={legendSetting}
       >
         <Inject
           services={[
