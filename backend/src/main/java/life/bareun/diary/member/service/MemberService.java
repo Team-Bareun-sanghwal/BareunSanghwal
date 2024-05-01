@@ -24,4 +24,6 @@ public interface MemberService {
     MemberTreeColorResDto treeColor();
 
     void grantFreeRecoveryToAllMembers();
+
+    MemberStreakColorResDto statistic();
 }

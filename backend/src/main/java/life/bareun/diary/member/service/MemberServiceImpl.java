@@ -1,5 +1,7 @@
 package life.bareun.diary.member.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
@@ -10,6 +12,10 @@ import life.bareun.diary.global.security.service.AuthTokenService;
 import life.bareun.diary.global.security.token.AuthToken;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
+import life.bareun.diary.habit.service.HabitTrackerService;
+import life.bareun.diary.member.dto.PracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
@@ -34,9 +40,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    private static final int COLOR_INDEX_MAX = 2;
+    private static final int COLOR_INDEX_DEFAULT = 1;
+    private static final int COLOR_INDEX_MIN = 0;
+
     private final AuthTokenProvider authTokenProvider;
-    private final StreakService streakService;
     private final AuthTokenService authTokenService;
+    private final StreakService streakService;
+    private final HabitTrackerService habitTrackerService;
 
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
@@ -176,5 +187,52 @@ public class MemberServiceImpl implements MemberService {
             memberRecovery.sendFreeRecovery();
             memberRecoveryRepository.save(memberRecovery);
         }
+    }
+
+
+    @Override
+    public MemberStreakColorResDto statistic() {
+
+        // 요일 별 달성 횟수
+        // 최대 또는 최대값 중복 허용
+        List<PracticeCountPerDayOfWeekDto> dataPerDayOfWeek = practiceCountPerDayOfWeek();
+
+        return null;
+    }
+
+
+    @Transactional(readOnly = false)
+    protected List<PracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek() {
+        HabitTrackerWeekResDto weekly = habitTrackerService.findAllWeekHabitTracker();
+        List<Integer> weeklyValues = Arrays.asList(
+            weekly.monday(), weekly.tuesday(), weekly.wednesday(),
+            weekly.thursday(), weekly.friday(),
+            weekly.saturday(), weekly.sunday()
+        );
+        int maxValue = weeklyValues.stream().max(Integer::compare).get();
+        int minValue = weeklyValues.stream().min(Integer::compare).get();
+
+        List<PracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = new ArrayList<>(7);
+        for (int i = 0; i < weeklyValues.size(); ++i) {
+            int val = weeklyValues.get(i);
+            int colorIndex;
+            if (val == minValue) {
+                colorIndex = COLOR_INDEX_MIN;
+            } else if (val == maxValue) {
+                colorIndex = COLOR_INDEX_MAX;
+            } else {
+                colorIndex = COLOR_INDEX_DEFAULT;
+            }
+
+            practiceCountsPerDayOfWeek.add(
+                new PracticeCountPerDayOfWeekDto(
+                    DayOfWeek.getValueByIndex(i),
+                    val,
+                    colorIndex
+                )
+            );
+        }
+
+        return practiceCountsPerDayOfWeek;
     }
 }
