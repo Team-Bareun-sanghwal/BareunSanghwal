@@ -103,8 +103,8 @@ public class HabitServiceImpl implements HabitService {
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
                         MaintainWay.PERIOD).maintainAmount(habitCreateReqDto.period()).build());
-            // 주기 방식으로 트래커 목록 생성
-            LocalDate startDay = LocalDate.now().plusDays(habitCreateReqDto.period());
+            // 주기 방식으로 트래커 목록 생성(내일부터)
+            LocalDate startDay = LocalDate.now().plusDays(1L);
             createHabitTrackerByPeriod(startDay, lastDay, member, memberHabit,
                 habitCreateReqDto.period());
         } else {
@@ -208,10 +208,10 @@ public class HabitServiceImpl implements HabitService {
                 // 가장 마지막 생성된 해빗 트래커 가져오기
                 HabitTracker habitTracker = habitTrackerService.findLastHabitTracker(
                     HabitTrackerLastDto.builder().memberHabit(memberHabit).build());
-
+                
                 // 주기를 더한 날이 말일보다 더 크게 될 때까지 증가
                 int startDay = habitTracker.getCreatedDay();
-                while (startDay < lastDayOfNowMonth) {
+                while (startDay <= lastDayOfNowMonth) {
                     startDay += memberHabit.getMaintainAmount();
                 }
                 // 말일을 뺴서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
