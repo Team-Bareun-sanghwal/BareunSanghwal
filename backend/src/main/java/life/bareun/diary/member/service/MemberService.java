@@ -4,6 +4,7 @@ import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 
@@ -24,4 +25,6 @@ public interface MemberService {
     MemberTreeColorResDto treeColor();
 
     void grantFreeRecoveryToAllMembers();
+
+    MemberStatisticResDto statistic();
 }
