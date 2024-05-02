@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.exception.CustomSecurityException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.token.AuthToken;
@@ -48,7 +49,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         try {
             // 1. accessToken 만료 확인
-            String accessToken = request.getHeader("Authorization");
+            String accessToken = request.getHeader(SecurityConfig.ACCESS_TOKEN_HEADER);
             log.debug("Requested token: {}", accessToken);
 
             if (accessToken != null) {

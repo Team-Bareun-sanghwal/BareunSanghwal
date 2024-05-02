@@ -4,14 +4,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.global.auth.dto.response.AuthLoginResDto;
+import life.bareun.diary.global.auth.config.JwtConfig;
+import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
+import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -43,16 +45,48 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         int statusCode = oAuth2MemberPrincipal.isNewMember()
             ? HttpStatus.CREATED.value()
             : HttpStatus.OK.value();
-        AuthLoginResDto authLoginRes = AuthLoginResDto.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
+        // AuthLoginResDto authLoginRes = AuthLoginResDto.builder()
+        //     .accessToken(accessToken)
+        //     .refreshToken(refreshToken)
+        //     .build();
+
+        // response.setHeader(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken);
+        // response.setHeader(SecurityConfig.REFRESH_TOKEN_HEADER, refreshToken);
+
+        ResponseCookie accessCookie = ResponseCookie
+            .from(
+                SecurityConfig.ACCESS_TOKEN_HEADER,
+                accessToken.replace("Bearer ", "").trim()
+
+            )
+            .sameSite("None")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(600)
             .build();
+
+        ResponseCookie refreshCookie = ResponseCookie
+            .from(
+                SecurityConfig.REFRESH_TOKEN_HEADER,
+                refreshToken
+            )
+            .sameSite("None")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(864000)
+            .build();
+
+        response.setHeader("Set-Cookie", accessCookie.toString());
+        response.addHeader("Set-Cookie", refreshCookie.toString());
+
         ResponseUtil.respondSuccess(
             response,
             BaseResponse.success(
                 statusCode,
                 "OAuth2 인증되었습니다.",
-                authLoginRes
+                null // authLoginRes
             )
         );
     }

@@ -28,6 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    public final static String ACCESS_TOKEN_HEADER = "Authorization";
     public final static String REFRESH_TOKEN_HEADER = "RefreshToken";
 
     private final AuthTokenProvider authTokenProvider;
