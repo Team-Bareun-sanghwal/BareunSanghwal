@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { postOAuth } from '@/app/loading/_apis/postOAuth';
 
 interface ILoginButtonProps {
   platform: string;
@@ -9,16 +10,22 @@ interface ILoginButtonProps {
 
 export const LoginButton = ({ platform }: ILoginButtonProps) => {
   const router = useRouter();
-  const url =
-    platform === 'kakao'
-      ? 'https://www.kakaocorp.com/page/'
-      : 'https://www.google.co.kr/?hl=ko';
+
+  const signIn = () => {
+    console.log(`${process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL}`);
+    router.push(`${process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL}`);
+  };
+
+  // const url =
+  //   platform === 'kakao'
+  //     ? 'https://bareun.life/api/oauth2/authorization/kakao'
+  //     : 'https://bareun.life/api/oauth2/authorization/google';
 
   const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
 
   return (
     <button
-      onClick={() => router.push(url)}
+      onClick={signIn}
       className={`w-[34rem] h-[3rem] ${bgColor} rounded-[0.8rem] flex items-center justify-center`}
     >
       <Image
