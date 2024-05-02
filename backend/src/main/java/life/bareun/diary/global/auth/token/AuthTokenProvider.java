@@ -30,5 +30,5 @@ public interface AuthTokenProvider {
 
     String removePrefix(String accessToken);
 
-
+    long getAccessTokenLifetime();
 }

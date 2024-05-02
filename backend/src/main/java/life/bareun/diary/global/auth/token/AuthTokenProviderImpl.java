@@ -166,5 +166,11 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     public String removePrefix(String accessToken) {
         return accessToken.replace(ACCESS_TOKEN_PREFIX, "");
     }
+
+    @Override
+    public long getAccessTokenLifetime() {
+        return accessTokenLifetimeSeconds;
+    }
+
 }
 
