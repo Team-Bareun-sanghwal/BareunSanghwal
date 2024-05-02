@@ -31,7 +31,8 @@ public class StreakController {
     }
 
     @GetMapping(value = {"/{dateString}/{memberHabitId}", "/{dateString}"})
-    public ResponseEntity<BaseResponse<?>> findAllMemberStreakByHabit(@PathVariable("dateString") String dateString,
+    public ResponseEntity<BaseResponse<HabitStreakResDto>> findAllMemberStreakByHabit(
+        @PathVariable("dateString") String dateString,
         @PathVariable(name = "memberHabitId", required = false) Long memberHabitId) {
 
         HabitStreakResDto habitStreakResDto = null;
@@ -47,5 +48,16 @@ public class StreakController {
 
         return ResponseEntity.status(HttpStatus.OK.value())
             .body(BaseResponse.success(HttpStatus.OK.value(), message, habitStreakResDto));
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+
+        streakService.modifyMemberTotalStreakTotalField(5);
+
+        streakService.modifyMemberTotalStreakAchieveField(true, true);
+
+        return ResponseEntity.status(HttpStatus.OK.value())
+            .body(BaseResponse.success(HttpStatus.OK.value(), "success", null));
     }
 }
