@@ -1,5 +1,7 @@
 package life.bareun.diary.global.security.config;
 
+import java.util.Arrays;
+import java.util.List;
 import life.bareun.diary.global.security.filter.AuthTokenFilter;
 import life.bareun.diary.global.security.handler.CustomOAuth2FailureHandler;
 import life.bareun.diary.global.security.handler.CustomOAuth2SuccessHandler;
@@ -17,6 +19,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity(debug = false)
@@ -48,6 +53,12 @@ public class SecurityConfig {
                     .permitAll()
         );
 
+        http.cors(
+            httpSecurityCorsConfigurer ->
+                httpSecurityCorsConfigurer
+                    .configurationSource(corsConfigurationSource())
+        );
+
         // OAuth 설정
         http
             .oauth2Login( // OAuth2.0 로그인 활성화
@@ -71,6 +82,41 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+
+        corsConfiguration.setExposedHeaders(
+            Arrays.asList(
+                "Content-Type",
+                "Set-cookie",
+                "Authorization"
+            )
+        );
+        // corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        // corsConfiguration.addAllowedOrigin("https://localhost:3000");
+        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(Boolean.TRUE);
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.setMaxAge(3600L); // 1h
+        corsConfiguration.setAllowedHeaders(
+            Arrays.asList(
+                "Origin",
+                "X-Requested-With",
+                "Content-Type",
+                "Accept",
+                "Authorization"
+            )
+        );
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return source;
+    }
+
 
     @Bean
     public AuthTokenFilter authTokenFilter() {
