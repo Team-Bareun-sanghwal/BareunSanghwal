@@ -24,24 +24,24 @@ export const Statistics_PieChart: Story = {
   args: {
     rateByHabitList: [
       {
-        habit: '자기계발',
-        rate: 28,
+        name: '자기계발',
+        ratio: 28,
       },
       {
-        habit: '운동',
-        rate: 25,
+        name: '운동',
+        ratio: 25,
       },
       {
-        habit: '코딩',
-        rate: 24,
+        name: '코딩',
+        ratio: 24,
       },
       {
-        habit: '정신건강',
-        rate: 13,
+        name: '정신건강',
+        ratio: 13,
       },
       {
-        habit: '기타',
-        rate: 10,
+        name: '기타',
+        ratio: 10,
       },
     ],
     mostSuccessedHabit: '자기계발',

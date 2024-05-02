@@ -8,7 +8,7 @@ interface CameraControlsProps {
 }
 const CameraControls = ({ position, target }: CameraControlsProps) => {
   const { camera } = useThree();
-  const ref = useRef(null);
+  const ref = useRef<CameraControlsProps>(null);
 
   function cameraAnimate() {
     if (ref.current) {
@@ -37,7 +37,7 @@ const CameraControls = ({ position, target }: CameraControlsProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target, position]);
 
-  return <OrbitControls ref={ref} />;
+  return <OrbitControls />;
 };
 
 export { CameraControls };

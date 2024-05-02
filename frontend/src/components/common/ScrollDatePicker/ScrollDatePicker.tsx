@@ -18,9 +18,9 @@ export const ScrollDatePicker = ({ birthDay, setBirthDay }: IDataProps) => {
   for (let i = 1; i <= 12; i += 1) {
     monthArr.push(i);
   }
-  const yearDay = [];
+  const dayArr = [];
   for (let i = 1; i <= 31; i += 1) {
-    yearDay.push(i);
+    dayArr.push(i);
   }
 
   const [valueGroups, setValueGroups] = useState({
@@ -32,7 +32,7 @@ export const ScrollDatePicker = ({ birthDay, setBirthDay }: IDataProps) => {
   const optionGroups = {
     year: yearArr,
     month: monthArr,
-    day: yearDay,
+    day: dayArr,
   };
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const ScrollDatePicker = ({ birthDay, setBirthDay }: IDataProps) => {
       day: parseInt(birthdayArr[2]),
     });
     setBirthDay(`${birthdayArr[0]}-${birthdayArr[1]}-${birthdayArr[2]}`);
-  }, []);
+  }, [birthDay, setBirthDay]);
 
   const handleChange = (name: string, value: number) => {
     setValueGroups({

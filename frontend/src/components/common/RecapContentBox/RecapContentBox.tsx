@@ -60,7 +60,7 @@ export const RecapContentBox = ({ recapTotalData }: IRecapContentBoxProps) => {
             <ul className="w-full grid grid-cols-3">
               {recapYearData.recapList.map((recap, index) => {
                 return (
-                  <li>
+                  <li key={index}>
                     <RecapImageContent
                       imgSrc="/images/icon-clock.png"
                       dateText={`${recap.period.getMonth() + 1}월`}
