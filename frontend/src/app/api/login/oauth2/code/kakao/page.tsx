@@ -5,9 +5,20 @@ export default function Page() {
   const url = `https://bareun.life/api/oauth2/authorization/kakao?code=${code}`;
   // const url = `${process.env.NEXT_PUBLIC_BASE_URL}/oauth2/authorization/kakao?code=${code}`;
 
-  const logIn = async () => {
-    const data = await (await fetch(url)).json();
-    console.log(data);
+  const logIn = () => {
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   logIn();
 
