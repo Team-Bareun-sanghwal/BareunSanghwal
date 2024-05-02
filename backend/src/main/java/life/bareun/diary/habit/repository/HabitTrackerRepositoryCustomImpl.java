@@ -1,16 +1,18 @@
 package life.bareun.diary.habit.repository;
 
 import static life.bareun.diary.habit.entity.QHabitTracker.habitTracker;
-
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
+import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
-import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.entity.HabitTracker;
+import life.bareun.diary.habit.entity.QMemberHabit;
+import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -38,7 +40,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
 
     @Override
     public List<HabitTrackerTodayDto>
-        findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
+    findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
         return queryFactory.select(
                 Projections.constructor(HabitTrackerTodayDto.class,
                     habitTracker.memberHabit.habit.name, habitTracker.memberHabit.alias,
@@ -60,5 +62,22 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                     .where(habitTracker.memberHabit.eq(habitTrackerLastDto.memberHabit()))
             ).and(habitTracker.memberHabit.eq(habitTrackerLastDto.memberHabit())))
             .fetchOne();
+    }
+
+    @Override
+    public List<MemberPracticedHabitDto> findTopHabits(Long memberId) {;
+        return queryFactory
+            .select(
+                Projections.constructor(
+                    MemberPracticedHabitDto.class,
+                    habitTracker.memberHabit.alias.as("habit"),
+                    habitTracker.id.count().intValue().as("value")
+                )
+            )
+            .from(habitTracker)
+            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
+            .groupBy(habitTracker.memberHabit.id)
+            .orderBy(habitTracker.id.count().desc())
+            .fetch();
     }
 }

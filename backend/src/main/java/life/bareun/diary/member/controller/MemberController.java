@@ -4,6 +4,7 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.security.config.SecurityConfig;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.service.MemberService;
@@ -109,5 +110,18 @@ public class MemberController {
                 memberTreeColorResDto
             )
         );
+    }
+
+    @GetMapping("/statistic")
+    public ResponseEntity<BaseResponse<MemberStatisticResDto>> statistic() {
+        MemberStatisticResDto statistic = memberService.statistic();
+        return ResponseEntity.status(HttpStatus.OK.value())
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "통계닷!",
+                    statistic
+                )
+            );
     }
 }
