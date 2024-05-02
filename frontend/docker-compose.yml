@@ -7,13 +7,6 @@ services:
       - '3000:3000'
     container_name: client-server
     environment:
-      REACT_APP_WEATHER_API_KEY: ${REACT_APP_WEATHER_API_KEY}
-      REACT_APP_WEATHER_API: ${REACT_APP_WEATHER_API}
-      NEXT_PUBLIC_GPT_API_KEY: ${NEXT_PUBLIC_GPT_API_KEY}
-      NEXT_PUBLIC_GPT_API: ${NEXT_PUBLIC_GPT_API}
-      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
       TZ: Asia/Seoul
     networks:
       - ubuntu_infra
