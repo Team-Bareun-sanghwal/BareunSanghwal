@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 public class ResponseUtil {
 
     public static void respondError(
+    private static final String CONTENT_TYPE_JSON = "application/json";
         HttpServletResponse response,
         CustomSecurityException exception
     ) throws IOException {
@@ -18,7 +19,7 @@ public class ResponseUtil {
             ServletOutputStream outputStream = response.getOutputStream()
         ) {
             response.setStatus(exception.getErrorCode().getStatus().value());
-            response.setContentType("application/json");
+            response.setContentType(CONTENT_TYPE_JSON);
             outputStream.write(
                 GsonUtil.toJsonBytesUtf8(
                     SecurityErrorResponseFactory.create(exception)
@@ -42,6 +43,7 @@ public class ResponseUtil {
         ) {
             response.setStatus(baseResponse.getStatus());
             response.setContentType("application/json");
+            response.setContentType(CONTENT_TYPE_JSON);
             outputStream.write(
                 GsonUtil.toJsonBytesUtf8(ResponseEntity
                     .status(baseResponse.getStatus())
