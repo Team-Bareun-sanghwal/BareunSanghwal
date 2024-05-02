@@ -1,7 +1,7 @@
 package life.bareun.diary.global.notification.repository;
 
-import life.bareun.diary.global.notification.dto.NotificationTokenDto;
+import java.util.Map;
 
 public interface NotificationTokenRepositoryCustom {
-    NotificationTokenDto findNotificationTokenById(String id);
+    Map<Long, String> findAllNotificationToken();
 }

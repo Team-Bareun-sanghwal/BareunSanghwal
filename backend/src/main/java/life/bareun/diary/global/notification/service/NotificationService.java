@@ -6,7 +6,7 @@ import life.bareun.diary.global.notification.dto.response.NotificationListResDto
 public interface NotificationService {
     void createToken(NotificationReqDto notificationReqDto);
 
-    void sendNotification();
+    void sendNotification(Long notificationCategoryId);
 
     NotificationListResDto findAllNotification();
 }

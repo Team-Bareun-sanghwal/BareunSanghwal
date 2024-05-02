@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record NotificationTokenDto(
 
-    String id,
+    Long id,
 
     String token
 

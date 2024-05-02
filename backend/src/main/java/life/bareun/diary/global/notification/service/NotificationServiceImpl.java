@@ -1,20 +1,22 @@
 package life.bareun.diary.global.notification.service;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.WebpushConfig;
-import com.google.firebase.messaging.WebpushNotification;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.notification.dto.NotificationDto;
+import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
 import life.bareun.diary.global.notification.dto.NotificationStatusModifyDto;
-import life.bareun.diary.global.notification.dto.NotificationTokenDto;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
 import life.bareun.diary.global.notification.dto.response.NotificationListResDto;
 import life.bareun.diary.global.notification.entity.Notification;
+import life.bareun.diary.global.notification.entity.NotificationCategory;
 import life.bareun.diary.global.notification.entity.NotificationToken;
 import life.bareun.diary.global.notification.exception.NotificationErrorCode;
 import life.bareun.diary.global.notification.exception.NotificationException;
+import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
 import life.bareun.diary.global.notification.repository.NotificationRepository;
 import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
 import life.bareun.diary.global.security.util.AuthUtil;
@@ -35,6 +37,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationTokenRepository notificationTokenRepository;
 
+    private final NotificationCategoryRepository notificationCategoryRepository;
+
     private final MemberRepository memberRepository;
 
     @Override
@@ -49,23 +53,43 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendNotification() {
-        String content = "알림입니다.";
-        String id = "notificationToken:" + AuthUtil.getMemberIdFromAuthentication();
-        NotificationTokenDto notificationTokenDto = notificationTokenRepository.findNotificationTokenById(
-            id);
-        if (notificationTokenDto.token() == null) {
-            throw new NotificationException(NotificationErrorCode.NOT_FOUND_NOTIFICATION_TOKEN);
-        }
-        Message message = Message.builder().setToken(notificationTokenDto.token()).setWebpushConfig(
-            WebpushConfig.builder().putHeader("ttl", "300")
-                .setNotification(new WebpushNotification("bareun", content)).build()).build();
-        try {
-            FirebaseMessaging.getInstance().sendAsync(message).get();
-        } catch (Exception e) {
-            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
-        }
+    public void sendNotification(Long notificationCategoryId) {
+        NotificationCategory notificationCategory = findNotificationCategory(
+            notificationCategoryId);
 
+        // 현재 Redis에 존재하는 토큰 목록
+        Map<Long, String> notificationTokenDtoList = notificationTokenRepository
+            .findAllNotificationToken();
+
+        // 조건에 부합하는 사용자와 토큰, 내용 목록
+        Map<Long, NotificationResultTokenDto> resultTokenDtoMap = verifyCondition(
+            notificationCategoryId,
+            notificationTokenDtoList, notificationCategory);
+
+        for (Entry<Long, NotificationResultTokenDto> entry : resultTokenDtoMap.entrySet()) {
+            log.info(entry.getKey() + " " + entry.getValue());
+
+            NotificationResultTokenDto notificationResultTokenDto = entry.getValue();
+
+            // 실제로 PWA 환경 배포 시 주석 해제
+            // 알림 생성
+            //            notificationRepository.save(
+            //                Notification.builder().member(notificationResultTokenDto.member())
+            //                    .content(notificationResultTokenDto.content())
+            //                    .notificationCategory(notificationCategory).isRead(false).build());
+            //
+            //            Message message = Message.builder().setToken(notificationResultTokenDto.token())
+            //                .setWebpushConfig(
+            //                    WebpushConfig.builder().putHeader("ttl", "300")
+            //                        .setNotification(
+            //                            new WebpushNotification("bareun", notificationResultTokenDto.content()))
+            //                        .build()).build();
+            //            try {
+            //                FirebaseMessaging.getInstance().sendAsync(message).get();
+            //            } catch (Exception e) {
+            //                throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
+            //            }
+        }
     }
 
     @Override
@@ -97,7 +121,39 @@ public class NotificationServiceImpl implements NotificationService {
                 NotificationStatusModifyDto.builder().notificationId(notification.getId())
                     .status(true).build());
         }
-
         return NotificationListResDto.builder().notificationList(notificationDtoList).build();
+    }
+
+    private Map<Long, NotificationResultTokenDto> verifyCondition(Long notificationCategoryId,
+        Map<Long, String> notificationTokenMap, NotificationCategory notificationCategory) {
+        return switch (Math.toIntExact(notificationCategoryId)) {
+            case 1 -> findAllNotificationLuckyPoint(notificationTokenMap, notificationCategory);
+            default -> null;
+        };
+    }
+
+    private Map<Long, NotificationResultTokenDto> findAllNotificationLuckyPoint(
+        Map<Long, String> notificationTokenMap, NotificationCategory notificationCategory) {
+
+        // 아직 포인트를 미수확한 사용자 리스트
+        List<Member> unharvestedMemberList = memberRepository
+            .findAllByLastHarvestedDateIsNullOrLastHarvestedDateIsBefore(LocalDate.now());
+
+        Map<Long, NotificationResultTokenDto> resultTokenMap = new ConcurrentHashMap<>();
+        String content = notificationCategory.getContent();
+        for (Member member : unharvestedMemberList) {
+            if (notificationTokenMap.containsKey(member.getId())) {
+                resultTokenMap.put(member.getId(),
+                    NotificationResultTokenDto.builder().member(member)
+                        .token(notificationTokenMap.get(member.getId())).content(content).build());
+            }
+        }
+        return resultTokenMap;
+    }
+
+    private NotificationCategory findNotificationCategory(Long notificationCategoryId) {
+        return notificationCategoryRepository.findById(
+            notificationCategoryId).orElseThrow(
+            () -> new NotificationException(NotificationErrorCode.NOT_VALID_NOTIFICATION_CATEGORY));
     }
 }

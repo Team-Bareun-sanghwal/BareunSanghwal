@@ -32,7 +32,7 @@ public class NotificationController {
 
     @GetMapping("/send")
     public ResponseEntity<BaseResponse<String>> sendNotification() {
-        notificationService.sendNotification();
+        notificationService.sendNotification(1L);
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "알림 생성이 완료되었습니다.", null));
     }

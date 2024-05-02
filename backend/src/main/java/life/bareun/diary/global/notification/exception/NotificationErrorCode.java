@@ -16,7 +16,9 @@ public enum NotificationErrorCode {
 
     FAIL_SEND_NOTIFICATION(HttpStatus.BAD_REQUEST, "알림 전송을 실패했습니다."),
 
-    NOT_VALID_NOTIFICATION_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 알림 토큰입니다.");
+    NOT_VALID_NOTIFICATION_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 알림 토큰입니다."),
+
+    NOT_VALID_NOTIFICATION_CATEGORY(HttpStatus.BAD_REQUEST, "유효하지 않은 알림 카테고리입니다.");
 
     private final HttpStatus status;
     private final String message;
