@@ -13,11 +13,14 @@ import life.bareun.diary.global.security.token.AuthToken;
 import life.bareun.diary.global.security.token.AuthTokenProvider;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
+import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.service.HabitTrackerService;
-import life.bareun.diary.member.dto.PracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.entity.Member;
@@ -53,6 +56,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRecoveryRepository memberRecoveryRepository;
     private final StreakColorRepository streakColorRepository;
     private final TreeColorRepository treeColorRepository;
+    private final HabitTrackerRepository habitTrackerRepository;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -191,18 +195,23 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public MemberStreakColorResDto statistic() {
+    @Transactional(readOnly = true)
+    public MemberStatisticResDto statistic() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
+        List<MemberPracticedHabitDto> topHabits = habitTrackerRepository.findTopHabits(id);
+        System.out.println("topHabits:"  + topHabits);
 
         // 요일 별 달성 횟수
         // 최대 또는 최대값 중복 허용
-        List<PracticeCountPerDayOfWeekDto> dataPerDayOfWeek = practiceCountPerDayOfWeek();
+        List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek = practiceCountPerDayOfWeek();
 
         return null;
     }
 
 
-    @Transactional(readOnly = false)
-    protected List<PracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek() {
+    @Transactional(readOnly = true)
+    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek() {
         HabitTrackerWeekResDto weekly = habitTrackerService.findAllWeekHabitTracker();
         List<Integer> weeklyValues = Arrays.asList(
             weekly.monday(), weekly.tuesday(), weekly.wednesday(),
@@ -212,7 +221,7 @@ public class MemberServiceImpl implements MemberService {
         int maxValue = weeklyValues.stream().max(Integer::compare).get();
         int minValue = weeklyValues.stream().min(Integer::compare).get();
 
-        List<PracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = new ArrayList<>(7);
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = new ArrayList<>(7);
         for (int i = 0; i < weeklyValues.size(); ++i) {
             int val = weeklyValues.get(i);
             int colorIndex;
@@ -223,9 +232,8 @@ public class MemberServiceImpl implements MemberService {
             } else {
                 colorIndex = COLOR_INDEX_DEFAULT;
             }
-
             practiceCountsPerDayOfWeek.add(
-                new PracticeCountPerDayOfWeekDto(
+                new MemberPracticeCountPerDayOfWeekDto(
                     DayOfWeek.getValueByIndex(i),
                     val,
                     colorIndex
