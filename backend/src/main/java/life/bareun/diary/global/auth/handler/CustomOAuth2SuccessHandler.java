@@ -57,7 +57,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         ).toSeconds();
         ResponseUtil.addAccessTokenCookie(
             response,
-            authTokenProvider.addPrefix(accessToken),
+            accessToken,
             accessTokenMaxAge
         );
 
