@@ -61,4 +61,51 @@ public class ResponseUtil {
         }
     }
 
+    public static void addAccessTokenCookie(
+        HttpServletResponse response,
+        String accessToken,
+        long maxAgeSeconds
+    ) {
+        response.addHeader(
+            HEADER,
+            createResponseCookieString(
+                SecurityConfig.ACCESS_TOKEN_HEADER,
+                accessToken,
+                maxAgeSeconds
+            )
+        );
+
+    }
+
+    public static void addRefreshTokenCookie(
+        HttpServletResponse response,
+        String refreshToken,
+        long maxAgeSeconds
+    ) {
+        response.addHeader(
+            HEADER,
+            createResponseCookieString(
+                SecurityConfig.REFRESH_TOKEN_HEADER,
+                refreshToken,
+                maxAgeSeconds
+            )
+        );
+    }
+
+    private static String createResponseCookieString(
+        String name,
+        String value,
+        long maxAgeSeconds
+    ) {
+        return ResponseCookie
+            .from(name, value)
+            .sameSite("None")
+            .secure(true) // HTTPS만 허용
+            .httpOnly(true) // HTTP 패킷으로만 쿠키를 받을 수 있음
+            .path("/")
+            .maxAge(maxAgeSeconds)
+            .build()
+            .toString();
+    }
+
 }

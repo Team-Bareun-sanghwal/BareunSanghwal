@@ -21,6 +21,6 @@ public class CustomOAuth2FailureHandler implements AuthenticationFailureHandler 
         CustomSecurityException customException = new CustomSecurityException(
             SecurityErrorCode.UNAUTHENTICATED);
 
-        ResponseUtil.respondError(response, customException);
+        ResponseUtil.writeError(response, customException);
     }
 }
