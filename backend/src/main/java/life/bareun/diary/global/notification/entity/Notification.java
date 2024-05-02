@@ -46,8 +46,8 @@ public class Notification {
     private LocalDateTime createdDatetime;
 
     @Builder
-    public Notification(Member member, NotificationCategory notificationCategory, String content, Boolean isRead,
-        LocalDateTime createdDatetime) {
+    public Notification(Member member, NotificationCategory notificationCategory, String content,
+        Boolean isRead, LocalDateTime createdDatetime) {
         this.member = member;
         this.notificationCategory = notificationCategory;
         this.content = content;

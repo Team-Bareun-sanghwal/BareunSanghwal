@@ -72,8 +72,8 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationListResDto findAllNotification() {
         Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new NotificationException(NotificationErrorCode.NOT_FOUND_MEMBER));
-        List<Notification> notificationList = notificationRepository.findAllByMember_OrderByCreatedDatetimeDescIdDesc(
-            member);
+        List<Notification> notificationList = notificationRepository
+            .findAllByMember_OrderByCreatedDatetimeDescIdDesc(member);
         List<NotificationDto> notificationDtoList = new ArrayList<>();
 
         for (Notification notification : notificationList) {
