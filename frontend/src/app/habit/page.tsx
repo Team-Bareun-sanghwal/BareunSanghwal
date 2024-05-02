@@ -1,9 +1,14 @@
 import { TabBox, GuideBox, HabitListBox, NavBar } from '@/components';
 import { HabitUpdateComponent } from './_components/HabitUpdateComponent';
+import { getActivatedHabitList } from './_apis/getActivatedHabitList';
+import { getCompletedHabitList } from './_apis/getAllCompletedHabitList';
 
 export default async function Page() {
-  // 진행 중인 해빗 목록 fetch
-  // 완료한 해빗 목록 fetch
+  const activatedHabitList = await getActivatedHabitList();
+  // console.log(activatedHabitList);
+
+  const completedHabitList = await getCompletedHabitList();
+  // console.log(completedHabitList);
 
   return (
     <>
