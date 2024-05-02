@@ -6,9 +6,10 @@ import { useState } from 'react';
 import { Question } from './Question';
 import { Nickname } from './Nickname';
 import { DayOrPeriod } from './DayOrPeriod';
+import { Complete } from './Complete';
 
 export const HabitRegisterFunnel = () => {
-  const { Funnel, setStep } = useFunnel('DATE_STEP'); // 초기 스텝
+  const { Funnel, setStep } = useFunnel('COMPLETE_STEP'); // 초기 스텝
   const [data, setData] = useState({}); // 누적 데이터
   const router = useRouter();
 
@@ -24,6 +25,10 @@ export const HabitRegisterFunnel = () => {
 
       <Funnel.Step name="DATE_STEP">
         <DayOrPeriod onPrev={() => router.back()} onNext={() => {}} />
+      </Funnel.Step>
+
+      <Funnel.Step name="COMPLETE_STEP">
+        <Complete onPrev={() => router.back()} onNext={() => {}} />
       </Funnel.Step>
     </Funnel>
   );
