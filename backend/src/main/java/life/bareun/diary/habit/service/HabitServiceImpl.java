@@ -83,6 +83,7 @@ public class HabitServiceImpl implements HabitService {
 
     private final HabitRecommendRepository habitRecommendRepository;
 
+    // 엘라스틱서치 로그 수집을 위한 logger
     private final Logger rankLogger = LoggerFactory.getLogger("rank-log");
 
     @Override
