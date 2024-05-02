@@ -4,11 +4,20 @@ import dynamic from 'next/dynamic';
 import lottieJson from '@/../public/lotties/lottie-note.json';
 import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
+import { useOverlay } from '@/hooks/use-overlay';
 
 const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
 export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+
+  // const overlay = useOverlay();
+
+  // const handleRecommendOverlay = () => {
+  //   overlay.open(({ isOpen, close }) => (
+
+  //   ));
+  // };
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
@@ -26,9 +35,17 @@ export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
           beforeStageIndex={-1}
         ></ProgressBox>
 
-        <label className="custom-bold-text text-custom-matcha">
-          어떤 습관을 지킬지 정하셨나요?
-        </label>
+        <div className="flex flex-col gap-[0.5rem] items-center">
+          <span className="custom-bold-text text-custom-matcha">
+            어떤 습관을 지킬지 정하셨나요?
+          </span>
+          <span className="custom-medium-text">
+            '네'를 누르면 바로 카테고리/별칭 설정으로,
+          </span>
+          <span className="custom-medium-text">
+            '아니오'를 누르면 추천 단계로 넘어가요.
+          </span>
+        </div>
 
         <LottieBox
           loop
