@@ -2,6 +2,7 @@ package life.bareun.diary.global.notification.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
+import life.bareun.diary.global.notification.dto.response.NotificationListResDto;
 import life.bareun.diary.global.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,17 +23,25 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping
-    public ResponseEntity<BaseResponse<String>> createNotificationToken(@RequestBody NotificationReqDto notificationReqDto) {
+    public ResponseEntity<BaseResponse<String>> createNotificationToken(
+        @RequestBody NotificationReqDto notificationReqDto) {
         notificationService.createToken(notificationReqDto);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(BaseResponse.success(HttpStatus.CREATED.value(), "알림 토큰 생성이 완료되었습니다.", null));
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<String>> sendNotification () {
+    @GetMapping("/send")
+    public ResponseEntity<BaseResponse<String>> sendNotification() {
         notificationService.sendNotification();
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "알림 생성이 완료되었습니다.", null));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<NotificationListResDto>> findAllNotification() {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "알림 목록 조회가 완료되었습니다.",
+                notificationService.findAllNotification()));
     }
 
 }

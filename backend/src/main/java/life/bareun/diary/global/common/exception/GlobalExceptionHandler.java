@@ -2,7 +2,6 @@ package life.bareun.diary.global.common.exception;
 
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.elastic.exception.ElasticException;
-import life.bareun.diary.global.notification.entity.Notification;
 import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.member.exception.MemberException;

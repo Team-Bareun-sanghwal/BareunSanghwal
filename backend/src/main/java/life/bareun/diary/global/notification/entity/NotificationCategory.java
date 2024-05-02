@@ -21,15 +21,15 @@ public class NotificationCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "content")
+    private String content;
 
     @Column(name = "icon")
     private String icon;
 
     @Builder
-    public NotificationCategory(String name, String icon) {
-        this.name = name;
+    public NotificationCategory(String content, String icon) {
+        this.content = content;
         this.icon = icon;
     }
 
