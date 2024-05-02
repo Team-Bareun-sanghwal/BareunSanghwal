@@ -43,6 +43,10 @@ public class SchedulingConfig {
         recapService.createRecap();
     }
 
+    // 6시간마다
+    @Scheduled(cron = "0 0 */6 * * ?")
+    public void renewHabitRank() { habitService.renewHabitRank(); }
+
     // 매 월 00시에 무료 리커버리 지급
     @Scheduled(cron = "0 0 0 1 * ?")
     public void provideFreeRecovery() {
