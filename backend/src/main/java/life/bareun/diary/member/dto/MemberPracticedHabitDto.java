@@ -1,6 +1,7 @@
 package life.bareun.diary.member.dto;
 
-public record PracticedHabitDto(
+
+public record MemberPracticedHabitDto(
     String habit,
     int value
 ) {

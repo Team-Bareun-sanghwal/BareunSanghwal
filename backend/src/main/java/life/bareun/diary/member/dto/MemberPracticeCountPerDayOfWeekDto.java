@@ -1,6 +1,6 @@
 package life.bareun.diary.member.dto;
 
-public record PracticeCountPerDayOfWeekDto(
+public record MemberPracticeCountPerDayOfWeekDto(
     String dayOfWeek,
     int value,
     int colorIdx
