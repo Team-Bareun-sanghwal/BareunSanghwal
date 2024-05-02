@@ -208,14 +208,18 @@ public class HabitServiceImpl implements HabitService {
                 // 가장 마지막 생성된 해빗 트래커 가져오기
                 HabitTracker habitTracker = habitTrackerService.findLastHabitTracker(
                     HabitTrackerLastDto.builder().memberHabit(memberHabit).build());
-                
-                // 주기를 더한 날이 말일보다 더 크게 될 때까지 증가
-                int startDay = habitTracker.getCreatedDay();
-                while (startDay <= lastDayOfNowMonth) {
-                    startDay += memberHabit.getMaintainAmount();
+
+                // 만약 말일에 생성되기 때문에 해빗 트래커가 하나도 없다면 1일부터 생성
+                int startDay = 1;
+                if(habitTracker != null) {
+                    // 주기를 더한 날이 말일보다 더 크게 될 때까지 증가
+                    startDay = habitTracker.getCreatedDay();
+                    while (startDay <= lastDayOfNowMonth) {
+                        startDay += memberHabit.getMaintainAmount();
+                    }
+                    // 말일을 뺴서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
+                    startDay -= lastDayOfNowMonth;
                 }
-                // 말일을 뺴서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
-                startDay -= lastDayOfNowMonth;
                 LocalDate startDate = LocalDate.of(nowMonth.getYear(),
                     nextMonth.getMonth().getValue(), startDay);
                 // 주기 방식으로 생성
