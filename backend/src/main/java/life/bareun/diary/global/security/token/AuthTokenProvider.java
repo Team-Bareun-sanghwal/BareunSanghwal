@@ -8,6 +8,8 @@ import org.springframework.security.core.Authentication;
 // 토큰 검증, Authentication 객체 생성
 public interface AuthTokenProvider {
 
+    String ACCESS_TOKEN_PREFIX = "Bearer ";
+
     String createAccessToken(Date from, String memberId, String role);
 
     String createRefreshToken(Date from, String id);

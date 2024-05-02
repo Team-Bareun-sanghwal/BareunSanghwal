@@ -2,6 +2,7 @@ package life.bareun.diary.product.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductRecoveryPurchaseResDto;
 import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
 import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.service.ProductService;
@@ -56,6 +57,19 @@ public class ProductController {
                     HttpStatus.OK.value(),
                     "나무 테마 변경권을 구매했습니다.",
                     treeColorUpdateRes
+                )
+            );
+    }
+
+    @PatchMapping("/recovery")
+    public ResponseEntity<BaseResponse<ProductRecoveryPurchaseResDto>> buyRecovery() {
+        ProductRecoveryPurchaseResDto productRecoveryPurchaseResDto = productService.buyRecovery();
+        return ResponseEntity.status(HttpStatus.OK.value())
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "스트릭 리커버리를 구매했습니다.",
+                    productRecoveryPurchaseResDto
                 )
             );
     }

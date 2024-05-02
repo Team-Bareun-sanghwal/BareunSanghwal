@@ -22,4 +22,6 @@ public interface MemberService {
     MemberStreakColorResDto streakColor();
 
     MemberTreeColorResDto treeColor();
+
+    void grantFreeRecoveryToAllMembers();
 }
