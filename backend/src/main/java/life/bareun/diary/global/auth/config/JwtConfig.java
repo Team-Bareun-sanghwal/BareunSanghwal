@@ -3,7 +3,6 @@ package life.bareun.diary.global.auth.config;
 
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.token.AuthTokenProviderImpl;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

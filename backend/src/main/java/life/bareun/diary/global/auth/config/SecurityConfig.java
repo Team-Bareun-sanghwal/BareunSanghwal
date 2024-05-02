@@ -54,6 +54,7 @@ public class SecurityConfig {
                     .permitAll()
         );
 
+        // CORS 설정
         http.cors(
             httpSecurityCorsConfigurer ->
                 httpSecurityCorsConfigurer
@@ -85,6 +86,7 @@ public class SecurityConfig {
     }
 
 
+    // 개발 완료 시점에 허용해야 함
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -93,7 +95,8 @@ public class SecurityConfig {
             Arrays.asList(
                 "Content-Type",
                 "Set-cookie",
-                "Authorization"
+                ACCESS_TOKEN_HEADER,
+                REFRESH_TOKEN_HEADER
             )
         );
         // corsConfiguration.addAllowedOrigin("http://localhost:3000");

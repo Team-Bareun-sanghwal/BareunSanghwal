@@ -1,10 +1,10 @@
 package life.bareun.diary.global.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.dto.response.AuthAccessTokenResDto;
 import life.bareun.diary.global.auth.service.AuthService;
+import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
