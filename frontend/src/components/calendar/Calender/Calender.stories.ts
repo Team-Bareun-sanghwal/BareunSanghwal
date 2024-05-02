@@ -24,6 +24,7 @@ export const Activated: Story = {
     memberHabitList: StreaksResponse.memberHabitList,
     dayInfo: StreaksResponse.dayInfo,
     themeColor: 'rose',
+    proportion: 88,
   },
   parameters: {
     viewports: { defaultViewport: 'mobile1' },

@@ -5,7 +5,11 @@ import { Achievement } from '../Acheivement/Achievement';
 import { MonthLabel } from '../MonthLabel/MonthLabel';
 import { HabitBtnList } from '../HabitBtnList/HabitBtnList';
 import { ThemeColor } from '../CalenderConfig';
-import { getThisMonth, getThisYear } from '@/components/calendar/util';
+import {
+  getToday,
+  getThisMonth,
+  getThisYear,
+} from '@/components/calendar/util';
 import { setDayInfo } from '@/app/mock';
 import { HabitChecker } from '@/components/main/HabitChecker/HabitChecker';
 import { LongestStreak } from '@/components/main/LongestStreak/LongestStreak';
@@ -33,14 +37,10 @@ export const Calender = ({
     <>
       <div className="flex w-full justify-around">
         <HabitChecker
-          achieveCount={memberHabitList.reduce(
-            (acc, cur) => acc + cur.achieveCount,
-            0,
-          )}
-          totalCount={memberHabitList.reduce(
-            (acc, cur) => acc + cur.totalCount,
-            0,
-          )}
+          achieveCount={
+            setDayInfo(dayInfo, dayOfWeekFirst)[getToday()].achieveCount
+          }
+          totalCount={memberHabitList.length}
         />
         <LongestStreak longestStreakCount={3} />
       </div>

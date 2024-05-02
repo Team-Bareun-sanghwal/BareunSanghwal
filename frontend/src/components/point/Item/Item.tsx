@@ -10,15 +10,11 @@ interface IItemProps {
   description: string;
   price: number;
 }
-const modes = {
-  POSITIVE: 'check',
-  NEGATIVE: 'error',
-  RECOVERY: 'lightning',
-  PURCHASE_STREAK: 'item-streak',
-  PURCHASE_TREE: 'item-tree',
-  PURCHASE_RECOVERY: 'item-recovery',
-  NONE: '',
-};
+interface IReturn {
+  path: string;
+  mode: 'PURCHASE_STREAK' | 'PURCHASE_TREE' | 'PURCHASE_RECOVERY';
+}
+
 const getAttributes = (key: string) => {
   let path = '';
   let mode = '';
@@ -32,7 +28,7 @@ const getAttributes = (key: string) => {
     path = '/images/icon-item-tree.png';
     mode = 'PURCHASE_TREE';
   }
-  return { path, mode };
+  return { path, mode } as IReturn;
 };
 
 interface IPurchase {

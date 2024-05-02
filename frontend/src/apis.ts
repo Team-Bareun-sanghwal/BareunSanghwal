@@ -17,8 +17,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       cache: cache,
       headers: {
         'Content-Type': 'application/json',
-        Authorization:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6IjEiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzE0MTA0Njg3LCJleHAiOjE3MTMzMzMzOTEwODd9.fiwjrUdcc14-eLMUuhYtYQxLEP9eEynCnUMyBTdjXBI',
+        Authorization: process.env.NEXT_PUBLIC_ACCESS_TOKEN as string,
       },
       body: JSON.stringify(data),
     });

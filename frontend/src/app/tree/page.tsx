@@ -40,8 +40,7 @@ export default function Page() {
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
-        Authorization:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6IjEiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzE0MTA0Njg3LCJleHAiOjE3MTMzMzMzOTEwODd9.oukTp65XHWMj2k2-1KaTeVI5LpwBbwj-BoRe9kZyIYY',
+        Authorization: process.env.NEXT_PUBLIC_ACCESS_TOKEN as string,
       },
     })
       .then((res) => {

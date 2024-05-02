@@ -7,8 +7,6 @@ export interface IStreaksReponse {
   dayInfo: IDayInfo[];
 }
 export interface IMemberHabit {
-  totalCount: number;
-  achieveCount: number;
   memberHabitId: number;
   alias: string;
   icon: string;

@@ -1,5 +1,9 @@
+'use client';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { ThemeColor } from '../CalenderConfig';
+import { useOverlay } from '@/hooks/use-overlay';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { getToday } from '../util';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
@@ -17,6 +21,19 @@ export const Streak = ({
   habitCnt,
   ...props
 }: StreakProps) => {
+  const overlay = useOverlay();
+  const onClickStreakRecovery = () => {
+    overlay.open(({ isOpen, close }) => (
+      <BottomSheet
+        description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
+        mode="RECOVERY"
+        onClose={close}
+        onConfirm={close}
+        open={isOpen}
+        title={`${day}일의 스트릭을 복구하시겠어요?`}
+      />
+    ));
+  };
   const streakOpacity = [10, 40, 55, 60, 70, 80, 90, 100];
   const basicStreakStyle =
     'text-white text-xl aspect-square rounded-lg relative';
@@ -31,8 +48,11 @@ export const Streak = ({
     }
   }
   const customClassName = getClassName();
+  const onClick = () => {
+    console.log(day);
+  };
   return (
-    <button className={customClassName}>
+    <button onClick={() => onClickStreakRecovery()} className={customClassName}>
       {day}
       {habitCnt != 0 && habitCnt == achieveCount && (
         <StarIcon className="w-4 h-4 absolute right-1 top-1" />

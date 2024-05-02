@@ -1,9 +1,4 @@
-import { getThisMonth, getThisYear } from '@/components/calendar/util';
-import { Achievement } from '@/components';
-import { MonthLabel } from '@/components';
-import { DayLabel } from '@/components';
 import { Calender } from '@/components';
-import { HabitChecker } from '@/components';
 import { $Fetch } from '@/apis';
 export default async function Page() {
   const streakData = await $Fetch({

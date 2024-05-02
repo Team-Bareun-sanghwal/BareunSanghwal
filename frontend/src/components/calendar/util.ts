@@ -4,8 +4,9 @@ interface ITimeRemainig {
 }
 export const getToday = () => {
   const today = new Date();
-  var day = ('0' + today.getDate()).slice(-2);
-  return day;
+  // var day = ('0' + today.getDate()).slice(-2);
+  // return day;
+  return today.getDate();
 };
 
 export const getThisMonth = () => {
