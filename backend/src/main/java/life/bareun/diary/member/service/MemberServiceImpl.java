@@ -200,7 +200,7 @@ public class MemberServiceImpl implements MemberService {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
         List<MemberPracticedHabitDto> topHabits = habitTrackerRepository.findTopHabits(id);
-        System.out.println("topHabits:"  + topHabits);
+        System.out.println("\ntopHabits:"  + topHabits);
 
         // 요일 별 달성 횟수
         // 최대 또는 최대값 중복 허용

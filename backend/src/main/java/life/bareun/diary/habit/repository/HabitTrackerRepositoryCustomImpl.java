@@ -75,7 +75,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 )
             )
             .from(habitTracker)
-            .where(habitTracker.memberHabit.id.longValue().eq(memberId))
+            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
             .groupBy(habitTracker.memberHabit.id)
             .orderBy(habitTracker.id.count().desc())
             .fetch();
