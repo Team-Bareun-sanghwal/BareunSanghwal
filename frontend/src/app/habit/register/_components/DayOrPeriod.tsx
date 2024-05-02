@@ -9,12 +9,38 @@ import {
   HabitRegisterDayChart,
   HabitPeriodSelectBox,
   GuideBox,
+  HabitRegisterBottomSheet,
+  HabitListBox,
 } from '@/components';
 import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
+import { useOverlay } from '@/hooks/use-overlay';
 
-export const Date = ({ onPrev, onNext }: IFunnelComponent) => {
+export const DayOrPeriod = ({ onPrev, onNext }: IFunnelComponent) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+
+  const overlay = useOverlay();
+
+  const handleRegisterOverlay = () => {
+    overlay.open(({ isOpen, close }) => (
+      <HabitRegisterBottomSheet
+        element={
+          <HabitListBox
+            alias="물 2L 마시기마시기마시"
+            completedAt={new Date('2024-04-23T00:00:00.000Z')}
+            createdAt={new Date('2024-03-22T00:00:00.000Z')}
+            dayList={['월', '화', '수', '목', '금', '토', '일']}
+            iconSrc="/images/icon-clock.png"
+            mode="REGISTER"
+            name="건강하기"
+          />
+        }
+        onClose={close}
+        onConfirm={close}
+        open={isOpen}
+      />
+    ));
+  };
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
@@ -100,7 +126,7 @@ export const Date = ({ onPrev, onNext }: IFunnelComponent) => {
       <Button
         isActivated={isAlreadySet === null ? false : true}
         label="다음"
-        onClick={onNext}
+        onClick={handleRegisterOverlay}
       />
     </div>
   );

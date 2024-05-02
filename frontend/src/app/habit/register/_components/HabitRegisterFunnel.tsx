@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Question } from './Question';
 import { Nickname } from './Nickname';
-import { Date } from './Date';
+import { DayOrPeriod } from './DayOrPeriod';
 
 export const HabitRegisterFunnel = () => {
   const { Funnel, setStep } = useFunnel('DATE_STEP'); // 초기 스텝
@@ -23,7 +23,7 @@ export const HabitRegisterFunnel = () => {
       </Funnel.Step>
 
       <Funnel.Step name="DATE_STEP">
-        <Date onPrev={() => router.back()} onNext={() => {}} />
+        <DayOrPeriod onPrev={() => router.back()} onNext={() => {}} />
       </Funnel.Step>
     </Funnel>
   );
