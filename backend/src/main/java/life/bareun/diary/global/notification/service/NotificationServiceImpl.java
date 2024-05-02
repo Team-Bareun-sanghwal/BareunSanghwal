@@ -17,7 +17,7 @@ import life.bareun.diary.global.notification.exception.NotificationErrorCode;
 import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.global.notification.repository.NotificationRepository;
 import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

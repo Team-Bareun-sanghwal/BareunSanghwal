@@ -2,7 +2,7 @@ package life.bareun.diary.streak.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
