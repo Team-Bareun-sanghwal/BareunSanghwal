@@ -186,6 +186,156 @@ export const StreaksResponse: IStreaksReponse = {
     0,
   ),
 };
+export function fetchStreakResponse(): Promise<IStreaksReponse> {
+  return new Promise((resolve) => {
+    const StreakResponse: IStreaksReponse = {
+      achieveProportion: 88,
+      dayOfWeekFirst: 0,
+      memberHabitList: [
+        {
+          memberHabitId: 1,
+          alias: '팔굽혀펴기 100회',
+          icon: '💪',
+        },
+        {
+          memberHabitId: 2,
+          alias: '스쿼트 100회',
+          icon: '🦵',
+        },
+        {
+          memberHabitId: 3,
+          alias: '100km 달리기',
+          icon: '🏃',
+        },
+        {
+          memberHabitId: 4,
+          alias: '영양제',
+          icon: '🍎',
+        },
+        {
+          memberHabitId: 5,
+          alias: '기타연습',
+          icon: '🎸',
+        },
+        {
+          memberHabitId: 6,
+          alias: '5시 기상',
+          icon: '🔔',
+        },
+        {
+          memberHabitId: 7,
+          alias: '11시 취침',
+          icon: '🛏',
+        },
+      ],
+      dayInfo: setDayInfo(
+        [
+          {
+            day: 1,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 2,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 4,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 5,
+            achieveCount: 1,
+            totalCount: 3,
+          },
+          {
+            day: 6,
+            achieveCount: 2,
+            totalCount: 3,
+          },
+          {
+            day: 7,
+            achieveCount: 2,
+            totalCount: 3,
+          },
+          {
+            day: 8,
+            achieveCount: 2,
+            totalCount: 3,
+          },
+          {
+            day: 9,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 11,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 12,
+            achieveCount: 1,
+            totalCount: 3,
+          },
+          {
+            day: 13,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 14,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 15,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+          {
+            day: 16,
+            achieveCount: 2,
+            totalCount: 3,
+          },
+          {
+            day: 17,
+            achieveCount: 1,
+            totalCount: 3,
+          },
+          {
+            day: 18,
+            achieveCount: 2,
+            totalCount: 3,
+          },
+          {
+            day: 22,
+            achieveCount: 2,
+            totalCount: 3,
+          },
+          {
+            day: 23,
+            achieveCount: 3,
+            totalCount: 3,
+          },
+        ],
+        0,
+      ),
+    };
+    resolve(StreakResponse);
+  });
+}
+
+export function fetchStreakTheme(): Promise<{ streak_color: ThemeColor }> {
+  return new Promise((resolve) => {
+    const StreakThemeResponse: { streak_color: ThemeColor } = {
+      streak_color: 'minchodan',
+    };
+    resolve(StreakThemeResponse);
+  });
+}
 
 // habit별
 
@@ -239,13 +389,6 @@ export const StreaksResponse: IStreaksReponse = {
 //     0,
 //   ),
 // };
-// 2. My Theme response
-interface IColorThemeResponse {
-  streak_theme: ThemeColor;
-}
-export const ColorThemeResponse: IColorThemeResponse = {
-  streak_theme: 'minchodan',
-};
 
 // 3. My Tree response
 interface ITreeThemeResponse {

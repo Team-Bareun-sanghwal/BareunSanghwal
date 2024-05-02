@@ -8,6 +8,19 @@ export const getToday = () => {
   return day;
 };
 
+export const getThisMonth = () => {
+  const today = new Date();
+  const month =
+    today.getMonth() < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
+  return month + '';
+};
+
+export const getThisYear = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  return year + '';
+};
+
 export const getTimeRemaining = (): ITimeRemainig => {
   const now = new Date();
   const midnight = new Date();
