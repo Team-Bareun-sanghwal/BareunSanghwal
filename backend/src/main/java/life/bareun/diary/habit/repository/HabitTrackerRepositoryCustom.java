@@ -7,6 +7,7 @@ import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.entity.HabitTracker;
+import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 
 public interface HabitTrackerRepositoryCustom {
 
@@ -19,4 +20,5 @@ public interface HabitTrackerRepositoryCustom {
 
     HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto);
 
+    List<MemberPracticedHabitDto> findTopHabits(Long memberId);
 }
