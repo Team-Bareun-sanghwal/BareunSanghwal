@@ -1,13 +1,13 @@
 package life.bareun.diary.member.dto.response;
 
 import java.util.List;
-import life.bareun.diary.member.dto.PracticeCountPerDayOfWeekDto;
-import life.bareun.diary.member.dto.PracticedHabitDto;
+import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 
 public record MemberStatisticResDto(
-    List<PracticedHabitDto> practicedHabitsTop,
+    List<MemberPracticedHabitDto> practicedHabitsTop,
     String maxPracticedHabit,
-    List<PracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek,
+    List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek,
     int totalDays,
     int streakDays,
     int starredDays,
