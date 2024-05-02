@@ -1,5 +1,4 @@
 import { LoginButton } from '@/components';
-import { signIn } from 'next-auth/react';
 
 export default function Page() {
   return (
