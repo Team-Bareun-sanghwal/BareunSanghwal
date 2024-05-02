@@ -3,6 +3,7 @@ import { Achievement } from '@/components';
 import { MonthLabel } from '@/components';
 import { DayLabel } from '@/components';
 import { Calender } from '@/components';
+import { HabitChecker } from '@/components';
 import { $Fetch } from '@/apis';
 export default async function Page() {
   const streakData = await $Fetch({
@@ -20,22 +21,21 @@ export default async function Page() {
     url: `${process.env.NEXT_PUBLIC_API_URL}/members/habits`,
     cache: 'no-cache',
   });
-  const { acheiveProportion, dayInfo, dayOfWeekFirst } = streakData.data;
+  const { achieveProportion, dayInfo, dayOfWeekFirst } = streakData.data;
   const { streakName } = colorData.data;
-  const { habitList } = habitListData.data;
+  const { habitList } =
+    habitListData.data === null ? { habitList: [] } : habitListData.data;
   console.log(streakData);
   console.log(colorData);
   console.log(habitListData);
   return (
     <>
-      <Achievement proportion={acheiveProportion} themeColor={streakName} />
-      <MonthLabel year={getThisYear()} month={getThisMonth()} />
-      <DayLabel />
       <Calender
         dayInfo={dayInfo}
         memberHabitList={habitList}
         dayOfWeekFirst={dayOfWeekFirst}
         themeColor={streakName}
+        proportion={achieveProportion}
       />
     </>
   );

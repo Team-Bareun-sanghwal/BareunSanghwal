@@ -5,17 +5,23 @@ import { Achievement } from '../Acheivement/Achievement';
 import { MonthLabel } from '../MonthLabel/MonthLabel';
 import { HabitBtnList } from '../HabitBtnList/HabitBtnList';
 import { ThemeColor } from '../CalenderConfig';
+import { getThisMonth, getThisYear } from '@/components/calendar/util';
+import { setDayInfo } from '@/app/mock';
+import { HabitChecker } from '@/components/main/HabitChecker/HabitChecker';
+import { LongestStreak } from '@/components/main/LongestStreak/LongestStreak';
 interface ICalenderProps {
   dayOfWeekFirst: number;
   memberHabitList: IMemberHabit[];
   dayInfo: IDayInfo[];
   themeColor: ThemeColor;
+  proportion: number;
 }
 export const Calender = ({
   dayOfWeekFirst,
   memberHabitList,
   dayInfo,
   themeColor,
+  proportion,
   ...props
 }: ICalenderProps) => {
   const isUnique =
@@ -25,12 +31,25 @@ export const Calender = ({
     themeColor === 'sunny_summer';
   return (
     <>
-      <MonthLabel month={4} year={2024} />
+      <div className="flex w-full justify-around">
+        <HabitChecker
+          achieveCount={memberHabitList.reduce(
+            (acc, cur) => acc + cur.achieveCount,
+            0,
+          )}
+          totalCount={memberHabitList.reduce(
+            (acc, cur) => acc + cur.totalCount,
+            0,
+          )}
+        />
+        <LongestStreak longestStreakCount={3} />
+      </div>
+      <MonthLabel month={getThisMonth()} year={getThisYear()} />
       <HabitBtnList habitList={memberHabitList} />
-      <Achievement proportion={88} themeColor={themeColor} />
+      <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />
       <div className="grid grid-cols-7 gap-4 p-1 m-2.5">
-        {dayInfo?.map((info, index) => (
+        {setDayInfo(dayInfo, dayOfWeekFirst).map((info, index) => (
           <Streak
             key={index}
             themeColor={themeColor}

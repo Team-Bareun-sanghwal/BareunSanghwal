@@ -6,6 +6,7 @@ interface IAchievement {
 }
 export const Achievement = ({ proportion, themeColor }: IAchievement) => {
   const bgColor = streakColors[themeColor];
+  console.log(proportion);
   const progressBarStyle = {
     width: `${proportion}%`,
     backgroundColor: bgColor,
