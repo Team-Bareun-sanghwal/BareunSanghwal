@@ -83,9 +83,8 @@ public class Member {
     @Min(0)
     private Integer currentTreeColorId;
 
-    @Column(name = "daily_point")
-    @Min(0)
-    private Integer dailyPoint;
+    @Column(name = "last_harvested_date")
+    private LocalDate lastHarvestedDate;
 
     @Column(name = "paid_recovery_count")
     @Min(0)
@@ -112,7 +111,6 @@ public class Member {
         this.currentStreakColorId = 1;
         this.currentTreeColorId = 1;
         this.paidRecoveryCount = 0;
-        this.dailyPoint = 0;
     }
 
     public static Member create(
