@@ -8,6 +8,8 @@ public interface HabitStreakService {
     void createInitialHabitStreak(MemberHabit memberHabit);
 
     void createHabitDailyStreak(MemberHabit memberHabit, LocalDate date);
-
+    
     void modifyHabitDailyStreak(MemberHabit memberHabit);
+
+    void deleteHabitDailyStreak(MemberHabit memberHabit);
 }

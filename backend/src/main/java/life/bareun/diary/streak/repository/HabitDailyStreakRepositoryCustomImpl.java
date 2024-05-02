@@ -11,7 +11,9 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
+import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.streak.dto.StreakInfoByDayDto;
+import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.entity.QHabitDailyStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +60,7 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
             .join(memberHabit.member, member)
             .where(
                 habitDailyStreak.memberHabit.id.eq(memberHabitId),
-                isCreatedDateInMonth(firstDayOfMonth, lastDayOfMonth)
+                isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
             )
             .groupBy(habitDailyStreak.createdDate)
             .fetch();
@@ -97,13 +99,28 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
             .join(memberHabit.member, member)
             .where(
                 member.id.eq(memberId),
-                isCreatedDateInMonth(firstDayOfMonth, lastDayOfMonth)
+                isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
             )
             .groupBy(habitDailyStreak.createdDate)
             .fetch();
     }
 
-    private BooleanExpression isCreatedDateInMonth(LocalDate firstDay, LocalDate lastDay) {
+    @Override
+    public List<HabitDailyStreak> findAllHabitDailyStreakByMemberHabitIdBetweenStartDateAndEndDate(
+        MemberHabit memberHabit, LocalDate startDate, LocalDate endDate) {
+        return jpaQueryFactory.select(
+                Projections.constructor(
+                    HabitDailyStreak.class
+                )
+            )
+            .from(habitDailyStreak)
+            .where(
+                habitDailyStreak.memberHabit.eq(memberHabit)
+                    .and(isCreatedDateInRange(startDate, endDate)))
+            .fetch();
+    }
+
+    private BooleanExpression isCreatedDateInRange(LocalDate firstDay, LocalDate lastDay) {
         return habitDailyStreak.createdDate.between(firstDay, lastDay);
     }
 }
