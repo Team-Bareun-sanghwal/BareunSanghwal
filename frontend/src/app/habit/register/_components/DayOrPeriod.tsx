@@ -12,11 +12,15 @@ import {
   HabitRegisterBottomSheet,
   HabitListBox,
 } from '@/components';
-import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
 
-export const DayOrPeriod = ({ onPrev, onNext }: IFunnelComponent) => {
+interface IDayOrPeriodStepComponent {
+  onPrev: () => void;
+  onNext: (nextStep: string) => void;
+}
+
+export const DayOrPeriod = ({ onPrev, onNext }: IDayOrPeriodStepComponent) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
 
   const overlay = useOverlay();
@@ -36,7 +40,10 @@ export const DayOrPeriod = ({ onPrev, onNext }: IFunnelComponent) => {
           />
         }
         onClose={close}
-        onConfirm={close}
+        onConfirm={() => {
+          close();
+          onNext('COMPLETE_STEP');
+        }}
         open={isOpen}
       />
     ));

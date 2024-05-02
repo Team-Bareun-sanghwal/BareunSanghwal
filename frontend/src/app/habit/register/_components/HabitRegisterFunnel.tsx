@@ -10,30 +10,48 @@ import { DayOrPeriod } from './DayOrPeriod';
 import { Complete } from './Complete';
 
 export const HabitRegisterFunnel = () => {
-  const { Funnel, setStep } = useFunnel('RECOMMEND_STEP'); // 초기 스텝
+  const { Funnel, setStep } = useFunnel('QUESTION_STEP'); // 초기 스텝
   const [data, setData] = useState({}); // 누적 데이터
   const router = useRouter();
 
   return (
     <Funnel>
       <Funnel.Step name="QUESTION_STEP">
-        <Question onPrev={() => router.back()} onNext={() => {}} />
+        <Question
+          onPrev={() => router.back()}
+          onNext={(nextStep) => {
+            setStep(nextStep);
+          }}
+        />
       </Funnel.Step>
 
       <Funnel.Step name="RECOMMEND_STEP">
-        <Recommend onPrev={() => router.back()} onNext={() => {}} />
+        <Recommend
+          onPrev={() => setStep('QUESTION_STEP')}
+          onNext={() => setStep('DAYORPERIOD_STEP')}
+        />
       </Funnel.Step>
 
       <Funnel.Step name="NICKNAME_STEP">
-        <Nickname onPrev={() => router.back()} onNext={() => {}} />
+        <Nickname
+          onPrev={() => setStep('QUESTION_STEP')}
+          onNext={() => {
+            setStep('DAYORPERIOD_STEP');
+          }}
+        />
       </Funnel.Step>
 
-      <Funnel.Step name="DATE_STEP">
-        <DayOrPeriod onPrev={() => router.back()} onNext={() => {}} />
+      <Funnel.Step name="DAYORPERIOD_STEP">
+        <DayOrPeriod
+          onPrev={() => setStep('NICKNAME_STEP')}
+          onNext={() => {
+            setStep('COMPLETE_STEP');
+          }}
+        />
       </Funnel.Step>
 
       <Funnel.Step name="COMPLETE_STEP">
-        <Complete onPrev={() => router.back()} onNext={() => {}} />
+        <Complete onPrev={() => {}} onNext={() => router.push('/habit')} />
       </Funnel.Step>
     </Funnel>
   );
