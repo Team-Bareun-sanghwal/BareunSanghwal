@@ -1,5 +1,6 @@
 package life.bareun.diary.global.config;
 
+import life.bareun.diary.global.notification.service.NotificationService;
 import life.bareun.diary.habit.service.HabitService;
 import life.bareun.diary.member.service.MemberService;
 import life.bareun.diary.recap.service.RecapService;
@@ -18,6 +19,8 @@ public class SchedulingConfig {
     private final RecapService recapService;
 
     private final MemberService memberService;
+
+    private final NotificationService notificationService;
 
     // ┌───────────── second (0-59)
     // │ ┌───────────── minute (0–59)
@@ -52,4 +55,12 @@ public class SchedulingConfig {
     public void provideFreeRecovery() {
         memberService.grantFreeRecoveryToAllMembers();
     }
+
+    // 10시 5분까지 행운 포인트 미수확한 사람들
+    @Scheduled(cron = "0 5 22 * * ?")
+    public void sentNotificationLuckyPoint() { notificationService.sendNotification(1L); }
+
+    // 10시까지 하나의 해빗 트래커라도 미수행한 사람들
+    @Scheduled(cron = "0 0 22 * * ?")
+    public void sendNotificationUnaccompanied() { notificationService.sendNotification(2L); }
 }

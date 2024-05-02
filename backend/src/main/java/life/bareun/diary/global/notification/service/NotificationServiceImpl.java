@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import life.bareun.diary.global.notification.dto.NotificationDateDto;
 import life.bareun.diary.global.notification.dto.NotificationDto;
 import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
 import life.bareun.diary.global.notification.dto.NotificationStatusModifyDto;
@@ -65,6 +66,10 @@ public class NotificationServiceImpl implements NotificationService {
         Map<Long, NotificationResultTokenDto> resultTokenDtoMap = verifyCondition(
             notificationCategoryId,
             notificationTokenDtoList, notificationCategory);
+
+        if (resultTokenDtoMap == null) {
+            throw new NotificationException(NotificationErrorCode.NOT_FOUND_NOTIFICATION_MEMBER);
+        }
 
         for (Entry<Long, NotificationResultTokenDto> entry : resultTokenDtoMap.entrySet()) {
             log.info(entry.getKey() + " " + entry.getValue());
@@ -128,8 +133,22 @@ public class NotificationServiceImpl implements NotificationService {
         Map<Long, String> notificationTokenMap, NotificationCategory notificationCategory) {
         return switch (Math.toIntExact(notificationCategoryId)) {
             case 1 -> findAllNotificationLuckyPoint(notificationTokenMap, notificationCategory);
+            case 2 -> findAllNotificationUnaccompanied(notificationTokenMap, notificationCategory);
             default -> null;
         };
+    }
+
+    private Map<Long, NotificationResultTokenDto> findAllNotificationUnaccompanied(
+        Map<Long, String> notificationTokenMap, NotificationCategory notificationCategory) {
+
+        // 하나라도 미수행한 해빗 트래커가 있는 사람의 목록
+        LocalDate localDate = LocalDate.now();
+        List<Member> unaccompaniedMemberList = memberRepository.findAllUnaccompaniedMember(
+            NotificationDateDto.builder().year(localDate.getYear()).month(localDate.getMonthValue())
+                .day(localDate.getDayOfMonth()).build());
+
+        String content = notificationCategory.getContent();
+        return refineMemberWithDefaultContent(unaccompaniedMemberList, notificationTokenMap, content);
     }
 
     private Map<Long, NotificationResultTokenDto> findAllNotificationLuckyPoint(
@@ -139,9 +158,14 @@ public class NotificationServiceImpl implements NotificationService {
         List<Member> unharvestedMemberList = memberRepository
             .findAllByLastHarvestedDateIsNullOrLastHarvestedDateIsBefore(LocalDate.now());
 
-        Map<Long, NotificationResultTokenDto> resultTokenMap = new ConcurrentHashMap<>();
         String content = notificationCategory.getContent();
-        for (Member member : unharvestedMemberList) {
+        return refineMemberWithDefaultContent(unharvestedMemberList, notificationTokenMap, content);
+    }
+
+    private Map<Long, NotificationResultTokenDto> refineMemberWithDefaultContent(List<Member> memberList,
+        Map<Long, String> notificationTokenMap, String content) {
+        Map<Long, NotificationResultTokenDto> resultTokenMap = new ConcurrentHashMap<>();
+        for (Member member : memberList) {
             if (notificationTokenMap.containsKey(member.getId())) {
                 resultTokenMap.put(member.getId(),
                     NotificationResultTokenDto.builder().member(member)
