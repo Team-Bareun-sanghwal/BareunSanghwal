@@ -1,6 +1,7 @@
 package life.bareun.diary;
 
 import jakarta.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +17,6 @@ public class DiaryApplication {
     @PostConstruct
     public void init() {
         // timezone 설정
-        TimeZone.setDefault(TimeZone.getTimeZone("KST"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
     }
 }
