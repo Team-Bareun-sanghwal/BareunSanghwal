@@ -3,15 +3,19 @@ package life.bareun.diary.global.auth.util;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.exception.CustomSecurityException;
 import life.bareun.diary.global.auth.factory.SecurityErrorResponseFactory;
+import life.bareun.diary.global.common.response.BaseResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseUtil {
 
-    public static void respondError(
+    private static final String HEADER = "Set-Cookie";
     private static final String CONTENT_TYPE_JSON = "application/json";
+
+    public static void writeError(
         HttpServletResponse response,
         CustomSecurityException exception
     ) throws IOException {
@@ -30,24 +34,27 @@ public class ResponseUtil {
         }
     }
 
-    public static void respondSuccess(
+    public static void writeSuccess(
         HttpServletResponse response,
         BaseResponse<?> baseResponse
     ) throws IOException {
-        GsonUtil.toJsonBytesUtf8(ResponseEntity
-            .status(baseResponse.getStatus())
-            .body(baseResponse));
+        GsonUtil.toJsonBytesUtf8(
+            ResponseEntity
+                .status(baseResponse.getStatus())
+                .body(baseResponse)
+        );
 
         try (
             ServletOutputStream outputStream = response.getOutputStream()
         ) {
             response.setStatus(baseResponse.getStatus());
-            response.setContentType("application/json");
             response.setContentType(CONTENT_TYPE_JSON);
             outputStream.write(
-                GsonUtil.toJsonBytesUtf8(ResponseEntity
-                    .status(baseResponse.getStatus())
-                    .body(baseResponse))
+                GsonUtil.toJsonBytesUtf8(
+                    ResponseEntity
+                        .status(baseResponse.getStatus())
+                        .body(baseResponse)
+                )
             );
         } catch (IOException e) {
             throw e;
