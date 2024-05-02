@@ -38,6 +38,8 @@ import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
+import life.bareun.diary.streak.exception.HabitDailyStreakErrorCode;
+import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -233,8 +235,9 @@ public class HabitServiceImpl implements HabitService {
             }
 
             // 현재 사용자 해빗의 스트릭
-            HabitDailyStreak habitDailyStreak = habitDailyStreakRepository.findByMemberHabit(
-                memberHabit);
+            HabitDailyStreak habitDailyStreak = habitDailyStreakRepository
+                .findByMemberHabitAndCreatedDate(memberHabit, LocalDate.now())
+                .orElseThrow(() -> new StreakException(HabitDailyStreakErrorCode.NOT_FOUND_HABIT_DAILY_STREAK));
             List<Integer> dayList = habitDayRepository.findAllDayByMemberHabit(memberHabit);
             memberHabitActiveDtoList.add(
                 MemberHabitActiveDto.builder().name(memberHabit.getHabit().getName())
