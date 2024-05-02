@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
                     MemberRecovery.create(savedMember)
                 );
 
-                streakService.createInitialMemberStreak(savedMember);
+                streakService.initialMemberStreak(savedMember);
                 return savedMember;
             }
         );

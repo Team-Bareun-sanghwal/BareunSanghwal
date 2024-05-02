@@ -71,19 +71,19 @@ public class MemberDailyStreak {
         this.currentStreak = currentStreak;
     }
 
-    public void increaseAchieveTrackerCountByOne() {
-        this.achieveTrackerCount++;
+    public void modifyAchieveTrackerCount(int achieveTrackerCount) {
+        this.achieveTrackerCount = achieveTrackerCount;
     }
 
-    public void changeIsStaredByTrue() {
-        this.isStared = true;
+    public void modifyIsStared(boolean isStared) {
+        this.isStared = isStared;
     }
 
-    public void changeAchieveTypeByAchieve() {
-        this.achieveType = AchieveType.ACHIEVE;
+    public void modifyAchieveType(AchieveType achieveType) {
+        this.achieveType = achieveType;
     }
 
-    public void increaseCurrentStreakByOne() {
-        this.currentStreak++;
+    public void modifyCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
     }
 }

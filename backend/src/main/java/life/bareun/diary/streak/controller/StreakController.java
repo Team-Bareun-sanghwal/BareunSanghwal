@@ -49,15 +49,4 @@ public class StreakController {
         return ResponseEntity.status(HttpStatus.OK.value())
             .body(BaseResponse.success(HttpStatus.OK.value(), message, habitStreakResDto));
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<?> test() {
-
-        streakService.modifyMemberTotalStreakTotalField(5);
-
-        streakService.modifyMemberTotalStreakAchieveField(true, true);
-
-        return ResponseEntity.status(HttpStatus.OK.value())
-            .body(BaseResponse.success(HttpStatus.OK.value(), "success", null));
-    }
 }
