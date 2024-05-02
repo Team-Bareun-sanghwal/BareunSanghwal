@@ -47,12 +47,16 @@ public class AuthServiceImpl implements AuthService {
             .getRole()
             .name();
 
+
+
+
         return new AuthAccessTokenResDto(
-            authTokenProvider.createPrefixedAccessToken(
+            authTokenProvider.createAccessToken(
                 new Date(),
                 Long.toString(memberId),
                 role
-            )
+            ),
+            authTokenProvider.getAccessTokenLifetime()
         );
     }
 }
