@@ -1,17 +1,19 @@
 package life.bareun.diary.habit.repository;
 
 import static life.bareun.diary.habit.entity.QHabitTracker.habitTracker;
+
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.entity.HabitTracker;
-import life.bareun.diary.habit.entity.QMemberHabit;
+import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -65,7 +67,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<MemberPracticedHabitDto> findTopHabits(Long memberId) {;
+    public List<MemberPracticedHabitDto> findTopHabits(Long memberId) {
         return queryFactory
             .select(
                 Projections.constructor(
@@ -78,6 +80,29 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
             .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
             .groupBy(habitTracker.memberHabit.id)
             .orderBy(habitTracker.id.count().desc())
+            .fetch();
+    }
+
+
+    @Override
+    public List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId) {
+        NumberTemplate<Integer> hour = Expressions.numberTemplate(
+            Integer.class,
+            "HOUR({0})",
+            habitTracker.succeededTime
+        );
+
+        return queryFactory
+            .select(
+                Projections.constructor(
+                    MemberPracticeCountPerHourDto.class,
+                    hour.intValue().as("time"),
+                    habitTracker.count().intValue().as("value")
+                )
+            )
+            .from(habitTracker)
+            .groupBy(hour)
+            .orderBy(hour.asc())
             .fetch();
     }
 }
