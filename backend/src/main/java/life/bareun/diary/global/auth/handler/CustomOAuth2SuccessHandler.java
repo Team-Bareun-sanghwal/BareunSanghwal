@@ -4,8 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import life.bareun.diary.global.auth.config.JwtConfig;
-import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
@@ -13,7 +11,6 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -40,6 +37,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         log.debug("accessToken: {}", accessToken);
         log.debug("refreshToken: {}", refreshToken);
+        System.out.println("accessToken: " + accessToken);
+        System.out.println("refreshToken: " + refreshToken);
 
         // 응답
         int statusCode = oAuth2MemberPrincipal.isNewMember()
@@ -53,35 +52,20 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         // response.setHeader(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken);
         // response.setHeader(SecurityConfig.REFRESH_TOKEN_HEADER, refreshToken);
 
-        ResponseCookie accessCookie = ResponseCookie
-            .from(
-                SecurityConfig.ACCESS_TOKEN_HEADER,
-                accessToken.replace("Bearer ", "").trim()
+        long accessTokenMaxAge = authTokenProvider.getExpiry(
+            authTokenProvider.tokenToAuthToken(accessToken)
+        ).toSeconds();
+        ResponseUtil.addAccessTokenCookie(
+            response,
+            authTokenProvider.addPrefix(accessToken),
+            accessTokenMaxAge
+        );
 
-            )
-            .sameSite("None")
-            .httpOnly(true)
-            .secure(true)
-            .path("/")
-            .maxAge(600)
-            .build();
-
-        ResponseCookie refreshCookie = ResponseCookie
-            .from(
-                SecurityConfig.REFRESH_TOKEN_HEADER,
-                refreshToken
-            )
-            .sameSite("None")
-            .httpOnly(true)
-            .secure(true)
-            .path("/")
-            .maxAge(864000)
-            .build();
-
-        response.setHeader("Set-Cookie", accessCookie.toString());
-        response.addHeader("Set-Cookie", refreshCookie.toString());
-
-        ResponseUtil.respondSuccess(
+        long refreshTokenMaxAge = authTokenProvider.getExpiry(
+            authTokenProvider.tokenToAuthToken(refreshToken)
+        ).toSeconds();
+        ResponseUtil.addRefreshTokenCookie(response, refreshToken, refreshTokenMaxAge);
+        ResponseUtil.writeSuccess(
             response,
             BaseResponse.success(
                 statusCode,

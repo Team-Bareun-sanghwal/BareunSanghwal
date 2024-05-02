@@ -27,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         AuthToken refreshAuthToken = authTokenProvider.tokenToAuthToken(refreshToken);
+
         try {
             authTokenProvider.validate(refreshAuthToken);
         } catch (ExpiredJwtException e) {
@@ -34,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
         } catch (JwtException e) {
             throw new CustomSecurityException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
-
         if (authTokenService.isRevoked(refreshToken)) {
             throw new CustomSecurityException(SecurityErrorCode.REVOKED_REFRESH_TOKEN);
         }
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             .name();
 
         return new AuthAccessTokenResDto(
-            authTokenProvider.createAccessToken(
+            authTokenProvider.createPrefixedAccessToken(
                 new Date(),
                 Long.toString(memberId),
                 role

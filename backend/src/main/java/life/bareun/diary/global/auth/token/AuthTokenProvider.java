@@ -12,6 +12,8 @@ public interface AuthTokenProvider {
 
     String createAccessToken(Date from, String memberId, String role);
 
+    String createPrefixedAccessToken(Date from, String memberId, String role);
+
     String createRefreshToken(Date from, String id);
 
     void validate(AuthToken authToken) throws JwtException;
@@ -23,4 +25,10 @@ public interface AuthTokenProvider {
     Long getMemberIdFromToken(AuthToken authToken);
 
     Duration getExpiry(AuthToken refreshAuthToken);
+
+    String addPrefix(String accessToken);
+
+    String removePrefix(String accessToken);
+
+
 }

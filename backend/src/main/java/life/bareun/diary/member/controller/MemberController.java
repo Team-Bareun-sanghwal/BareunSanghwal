@@ -1,7 +1,7 @@
 package life.bareun.diary.member.controller;
 
-import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.auth.config.SecurityConfig;
+import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;

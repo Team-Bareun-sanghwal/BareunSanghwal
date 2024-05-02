@@ -50,8 +50,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     public String createAccessToken(Date from, String memberId, String role) {
         Date expiration = getAccessTokenExp(from);
 
-        return ACCESS_TOKEN_PREFIX
-            + Jwts.builder()
+        return Jwts.builder()
             .header()
             .add("alg", macAlgorithm.getId())
             .add("typ", "JWT")
@@ -63,6 +62,11 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
             .signWith(key, macAlgorithm)
             .encodePayload(true)
             .compact();
+    }
+
+    @Override
+    public String createPrefixedAccessToken(Date from, String memberId, String role) {
+        return ACCESS_TOKEN_PREFIX + createAccessToken(from, memberId, role);
     }
 
     @Override
@@ -149,6 +153,18 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
         Instant exp = claims.getExpiration().toInstant();
 
         return Duration.between(curr, exp);
+    }
+
+    @Override
+    public String addPrefix(String accessToken) {
+        return (!accessToken.startsWith(ACCESS_TOKEN_PREFIX))
+            ? (ACCESS_TOKEN_PREFIX + accessToken)
+            : accessToken;
+    }
+
+    @Override
+    public String removePrefix(String accessToken) {
+        return accessToken.replace(ACCESS_TOKEN_PREFIX, "");
     }
 }
 
