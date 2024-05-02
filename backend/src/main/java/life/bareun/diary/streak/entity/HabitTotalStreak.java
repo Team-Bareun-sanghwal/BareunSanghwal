@@ -46,4 +46,16 @@ public class HabitTotalStreak {
     public HabitTotalStreak(MemberHabit memberHabit) {
         this.memberHabit = memberHabit;
     }
+
+    public void modifyLongestStreak(int longestStreak) {
+        this.longestStreak = longestStreak;
+    }
+
+    public void modifyAchieveTrackerCount(int achieveTrackerCount) {
+        this.achieveTrackerCount = achieveTrackerCount;
+    }
+
+    public void modifyTotalTrackerCount(int totalTrackerCount) {
+        this.totalTrackerCount = totalTrackerCount;
+    }
 }

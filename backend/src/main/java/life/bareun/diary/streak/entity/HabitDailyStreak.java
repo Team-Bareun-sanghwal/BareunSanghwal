@@ -55,4 +55,12 @@ public class HabitDailyStreak {
         this.currentStreak = currentStreak;
         this.createdDate = createdDate;
     }
+
+    public void modifyCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
+    }
+
+    public void modifyAchieveType(AchieveType achieveType) {
+        this.achieveType = achieveType;
+    }
 }
