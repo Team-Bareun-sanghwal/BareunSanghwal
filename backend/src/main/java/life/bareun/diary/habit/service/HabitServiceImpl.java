@@ -355,7 +355,7 @@ public class HabitServiceImpl implements HabitService {
         if (totalCount > 0) {
             SecureRandom secureRandom = new SecureRandom();
             while (totalCount > 0) {
-                Long randomNumber = secureRandom.nextLong(313L) + 1L;
+                Long randomNumber = secureRandom.nextInt(313) + 1L;
                 if (set.contains(randomNumber)) {
                     continue;
                 }
