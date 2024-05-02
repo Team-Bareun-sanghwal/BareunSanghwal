@@ -2,7 +2,7 @@ package life.bareun.diary.product.service;
 
 import java.security.SecureRandom;
 import java.util.List;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;

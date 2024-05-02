@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import life.bareun.diary.global.security.embed.OAuth2Provider;
+import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.entity.embed.Gender;
