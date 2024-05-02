@@ -87,9 +87,9 @@ public class Member {
     @Min(0)
     private Integer dailyPoint;
 
-    @Column(name = "current_tree_point")
+    @Column(name = "paid_recovery_count")
     @Min(0)
-    private Integer currentTreePoint;
+    private Integer paidRecoveryCount;
 
     @Column(name = "created_datetime", updatable = false)
     @CreationTimestamp
@@ -111,7 +111,7 @@ public class Member {
         this.point = 0;
         this.currentStreakColorId = 1;
         this.currentTreeColorId = 1;
-        this.currentTreePoint = 0;
+        this.paidRecoveryCount = 0;
         this.dailyPoint = 0;
     }
 
@@ -131,6 +131,11 @@ public class Member {
 
     public void usePoint(Integer amount) {
         this.point -= amount;
+    }
+
+    public void buyRecovery(Integer price) {
+        usePoint(price);
+        this.paidRecoveryCount += 1;
     }
 
     public void changeTreeColor(Integer id) {

@@ -35,12 +35,13 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         Date currentDate = new Date();
         String accessToken = authTokenProvider.createAccessToken(currentDate, id, role);
         String refreshToken = authTokenProvider.createRefreshToken(currentDate, id);
-        // System.out.println("accessToken: " + accessToken);
+
         log.debug("accessToken: {}", accessToken);
         log.debug("refreshToken: {}", refreshToken);
 
         // 응답
-        int statusCode = oAuth2MemberPrincipal.isNewMember() ? HttpStatus.CREATED.value()
+        int statusCode = oAuth2MemberPrincipal.isNewMember()
+            ? HttpStatus.CREATED.value()
             : HttpStatus.OK.value();
         AuthLoginResDto authLoginRes = AuthLoginResDto.builder()
             .accessToken(accessToken)

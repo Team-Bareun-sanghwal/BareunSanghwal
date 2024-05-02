@@ -4,12 +4,14 @@ import java.security.SecureRandom;
 import java.util.List;
 import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.dto.ProductDto;
 import life.bareun.diary.product.dto.response.ProductListResDto;
+import life.bareun.diary.product.dto.response.ProductRecoveryPurchaseResDto;
 import life.bareun.diary.product.dto.response.ProductStreakColorUpdateResDto;
 import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.entity.StreakColor;
@@ -30,9 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
-    private static final String GOTCHA_TREE_KEY = "gotcha_tree";
-    private static final String STREAK_RECOVERY = "streak_recovery";
+    private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
+    private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
+    private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
+    private static final int FACTOR = 2; // 리커버리 구매 시 곱해질 값
 
     private final static SecureRandom RANDOM = new SecureRandom();
 
@@ -50,16 +53,22 @@ public class ProductServiceImpl implements ProductService {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         int freeRecoveryCount = memberRecoveryRepository.findById(id)
             .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             )
-            .getFreeRecovery();
+            .getFreeRecoveryCount();
 
         List<ProductDto> products = productRepository.findAll().stream()
             .map(ProductMapper.INSTANCE::toProductDto)
             .peek(
                 productDto -> {
-                    if (productDto.getKey().equals(STREAK_RECOVERY) && freeRecoveryCount > 0) {
-                        productDto.setPrice(0);
+                    if (productDto.getName().equals(STREAK_RECOVERY_NAME)) {
+                        productDto.setPrice(
+                            memberRecoveryRepository.findById(id)
+                                .orElseThrow(
+                                    () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+                                )
+                                .getCurrentRecoveryPrice()
+                        );
                     }
                 }
             )
@@ -106,11 +115,11 @@ public class ProductServiceImpl implements ProductService {
 
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id).orElseThrow(
-            () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+            () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
         );
 
-        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
-            .orElseThrow(() -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY))
+        Integer amount = productRepository.findByName(GOTCHA_STREAK_NAME)
+            .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
@@ -133,9 +142,9 @@ public class ProductServiceImpl implements ProductService {
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 3. 나무 색 변경권 가격 정보 얻기
-        Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
+        Integer amount = productRepository.findByName(GOTCHA_TREE_NAME)
             .orElseThrow(
-                () -> new ProductException(ProductErrorCode.INVALID_PRODUCT_KEY)
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
             .getPrice();
 
@@ -143,7 +152,7 @@ public class ProductServiceImpl implements ProductService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(memberId)
             .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_USER)
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
         member.usePoint(amount);
 
@@ -161,4 +170,37 @@ public class ProductServiceImpl implements ProductService {
         return new ProductTreeColorUpdateResDto(gotchaTreeColor.getName());
     }
 
+    @Override
+    @Transactional
+    public ProductRecoveryPurchaseResDto buyRecovery() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        MemberRecovery memberRecovery = memberRecoveryRepository.findByMemberId(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
+            );
+        Integer price = memberRecovery.getCurrentRecoveryPrice();
+        Integer point = member.getPoint();
+
+        // 사용자 보유 포인트가 부족한 경우 예외 발생
+        if (point < price) {
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
+        }
+
+        // 구매 후 상태 반영
+        member.buyRecovery(price);
+        Member updatedMember = memberRepository.save(member);
+
+        memberRecovery.afterPurchaseRecovery(FACTOR);
+        memberRecoveryRepository.save(memberRecovery);
+
+        // 반영된 후의 정보 반환
+        return ProductRecoveryPurchaseResDto.builder()
+            .paidRecoveryCount(updatedMember.getPaidRecoveryCount())
+            .build();
+    }
 }

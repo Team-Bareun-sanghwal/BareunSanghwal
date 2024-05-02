@@ -50,7 +50,8 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     public String createAccessToken(Date from, String memberId, String role) {
         Date expiration = getAccessTokenExp(from);
 
-        return Jwts.builder()
+        return ACCESS_TOKEN_PREFIX
+            + Jwts.builder()
             .header()
             .add("alg", macAlgorithm.getId())
             .add("typ", "JWT")
