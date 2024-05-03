@@ -1,6 +1,5 @@
 package life.bareun.diary.member.service;
 
-import com.google.rpc.context.AttributeContext.Auth;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -255,7 +254,6 @@ public class MemberServiceImpl implements MemberService {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         List<MemberHabitsDto> memberHabits = memberHabitRepository
             .findAllByMemberIdOrderByCreatedDatetime(id);
-
 
         return new MemberHabitsResDto(
             memberHabits
