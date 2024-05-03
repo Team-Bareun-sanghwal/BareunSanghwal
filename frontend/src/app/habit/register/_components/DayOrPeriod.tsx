@@ -14,20 +14,27 @@ import {
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
-import { IUserAmountData } from '../../_types';
+import { IUserAmountData, IRegisteredHabitData } from '../../_types';
+import { registerHabit } from '../../_apis/registerHabit';
 
 interface IDayOrPeriodStepComponent {
   onPrev: () => void;
-  onNext: (nextStep: string) => void;
+  onNext: () => void;
   userAmountData: IUserAmountData;
+  data: IRegisteredHabitData;
 }
 
 export const DayOrPeriod = ({
   onPrev,
   onNext,
   userAmountData,
+  data,
 }: IDayOrPeriodStepComponent) => {
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+  const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
+  const [period, setPeriod] = useState<number | null>(null);
+
+  console.log(dayOfWeek);
+  console.log(period);
 
   const overlay = useOverlay();
 
@@ -36,19 +43,44 @@ export const DayOrPeriod = ({
       <HabitRegisterBottomSheet
         element={
           <HabitListBox
-            alias="물 2L 마시기마시기마시"
-            completedAt={new Date('2024-04-23T00:00:00.000Z')}
-            createdAt={new Date('2024-03-22T00:00:00.000Z')}
-            dayList={['월', '화', '수', '목', '금', '토', '일']}
+            alias={data?.alias}
+            completedAt={new Date()}
+            createdAt={new Date()}
+            dayList={dayOfWeek
+              .sort((a, b) => a - b)
+              .map((num) => {
+                return num === 1
+                  ? '월'
+                  : num === 2
+                    ? '화'
+                    : num === 3
+                      ? '수'
+                      : num === 4
+                        ? '목'
+                        : num === 5
+                          ? '금'
+                          : num === 6
+                            ? '토'
+                            : '일';
+              })}
             iconSrc="/images/icon-clock.png"
             mode="REGISTER"
-            name="건강하기"
+            name={data?.habitName}
           />
         }
         onClose={close}
         onConfirm={() => {
           close();
-          onNext('COMPLETE_STEP');
+          onNext();
+
+          if (data.habitId && data.alias && data.icon)
+            registerHabit(
+              data.habitId,
+              data.alias,
+              data.icon,
+              dayOfWeek.length === 0 ? null : dayOfWeek,
+              period,
+            );
         }}
         open={isOpen}
       />
@@ -80,6 +112,9 @@ export const DayOrPeriod = ({
               component: (
                 <div className="flex flex-col gap-[1rem]">
                   <HabitRegisterDayChart
+                    dayOfWeek={dayOfWeek}
+                    setDayOfWeek={setDayOfWeek}
+                    setPeriod={setPeriod}
                     habitRegisterDayList={[
                       {
                         englishDayName: 'monday',
@@ -130,14 +165,20 @@ export const DayOrPeriod = ({
             },
             {
               title: '주기',
-              component: <HabitPeriodSelectBox />,
+              component: (
+                <HabitPeriodSelectBox
+                  period={period}
+                  setPeriod={setPeriod}
+                  setDayOfWeek={setDayOfWeek}
+                />
+              ),
             },
           ]}
         />
       </div>
 
       <Button
-        isActivated={isAlreadySet === null ? false : true}
+        isActivated={dayOfWeek.length !== 0 || period ? true : false}
         label="다음"
         onClick={handleRegisterOverlay}
       />

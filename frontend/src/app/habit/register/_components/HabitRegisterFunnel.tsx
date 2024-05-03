@@ -8,7 +8,7 @@ import { Recommend } from './Recommend';
 import { Nickname } from './Nickname';
 import { DayOrPeriod } from './DayOrPeriod';
 import { Complete } from './Complete';
-import { IHabitListData } from '../../_types';
+import { IHabitListData, IRegisteredHabitData } from '../../_types';
 import { IUserAmountData } from '../../_types';
 
 export const HabitRegisterFunnel = ({
@@ -20,8 +20,14 @@ export const HabitRegisterFunnel = ({
   similarCategoryListData: IHabitListData[];
   userAmountData: IUserAmountData;
 }) => {
-  const { Funnel, setStep } = useFunnel('QUESTION_STEP'); // 초기 스텝
-  const [data, setData] = useState({}); // 누적 데이터
+  const { Funnel, setStep } = useFunnel('QUESTION_STEP');
+  const [data, setData] = useState<IRegisteredHabitData>({
+    habitId: null,
+    habitName: null,
+    isCategorySet: false,
+    alias: null,
+    icon: null,
+  });
   const router = useRouter();
 
   console.log(data);
@@ -31,8 +37,9 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="QUESTION_STEP">
         <Question
           onPrev={() => router.back()}
-          onNext={(nextStep) => {
+          onNext={(nextStep, isCategorySet) => {
             setStep(nextStep);
+            setData({ ...data, isCategorySet: isCategorySet });
           }}
         />
       </Funnel.Step>
@@ -40,9 +47,9 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="RECOMMEND_STEP">
         <Recommend
           onPrev={() => setStep('QUESTION_STEP')}
-          onNext={(selectedHabitId) => {
+          onNext={(habitId, habitName) => {
             setStep('NICKNAME_STEP');
-            setData({ ...data, habitId: selectedHabitId });
+            setData({ ...data, habitId: habitId, habitName: habitName });
           }}
           popularCategoryListData={popularCategoryListData}
           similarCategoryListData={similarCategoryListData}
@@ -56,7 +63,8 @@ export const HabitRegisterFunnel = ({
             setStep('DAYORPERIOD_STEP');
             setData({ ...data, alias: alias, icon: icon, habitId: habitId });
           }}
-          isCategorySet={data.hasOwnProperty('habitId')}
+          isCategorySet={data.isCategorySet}
+          habitId={data.habitId}
         />
       </Funnel.Step>
 
@@ -67,11 +75,12 @@ export const HabitRegisterFunnel = ({
             setStep('COMPLETE_STEP');
           }}
           userAmountData={userAmountData}
+          data={data}
         />
       </Funnel.Step>
 
       <Funnel.Step name="COMPLETE_STEP">
-        <Complete onPrev={() => {}} onNext={() => router.push('/habit')} />
+        <Complete onNext={() => router.push('/habit')} />
       </Funnel.Step>
     </Funnel>
   );

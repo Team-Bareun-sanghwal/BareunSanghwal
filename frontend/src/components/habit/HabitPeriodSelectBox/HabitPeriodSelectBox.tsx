@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-
-interface IHabitPeriodSelectBoxProps {}
+interface IHabitPeriodSelectBoxProps {
+  period: number | null;
+  setPeriod: (period: number) => void;
+  setDayOfWeek: (emptyArrayValue: number[]) => void;
+}
 
 const PeriodButton = ({
   isSelected,
@@ -20,9 +22,11 @@ const PeriodButton = ({
   );
 };
 
-export const HabitPeriodSelectBox = ({}: IHabitPeriodSelectBoxProps) => {
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(0);
-
+export const HabitPeriodSelectBox = ({
+  period,
+  setPeriod,
+  setDayOfWeek,
+}: IHabitPeriodSelectBoxProps) => {
   return (
     <section className="w-full flex flex-col gap-[1rem]">
       <label className="custom-semibold-text text-custom-black">
@@ -32,8 +36,14 @@ export const HabitPeriodSelectBox = ({}: IHabitPeriodSelectBoxProps) => {
       <ul className="mx-auto list-none flex gap-[1.5rem]">
         {[2, 3, 4, 5, 6].map((num, index) => {
           return (
-            <li key={`period-${index}`} onClick={() => setSelectedPeriod(num)}>
-              <PeriodButton isSelected={selectedPeriod === num} period={num} />
+            <li
+              key={`period-${index}`}
+              onClick={() => {
+                setPeriod(num);
+                setDayOfWeek([]);
+              }}
+            >
+              <PeriodButton isSelected={period === num} period={num} />
             </li>
           );
         })}

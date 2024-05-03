@@ -14,7 +14,7 @@ const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
 interface IQuestionStepComponent {
   onPrev: () => void;
-  onNext: (nextStep: string) => void;
+  onNext: (nextStep: string, isCategorySet: boolean) => void;
 }
 
 export const Question = ({ onPrev, onNext }: IQuestionStepComponent) => {
@@ -83,9 +83,9 @@ export const Question = ({ onPrev, onNext }: IQuestionStepComponent) => {
         onClick={() => {
           if (isAlreadySet === 'FALSE') {
             handleRecommendOverlay();
-            onNext('RECOMMEND_STEP');
+            onNext('RECOMMEND_STEP', true);
           } else if (isAlreadySet === 'TRUE') {
-            onNext('NICKNAME_STEP');
+            onNext('NICKNAME_STEP', false);
           }
         }}
       />

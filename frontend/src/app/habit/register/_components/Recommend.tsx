@@ -5,7 +5,7 @@ import { IHabitListData } from '../../_types';
 
 interface IRecommendStep {
   onPrev: () => void;
-  onNext: (selectedHabitId: number) => void;
+  onNext: (selectedHabitId: number, selectedHabitName: string) => void;
   popularCategoryListData: IHabitListData[];
   similarCategoryListData: IHabitListData[];
 }
@@ -17,6 +17,9 @@ export const Recommend = ({
   similarCategoryListData,
 }: IRecommendStep) => {
   const [selectedHabitId, setSelectedHabitId] = useState<number | null>(null);
+  const [selectedHabitName, setSelectedHabitName] = useState<string | null>(
+    null,
+  );
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
@@ -42,6 +45,7 @@ export const Recommend = ({
           mode="POPULAR"
           selectedHabitId={selectedHabitId}
           setSelectedHabitId={setSelectedHabitId}
+          setSelectedHabitName={setSelectedHabitName}
         />
 
         <HabitCategoryList
@@ -50,14 +54,19 @@ export const Recommend = ({
           mode="SIMILAR"
           selectedHabitId={selectedHabitId}
           setSelectedHabitId={setSelectedHabitId}
+          setSelectedHabitName={setSelectedHabitName}
         />
       </div>
 
       <Button
-        isActivated={selectedHabitId === null ? false : true}
+        isActivated={
+          selectedHabitId !== null && selectedHabitName !== null ? true : false
+        }
         label="다음"
         onClick={
-          selectedHabitId !== null ? () => onNext(selectedHabitId) : () => {}
+          selectedHabitId !== null && selectedHabitName !== null
+            ? () => onNext(selectedHabitId, selectedHabitName)
+            : () => {}
         }
       />
     </div>

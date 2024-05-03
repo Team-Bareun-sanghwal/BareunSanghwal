@@ -1,13 +1,16 @@
 'use client';
 
 import { Button, ProgressBox } from '@/components';
-import { IFunnelComponent } from '../_types';
 import dynamic from 'next/dynamic';
 import lottieJson from '@/../public/lotties/lottie-music.json';
 
+interface ICompleteStepComponent {
+  onNext: () => void;
+}
+
 const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
-export const Complete = ({ onPrev, onNext }: IFunnelComponent) => {
+export const Complete = ({ onNext }: ICompleteStepComponent) => {
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
       <div className="w-full flex flex-col gap-[3rem] pb-[2rem]">

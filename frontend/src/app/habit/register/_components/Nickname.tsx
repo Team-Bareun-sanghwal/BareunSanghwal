@@ -5,16 +5,20 @@ import { Picker } from '@/components/common/Picker/Picker';
 
 interface INicknameStep {
   onPrev: () => void;
-  onNext: (
-    alias: string,
-    icon: string,
-    selectedHabitId?: number | null,
-  ) => void;
+  onNext: (alias: string, icon: string, selectedHabitId: number | null) => void;
   isCategorySet: boolean;
+  habitId: number | null;
 }
 
-export const Nickname = ({ onPrev, onNext, isCategorySet }: INicknameStep) => {
-  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(null);
+export const Nickname = ({
+  onPrev,
+  onNext,
+  isCategorySet,
+  habitId,
+}: INicknameStep) => {
+  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
+    habitId,
+  );
   const [alias, setAlias] = useState<string | null>(null);
   const [icon, setIcon] = useState<string | null>(null);
 
@@ -69,7 +73,7 @@ export const Nickname = ({ onPrev, onNext, isCategorySet }: INicknameStep) => {
         onClick={
           isCategorySet
             ? alias && icon
-              ? () => onNext(alias, icon)
+              ? () => onNext(alias, icon, selectedHabitId)
               : () => {}
             : selectedHabitId && alias && icon
               ? () => onNext(alias, icon, selectedHabitId)

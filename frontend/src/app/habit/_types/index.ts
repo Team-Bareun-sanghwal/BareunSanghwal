@@ -28,3 +28,11 @@ export interface IUserAmountData {
   saturday: number;
   sunday: number;
 }
+
+export interface IRegisteredHabitData {
+  habitId: number | null;
+  habitName: string | null;
+  isCategorySet: boolean;
+  alias: string | null;
+  icon: string | null;
+}

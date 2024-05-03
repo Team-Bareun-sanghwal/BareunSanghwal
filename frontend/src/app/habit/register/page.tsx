@@ -13,7 +13,6 @@ export default async function Page() {
 
   const userAmountByDay = await getUserAmountByDay();
   const userAmountData = userAmountByDay.data;
-  console.log(userAmountData);
 
   return (
     <HabitRegisterFunnel
