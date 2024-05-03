@@ -30,6 +30,7 @@ import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
@@ -215,10 +216,28 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberLongestStreakResDto longestStreak() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
         int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
-
         return new MemberLongestStreakResDto(longestStreak);
+    }
+
+    @Override
+    public MemberStreakRecoveryCountResDto streakRecoveryCount() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+
+        Integer freeRecoveryCount = memberRecoveryRepository.findByMemberId(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            ).getFreeRecoveryCount();
+
+        Integer paidRecoveryCount = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            ).getPaidRecoveryCount();
+
+        return new MemberStreakRecoveryCountResDto(
+            freeRecoveryCount + paidRecoveryCount,
+            freeRecoveryCount
+        );
     }
 
     @Override
@@ -227,7 +246,7 @@ public class MemberServiceImpl implements MemberService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
         // 내림차순 정렬된 데이터
-        List<MemberPracticedHabitDto> topHabits  = processTopHabits(
+        List<MemberPracticedHabitDto> topHabits = processTopHabits(
             habitTrackerRepository.findTopHabits(memberId),
             memberId
         );
@@ -271,9 +290,6 @@ public class MemberServiceImpl implements MemberService {
         List<MemberPracticedHabitDto> topHabits,
         Long memberId
     ) {
-        System.out.println("++++++++++++++++++++++++++SIZE: " + topHabits.size());
-        System.out.println("++++++++++++++++++++++++++topHabits: " + topHabits);
-
         long counts = habitTrackerRepository.countByMemberId(memberId);
 
         if (counts > topHabits.size()) {
