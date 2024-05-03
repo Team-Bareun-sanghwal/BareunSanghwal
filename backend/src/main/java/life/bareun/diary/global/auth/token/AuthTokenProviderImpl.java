@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.factory.OAuth2MemberPrincipalFactory;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
@@ -141,7 +141,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
             return Long.parseLong(memberId);
         } catch (JwtException | NumberFormatException | NullPointerException e) {
 
-            throw new CustomSecurityException(SecurityErrorCode.INVALID_AUTHENTICATION);
+            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
     }
 

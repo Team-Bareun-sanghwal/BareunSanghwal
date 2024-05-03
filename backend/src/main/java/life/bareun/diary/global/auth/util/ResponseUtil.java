@@ -4,7 +4,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import life.bareun.diary.global.auth.config.SecurityConfig;
-import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.factory.SecurityErrorResponseFactory;
 import life.bareun.diary.global.common.response.BaseResponse;
 import org.springframework.http.ResponseCookie;
@@ -17,7 +17,7 @@ public class ResponseUtil {
 
     public static void writeError(
         HttpServletResponse response,
-        CustomSecurityException exception
+        AuthException exception
     ) throws IOException {
         try (
             ServletOutputStream outputStream = response.getOutputStream()

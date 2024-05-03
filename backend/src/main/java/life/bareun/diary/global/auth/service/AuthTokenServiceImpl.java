@@ -2,7 +2,7 @@ package life.bareun.diary.global.auth.service;
 
 import io.jsonwebtoken.JwtException;
 import java.time.Duration;
-import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
@@ -44,7 +44,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         try {
             authTokenProvider.validate(authToken);
         } catch (JwtException e) {
-            throw new CustomSecurityException(SecurityErrorCode.INVALID_AUTHENTICATION);
+            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
 
         Long id = authTokenProvider.getMemberIdFromToken(authToken);
