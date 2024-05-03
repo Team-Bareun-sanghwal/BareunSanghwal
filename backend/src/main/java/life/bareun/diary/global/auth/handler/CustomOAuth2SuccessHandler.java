@@ -73,7 +73,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //         null // authLoginRes
         //     )
         // );
-        response.sendRedirect("localhost:3000/loading?status=" + statusCode);
+        response.sendRedirect("http://localhost:3000/loading?status=" + statusCode);
     }
 }
 
