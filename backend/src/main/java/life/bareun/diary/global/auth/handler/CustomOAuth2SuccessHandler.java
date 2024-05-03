@@ -65,14 +65,15 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             authTokenProvider.tokenToAuthToken(refreshToken)
         ).toSeconds();
         ResponseUtil.addRefreshTokenCookie(response, refreshToken, refreshTokenMaxAge);
-        ResponseUtil.writeSuccess(
-            response,
-            BaseResponse.success(
-                statusCode,
-                "OAuth2 인증되었습니다.",
-                null // authLoginRes
-            )
-        );
+        // ResponseUtil.writeSuccess(
+        //     response,
+        //     BaseResponse.success(
+        //         statusCode,
+        //         "OAuth2 인증되었습니다.",
+        //         null // authLoginRes
+        //     )
+        // );
+        response.sendRedirect("localhost:3000/loading?status=" + statusCode);
     }
 }
 
