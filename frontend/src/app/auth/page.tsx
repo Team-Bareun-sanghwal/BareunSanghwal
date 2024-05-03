@@ -1,12 +1,31 @@
-import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
-import { cookies } from 'next/headers';
+'use server';
 
-export default function Page() {
-  const cookieStore = cookies();
-  const accessToken = cookieStore.get('Authorization');
-  const refreshToken = cookieStore.get('RefreshToken');
-  console.log(accessToken);
-  console.log(refreshToken);
+import { cookies } from 'next/headers';
+import { revalidateTag } from 'next/cache';
+import { TinyButton } from '@/components';
+
+const cookieStore = cookies();
+const accessToken = cookieStore.get('Authorization');
+const refreshToken = cookieStore.get('RefreshToken');
+// console.log(accessToken);
+// console.log(refreshToken);
+
+async function getData() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`);
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data');
+  }
+
+  return res.json();
+}
+
+export default async function Page() {
+  const data = await getData();
+  console.log(data);
 
   return (
     <>
@@ -21,6 +40,8 @@ export default function Page() {
       ) : (
         <div>리프레시 토큰이 업서</div>
       )}
+      {data ? <div>{data}</div> : null}
+      {/* <TinyButton mode="RECOMMEND" label="우웅 상품 목록" onClick={getData} /> */}
     </>
   );
 }
