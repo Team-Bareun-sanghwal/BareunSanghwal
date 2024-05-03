@@ -3,6 +3,7 @@ package life.bareun.diary.global.notification.repository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.notification.dto.NotificationTokenDto;
+import life.bareun.diary.member.entity.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.HashOperations;
@@ -27,6 +28,13 @@ public class NotificationTokenRepositoryCustomImpl implements NotificationTokenR
         Map<String, Object> entries = hashOperations.entries(id);
         return NotificationTokenDto.builder().id(Long.parseLong(id.substring(18)))
             .token((String) entries.get("token")).build();
+    }
+
+    @Override
+    public NotificationTokenDto findNotificationTokenByMemberId(Long memberId) {
+        Map<String, Object> entries = hashOperations.entries(String.valueOf(memberId));
+        return NotificationTokenDto.builder().id(memberId).token((String) entries.get("token"))
+            .build();
     }
 
     @Override

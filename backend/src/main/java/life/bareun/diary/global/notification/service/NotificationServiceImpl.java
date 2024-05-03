@@ -16,6 +16,7 @@ import life.bareun.diary.global.notification.dto.NotificationDto;
 import life.bareun.diary.global.notification.dto.NotificationPhraseDto;
 import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
 import life.bareun.diary.global.notification.dto.NotificationStatusModifyDto;
+import life.bareun.diary.global.notification.dto.NotificationTokenDto;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
 import life.bareun.diary.global.notification.dto.response.NotificationListResDto;
 import life.bareun.diary.global.notification.entity.Notification;
@@ -33,6 +34,8 @@ import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.repository.DailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.streak.entity.StreakPhrase;
+import life.bareun.diary.streak.repository.StreakPhraseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,6 +56,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final MemberDailyPhraseRepository memberDailyPhraseRepository;
 
     private final DailyPhraseRepository dailyPhraseRepository;
+
+    private final StreakPhraseRepository streakPhraseRepository;
 
     private final MemberRepository memberRepository;
 
@@ -126,13 +131,31 @@ public class NotificationServiceImpl implements NotificationService {
         return NotificationListResDto.builder().notificationList(notificationDtoList).build();
     }
 
+    @Override
+    public void sendContinuousStreakMember(Member member, int continuousStreak) {
+        NotificationTokenDto notificationTokenDto = notificationTokenRepository.findNotificationTokenByMemberId(
+            member.getId());
+        NotificationCategory notificationCategory = notificationCategoryRepository.findById(5L)
+            .orElseThrow();
+        String content = notificationCategory.getContent();
+
+        // 랜덤 응원 문구
+        SecureRandom secureRandom = new SecureRandom();
+        StreakPhrase streakPhrase = streakPhraseRepository.findById(secureRandom.nextInt(10) + 1L)
+            .orElseThrow(
+                () -> new NotificationException(NotificationErrorCode.NOT_FOUND_STREAK_PHRASE));
+        createNotification(NotificationResultTokenDto.builder().member(member)
+                .content(String.format(content, continuousStreak, streakPhrase.getPhrase()))
+                .token(notificationTokenDto.token()).build(),
+            notificationCategory);
+    }
+
     private Map<Long, NotificationResultTokenDto> verifyCondition(Long notificationCategoryId,
         Map<Long, String> notificationTokenMap, NotificationCategory notificationCategory) {
         return switch (Math.toIntExact(notificationCategoryId)) {
             case 1 -> findAllNotificationLuckyPoint(notificationTokenMap, notificationCategory);
             case 2 -> findAllNotificationUnaccompanied(notificationTokenMap, notificationCategory);
-            case 4 -> findAllNotificationDailyPhrase(notificationTokenMap, notificationCategory);
-            default -> null;
+            default -> findAllNotificationDailyPhrase(notificationTokenMap, notificationCategory);
         };
     }
 
@@ -195,7 +218,9 @@ public class NotificationServiceImpl implements NotificationService {
                 resultTokenMap.put(memberDailyPhrase.getMember().getId(),
                     NotificationResultTokenDto.builder().member(memberDailyPhrase.getMember())
                         .token(notificationTokenMap.get(memberDailyPhrase.getMember().getId()))
-                        .content(String.format(content, memberDailyPhrase.getMember().getNickname())).build());
+                        .content(
+                            String.format(content, memberDailyPhrase.getMember().getNickname()))
+                        .build());
             }
         }
         return resultTokenMap;
@@ -218,23 +243,24 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void createNotification(NotificationResultTokenDto notificationResultTokenDto,
         NotificationCategory notificationCategory) {
+        log.info(notificationResultTokenDto.toString());
         // 알림 만들기
-        notificationRepository.save(
-            Notification.builder().member(notificationResultTokenDto.member())
-                .content(notificationResultTokenDto.content())
-                .notificationCategory(notificationCategory).isRead(false).build());
-
-        Message message = Message.builder().setToken(notificationResultTokenDto.token())
-            .setWebpushConfig(
-                WebpushConfig.builder().putHeader("ttl", "300")
-                    .setNotification(
-                        new WebpushNotification("bareun", notificationResultTokenDto.content()))
-                    .build()).build();
-        try {
-            FirebaseMessaging.getInstance().sendAsync(message).get();
-        } catch (Exception e) {
-            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
-        }
+//        notificationRepository.save(
+//            Notification.builder().member(notificationResultTokenDto.member())
+//                .content(notificationResultTokenDto.content())
+//                .notificationCategory(notificationCategory).isRead(false).build());
+//
+//        Message message = Message.builder().setToken(notificationResultTokenDto.token())
+//            .setWebpushConfig(
+//                WebpushConfig.builder().putHeader("ttl", "300")
+//                    .setNotification(
+//                        new WebpushNotification("bareun", notificationResultTokenDto.content()))
+//                    .build()).build();
+//        try {
+//            FirebaseMessaging.getInstance().sendAsync(message).get();
+//        } catch (Exception e) {
+//            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
+//        }
     }
 
     private Map<Long, String> findAllExistMessageToken() {
