@@ -97,6 +97,7 @@ export default async function Page() {
   const longestStreakCount =
     longestStreak.data == null ? 0 : longestStreak.data.longestStreak;
 
+  const { total, tree } = myPoint.data;
   return (
     <>
       <div className="flex flex-col h-[calc(100vh-8rem)]">
