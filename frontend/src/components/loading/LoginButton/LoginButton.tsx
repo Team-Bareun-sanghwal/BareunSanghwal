@@ -11,10 +11,12 @@ export const LoginButton = ({ platform }: ILoginButtonProps) => {
   const router = useRouter();
 
   const signIn = () => {
-    // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=82281de6e3c9869954034742a037b692&redirect_uri=https://bareun.life/api/login/oauth2/code/kakao&response_type=code`;
-    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=82281de6e3c9869954034742a037b692&redirect_uri=https://bareun.life/api/login/oauth2/code/kakao&response_type=code`;
+    const url =
+      platform === 'kakao'
+        ? process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL!
+        : process.env.NEXT_PUBLIC_OAUTH_GOOGLE_URL!;
 
-    router.push(KAKAO_AUTH_URL);
+    router.push(url);
   };
 
   const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
