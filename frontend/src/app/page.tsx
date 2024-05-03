@@ -36,7 +36,7 @@ export default function Home() {
     <>
       {/* <button onClick={handleOverlay}>BottomSheet 열기</button> */}
       {/* <button onClick={handleAlertBox}>AlertBox 열기</button> */}
-      {/* <button onClick={() => router.push('/loading')}>로딩로딩</button> */}
+      <button onClick={() => router.push('/loading')}>로딩로딩</button>
       {/* <NavBar mode="HOME" /> */}
     </>
   );
