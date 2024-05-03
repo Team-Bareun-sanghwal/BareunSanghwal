@@ -34,16 +34,6 @@ export const Calender = ({
     themeColor === 'sunny_summer';
   return (
     <>
-      <div className="flex w-full justify-around">
-        <HabitChecker
-          achieveCount={
-            setDayInfo(dayInfo, dayOfWeekFirst)[getToday(false) as number]
-              .achieveCount
-          }
-          totalCount={memberHabitList.length}
-        />
-        <LongestStreak longestStreakCount={longestStreak} />
-      </div>
       <MonthLabel month={getMonth(false)} year={getYear()} />
       <HabitBtnList habitList={memberHabitList} />
       <Achievement proportion={proportion} themeColor={themeColor} />

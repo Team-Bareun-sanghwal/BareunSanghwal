@@ -3,7 +3,8 @@ import { $Fetch } from '@/apis';
 import { getDateFormat, getFirstDay } from '@/components/calendar/util';
 import { MainTitle } from '@/components/main/MainTitle/MainTitle';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
-
+import { HabitChecker } from '@/components';
+import { LongestStreak } from '@/components';
 export default async function Page() {
   const streakData = await $Fetch({
     method: 'GET',
@@ -102,6 +103,13 @@ export default async function Page() {
         succeed={habitsToday.data.memberHabitList.length}
       />
       <HabitBtnList habitList={habitList} />
+      <div className="flex w-full justify-around">
+        <HabitChecker
+          achieveCount={habitsToday.data.memberHabitList.length}
+          totalCount={habitList.length}
+        />
+        <LongestStreak longestStreakCount={longestStreakCount} />
+      </div>
       <Calender
         dayInfo={dayInfo}
         memberHabitList={habitList}
