@@ -1,10 +1,12 @@
 package life.bareun.diary.global.common.exception;
 
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.global.elastic.exception.ElasticException;
 import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.member.exception.MemberException;
+import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.recap.exception.RecapException;
 import life.bareun.diary.streak.exception.StreakException;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StreakException.class)
     public ResponseEntity<?> streakExceptionHandler(StreakException e) {
+        return ResponseEntity.status(e.getErrorCode().getStatus())
+            .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<?> productExceptionHandler(ProductException e) {
+        return ResponseEntity.status(e.getErrorCode().getStatus())
+            .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<?> customSecurityExceptionHandler(AuthException e) {
         return ResponseEntity.status(e.getErrorCode().getStatus())
             .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
     }

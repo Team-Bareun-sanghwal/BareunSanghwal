@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import life.bareun.diary.global.auth.config.SecurityConfig;
-import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
@@ -68,14 +68,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
             // 2. accessToken 만료 응답
-            CustomSecurityException exception = new CustomSecurityException(
+            AuthException exception = new AuthException(
                 SecurityErrorCode.EXPIRED_ACCESS_TOKEN
             );
             ResponseUtil.writeError(response, exception);
         } catch (JwtException e) {
             // ExpiredJwtException이 아닌 다른 JWT 예외가 발생한 상태
             // 키가 다르거나, 변조됐거나, ....
-            CustomSecurityException exception = new CustomSecurityException(
+            AuthException exception = new AuthException(
                 SecurityErrorCode.INVALID_AUTHENTICATION
             );
             ResponseUtil.writeError(response, exception);
