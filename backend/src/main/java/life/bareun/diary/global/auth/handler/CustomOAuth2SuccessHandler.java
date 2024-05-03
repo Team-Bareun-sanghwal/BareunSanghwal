@@ -74,7 +74,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //     )
         // );
 
-        response.sendRedirect("https://bareun.life/loading?status=" + statusCode);
+        response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
     }
 }
 
