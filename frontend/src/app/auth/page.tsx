@@ -21,9 +21,11 @@ export default async function Page() {
   const refreshToken = cookieStore.get('RefreshToken');
   // console.log(accessToken);
   // console.log(refreshToken);
+  const data = await getData();
 
   return (
     <>
+      {data}
       <div>우우</div>
       {accessToken ? (
         <div>{accessToken.value}</div>
