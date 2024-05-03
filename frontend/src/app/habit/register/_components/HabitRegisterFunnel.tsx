@@ -9,13 +9,16 @@ import { Nickname } from './Nickname';
 import { DayOrPeriod } from './DayOrPeriod';
 import { Complete } from './Complete';
 import { IHabitListData } from '../../_types';
+import { IUserAmountData } from '../../_types';
 
 export const HabitRegisterFunnel = ({
   popularCategoryListData,
   similarCategoryListData,
+  userAmountData,
 }: {
   popularCategoryListData: IHabitListData[];
   similarCategoryListData: IHabitListData[];
+  userAmountData: IUserAmountData;
 }) => {
   const { Funnel, setStep } = useFunnel('QUESTION_STEP'); // 초기 스텝
   const [data, setData] = useState({}); // 누적 데이터
@@ -63,6 +66,7 @@ export const HabitRegisterFunnel = ({
           onNext={() => {
             setStep('COMPLETE_STEP');
           }}
+          userAmountData={userAmountData}
         />
       </Funnel.Step>
 

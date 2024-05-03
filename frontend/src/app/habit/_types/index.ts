@@ -17,3 +17,14 @@ export interface IHabitListDataV2 {
   habitName: string;
   habitId: number;
 }
+
+// 요일별 사용자 수 데이터 타입
+export interface IUserAmountData {
+  monday: number;
+  tuesday: number;
+  wednesday: number;
+  thursday: number;
+  friday: number;
+  saturday: number;
+  sunday: number;
+}

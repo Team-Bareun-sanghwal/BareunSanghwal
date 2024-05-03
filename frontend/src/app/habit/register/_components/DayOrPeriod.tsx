@@ -14,13 +14,19 @@ import {
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
+import { IUserAmountData } from '../../_types';
 
 interface IDayOrPeriodStepComponent {
   onPrev: () => void;
   onNext: (nextStep: string) => void;
+  userAmountData: IUserAmountData;
 }
 
-export const DayOrPeriod = ({ onPrev, onNext }: IDayOrPeriodStepComponent) => {
+export const DayOrPeriod = ({
+  onPrev,
+  onNext,
+  userAmountData,
+}: IDayOrPeriodStepComponent) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
 
   const overlay = useOverlay();
@@ -77,31 +83,31 @@ export const DayOrPeriod = ({ onPrev, onNext }: IDayOrPeriodStepComponent) => {
                     habitRegisterDayList={[
                       {
                         englishDayName: 'monday',
-                        registerCount: 1024,
+                        registerCount: userAmountData.monday,
                       },
                       {
                         englishDayName: 'tuesday',
-                        registerCount: 2048,
+                        registerCount: userAmountData.tuesday,
                       },
                       {
                         englishDayName: 'wednesday',
-                        registerCount: 3024,
+                        registerCount: userAmountData.wednesday,
                       },
                       {
                         englishDayName: 'thursday',
-                        registerCount: 114,
+                        registerCount: userAmountData.thursday,
                       },
                       {
                         englishDayName: 'friday',
-                        registerCount: 1540,
+                        registerCount: userAmountData.friday,
                       },
                       {
                         englishDayName: 'saturday',
-                        registerCount: 1223,
+                        registerCount: userAmountData.saturday,
                       },
                       {
                         englishDayName: 'sunday',
-                        registerCount: 15,
+                        registerCount: userAmountData.sunday,
                       },
                     ]}
                   />

@@ -64,7 +64,7 @@ export const HabitSearchBox = ({
       ></input>
 
       <div className="flex gap-[1rem] flex-wrap -mt-[0.5rem]">
-        {searchedCategoryList?.map((searchedHabit, index) => {
+        {searchedCategoryList?.map((searchedHabit) => {
           return (
             <HabitNameButton
               key={`habit-${searchedHabit.habitId}`}

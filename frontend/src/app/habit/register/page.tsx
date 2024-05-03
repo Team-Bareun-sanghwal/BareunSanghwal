@@ -1,4 +1,5 @@
 import { getPopularCategoryList } from '../_apis/getPopularCategoryList';
+import { getUserAmountByDay } from '../_apis/getUserAmountByDay';
 import { HabitRegisterFunnel } from './_components/HabitRegisterFunnel';
 
 export default async function Page() {
@@ -10,10 +11,15 @@ export default async function Page() {
   // const similarCategoryListData = similarCategoryList.data.habitList;
   const similarCategoryListData = popularCategoryListData;
 
+  const userAmountByDay = await getUserAmountByDay();
+  const userAmountData = userAmountByDay.data;
+  console.log(userAmountData);
+
   return (
     <HabitRegisterFunnel
       popularCategoryListData={popularCategoryListData}
       similarCategoryListData={similarCategoryListData}
+      userAmountData={userAmountData}
     />
   );
 }
