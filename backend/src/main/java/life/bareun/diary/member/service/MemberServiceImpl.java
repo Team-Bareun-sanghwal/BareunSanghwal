@@ -224,12 +224,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberStatisticResDto statistic() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Long memberId = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
         // 내림차순 정렬된 데이터
-        List<MemberPracticedHabitDto> topHabits
-            = habitTrackerRepository.findTopHabits(id);
-        topHabits = processTopHabits(topHabits);
+        List<MemberPracticedHabitDto> topHabits  = processTopHabits(
+            habitTrackerRepository.findTopHabits(memberId),
+            memberId
+        );
         String maxPracticedHabit = topHabits.get(0).habit();
 
         // 요일 별 달성 횟수
@@ -239,10 +240,10 @@ public class MemberServiceImpl implements MemberService {
 
         // 4 (0~24시까지 1시간 단위로 24개)
         List<MemberPracticeCountPerHourDto> practiceCountPerHour
-            = habitTrackerRepository.countPracticedHabitsPerHour(id);
+            = habitTrackerRepository.countPracticedHabitsPerHour(memberId);
         practiceCountPerHour = processPracticeCountPerHour(practiceCountPerHour);
 
-        LocalDate createdAt = memberRepository.findById(id).orElseThrow(
+        LocalDate createdAt = memberRepository.findById(memberId).orElseThrow(
             () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
         ).getCreatedDateTime().toLocalDate();
         LocalDate now = LocalDate.now();
@@ -265,6 +266,32 @@ public class MemberServiceImpl implements MemberService {
             .build();
     }
 
+    @Transactional(readOnly = true)
+    protected List<MemberPracticedHabitDto> processTopHabits(
+        List<MemberPracticedHabitDto> topHabits,
+        Long memberId
+    ) {
+        System.out.println("++++++++++++++++++++++++++SIZE: " + topHabits.size());
+        System.out.println("++++++++++++++++++++++++++topHabits: " + topHabits);
+
+        long counts = habitTrackerRepository.countByMemberId(memberId);
+
+        if (counts > topHabits.size()) {
+            long sum = topHabits.stream()
+                .mapToLong(MemberPracticedHabitDto::value)
+                .sum();
+            long etcValue = counts - sum;
+
+            topHabits.add(
+                new MemberPracticedHabitDto(
+                    "기타",
+                    etcValue
+                )
+            );
+        }
+
+        return topHabits;
+    }
 
     @Transactional(readOnly = true)
     protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek() {
@@ -300,30 +327,6 @@ public class MemberServiceImpl implements MemberService {
         return practiceCountsPerDayOfWeek;
     }
 
-    private List<MemberPracticedHabitDto> processTopHabits(
-        List<MemberPracticedHabitDto> topHabits
-    ) {
-        if (topHabits.size() <= 5) {
-            return topHabits;
-        }
-
-        List<MemberPracticedHabitDto> processedTopHabits = new ArrayList<>(6);
-        for (int i = 0; i < 5; ++i) {
-            processedTopHabits.add(topHabits.get(i));
-        }
-        int sum = 0;
-        for (int i = 5; i < topHabits.size(); ++i) {
-            sum += topHabits.get(i).value();
-        }
-        topHabits.add(
-            new MemberPracticedHabitDto(
-                "기타",
-                sum
-            )
-        );
-
-        return processedTopHabits;
-    }
 
     private List<MemberPracticeCountPerHourDto> processPracticeCountPerHour(
         List<MemberPracticeCountPerHourDto> practiceCountsPerHour
