@@ -4,6 +4,7 @@ import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
@@ -125,6 +126,17 @@ public class MemberController {
         );
     }
 
+    @GetMapping("/longest-streak")
+    public ResponseEntity<BaseResponse<MemberLongestStreakResDto>> longestStreak() {
+        MemberLongestStreakResDto memberLongestStreakResDto = memberService.longestStreak();
+        return ResponseEntity.ok(
+            BaseResponse.success(
+                HttpStatus.OK.value(),
+                "회읜의 현재 최장 스트릭 정보를 읽어왔습니다.",
+                memberLongestStreakResDto
+            )
+        );
+    }
 
     @GetMapping("/statistic")
     public ResponseEntity<BaseResponse<MemberStatisticResDto>> statistic() {
