@@ -8,6 +8,7 @@ import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 
 public interface MemberService {
@@ -31,6 +32,8 @@ public interface MemberService {
     MemberPointResDto point();
 
     MemberLongestStreakResDto longestStreak();
+
+    MemberStreakRecoveryCountResDto streakRecoveryCount();
 
     MemberStatisticResDto statistic();
 

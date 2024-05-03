@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Objects;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
@@ -73,16 +74,27 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 Projections.constructor(
                     MemberPracticedHabitDto.class,
                     habitTracker.memberHabit.alias.as("habit"),
-                    habitTracker.id.count().intValue().as("value")
+                    habitTracker.id.count().longValue().as("value")
                 )
             )
             .from(habitTracker)
             .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
             .groupBy(habitTracker.memberHabit.id)
             .orderBy(habitTracker.id.count().desc())
+            .limit(5)
             .fetch();
     }
 
+    @Override
+    public Long countByMemberId(Long memberId) {
+        return queryFactory
+            .select(
+                habitTracker.count()
+            )
+            .from(habitTracker)
+            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
+            .fetchOne();
+    }
 
     @Override
     public List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId) {
