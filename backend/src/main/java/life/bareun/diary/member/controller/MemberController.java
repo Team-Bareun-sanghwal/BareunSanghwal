@@ -11,6 +11,7 @@ import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -216,4 +217,22 @@ public class MemberController {
                 )
             );
     }
+
+    @GetMapping("/tree/point")
+    public ResponseEntity<BaseResponse<MemberTreePointResDto>> treePoint() {
+        MemberTreePointResDto memberTreePointResDto = memberService.treePoint();
+
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    String.format("%d 포인트를 획득했습니다.", memberTreePointResDto.point()),
+                    memberTreePointResDto
+                )
+            );
+    }
+
 }
