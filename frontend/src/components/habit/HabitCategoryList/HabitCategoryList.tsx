@@ -3,11 +3,7 @@
 import { useState } from 'react';
 import { TrophyIcon } from '@heroicons/react/24/solid';
 import { TinyButton } from '@/components/common/TinyButton/TinyButton';
-
-interface IHabitListData {
-  name: string;
-  habitId: number;
-}
+import { IHabitListData } from '@/app/habit/_types';
 
 interface IHabitCategoryListProps {
   mode: 'POPULAR' | 'SIMILAR';

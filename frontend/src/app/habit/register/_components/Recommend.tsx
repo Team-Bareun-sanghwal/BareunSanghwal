@@ -1,9 +1,19 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { Button, ProgressBox, HabitCategoryList, GuideBox } from '@/components';
-import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
+import { IHabitListData } from '../../_types';
 
-export const Recommend = ({ onPrev, onNext }: IFunnelComponent) => {
+interface IRecommendStep {
+  onPrev: () => void;
+  onNext: () => void;
+  popularCategoryListData: IHabitListData[];
+}
+
+export const Recommend = ({
+  onPrev,
+  onNext,
+  popularCategoryListData,
+}: IRecommendStep) => {
   const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
 
   return (
@@ -25,6 +35,12 @@ export const Recommend = ({ onPrev, onNext }: IFunnelComponent) => {
         <GuideBox guideText="가장 인기 있는 해빗이나 나와 비슷한 사람들이 하는 해빗 중 흥미로운 해빗 하나를 골라주세요." />
 
         <HabitCategoryList
+          habitListData={popularCategoryListData}
+          label="사람들이 가장 많이 하는 해빗 10개"
+          mode="POPULAR"
+        />
+
+        {/* <HabitCategoryList
           habitListData={[
             {
               habitId: 1,
@@ -69,7 +85,7 @@ export const Recommend = ({ onPrev, onNext }: IFunnelComponent) => {
           ]}
           label="사람들이 가장 많이 하는 해빗 10개"
           mode="POPULAR"
-        />
+        /> */}
 
         <HabitCategoryList
           habitListData={[
