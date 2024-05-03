@@ -4,6 +4,7 @@ import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
@@ -111,6 +112,19 @@ public class MemberController {
             )
         );
     }
+
+    @GetMapping("/point")
+    public ResponseEntity<BaseResponse<MemberPointResDto>> point() {
+        MemberPointResDto memberPointResDto = memberService.point();
+        return ResponseEntity.ok(
+            BaseResponse.success(
+                HttpStatus.OK.value(),
+                "회읜의 현재 보유 포인트 정보를 읽어왔습니다.",
+                memberPointResDto
+            )
+        );
+    }
+
 
     @GetMapping("/statistic")
     public ResponseEntity<BaseResponse<MemberStatisticResDto>> statistic() {
