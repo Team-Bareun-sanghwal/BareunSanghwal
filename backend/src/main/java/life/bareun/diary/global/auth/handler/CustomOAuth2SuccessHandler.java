@@ -7,12 +7,10 @@ import java.util.Date;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
-import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 // SimpleUrlAuthenticationSuccessHandler는 성공 후 특정 URL로 redirect하기 위해 쓰인다.
