@@ -1,43 +1,12 @@
-'use client';
+import { LoginButton } from '@/components';
 
-import { NavBar } from '@/components/common/NavBar/NavBar';
-import { AlertBox } from '@/components/common/AlertBox/AlertBox';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { useOverlay } from '@/hooks/use-overlay/useOverlay';
-import { useRouter } from 'next/navigation';
-export default function Home() {
-  const router = useRouter();
-  // const overlay = useOverlay();
-  // const handleOverlay = () => {
-  //   overlay.open(({ isOpen, close }) => (
-  //     <BottomSheet
-  //       description="해빗을 삭제하면 더 이상 기록할 수 없어요. 그래도 삭제하시겠어요? 해빗을 삭제하면 더 이상 기록할 수 없어요. 그래도 삭제하시겠어요? "
-  //       mode="POSITIVE"
-  //       onClose={close}
-  //       onConfirm={close}
-  //       open={isOpen}
-  //       title="프로틴 주스 마시기 해빗을 삭제하시겠어요?"
-  //     />
-  //   ));
-  // };
-
-  // const handleAlertBox = () => {
-  //   overlay.open(({ isOpen }) => (
-  //     <AlertBox
-  //       label="해빗 이름은 15자를 넘을 수 없어요. 해빗 이름은 15자가 될 수도 있어요."
-  //       mode="SUCCESS"
-  //       open={isOpen}
-  //     />
-  //   ));
-  //   setTimeout(() => overlay.close(), 1000);
-  // };
-
+export default function Page() {
   return (
-    <>
-      {/* <button onClick={handleOverlay}>BottomSheet 열기</button> */}
-      {/* <button onClick={handleAlertBox}>AlertBox 열기</button> */}
-      <button onClick={() => router.push('/loading')}>로딩로딩</button>
-      {/* <NavBar mode="HOME" /> */}
-    </>
+    <div className="bg-custom-matcha w-full h-screen">
+      <div className="flex flex-col items-center gap-[1rem]">
+        <LoginButton platform="kakao" />
+        <LoginButton platform="google" />
+      </div>
+    </div>
   );
 }
