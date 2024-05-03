@@ -62,7 +62,6 @@ public class MemberHabit {
     @Column(name = "maintain_amount")
     private int maintainAmount;
 
-    @UpdateTimestamp
     @Column(name = "succeeded_datetime")
     private LocalDateTime succeededDatetime;
 
