@@ -21,7 +21,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final AuthTokenProvider authTokenProvider;
-    private final RedirectStrategy redirectStrategy;
 
     @Override
     public void onAuthenticationSuccess(
@@ -76,13 +75,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //     )
         // );
 
-        // response.sendRedirect("http://localhost:3000/auth?status=" + statusCode);
-
-        redirectStrategy.sendRedirect(
-            request,
-            response,
-            "http://localhost:3000/auth?status=" + statusCode
-        );
+        response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
     }
 }
 

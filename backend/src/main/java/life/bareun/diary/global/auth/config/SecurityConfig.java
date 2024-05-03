@@ -130,18 +130,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public RedirectStrategy redirectStrategy() {
-        return new DefaultRedirectStrategy();
-    }
-
-    @Bean
     public CustomOAuth2MemberService customOAuth2MemberService() {
         return new CustomOAuth2MemberService(memberService);
     }
 
     @Bean
     public CustomOAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new CustomOAuth2SuccessHandler(authTokenProvider, redirectStrategy());
+        return new CustomOAuth2SuccessHandler(authTokenProvider);
     }
 
     @Bean
