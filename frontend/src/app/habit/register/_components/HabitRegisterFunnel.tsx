@@ -12,8 +12,10 @@ import { IHabitListData } from '../../_types';
 
 export const HabitRegisterFunnel = ({
   popularCategoryListData,
+  similarCategoryListData,
 }: {
   popularCategoryListData: IHabitListData[];
+  similarCategoryListData: IHabitListData[];
 }) => {
   const { Funnel, setStep } = useFunnel('QUESTION_STEP'); // 초기 스텝
   const [data, setData] = useState({}); // 누적 데이터
@@ -35,6 +37,7 @@ export const HabitRegisterFunnel = ({
           onPrev={() => setStep('QUESTION_STEP')}
           onNext={() => setStep('DAYORPERIOD_STEP')}
           popularCategoryListData={popularCategoryListData}
+          similarCategoryListData={similarCategoryListData}
         />
       </Funnel.Step>
 

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { TrophyIcon } from '@heroicons/react/24/solid';
 import { TinyButton } from '@/components/common/TinyButton/TinyButton';
 import { IHabitListData } from '@/app/habit/_types';
@@ -9,15 +8,17 @@ interface IHabitCategoryListProps {
   mode: 'POPULAR' | 'SIMILAR';
   label: string;
   habitListData: IHabitListData[];
+  selectedHabitId: number | null;
+  setSelectedHabitId: (habitId: number) => void;
 }
 
 export const HabitCategoryList = ({
   mode,
   label,
   habitListData,
+  selectedHabitId,
+  setSelectedHabitId,
 }: IHabitCategoryListProps) => {
-  const [selectedHabitId, setSelectedHabitId] = useState<number>(-1);
-
   return (
     <section className="flex flex-col gap-[1rem]">
       <label className="w-full custom-semibold-text text-custom-black flex justify-between">

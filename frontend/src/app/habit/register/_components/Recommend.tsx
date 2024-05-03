@@ -7,18 +7,20 @@ interface IRecommendStep {
   onPrev: () => void;
   onNext: () => void;
   popularCategoryListData: IHabitListData[];
+  similarCategoryListData: IHabitListData[];
 }
 
 export const Recommend = ({
   onPrev,
   onNext,
   popularCategoryListData,
+  similarCategoryListData,
 }: IRecommendStep) => {
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col gap-[2rem] pb-[1rem]">
+      <div className="w-full flex flex-col gap-[2rem] pb-[2rem]">
         <nav className="flex self-start gap-[0.5rem] items-center mb-[1rem]">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
@@ -38,107 +40,23 @@ export const Recommend = ({
           habitListData={popularCategoryListData}
           label="사람들이 가장 많이 하는 해빗 10개"
           mode="POPULAR"
+          selectedHabitId={selectedHabitId}
+          setSelectedHabitId={setSelectedHabitId}
         />
 
-        {/* <HabitCategoryList
-          habitListData={[
-            {
-              habitId: 1,
-              name: '근력 쌓기',
-            },
-            {
-              habitId: 2,
-              name: '운동하기',
-            },
-            {
-              habitId: 3,
-              name: '수면 시간 지키기',
-            },
-            {
-              habitId: 4,
-              name: '청결 유지하기',
-            },
-            {
-              habitId: 5,
-              name: '물 마시기',
-            },
-            {
-              habitId: 6,
-              name: '잘 씻기',
-            },
-            {
-              habitId: 7,
-              name: '일찍 기상하기',
-            },
-            {
-              habitId: 8,
-              name: '축구하기',
-            },
-            {
-              habitId: 9,
-              name: '영단어 외우기',
-            },
-            {
-              habitId: 10,
-              name: '스트레칭',
-            },
-          ]}
-          label="사람들이 가장 많이 하는 해빗 10개"
-          mode="POPULAR"
-        /> */}
-
         <HabitCategoryList
-          habitListData={[
-            {
-              habitId: 1,
-              name: '근력 쌓기',
-            },
-            {
-              habitId: 2,
-              name: '운동하기',
-            },
-            {
-              habitId: 3,
-              name: '수면 시간 지키기',
-            },
-            {
-              habitId: 4,
-              name: '청결 유지하기',
-            },
-            {
-              habitId: 5,
-              name: '물 마시기',
-            },
-            {
-              habitId: 6,
-              name: '잘 씻기',
-            },
-            {
-              habitId: 7,
-              name: '일찍 기상하기',
-            },
-            {
-              habitId: 8,
-              name: '축구하기',
-            },
-            {
-              habitId: 9,
-              name: '영단어 외우기',
-            },
-            {
-              habitId: 10,
-              name: '스트레칭',
-            },
-          ]}
+          habitListData={similarCategoryListData}
           label="나와 비슷한 사람들이 하는 해빗 10개"
           mode="SIMILAR"
+          selectedHabitId={selectedHabitId}
+          setSelectedHabitId={setSelectedHabitId}
         />
       </div>
 
       <Button
-        isActivated={isAlreadySet === null ? false : true}
+        isActivated={selectedHabitId === null ? false : true}
         label="다음"
-        onClick={onNext}
+        onClick={selectedHabitId !== null ? onNext : () => {}}
       />
     </div>
   );
