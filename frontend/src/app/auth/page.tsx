@@ -11,9 +11,13 @@ export default function Page() {
   return (
     <>
       <div>우우</div>
-      {accessToken ? <div>{accessToken}</div> : <div>어세스 토큰이 업서</div>}
+      {accessToken ? (
+        <div>{accessToken.value}</div>
+      ) : (
+        <div>어세스 토큰이 업서</div>
+      )}
       {refreshToken ? (
-        <div>{refreshToken}</div>
+        <div>{refreshToken.value}</div>
       ) : (
         <div>리프레시 토큰이 업서</div>
       )}
