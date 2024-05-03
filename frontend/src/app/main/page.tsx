@@ -100,22 +100,21 @@ export default async function Page() {
   const { total, tree } = myPoint.data;
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-8rem)]">
-        <MainTitle
-          total={habitList.length}
-          succeed={habitsToday.data.memberHabitList.length}
-        />
-        <HabitBtnList habitList={habitList} />
-        <Calender
-          dayInfo={dayInfo}
-          memberHabitList={habitList}
-          dayOfWeekFirst={getFirstDay() - 1}
-          themeColor={streakName}
-          proportion={achieveProportion}
-          longestStreak={longestStreakCount}
-        />
-        <DailyPhrase phrase="시작은 반이 아니라 시작입니다." />
-      </div>
+      <MainTitle
+        total={habitList.length}
+        succeed={habitsToday.data.memberHabitList.length}
+      />
+      <HabitBtnList habitList={habitList} />
+      <Calender
+        dayInfo={dayInfo}
+        memberHabitList={habitList}
+        dayOfWeekFirst={getFirstDay() - 1}
+        themeColor={streakName}
+        proportion={achieveProportion}
+        longestStreak={longestStreakCount}
+      />
+      <DailyPhrase phrase="시작은 반이 아니라 시작입니다." />
+      <div className="flex h-[8rem]"></div>
       <NavBar mode="HOME" />
     </>
   );

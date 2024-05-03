@@ -44,7 +44,6 @@ export const Streak = ({
           description={`${day}일의 스트릭이 복구되었어요!`}
           mode="POSITIVE"
           onClose={close}
-          onConfirm={close}
           open={isOpen}
           title={'스트릭 복구 성공!'}
         />
@@ -56,7 +55,6 @@ export const Streak = ({
           description="스트릭 복구권은 매월 한달 무료로 제공되요! 더 필요하면 상점을 이용해주세요!"
           mode="NEGATIVE"
           onClose={close}
-          onConfirm={close}
           open={isOpen}
           title={'스트릭 복구권이 없어요...'}
         />

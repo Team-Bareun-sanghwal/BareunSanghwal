@@ -25,6 +25,7 @@ export const Activated: Story = {
     dayInfo: StreaksResponse.dayInfo,
     themeColor: 'rose',
     proportion: 88,
+    longestStreak: 3,
   },
   parameters: {
     viewports: { defaultViewport: 'mobile1' },
