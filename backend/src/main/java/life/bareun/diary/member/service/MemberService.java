@@ -11,6 +11,7 @@ import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 
 public interface MemberService {
 
@@ -39,4 +40,6 @@ public interface MemberService {
     MemberStatisticResDto statistic();
 
     MemberHabitsResDto habits();
+
+    MemberTreePointResDto treePoint();
 }

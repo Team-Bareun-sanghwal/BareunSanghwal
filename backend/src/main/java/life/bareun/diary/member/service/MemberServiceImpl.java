@@ -1,5 +1,7 @@
 package life.bareun.diary.member.service;
 
+import com.google.rpc.context.AttributeContext.Auth;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -35,8 +37,10 @@ import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
+import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.mapper.MemberMapper;
@@ -59,6 +63,8 @@ public class MemberServiceImpl implements MemberService {
     private static final int COLOR_INDEX_MAX = 2;
     private static final int COLOR_INDEX_DEFAULT = 1;
     private static final int COLOR_INDEX_MIN = 0;
+
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     private final AuthTokenProvider authTokenProvider;
     private final AuthTokenService authTokenService;
@@ -379,5 +385,22 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return processedPracticeCountsPerHour;
+    }
+
+    @Override
+    public MemberTreePointResDto treePoint() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+        Tree tree = member.getTree();
+        int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
+
+        member.addPoint(point);
+        System.out.println("point: " + member.getPoint());
+        memberRepository.save(member);
+
+        return new MemberTreePointResDto(point);
     }
 }
