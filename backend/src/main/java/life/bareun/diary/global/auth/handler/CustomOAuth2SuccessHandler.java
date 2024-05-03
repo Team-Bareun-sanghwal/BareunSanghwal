@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 // SimpleUrlAuthenticationSuccessHandler는 성공 후 특정 URL로 redirect하기 위해 쓰인다.
@@ -20,6 +21,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final AuthTokenProvider authTokenProvider;
+    private final RedirectStrategy redirectStrategy;
 
     @Override
     public void onAuthenticationSuccess(
@@ -74,7 +76,13 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //     )
         // );
 
-        response.sendRedirect("http://localhost:3000/auth?status=" + statusCode);
+        // response.sendRedirect("http://localhost:3000/auth?status=" + statusCode);
+
+        redirectStrategy.sendRedirect(
+            request,
+            response,
+            "http://localhost:3000/auth?status=" + statusCode
+        );
     }
 }
 
