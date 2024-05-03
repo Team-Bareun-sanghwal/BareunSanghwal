@@ -18,7 +18,7 @@ import life.bareun.diary.global.notification.entity.NotificationCategory;
 import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
 import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
 import life.bareun.diary.global.notification.service.NotificationService;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;

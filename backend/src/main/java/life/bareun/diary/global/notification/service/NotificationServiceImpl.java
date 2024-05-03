@@ -27,8 +27,8 @@ import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
 import life.bareun.diary.global.notification.repository.NotificationRepository;
 import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
-import life.bareun.diary.global.security.util.AuthUtil;
 import life.bareun.diary.member.entity.DailyPhrase;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.repository.DailyPhraseRepository;
@@ -245,22 +245,22 @@ public class NotificationServiceImpl implements NotificationService {
         NotificationCategory notificationCategory) {
         log.info(notificationResultTokenDto.toString());
         // 알림 만들기
-//        notificationRepository.save(
-//            Notification.builder().member(notificationResultTokenDto.member())
-//                .content(notificationResultTokenDto.content())
-//                .notificationCategory(notificationCategory).isRead(false).build());
-//
-//        Message message = Message.builder().setToken(notificationResultTokenDto.token())
-//            .setWebpushConfig(
-//                WebpushConfig.builder().putHeader("ttl", "300")
-//                    .setNotification(
-//                        new WebpushNotification("bareun", notificationResultTokenDto.content()))
-//                    .build()).build();
-//        try {
-//            FirebaseMessaging.getInstance().sendAsync(message).get();
-//        } catch (Exception e) {
-//            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
-//        }
+        notificationRepository.save(
+            Notification.builder().member(notificationResultTokenDto.member())
+                .content(notificationResultTokenDto.content())
+                .notificationCategory(notificationCategory).isRead(false).build());
+
+        Message message = Message.builder().setToken(notificationResultTokenDto.token())
+            .setWebpushConfig(
+                WebpushConfig.builder().putHeader("ttl", "300")
+                    .setNotification(
+                        new WebpushNotification("bareun", notificationResultTokenDto.content()))
+                    .build()).build();
+        try {
+            FirebaseMessaging.getInstance().sendAsync(message).get();
+        } catch (Exception e) {
+            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
+        }
     }
 
     private Map<Long, String> findAllExistMessageToken() {

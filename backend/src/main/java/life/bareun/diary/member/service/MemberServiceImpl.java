@@ -1,25 +1,33 @@
 package life.bareun.diary.member.service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import life.bareun.diary.global.security.embed.OAuth2Provider;
-import life.bareun.diary.global.security.exception.CustomSecurityException;
-import life.bareun.diary.global.security.exception.SecurityErrorCode;
-import life.bareun.diary.global.security.principal.MemberPrincipal;
-import life.bareun.diary.global.security.service.AuthTokenService;
-import life.bareun.diary.global.security.token.AuthToken;
-import life.bareun.diary.global.security.token.AuthTokenProvider;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.embed.OAuth2Provider;
+import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.principal.MemberPrincipal;
+import life.bareun.diary.global.auth.service.AuthTokenService;
+import life.bareun.diary.global.auth.token.AuthToken;
+import life.bareun.diary.global.auth.token.AuthTokenProvider;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.service.HabitTrackerService;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
@@ -34,6 +42,7 @@ import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
+import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -193,20 +202,67 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public MemberPointResDto point() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        return new MemberPointResDto(member.getPoint());
+    }
+
+    @Override
+    public MemberLongestStreakResDto longestStreak() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
+
+        return new MemberLongestStreakResDto(longestStreak);
+    }
 
     @Override
     @Transactional(readOnly = true)
     public MemberStatisticResDto statistic() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
-        List<MemberPracticedHabitDto> topHabits = habitTrackerRepository.findTopHabits(id);
-        System.out.println("\ntopHabits:"  + topHabits);
+        // 내림차순 정렬된 데이터
+        List<MemberPracticedHabitDto> topHabits
+            = habitTrackerRepository.findTopHabits(id);
+        topHabits = processTopHabits(topHabits);
+        String maxPracticedHabit = topHabits.get(0).habit();
 
         // 요일 별 달성 횟수
         // 최대 또는 최대값 중복 허용
-        List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek = practiceCountPerDayOfWeek();
+        List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek
+            = practiceCountPerDayOfWeek();
 
-        return null;
+        // 4 (0~24시까지 1시간 단위로 24개)
+        List<MemberPracticeCountPerHourDto> practiceCountPerHour
+            = habitTrackerRepository.countPracticedHabitsPerHour(id);
+        practiceCountPerHour = processPracticeCountPerHour(practiceCountPerHour);
+
+        LocalDate createdAt = memberRepository.findById(id).orElseThrow(
+            () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+        ).getCreatedDateTime().toLocalDate();
+        LocalDate now = LocalDate.now();
+
+        int totalDays = (int) ChronoUnit.DAYS.between(createdAt, now);
+        MemberStreakResDto memberStreakDto = streakService.getMemberStreakResDto();
+        int streakDays = memberStreakDto.achieveStreakCount();
+        int starredDays = memberStreakDto.starCount();
+        int longestStreak = memberStreakDto.longestStreakCount();
+
+        return MemberStatisticResDto.builder()
+            .practicedHabitsTop(topHabits)
+            .maxPracticedHabit(maxPracticedHabit)
+            .practiceCountsPerDayOfWeek(dataPerDayOfWeek)
+            .practiceCountsPerHour(practiceCountPerHour)
+            .totalDays(totalDays)
+            .streakDays(streakDays)
+            .starredDays(starredDays)
+            .longestStreak(longestStreak)
+            .build();
     }
 
 
@@ -242,5 +298,51 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return practiceCountsPerDayOfWeek;
+    }
+
+    private List<MemberPracticedHabitDto> processTopHabits(
+        List<MemberPracticedHabitDto> topHabits
+    ) {
+        if (topHabits.size() <= 5) {
+            return topHabits;
+        }
+
+        List<MemberPracticedHabitDto> processedTopHabits = new ArrayList<>(6);
+        for (int i = 0; i < 5; ++i) {
+            processedTopHabits.add(topHabits.get(i));
+        }
+        int sum = 0;
+        for (int i = 5; i < topHabits.size(); ++i) {
+            sum += topHabits.get(i).value();
+        }
+        topHabits.add(
+            new MemberPracticedHabitDto(
+                "기타",
+                sum
+            )
+        );
+
+        return processedTopHabits;
+    }
+
+    private List<MemberPracticeCountPerHourDto> processPracticeCountPerHour(
+        List<MemberPracticeCountPerHourDto> practiceCountsPerHour
+    ) {
+        Map<Integer, Integer> memberPracticeCountPerHourMap = new HashMap<>();
+        for (MemberPracticeCountPerHourDto data : practiceCountsPerHour) {
+            memberPracticeCountPerHourMap.put(data.time(), data.value());
+        }
+
+        List<MemberPracticeCountPerHourDto> processedPracticeCountsPerHour = new ArrayList<>();
+        Set<Integer> times = memberPracticeCountPerHourMap.keySet();
+        for (int i = 0; i < 24; ++i) {
+            MemberPracticeCountPerHourDto processedMemberPracticeCountPerHour = new MemberPracticeCountPerHourDto(
+                i,
+                (times.contains(i)) ? memberPracticeCountPerHourMap.get(i) : 0
+            );
+            processedPracticeCountsPerHour.add(processedMemberPracticeCountPerHour);
+        }
+
+        return processedPracticeCountsPerHour;
     }
 }

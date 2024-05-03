@@ -1,9 +1,11 @@
 package life.bareun.diary.member.service;
 
-import life.bareun.diary.global.security.embed.OAuth2Provider;
-import life.bareun.diary.global.security.principal.MemberPrincipal;
+import life.bareun.diary.global.auth.embed.OAuth2Provider;
+import life.bareun.diary.global.auth.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
@@ -26,5 +28,10 @@ public interface MemberService {
 
     void grantFreeRecoveryToAllMembers();
 
+    MemberPointResDto point();
+
+    MemberLongestStreakResDto longestStreak();
+
     MemberStatisticResDto statistic();
+
 }

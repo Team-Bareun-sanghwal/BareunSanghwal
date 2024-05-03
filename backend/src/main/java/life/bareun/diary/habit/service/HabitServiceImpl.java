@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import life.bareun.diary.global.elastic.dto.ElasticDto;
 import life.bareun.diary.global.elastic.service.ElasticService;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitMatchDto;
 import life.bareun.diary.habit.dto.HabitRecommendDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
@@ -355,7 +355,7 @@ public class HabitServiceImpl implements HabitService {
         if (totalCount > 0) {
             SecureRandom secureRandom = new SecureRandom();
             while (totalCount > 0) {
-                Long randomNumber = secureRandom.nextLong(313L) + 1L;
+                Long randomNumber = secureRandom.nextInt(313) + 1L;
                 if (set.contains(randomNumber)) {
                     continue;
                 }
