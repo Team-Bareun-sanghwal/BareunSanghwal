@@ -7,7 +7,6 @@ import java.util.Date;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
-import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -74,7 +73,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //     )
         // );
 
-        response.sendRedirect("https://bareun.life/loading?status=" + statusCode);
+        response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
     }
 }
 

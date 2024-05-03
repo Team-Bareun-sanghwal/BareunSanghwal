@@ -4,7 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.util.ResponseUtil;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +18,7 @@ public class CustomOAuth2FailureHandler implements AuthenticationFailureHandler 
         HttpServletResponse response,
         AuthenticationException exception
     ) throws IOException, ServletException {
-        CustomSecurityException customException = new CustomSecurityException(
+        AuthException customException = new AuthException(
             SecurityErrorCode.UNAUTHENTICATED);
 
         ResponseUtil.writeError(response, customException);

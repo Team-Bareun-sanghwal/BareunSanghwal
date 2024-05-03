@@ -3,7 +3,7 @@ package life.bareun.diary.global.auth.service;
 import java.util.List;
 import java.util.Map;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
-import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.factory.OAuth2MemberPrincipalFactory;
 import life.bareun.diary.global.auth.principal.MemberPrincipal;
@@ -47,7 +47,7 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         try {
             oAuth2Provider = OAuth2Provider.valueOf(provider);
         } catch (IllegalArgumentException e) { // 이상한 provider
-            throw new CustomSecurityException(SecurityErrorCode.BAD_OAUTH_INFO);
+            throw new AuthException(SecurityErrorCode.BAD_OAUTH_INFO);
         }
 
         System.out.println("Client name: " + provider);
