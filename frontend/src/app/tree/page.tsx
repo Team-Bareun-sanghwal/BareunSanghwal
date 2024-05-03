@@ -18,7 +18,6 @@ interface IItem {
   description: string;
   price: number;
 }
-const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 interface IItemResponse {
   key: string;
   name: string;
@@ -26,6 +25,9 @@ interface IItemResponse {
   description: string;
   price: number;
 }
+
+const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
+
 export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);

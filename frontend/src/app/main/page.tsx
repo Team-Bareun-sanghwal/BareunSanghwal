@@ -1,25 +1,22 @@
-import { Calender } from '@/components';
+import { Calender, NavBar, HabitBtnList } from '@/components';
 import { $Fetch } from '@/apis';
-import { NavBar } from '@/components';
-import {
-  getDateFormat,
-  getFirstDay,
-  getMonth,
-} from '@/components/calendar/util';
-import { HabitBtnList } from '@/components';
+import { getDateFormat, getFirstDay } from '@/components/calendar/util';
 import { MainTitle } from '@/components/main/MainTitle/MainTitle';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
+
 export default async function Page() {
   const streakData = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/2024-04`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${getDateFormat(true)}`,
     cache: 'no-cache',
   });
+
   const colorData = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/color/streak`,
     cache: 'no-cache',
   });
+
   const habitListData = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/habits`,

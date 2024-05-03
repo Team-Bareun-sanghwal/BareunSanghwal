@@ -1,11 +1,10 @@
 'use client';
 import { StarIcon } from '@heroicons/react/24/solid';
-import { ThemeColor } from '../CalenderConfig';
 import { useOverlay } from '@/hooks/use-overlay';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { getToday } from '../util';
+import { ThemeColor } from '../CalenderConfig';
+import { getToday, getDateFormat } from '../util';
 import { $Fetch } from '@/apis';
-import { getDateFormat } from '../util';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;

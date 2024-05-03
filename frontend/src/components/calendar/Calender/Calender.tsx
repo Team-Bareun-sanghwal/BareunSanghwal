@@ -1,14 +1,14 @@
-import { IMemberHabit, IDayInfo } from '@/app/mock';
 import { Streak } from '../Streak/Streak';
 import { DayLabel } from '../DayLabel/DayLabel';
 import { Achievement } from '../Acheivement/Achievement';
 import { MonthLabel } from '../MonthLabel/MonthLabel';
 import { HabitBtnList } from '../HabitBtnList/HabitBtnList';
 import { ThemeColor } from '../CalenderConfig';
-import { getYear, getMonth, getToday } from '@/components/calendar/util';
-import { setDayInfo } from '@/app/mock';
 import { HabitChecker } from '@/components/main/HabitChecker/HabitChecker';
 import { LongestStreak } from '@/components/main/LongestStreak/LongestStreak';
+import { IMemberHabit, IDayInfo, setDayInfo } from '@/app/mock';
+import { getYear, getMonth, getToday } from '@/components/calendar/util';
+
 interface ICalenderProps {
   dayOfWeekFirst: number;
   memberHabitList: IMemberHabit[];
@@ -17,6 +17,7 @@ interface ICalenderProps {
   proportion: number;
   longestStreak: number;
 }
+
 export const Calender = ({
   dayOfWeekFirst,
   memberHabitList,

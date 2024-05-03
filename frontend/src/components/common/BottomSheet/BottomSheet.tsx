@@ -19,6 +19,7 @@ interface IBottomSheetProps {
   onClose?: () => void;
   onConfirm?: () => void;
 }
+
 const container = {
   show: { y: 0, opacity: 1 },
   hidden: { y: '100%', opacity: 0 },

@@ -6,8 +6,9 @@ import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { useOverlay } from '@/hooks/use-overlay/useOverlay';
 import { useRouter } from 'next/navigation';
 export default function Home() {
-  const overlay = useOverlay();
   const router = useRouter();
+
+  const overlay = useOverlay();
   const handleOverlay = () => {
     overlay.open(({ isOpen, close }) => (
       <BottomSheet
