@@ -1,18 +1,36 @@
 package life.bareun.diary.member.service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import life.bareun.diary.global.security.embed.OAuth2Provider;
-import life.bareun.diary.global.security.exception.CustomSecurityException;
-import life.bareun.diary.global.security.exception.SecurityErrorCode;
-import life.bareun.diary.global.security.principal.MemberPrincipal;
-import life.bareun.diary.global.security.service.AuthTokenService;
-import life.bareun.diary.global.security.token.AuthToken;
-import life.bareun.diary.global.security.token.AuthTokenProvider;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.embed.OAuth2Provider;
+import life.bareun.diary.global.auth.exception.CustomSecurityException;
+import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.principal.MemberPrincipal;
+import life.bareun.diary.global.auth.service.AuthTokenService;
+import life.bareun.diary.global.auth.token.AuthToken;
+import life.bareun.diary.global.auth.token.AuthTokenProvider;
+import life.bareun.diary.global.auth.util.AuthUtil;
+import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
+import life.bareun.diary.habit.repository.HabitTrackerRepository;
+import life.bareun.diary.habit.service.HabitTrackerService;
+import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
+import life.bareun.diary.member.dto.MemberPracticedHabitDto;
+import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberPointResDto;
+import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberRecovery;
@@ -25,6 +43,7 @@ import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
+import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,14 +53,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    private static final int COLOR_INDEX_MAX = 2;
+    private static final int COLOR_INDEX_DEFAULT = 1;
+    private static final int COLOR_INDEX_MIN = 0;
+
     private final AuthTokenProvider authTokenProvider;
-    private final StreakService streakService;
     private final AuthTokenService authTokenService;
+    private final StreakService streakService;
+    private final HabitTrackerService habitTrackerService;
 
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
     private final StreakColorRepository streakColorRepository;
     private final TreeColorRepository treeColorRepository;
+    private final HabitTrackerRepository habitTrackerRepository;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -176,5 +201,167 @@ public class MemberServiceImpl implements MemberService {
             memberRecovery.sendFreeRecovery();
             memberRecoveryRepository.save(memberRecovery);
         }
+    }
+
+    @Override
+    public MemberPointResDto point() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        return new MemberPointResDto(member.getPoint());
+    }
+
+    @Override
+    public MemberLongestStreakResDto longestStreak() {
+        int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
+        return new MemberLongestStreakResDto(longestStreak);
+    }
+
+    @Override
+    public MemberStreakRecoveryCountResDto streakRecoveryCount() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+
+        Integer freeRecoveryCount = memberRecoveryRepository.findByMemberId(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            ).getFreeRecoveryCount();
+
+        Integer paidRecoveryCount = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            ).getPaidRecoveryCount();
+
+        return new MemberStreakRecoveryCountResDto(
+            freeRecoveryCount + paidRecoveryCount,
+            freeRecoveryCount
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberStatisticResDto statistic() {
+        Long memberId = AuthUtil.getMemberIdFromAuthentication();
+        // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
+        // 내림차순 정렬된 데이터
+        List<MemberPracticedHabitDto> topHabits = processTopHabits(
+            habitTrackerRepository.findTopHabits(memberId),
+            memberId
+        );
+        String maxPracticedHabit = topHabits.get(0).habit();
+
+        // 요일 별 달성 횟수
+        // 최대 또는 최대값 중복 허용
+        List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek
+            = practiceCountPerDayOfWeek();
+
+        // 4 (0~24시까지 1시간 단위로 24개)
+        List<MemberPracticeCountPerHourDto> practiceCountPerHour
+            = habitTrackerRepository.countPracticedHabitsPerHour(memberId);
+        practiceCountPerHour = processPracticeCountPerHour(practiceCountPerHour);
+
+        LocalDate createdAt = memberRepository.findById(memberId).orElseThrow(
+            () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+        ).getCreatedDateTime().toLocalDate();
+        LocalDate now = LocalDate.now();
+
+        int totalDays = (int) ChronoUnit.DAYS.between(createdAt, now);
+        MemberStreakResDto memberStreakDto = streakService.getMemberStreakResDto();
+        int streakDays = memberStreakDto.achieveStreakCount();
+        int starredDays = memberStreakDto.starCount();
+        int longestStreak = memberStreakDto.longestStreakCount();
+
+        return MemberStatisticResDto.builder()
+            .practicedHabitsTop(topHabits)
+            .maxPracticedHabit(maxPracticedHabit)
+            .practiceCountsPerDayOfWeek(dataPerDayOfWeek)
+            .practiceCountsPerHour(practiceCountPerHour)
+            .totalDays(totalDays)
+            .streakDays(streakDays)
+            .starredDays(starredDays)
+            .longestStreak(longestStreak)
+            .build();
+    }
+
+    @Transactional(readOnly = true)
+    protected List<MemberPracticedHabitDto> processTopHabits(
+        List<MemberPracticedHabitDto> topHabits,
+        Long memberId
+    ) {
+        long counts = habitTrackerRepository.countByMemberId(memberId);
+
+        if (counts > topHabits.size()) {
+            long sum = topHabits.stream()
+                .mapToLong(MemberPracticedHabitDto::value)
+                .sum();
+            long etcValue = counts - sum;
+
+            topHabits.add(
+                new MemberPracticedHabitDto(
+                    "기타",
+                    etcValue
+                )
+            );
+        }
+
+        return topHabits;
+    }
+
+    @Transactional(readOnly = true)
+    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek() {
+        HabitTrackerWeekResDto weekly = habitTrackerService.findAllWeekHabitTracker();
+        List<Integer> weeklyValues = Arrays.asList(
+            weekly.monday(), weekly.tuesday(), weekly.wednesday(),
+            weekly.thursday(), weekly.friday(),
+            weekly.saturday(), weekly.sunday()
+        );
+        int maxValue = weeklyValues.stream().max(Integer::compare).get();
+        int minValue = weeklyValues.stream().min(Integer::compare).get();
+
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = new ArrayList<>(7);
+        for (int i = 0; i < weeklyValues.size(); ++i) {
+            int val = weeklyValues.get(i);
+            int colorIndex;
+            if (val == minValue) {
+                colorIndex = COLOR_INDEX_MIN;
+            } else if (val == maxValue) {
+                colorIndex = COLOR_INDEX_MAX;
+            } else {
+                colorIndex = COLOR_INDEX_DEFAULT;
+            }
+            practiceCountsPerDayOfWeek.add(
+                new MemberPracticeCountPerDayOfWeekDto(
+                    DayOfWeek.getValueByIndex(i),
+                    val,
+                    colorIndex
+                )
+            );
+        }
+
+        return practiceCountsPerDayOfWeek;
+    }
+
+
+    private List<MemberPracticeCountPerHourDto> processPracticeCountPerHour(
+        List<MemberPracticeCountPerHourDto> practiceCountsPerHour
+    ) {
+        Map<Integer, Integer> memberPracticeCountPerHourMap = new HashMap<>();
+        for (MemberPracticeCountPerHourDto data : practiceCountsPerHour) {
+            memberPracticeCountPerHourMap.put(data.time(), data.value());
+        }
+
+        List<MemberPracticeCountPerHourDto> processedPracticeCountsPerHour = new ArrayList<>();
+        Set<Integer> times = memberPracticeCountPerHourMap.keySet();
+        for (int i = 0; i < 24; ++i) {
+            MemberPracticeCountPerHourDto processedMemberPracticeCountPerHour = new MemberPracticeCountPerHourDto(
+                i,
+                (times.contains(i)) ? memberPracticeCountPerHourMap.get(i) : 0
+            );
+            processedPracticeCountsPerHour.add(processedMemberPracticeCountPerHour);
+        }
+
+        return processedPracticeCountsPerHour;
     }
 }

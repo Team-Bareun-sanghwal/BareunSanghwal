@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import life.bareun.diary.global.security.embed.OAuth2Provider;
+import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.entity.embed.Gender;
@@ -83,9 +83,8 @@ public class Member {
     @Min(0)
     private Integer currentTreeColorId;
 
-    @Column(name = "daily_point")
-    @Min(0)
-    private Integer dailyPoint;
+    @Column(name = "last_harvested_date")
+    private LocalDate lastHarvestedDate;
 
     @Column(name = "paid_recovery_count")
     @Min(0)
@@ -112,7 +111,6 @@ public class Member {
         this.currentStreakColorId = 1;
         this.currentTreeColorId = 1;
         this.paidRecoveryCount = 0;
-        this.dailyPoint = 0;
     }
 
     public static Member create(

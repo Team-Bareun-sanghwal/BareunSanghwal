@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import life.bareun.diary.global.elastic.dto.ElasticDto;
 import life.bareun.diary.global.elastic.service.ElasticService;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitMatchDto;
 import life.bareun.diary.habit.dto.HabitRecommendDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;

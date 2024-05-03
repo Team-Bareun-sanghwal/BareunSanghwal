@@ -1,10 +1,14 @@
 package life.bareun.diary.member.controller;
 
+import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
-import life.bareun.diary.global.security.config.SecurityConfig;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberPointResDto;
+import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +37,17 @@ public class MemberController {
     ) {
         memberService.update(memberUpdateReqDto);
 
-        return ResponseEntity.ok(
-            BaseResponse.success(
-                HttpStatus.OK.value(),
-                "회원 정보가 수정되었습니다",
-                null
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
             )
-        );
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자 정보가 수정되었습니다",
+                    null
+                )
+            );
     }
 
 
@@ -57,7 +65,7 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "나 너무 많은 일이 잇엇어 힘들다 진짜",
+                    "로그아웃되었습니다.",
                     null
                 )
             );
@@ -66,48 +74,128 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> delete() {
         memberService.delete();
-        return ResponseEntity.ok(
-            BaseResponse.success(
-                HttpStatus.OK.value(),
-                "회원 정보가 삭제되었습니다",
-                null
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
             )
-        );
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자 정보가 삭제되었습니다",
+                    null
+                )
+            );
     }
 
     @GetMapping
     public ResponseEntity<BaseResponse<MemberInfoResDto>> info() {
-        MemberInfoResDto info = memberService.info();
-        return ResponseEntity.ok(
-            BaseResponse.success(
-                HttpStatus.OK.value(),
-                "회원 정보를 읽어왔습니다.",
-                info
+        MemberInfoResDto memberInfoResDto = memberService.info();
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
             )
-        );
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자 정보를 읽어왔습니다.",
+                    memberInfoResDto
+                )
+            );
     }
 
     @GetMapping("/color/streak")
     public ResponseEntity<BaseResponse<MemberStreakColorResDto>> streakColor() {
         MemberStreakColorResDto memberStreakColorResDto = memberService.streakColor();
-        return ResponseEntity.ok(
-            BaseResponse.success(
-                HttpStatus.OK.value(),
-                "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                memberStreakColorResDto
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
             )
-        );
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자의 현재 스트릭 색상 정보를 읽어왔습니다.",
+                    memberStreakColorResDto
+                )
+            );
     }
 
     @GetMapping("/color/tree")
     public ResponseEntity<BaseResponse<MemberTreeColorResDto>> treeColor() {
         MemberTreeColorResDto memberTreeColorResDto = memberService.treeColor();
-        return ResponseEntity.ok(
-            BaseResponse.success(
-                HttpStatus.OK.value(),
-                "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                memberTreeColorResDto
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
             )
-        );
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
+                    memberTreeColorResDto
+                )
+            );
+    }
+
+    @GetMapping("/point")
+    public ResponseEntity<BaseResponse<MemberPointResDto>> point() {
+        MemberPointResDto memberPointResDto = memberService.point();
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자의 현재 보유 포인트 정보를 읽어왔습니다.",
+                    memberPointResDto
+                )
+            );
+    }
+
+    @GetMapping("/longest-streak")
+    public ResponseEntity<BaseResponse<MemberLongestStreakResDto>> longestStreak() {
+        MemberLongestStreakResDto memberLongestStreakResDto = memberService.longestStreak();
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자의 현재 최장 스트릭 정보를 읽어왔습니다.",
+                    memberLongestStreakResDto
+                )
+            );
+    }
+
+    @GetMapping("/recovery-count")
+    public ResponseEntity<BaseResponse<MemberStreakRecoveryCountResDto>> recoveryCount() {
+        MemberStreakRecoveryCountResDto memberStreakRecoveryCountResDto = memberService.streakRecoveryCount();
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자의 리커버리 갯수 보유 정보를 읽어왔습니다.",
+                    memberStreakRecoveryCountResDto
+                )
+            );
+    }
+
+    @GetMapping("/statistic")
+    public ResponseEntity<BaseResponse<MemberStatisticResDto>> statistic() {
+        MemberStatisticResDto statistic = memberService.statistic();
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "사용자의 통계 데이터를 읽어왔습니다.",
+                    statistic
+                )
+            );
     }
 }
