@@ -5,11 +5,7 @@ import { Achievement } from '../Acheivement/Achievement';
 import { MonthLabel } from '../MonthLabel/MonthLabel';
 import { HabitBtnList } from '../HabitBtnList/HabitBtnList';
 import { ThemeColor } from '../CalenderConfig';
-import {
-  getToday,
-  getThisMonth,
-  getThisYear,
-} from '@/components/calendar/util';
+import { getYear, getMonth, getToday } from '@/components/calendar/util';
 import { setDayInfo } from '@/app/mock';
 import { HabitChecker } from '@/components/main/HabitChecker/HabitChecker';
 import { LongestStreak } from '@/components/main/LongestStreak/LongestStreak';
@@ -19,6 +15,7 @@ interface ICalenderProps {
   dayInfo: IDayInfo[];
   themeColor: ThemeColor;
   proportion: number;
+  longestStreak: number;
 }
 export const Calender = ({
   dayOfWeekFirst,
@@ -26,6 +23,7 @@ export const Calender = ({
   dayInfo,
   themeColor,
   proportion,
+  longestStreak,
   ...props
 }: ICalenderProps) => {
   const isUnique =
@@ -38,27 +36,32 @@ export const Calender = ({
       <div className="flex w-full justify-around">
         <HabitChecker
           achieveCount={
-            setDayInfo(dayInfo, dayOfWeekFirst)[getToday()].achieveCount
+            setDayInfo(dayInfo, dayOfWeekFirst)[getToday(false) as number]
+              .achieveCount
           }
           totalCount={memberHabitList.length}
         />
-        <LongestStreak longestStreakCount={3} />
+        <LongestStreak longestStreakCount={longestStreak} />
       </div>
-      <MonthLabel month={getThisMonth()} year={getThisYear()} />
+      <MonthLabel month={getMonth(false)} year={getYear()} />
       <HabitBtnList habitList={memberHabitList} />
       <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />
       <div className="grid grid-cols-7 gap-4 p-1 m-2.5">
-        {setDayInfo(dayInfo, dayOfWeekFirst).map((info, index) => (
-          <Streak
-            key={index}
-            themeColor={themeColor}
-            achieveCount={info.achieveCount}
-            day={info.day}
-            isUnique={isUnique}
-            habitCnt={memberHabitList.length}
-          />
-        ))}
+        {setDayInfo(dayInfo, dayOfWeekFirst).map((info, index) =>
+          info.day < 0 ? (
+            <div key={index}></div>
+          ) : (
+            <Streak
+              key={index}
+              themeColor={themeColor}
+              achieveCount={info.achieveCount}
+              day={info.day}
+              isUnique={isUnique}
+              habitCnt={memberHabitList.length}
+            />
+          ),
+        )}
       </div>
     </>
   );

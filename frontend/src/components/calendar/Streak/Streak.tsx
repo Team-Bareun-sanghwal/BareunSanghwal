@@ -53,7 +53,11 @@ export const Streak = ({
   };
   return (
     <button onClick={() => onClickStreakRecovery()} className={customClassName}>
-      {day}
+      <a
+        className={getToday(false) === day ? 'text-2xl border-b-2 w-8 h-8' : ''}
+      >
+        {day}
+      </a>
       {habitCnt != 0 && habitCnt == achieveCount && (
         <StarIcon className="w-4 h-4 absolute right-1 top-1" />
       )}

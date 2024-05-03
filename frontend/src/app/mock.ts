@@ -21,7 +21,7 @@ const Today = () => {
 };
 const LastDay = () => {
   const now = new Date();
-  const month = now.getMonth() + 1;
+  const month = now.getMonth();
   const year = now.getFullYear();
   return new Date(year, month + 1, 0).getDate();
 };

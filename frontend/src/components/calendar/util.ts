@@ -1,28 +1,46 @@
-interface ITimeRemainig {
+// util functions for calendar
+
+//
+export const getFirstDay = () => {
+  const today = new Date();
+  const day = new Date(today.getFullYear(), today.getMonth(), 1);
+  return day.getDay();
+};
+// YYYY
+export const getYear = (): string => {
+  const today = new Date();
+  return today.getFullYear() + '';
+};
+
+// MM
+// format: true -> MM
+// format: false -> M
+export const getMonth = (format: boolean): string => {
+  const month = new Date().getDate() + 2;
+  return format ? ('0' + month).slice(-2) : month + '';
+};
+
+// DD
+// format: true -> DD
+// format: false -> D
+export const getToday = (format: boolean): number | string => {
+  const today = new Date().getDate();
+  return format ? ('0' + today).slice(-2) : (today as number);
+};
+
+// YYYY-MM-DD
+// month: true -> YYYY-MM
+// month: false -> YYYY-MM-DD
+export const getDateFormat = (month: boolean): string => {
+  let format = `${getYear()}-${getMonth(true)}`;
+  return month ? format : `${format}-${getToday(true)}`;
+};
+
+// get time remaining until midnight
+export const getTimeRemaining = (): {
   hoursRemaining: number;
   minutesRemaining: number;
-}
-export const getToday = () => {
-  const today = new Date();
-  // var day = ('0' + today.getDate()).slice(-2);
-  // return day;
-  return today.getDate();
-};
-
-export const getThisMonth = () => {
-  const today = new Date();
-  const month =
-    today.getMonth() < 10 ? `0${today.getMonth() + 1}` : today.getMonth() + 1;
-  return month + '';
-};
-
-export const getThisYear = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  return year + '';
-};
-
-export const getTimeRemaining = (): ITimeRemainig => {
+} => {
   const now = new Date();
   const midnight = new Date();
   midnight.setHours(24, 0, 0, 0);

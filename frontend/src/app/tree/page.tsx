@@ -35,7 +35,7 @@ export default function Page() {
   });
   useEffect(() => {
     setItemListResponse(ItemListResponseSample);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`, {
       method: 'GET',
       cache: 'no-cache',
       headers: {

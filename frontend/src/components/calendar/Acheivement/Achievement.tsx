@@ -13,7 +13,7 @@ export const Achievement = ({ proportion, themeColor }: IAchievement) => {
   };
 
   return (
-    <div className="flex w-full my-1 mx-2">
+    <div className="flex w-full my-2 mx-2">
       <label className="w-2/12 text-center">🔥 달성률</label>
       <div className="bg-custom-medium-gray mr-4 w-full rounded-xl z-1 overflow-hidden text-center relative">
         <div className="absolute w-full z-3 text-custom-white">
