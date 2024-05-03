@@ -59,7 +59,7 @@ public class ElasticServiceImpl implements ElasticService {
             SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
             scrollId = searchResponse.getScrollId();
             SearchHit[] searchHits = searchResponse.getHits().getHits();
-            log.info("검색 완료");
+
             refineLog(searchHits, logList);
             while (searchHits.length > 0) {
                 SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);

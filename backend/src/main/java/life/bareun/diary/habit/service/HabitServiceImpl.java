@@ -217,7 +217,7 @@ public class HabitServiceImpl implements HabitService {
                     while (startDay <= lastDayOfNowMonth) {
                         startDay += memberHabit.getMaintainAmount();
                     }
-                    // 말일을 뺴서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
+                    // 말일을 빼서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
                     startDay -= lastDayOfNowMonth;
                 }
                 LocalDate startDate = LocalDate.of(nowMonth.getYear(),
