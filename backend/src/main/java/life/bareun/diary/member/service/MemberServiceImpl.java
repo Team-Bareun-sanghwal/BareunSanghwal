@@ -26,6 +26,8 @@ import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
@@ -200,6 +202,24 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public MemberPointResDto point() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        return new MemberPointResDto(member.getPoint());
+    }
+
+    @Override
+    public MemberLongestStreakResDto longestStreak() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
+
+        return new MemberLongestStreakResDto(longestStreak);
+    }
 
     @Override
     @Transactional(readOnly = true)
