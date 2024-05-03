@@ -2,7 +2,7 @@ import { TabBox, GuideBox, HabitListBox, NavBar } from '@/components';
 import { HabitUpdateComponent } from './_components/HabitUpdateComponent';
 import { getActivatedHabitList } from './_apis/getActivatedHabitList';
 import { getCompletedHabitList } from './_apis/getAllCompletedHabitList';
-import { CompletedHabitType } from './_types';
+import { ICompletedHabit } from './_types';
 
 export default async function Page() {
   // const activatedHabitList = await getActivatedHabitList();
@@ -28,7 +28,7 @@ export default async function Page() {
                   <GuideBox guideText="이제 더 이상 기록하지 않는 해빗 목록이에요. 이전에 기록한 내용은 계속 열람할 수 있습니다." />
 
                   {completedHabitListData?.map(
-                    (completedHabit: CompletedHabitType) => {
+                    (completedHabit: ICompletedHabit) => {
                       return (
                         <HabitListBox
                           key={`completedHabit-${completedHabit.memberHabitId}`}

@@ -16,5 +16,7 @@ type Story = StoryObj<typeof meta>;
 export const Red: Story = {
   args: {
     label: '이모지를 골라주세요',
+    selectedEmoji: '',
+    setSelectedEmoji: () => {},
   },
 };
