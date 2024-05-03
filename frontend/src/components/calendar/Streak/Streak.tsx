@@ -4,6 +4,8 @@ import { ThemeColor } from '../CalenderConfig';
 import { useOverlay } from '@/hooks/use-overlay';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { getToday } from '../util';
+import { $Fetch } from '@/apis';
+import { getDateFormat } from '../util';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
@@ -21,6 +23,12 @@ export const Streak = ({
   habitCnt,
   ...props
 }: StreakProps) => {
+  const Recovery = $Fetch({
+    method: 'POST',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
+    cache: 'no-cache',
+  });
+
   const overlay = useOverlay();
   const onClickStreakRecovery = () => {
     overlay.open(({ isOpen, close }) => (
@@ -36,6 +44,31 @@ export const Streak = ({
   };
 
   const Recovoery = () => {
+    // Recovery.then((res) => {
+    //   if (res.status === 200) {
+    //     overlay.open(({ isOpen, close }) => (
+    //       <BottomSheet
+    //         description={`${day}일의 스트릭이 복구되었어요!`}
+    //         mode="POSITIVE"
+    //         onClose={close}
+    //         open={isOpen}
+    //         title={'스트릭 복구 성공!'}
+    //       />
+    //     ));
+    //   } else {
+    //     overlay.open(({ isOpen, close }) => (
+    //       <BottomSheet
+    //         description="스트릭 복구권은 매월 한달 무료로 제공되요! 더 필요하면 상점을 이용해주세요!"
+    //         mode="NEGATIVE"
+    //         onClose={close}
+    //         open={isOpen}
+    //         title={'스트릭 복구권이 없어요...'}
+    //       />
+    //     ));
+    //   }
+    // });
+
+    // Sample
     const myRecovoeryCount = 0;
     if (myRecovoeryCount > 0) {
       overlay.open(({ isOpen, close }) => (
