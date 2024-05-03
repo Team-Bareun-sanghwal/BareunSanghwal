@@ -1,21 +1,40 @@
-interface IHabit {
+'use client';
+
+import { useState } from 'react';
+import { IHabitListDataV2 } from '@/app/habit/_types';
+import { searchCategoryList } from '@/app/habit/_apis/searchCategoryList';
+
+const HabitNameButton = ({
+  name,
+  isSelected,
+  onClick,
+}: {
   name: string;
-  habitId: number;
-}
-
-interface IHabitSearchBoxProps {
-  searchedList: IHabit[];
-}
-
-const HabitNameButton = ({ name }: { name: string }) => {
+  isSelected: boolean;
+  onClick: () => void;
+}) => {
   return (
-    <button className="custom-medium-text px-[1rem] py-[0.5rem] bg-custom-light-gray rounded-[1rem]">
+    <button
+      onClick={onClick}
+      className={`${isSelected ? 'bg-custom-matcha text-custom-white' : 'bg-custom-light-gray text-custom-black'} custom-medium-text px-[1rem] py-[0.5rem] rounded-[1rem]`}
+    >
       {name}
     </button>
   );
 };
 
-export const HabitSearchBox = ({ searchedList }: IHabitSearchBoxProps) => {
+interface IHabitSearchBox {
+  selectedHabitId: number | null;
+  setSelectedHabitId: (selectedHabitId: number | null) => void;
+}
+
+export const HabitSearchBox = ({
+  selectedHabitId,
+  setSelectedHabitId,
+}: IHabitSearchBox) => {
+  const [searchedCategoryList, setSearchedCategoryList] = useState<
+    IHabitListDataV2[]
+  >([]);
   const regExp = /^[ㄱ-ㅎ가-힣\s]+$/;
 
   return (
@@ -26,24 +45,33 @@ export const HabitSearchBox = ({ searchedList }: IHabitSearchBoxProps) => {
 
       <input
         type="text"
-        className="w-full px-[1.5rem] py-[0.7rem] rounded-[3rem] bg-transparent custom-medium-text outline-none border-[0.1rem] border-custom-medium-gray"
-        onChange={(event) => {
+        className="w-full px-[1.5rem] py-[0.7rem] rounded-[3rem] bg-transparent custom-medium-text outline-none border-[0.1rem] border-custom-medium-gray focus:border-custom-matcha"
+        onChange={async (event) => {
           // 아래 경우에 검색 API 사용
           if (
             event.target.value.length !== 0 &&
             event.target.value.replaceAll(' ', '').length !== 0
           ) {
             if (regExp.test(event.target.value)) {
-              console.log('검색 진행');
+              setSelectedHabitId(null);
+              const categoryList = await searchCategoryList(event.target.value);
+              if (categoryList.data.habitList.length !== 0) {
+                setSearchedCategoryList(categoryList.data.habitList);
+              }
             }
           }
         }}
       ></input>
 
       <div className="flex gap-[1rem] flex-wrap -mt-[0.5rem]">
-        {searchedList?.map((searchedHabit, index) => {
+        {searchedCategoryList?.map((searchedHabit, index) => {
           return (
-            <HabitNameButton key={`habit-${index}`} name={searchedHabit.name} />
+            <HabitNameButton
+              key={`habit-${searchedHabit.habitId}`}
+              name={searchedHabit.habitName}
+              isSelected={selectedHabitId === searchedHabit.habitId}
+              onClick={() => setSelectedHabitId(searchedHabit.habitId)}
+            />
           );
         })}
       </div>

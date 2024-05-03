@@ -49,9 +49,9 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="NICKNAME_STEP">
         <Nickname
           onPrev={() => setStep('QUESTION_STEP')}
-          onNext={(alias, icon) => {
+          onNext={(alias, icon, habitId) => {
             setStep('DAYORPERIOD_STEP');
-            setData({ ...data, alias: alias, icon: icon });
+            setData({ ...data, alias: alias, icon: icon, habitId: habitId });
           }}
           isCategorySet={data.hasOwnProperty('habitId')}
         />

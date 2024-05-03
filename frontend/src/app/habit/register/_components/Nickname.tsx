@@ -5,17 +5,22 @@ import { Picker } from '@/components/common/Picker/Picker';
 
 interface INicknameStep {
   onPrev: () => void;
-  onNext: (alias: string, icon: string) => void;
+  onNext: (
+    alias: string,
+    icon: string,
+    selectedHabitId?: number | null,
+  ) => void;
   isCategorySet: boolean;
 }
 
 export const Nickname = ({ onPrev, onNext, isCategorySet }: INicknameStep) => {
+  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(null);
   const [alias, setAlias] = useState<string | null>(null);
   const [icon, setIcon] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col gap-[3rem]">
+      <div className="w-full flex flex-col gap-[3rem] pb-[2rem]">
         <nav className="flex self-start gap-[0.5rem] items-center">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
@@ -31,16 +36,8 @@ export const Nickname = ({ onPrev, onNext, isCategorySet }: INicknameStep) => {
 
         {!isCategorySet && (
           <HabitSearchBox
-            searchedList={[
-              {
-                habitId: 1,
-                name: '운동하기',
-              },
-              {
-                habitId: 2,
-                name: '생활 운동',
-              },
-            ]}
+            selectedHabitId={selectedHabitId}
+            setSelectedHabitId={setSelectedHabitId}
           />
         )}
 
@@ -59,9 +56,25 @@ export const Nickname = ({ onPrev, onNext, isCategorySet }: INicknameStep) => {
       </div>
 
       <Button
-        isActivated={alias && icon ? true : false}
+        isActivated={
+          isCategorySet
+            ? alias && icon
+              ? true
+              : false
+            : selectedHabitId && alias && icon
+              ? true
+              : false
+        }
         label="다음"
-        onClick={alias && icon ? () => onNext(alias, icon) : () => {}}
+        onClick={
+          isCategorySet
+            ? alias && icon
+              ? () => onNext(alias, icon)
+              : () => {}
+            : selectedHabitId && alias && icon
+              ? () => onNext(alias, icon, selectedHabitId)
+              : () => {}
+        }
       />
     </div>
   );

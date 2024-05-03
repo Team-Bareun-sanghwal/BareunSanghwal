@@ -10,7 +10,7 @@ const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 export const Complete = ({ onPrev, onNext }: IFunnelComponent) => {
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col gap-[3rem]">
+      <div className="w-full flex flex-col gap-[3rem] pb-[2rem]">
         <span className="custom-bold-text">신규 해빗 등록 완료</span>
 
         <ProgressBox

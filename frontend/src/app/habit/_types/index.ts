@@ -12,3 +12,8 @@ export interface IHabitListData {
   name: string;
   habitId: number;
 }
+
+export interface IHabitListDataV2 {
+  habitName: string;
+  habitId: number;
+}

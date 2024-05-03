@@ -51,7 +51,7 @@ export const DayOrPeriod = ({ onPrev, onNext }: IDayOrPeriodStepComponent) => {
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col gap-[2rem]">
+      <div className="w-full flex flex-col gap-[2rem] pb-[2rem]">
         <nav className="flex self-start gap-[0.5rem] items-center mb-[1rem]">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
