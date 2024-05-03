@@ -13,6 +13,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.config.WebClientConfig;
+import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
+import life.bareun.diary.global.notification.entity.NotificationCategory;
+import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
+import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
+import life.bareun.diary.global.notification.service.NotificationService;
 import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -77,13 +82,19 @@ public class RecapServiceImpl implements RecapService {
 
     private final WebClientConfig webClient;
 
+    private final NotificationTokenRepository notificationTokenRepository;
+
+    private final NotificationCategoryRepository notificationCategoryRepository;
+
+    private final NotificationService notificationService;
+
     @Value("${gpt.api.key}")
     private String apiKey;
 
     @Value("${gpt.api.model}")
     private String apiModel;
 
-    private static final String PROMPT = " 라는 내용을 가장 핵심이 되는 한 단어로 요약해주세요. 반드시 명사여야 하고, 가장 많이 언급되는 단어를 기반으로 해야 합니다. 특수기호가 없어야 합니다.";
+    private static final String PROMPT = " 라는 내용을 가장 핵심이 되는 한 단어로 요약해주세요. 반드시 명사여야 하고, 가장 많이 언급되는 단어를 기반으로 해야 합니다. 특수기호가 없어야 하며 5글자 이내로 해주세요.";
     private static final String IMAGE_BASIC = "basic";
 
     @Override
@@ -100,6 +111,14 @@ public class RecapServiceImpl implements RecapService {
         LocalDateTime startDateTime = nowMonth.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endDateTime = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth())
             .atTime(23, 59, 59);
+
+        // Redis에 존재하는 사용자 토큰 목록
+        Map<Long, String> notificationTokenMap = notificationTokenRepository.findAllNotificationToken();
+
+        // 커스텀할 content
+        NotificationCategory notificationCategory = notificationCategoryRepository.findById(3L)
+            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_NOTIFICATION_CATEGORY));
+
         for (RecapMemberDto recapMemberDto : recapMemberList) {
             Member member = findMember();
             // 처음에 recap을 생성
@@ -172,6 +191,16 @@ public class RecapServiceImpl implements RecapService {
                 RecapModifyDto.builder().recap(recap).wholeStreak(wholeStreak)
                     .maxHabitImage(imageUrl).mostFrequencyWord(keyword)
                     .mostFrequencyTime(occasion).build());
+
+            if (notificationTokenMap.containsKey(recapMemberDto.member().getId())) {
+                notificationService.createNotification(
+                    NotificationResultTokenDto.builder().member(recapMemberDto.member()).content(
+                            String.format(notificationCategory.getContent(),
+                                recapMemberDto.member().getNickname(), nowMonth.getYear(),
+                                nowMonth.getMonthValue()))
+                        .token(notificationTokenMap.get(recapMemberDto.member().getId())).build(),
+                    notificationCategory);
+            }
         }
     }
 

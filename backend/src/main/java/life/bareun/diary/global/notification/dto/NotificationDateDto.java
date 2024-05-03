@@ -3,10 +3,12 @@ package life.bareun.diary.global.notification.dto;
 import lombok.Builder;
 
 @Builder
-public record NotificationTokenDto(
+public record NotificationDateDto(
 
-    Long id,
+    int year,
 
-    String token
+    int month,
+
+    int day
 
 ) { }
