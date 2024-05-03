@@ -74,7 +74,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //     )
         // );
 
-        response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
+        response.sendRedirect("http://localhost:3000/auth?status=" + statusCode);
     }
 }
 
