@@ -53,7 +53,7 @@ export const Question = ({ onPrev, onNext }: IQuestionStepComponent) => {
             어떤 습관을 지킬지 정하셨나요?
           </span>
           <span className="custom-medium-text">
-            {"'네' 를 누르면 바로 카테고리/별칭 설정으로"}
+            {"'네' 를 누르면 바로 카테고리/별칭 설정 단계로,"}
           </span>
           <span className="custom-medium-text">
             {"'아니오' 를 누르면 추천 단계로 넘어가요."}
