@@ -99,6 +99,11 @@ public class ElasticServiceImpl implements ElasticService {
             try {
                 // 히트의 소스를 JsonNode로 파싱
                 JsonNode jsonNode = objectMapper.readTree(hit.getSourceAsString());
+
+                if(jsonNode.path("habit_id") == null) {
+                    continue;
+                }
+
                 // 필요한 필드 추출
                 Long habitId = Long.parseLong(jsonNode.path("habit_id").asText());
 
