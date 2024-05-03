@@ -19,12 +19,15 @@ import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
+import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.habit.service.HabitTrackerService;
+import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
@@ -67,6 +70,7 @@ public class MemberServiceImpl implements MemberService {
     private final StreakColorRepository streakColorRepository;
     private final TreeColorRepository treeColorRepository;
     private final HabitTrackerRepository habitTrackerRepository;
+    private final MemberHabitRepository memberHabitRepository;
 
     @Transactional(readOnly = true)
     public boolean existsBySub(String sub) {
@@ -237,6 +241,18 @@ public class MemberServiceImpl implements MemberService {
         return new MemberStreakRecoveryCountResDto(
             freeRecoveryCount + paidRecoveryCount,
             freeRecoveryCount
+        );
+    }
+
+    @Override
+    public MemberHabitsResDto habits() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        List<MemberHabitsDto> memberHabits = memberHabitRepository
+            .findAllByMemberIdOrderByCreatedDatetime(id);
+
+
+        return new MemberHabitsResDto(
+            memberHabits
         );
     }
 
