@@ -1,7 +1,9 @@
 package life.bareun.diary.global.notification.service;
 
+import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
 import life.bareun.diary.global.notification.dto.response.NotificationListResDto;
+import life.bareun.diary.global.notification.entity.NotificationCategory;
 
 public interface NotificationService {
     void createToken(NotificationReqDto notificationReqDto);
@@ -9,4 +11,7 @@ public interface NotificationService {
     void sendNotification(Long notificationCategoryId);
 
     NotificationListResDto findAllNotification();
+
+    void createNotification(NotificationResultTokenDto notificationResultTokenDto,
+        NotificationCategory notificationCategory);
 }

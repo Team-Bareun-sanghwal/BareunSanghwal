@@ -1,5 +1,9 @@
 package life.bareun.diary.global.notification.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.WebpushConfig;
+import com.google.firebase.messaging.WebpushNotification;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,13 +63,12 @@ public class NotificationServiceImpl implements NotificationService {
             notificationCategoryId);
 
         // 현재 Redis에 존재하는 토큰 목록
-        Map<Long, String> notificationTokenDtoList = notificationTokenRepository
-            .findAllNotificationToken();
+        Map<Long, String> notificationTokenMap = findAllExistMessageToken();
 
         // 조건에 부합하는 사용자와 토큰, 내용 목록
         Map<Long, NotificationResultTokenDto> resultTokenDtoMap = verifyCondition(
             notificationCategoryId,
-            notificationTokenDtoList, notificationCategory);
+            notificationTokenMap, notificationCategory);
 
         if (resultTokenDtoMap == null) {
             throw new NotificationException(NotificationErrorCode.NOT_FOUND_NOTIFICATION_MEMBER);
@@ -76,24 +79,8 @@ public class NotificationServiceImpl implements NotificationService {
 
             NotificationResultTokenDto notificationResultTokenDto = entry.getValue();
 
-            // 실제로 PWA 환경 배포 시 주석 해제
             // 알림 생성
-            //            notificationRepository.save(
-            //                Notification.builder().member(notificationResultTokenDto.member())
-            //                    .content(notificationResultTokenDto.content())
-            //                    .notificationCategory(notificationCategory).isRead(false).build());
-            //
-            //            Message message = Message.builder().setToken(notificationResultTokenDto.token())
-            //                .setWebpushConfig(
-            //                    WebpushConfig.builder().putHeader("ttl", "300")
-            //                        .setNotification(
-            //                            new WebpushNotification("bareun", notificationResultTokenDto.content()))
-            //                        .build()).build();
-            //            try {
-            //                FirebaseMessaging.getInstance().sendAsync(message).get();
-            //            } catch (Exception e) {
-            //                throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
-            //            }
+            createNotification(notificationResultTokenDto, notificationCategory);
         }
     }
 
@@ -148,7 +135,8 @@ public class NotificationServiceImpl implements NotificationService {
                 .day(localDate.getDayOfMonth()).build());
 
         String content = notificationCategory.getContent();
-        return refineMemberWithDefaultContent(unaccompaniedMemberList, notificationTokenMap, content);
+        return refineMemberWithDefaultContent(unaccompaniedMemberList, notificationTokenMap,
+            content);
     }
 
     private Map<Long, NotificationResultTokenDto> findAllNotificationLuckyPoint(
@@ -162,7 +150,8 @@ public class NotificationServiceImpl implements NotificationService {
         return refineMemberWithDefaultContent(unharvestedMemberList, notificationTokenMap, content);
     }
 
-    private Map<Long, NotificationResultTokenDto> refineMemberWithDefaultContent(List<Member> memberList,
+    private Map<Long, NotificationResultTokenDto> refineMemberWithDefaultContent(
+        List<Member> memberList,
         Map<Long, String> notificationTokenMap, String content) {
         Map<Long, NotificationResultTokenDto> resultTokenMap = new ConcurrentHashMap<>();
         for (Member member : memberList) {
@@ -173,6 +162,33 @@ public class NotificationServiceImpl implements NotificationService {
             }
         }
         return resultTokenMap;
+    }
+
+    @Override
+    public void createNotification(NotificationResultTokenDto notificationResultTokenDto,
+        NotificationCategory notificationCategory) {
+        // 알림 만들기
+        notificationRepository.save(
+            Notification.builder().member(notificationResultTokenDto.member())
+                .content(notificationResultTokenDto.content())
+                .notificationCategory(notificationCategory).isRead(false).build());
+
+        Message message = Message.builder().setToken(notificationResultTokenDto.token())
+            .setWebpushConfig(
+                WebpushConfig.builder().putHeader("ttl", "300")
+                    .setNotification(
+                        new WebpushNotification("bareun", notificationResultTokenDto.content()))
+                    .build()).build();
+        try {
+            FirebaseMessaging.getInstance().sendAsync(message).get();
+        } catch (Exception e) {
+            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
+        }
+    }
+
+    private Map<Long, String> findAllExistMessageToken() {
+        // 현재 Redis에 존재하는 토큰 목록
+        return notificationTokenRepository.findAllNotificationToken();
     }
 
     private NotificationCategory findNotificationCategory(Long notificationCategoryId) {
