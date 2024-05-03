@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushNotification;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.notification.dto.NotificationDateDto;
 import life.bareun.diary.global.notification.dto.NotificationDto;
+import life.bareun.diary.global.notification.dto.NotificationPhraseDto;
 import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
 import life.bareun.diary.global.notification.dto.NotificationStatusModifyDto;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
@@ -25,7 +27,11 @@ import life.bareun.diary.global.notification.repository.NotificationCategoryRepo
 import life.bareun.diary.global.notification.repository.NotificationRepository;
 import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
 import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.member.entity.DailyPhrase;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberDailyPhrase;
+import life.bareun.diary.member.repository.DailyPhraseRepository;
+import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +49,10 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationTokenRepository notificationTokenRepository;
 
     private final NotificationCategoryRepository notificationCategoryRepository;
+
+    private final MemberDailyPhraseRepository memberDailyPhraseRepository;
+
+    private final DailyPhraseRepository dailyPhraseRepository;
 
     private final MemberRepository memberRepository;
 
@@ -121,8 +131,34 @@ public class NotificationServiceImpl implements NotificationService {
         return switch (Math.toIntExact(notificationCategoryId)) {
             case 1 -> findAllNotificationLuckyPoint(notificationTokenMap, notificationCategory);
             case 2 -> findAllNotificationUnaccompanied(notificationTokenMap, notificationCategory);
+            case 4 -> findAllNotificationDailyPhrase(notificationTokenMap, notificationCategory);
             default -> null;
         };
+    }
+
+    private Map<Long, NotificationResultTokenDto> findAllNotificationDailyPhrase(
+        Map<Long, String> notificationTokenMap, NotificationCategory notificationCategory) {
+
+        // 오늘 문구 일괄 수정
+        // 모든 사용자 가져오기
+        List<MemberDailyPhrase> memberDailyPhraseList = memberDailyPhraseRepository.findAll();
+
+        // 모든 오늘의 문구 목록 가져오기
+        List<DailyPhrase> dailyPhraseList = dailyPhraseRepository.findAll();
+
+        SecureRandom secureRandom = new SecureRandom();
+        for (MemberDailyPhrase memberDailyPhrase : memberDailyPhraseList) {
+            int randomId = secureRandom.nextInt(dailyPhraseList.size());
+            DailyPhrase dailyPhrase = dailyPhraseList.get(randomId);
+            memberDailyPhraseRepository.modifyMemberDailyPhrase(
+                NotificationPhraseDto.builder().dailyPhrase(dailyPhrase)
+                    .memberDailyPhraseId(memberDailyPhrase.getId()).build());
+        }
+
+        String content = notificationCategory.getContent();
+        return refineMemberWithDailyPhraseContent(memberDailyPhraseList, notificationTokenMap,
+            content);
+
     }
 
     private Map<Long, NotificationResultTokenDto> findAllNotificationUnaccompanied(
@@ -148,6 +184,21 @@ public class NotificationServiceImpl implements NotificationService {
 
         String content = notificationCategory.getContent();
         return refineMemberWithDefaultContent(unharvestedMemberList, notificationTokenMap, content);
+    }
+
+    private Map<Long, NotificationResultTokenDto> refineMemberWithDailyPhraseContent(
+        List<MemberDailyPhrase> memberDailyPhraseList,
+        Map<Long, String> notificationTokenMap, String content) {
+        Map<Long, NotificationResultTokenDto> resultTokenMap = new ConcurrentHashMap<>();
+        for (MemberDailyPhrase memberDailyPhrase : memberDailyPhraseList) {
+            if (notificationTokenMap.containsKey(memberDailyPhrase.getMember().getId())) {
+                resultTokenMap.put(memberDailyPhrase.getMember().getId(),
+                    NotificationResultTokenDto.builder().member(memberDailyPhrase.getMember())
+                        .token(notificationTokenMap.get(memberDailyPhrase.getMember().getId()))
+                        .content(String.format(content, memberDailyPhrase.getMember().getNickname())).build());
+            }
+        }
+        return resultTokenMap;
     }
 
     private Map<Long, NotificationResultTokenDto> refineMemberWithDefaultContent(

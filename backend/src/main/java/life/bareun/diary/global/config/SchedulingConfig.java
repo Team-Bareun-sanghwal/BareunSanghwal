@@ -63,4 +63,8 @@ public class SchedulingConfig {
     // 10시까지 하나의 해빗 트래커라도 미수행한 사람들
     @Scheduled(cron = "0 0 22 * * ?")
     public void sendNotificationUnaccompanied() { notificationService.sendNotification(2L); }
+
+    // 새벽 12시 반, 오늘의 한 마디 알림
+    @Scheduled(cron = "0 30 0 * * ?")
+    public void sendNotificationDailyPhrase() { notificationService.sendNotification(4L); }
 }
