@@ -5,7 +5,7 @@ import { IHabitListData } from '../../_types';
 
 interface IRecommendStep {
   onPrev: () => void;
-  onNext: () => void;
+  onNext: (selectedHabitId: number) => void;
   popularCategoryListData: IHabitListData[];
   similarCategoryListData: IHabitListData[];
 }
@@ -56,7 +56,9 @@ export const Recommend = ({
       <Button
         isActivated={selectedHabitId === null ? false : true}
         label="다음"
-        onClick={selectedHabitId !== null ? onNext : () => {}}
+        onClick={
+          selectedHabitId !== null ? () => onNext(selectedHabitId) : () => {}
+        }
       />
     </div>
   );

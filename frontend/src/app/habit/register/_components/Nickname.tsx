@@ -1,11 +1,17 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { Button, ProgressBox, HabitSearchBox, InputBox } from '@/components';
-import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
 import { Picker } from '@/components/common/Picker/Picker';
 
-export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+interface INicknameStep {
+  onPrev: () => void;
+  onNext: (alias: string, icon: string) => void;
+  isCategorySet: boolean;
+}
+
+export const Nickname = ({ onPrev, onNext, isCategorySet }: INicknameStep) => {
+  const [alias, setAlias] = useState<string | null>(null);
+  const [icon, setIcon] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
@@ -23,33 +29,39 @@ export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
           beforeStageIndex={1}
         ></ProgressBox>
 
-        <HabitSearchBox
-          searchedList={[
-            {
-              habitId: 1,
-              name: '운동하기',
-            },
-            {
-              habitId: 2,
-              name: '생활 운동',
-            },
-          ]}
-        />
+        {!isCategorySet && (
+          <HabitSearchBox
+            searchedList={[
+              {
+                habitId: 1,
+                name: '운동하기',
+              },
+              {
+                habitId: 2,
+                name: '생활 운동',
+              },
+            ]}
+          />
+        )}
 
         <InputBox
           isLabel={true}
           mode="HABITNICKNAME"
           defaultValue=""
-          setDefaultValue={() => {}}
+          setDefaultValue={setAlias}
         />
 
-        <Picker label="해빗 아이콘을 골라주세요" />
+        <Picker
+          label="해빗 아이콘을 골라주세요"
+          selectedEmoji={icon}
+          setSelectedEmoji={setIcon}
+        />
       </div>
 
       <Button
-        isActivated={isAlreadySet === null ? false : true}
+        isActivated={alias && icon ? true : false}
         label="다음"
-        onClick={onNext}
+        onClick={alias && icon ? () => onNext(alias, icon) : () => {}}
       />
     </div>
   );

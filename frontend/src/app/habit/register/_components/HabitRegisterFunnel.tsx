@@ -21,6 +21,8 @@ export const HabitRegisterFunnel = ({
   const [data, setData] = useState({}); // 누적 데이터
   const router = useRouter();
 
+  console.log(data);
+
   return (
     <Funnel>
       <Funnel.Step name="QUESTION_STEP">
@@ -35,7 +37,10 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="RECOMMEND_STEP">
         <Recommend
           onPrev={() => setStep('QUESTION_STEP')}
-          onNext={() => setStep('DAYORPERIOD_STEP')}
+          onNext={(selectedHabitId) => {
+            setStep('NICKNAME_STEP');
+            setData({ ...data, habitId: selectedHabitId });
+          }}
           popularCategoryListData={popularCategoryListData}
           similarCategoryListData={similarCategoryListData}
         />
@@ -44,9 +49,11 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="NICKNAME_STEP">
         <Nickname
           onPrev={() => setStep('QUESTION_STEP')}
-          onNext={() => {
+          onNext={(alias, icon) => {
             setStep('DAYORPERIOD_STEP');
+            setData({ ...data, alias: alias, icon: icon });
           }}
+          isCategorySet={data.hasOwnProperty('habitId')}
         />
       </Funnel.Step>
 
