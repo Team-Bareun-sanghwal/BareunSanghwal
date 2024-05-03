@@ -16,12 +16,12 @@ public interface HabitTrackerRepository extends JpaRepository<HabitTracker, Long
 
     Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit);
 
-    Integer countByMemberAndSucceededTimeBetween(Member member, LocalDateTime startDateTime,
-        LocalDateTime endDateTime);
-
     int countByMemberHabit(MemberHabit memberHabit);
 
     List<HabitTracker> findAllByMemberHabitAndContentIsNotNullAndSucceededTimeBetween(
         MemberHabit memberHabit, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    List<HabitTracker> findAllByMemberAndSucceededTimeIsNotNullAndSucceededTimeBetween(
+        Member member, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }
