@@ -15,7 +15,7 @@ export default async function Page() {
       headers: {
         Authorization: `${authorization}`,
         // authorization:
-        //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDgyODQyNywiZXhwIjoxNzE0ODI5MDI3fQ.RKm4ngxrjfmZauDICKVR8fXPIvcPjtKvqi3fTOaJcNg',
+        //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDgzMDU3NSwiZXhwIjoxNzE0ODMxMTc1fQ._PG2fxeenVolm2O31SdRGmls46y5S7rqwlI6gGEexyc',
       },
     });
 
@@ -28,10 +28,14 @@ export default async function Page() {
   }
 
   const data = await getData();
+  const result = data.data.products;
   console.log(data.data.products);
 
   return (
     <>
+      {result.map((r: any) => {
+        return <div key={r.name}>{r.name}</div>;
+      })}
       <div>우우</div>
       {authorization ? (
         <div>{authorization}</div>
