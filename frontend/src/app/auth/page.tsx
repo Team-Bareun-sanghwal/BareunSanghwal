@@ -1,19 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { revalidateTag } from 'next/cache';
 import { TinyButton } from '@/components';
-
-async function getData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`);
-
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data');
-  }
-
-  return res.json();
-}
 
 export default async function Page() {
   const cookieStore = cookies();
@@ -21,11 +9,28 @@ export default async function Page() {
   const refreshToken = cookieStore.get('RefreshToken');
   // console.log(accessToken);
   // console.log(refreshToken);
+
+  async function getData() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`, {
+      headers: {
+        authorization: cookieStore.get('Authorization'),
+        // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDgyODQyNywiZXhwIjoxNzE0ODI5MDI3fQ.RKm4ngxrjfmZauDICKVR8fXPIvcPjtKvqi3fTOaJcNg',
+      },
+    });
+
+    if (!res.ok) {
+      // This will activate the closest `error.js` Error Boundary
+      throw new Error('Failed to fetch data');
+    }
+
+    return res.json();
+  }
+
   const data = await getData();
+  console.log(data.data.products);
 
   return (
     <>
-      {data}
       <div>우우</div>
       {accessToken ? (
         <div>{accessToken.value}</div>
