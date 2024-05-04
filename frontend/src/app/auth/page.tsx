@@ -1,20 +1,21 @@
-'use server';
-
 import { cookies } from 'next/headers';
 import { TinyButton } from '@/components';
+import { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
 export default async function Page() {
   const cookieStore = cookies();
-  const accessToken = cookieStore.get('Authorization');
-  const refreshToken = cookieStore.get('RefreshToken');
+  const authorization = cookieStore.get('Authorization')?.value;
+  const refreshToken = cookieStore.get('RefreshToken')?.value;
   // console.log(accessToken);
   // console.log(refreshToken);
 
   async function getData() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`, {
+      method: 'GET',
       headers: {
-        authorization: cookieStore.get('Authorization'),
-        // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDgyODQyNywiZXhwIjoxNzE0ODI5MDI3fQ.RKm4ngxrjfmZauDICKVR8fXPIvcPjtKvqi3fTOaJcNg',
+        Authorization: `${authorization}`,
+        // authorization:
+        //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDgyODQyNywiZXhwIjoxNzE0ODI5MDI3fQ.RKm4ngxrjfmZauDICKVR8fXPIvcPjtKvqi3fTOaJcNg',
       },
     });
 
@@ -32,13 +33,13 @@ export default async function Page() {
   return (
     <>
       <div>우우</div>
-      {accessToken ? (
-        <div>{accessToken.value}</div>
+      {authorization ? (
+        <div>{authorization}</div>
       ) : (
         <div>어세스 토큰이 업서</div>
       )}
       {refreshToken ? (
-        <div>{refreshToken.value}</div>
+        <div>{refreshToken}</div>
       ) : (
         <div>리프레시 토큰이 업서</div>
       )}
