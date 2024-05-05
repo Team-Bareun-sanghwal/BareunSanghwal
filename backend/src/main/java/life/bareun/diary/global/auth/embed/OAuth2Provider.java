@@ -11,7 +11,7 @@ public enum OAuth2Provider {
     GOOGLE("GOOGLE"),
     KAKAO("KAKAO"),
     PROTECTED("[PROTECTED]"); // 로그인 이후에 사용됨
-    
+
 
     private final String value;
 

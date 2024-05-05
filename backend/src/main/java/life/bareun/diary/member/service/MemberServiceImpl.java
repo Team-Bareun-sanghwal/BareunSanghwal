@@ -100,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
                     return savedMember;
                 }
             );
-        
+
         // orElseGet에서 return되지 않았음 -> 신규회원이 아님
         // 해당 회원의 정보가 입력되었는지 검증한다.
         memberStatus.set(
