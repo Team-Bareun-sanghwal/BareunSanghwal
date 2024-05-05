@@ -43,12 +43,13 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
 
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         String provider = userRequest.getClientRegistration().getClientName();
-        OAuth2Provider oAuth2Provider = null;
-        try {
-            oAuth2Provider = OAuth2Provider.valueOf(provider);
-        } catch (IllegalArgumentException e) { // 이상한 provider
+
+        // 이상한 provider
+        if (!OAuth2Provider.validate(provider)) {
             throw new AuthException(SecurityErrorCode.BAD_OAUTH_INFO);
         }
+
+        OAuth2Provider oAuth2Provider = OAuth2Provider.valueOf(provider);
 
         System.out.println("Client name: " + provider);
         System.out.println("Scope: " + userRequest.getClientRegistration().getScopes());
