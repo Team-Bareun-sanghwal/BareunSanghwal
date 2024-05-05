@@ -1,6 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { useOverlay } from '@/hooks/use-overlay';
 import {
   FaceFrownIcon,
   ArrowRightStartOnRectangleIcon,
@@ -11,13 +12,33 @@ interface IPropType {
 }
 
 export const BorderlessButton = ({ type }: IPropType) => {
-  const router = useRouter();
+  const overlay = useOverlay();
+
+  const handleLeave = () => {
+    console.log('leave');
+    // api 통신 추가
+    // `${process.env.NEXT_PUBLIC_BASE_URL}/members`
+  };
+
+  const handleOverlay = () => {
+    overlay.open(({ isOpen, close }) => (
+      <BottomSheet
+        description="바른생활을 떠나시면 지금까지의 해빗 기록이 전부 사라지고 복구할 수 없어요. 그래도 떠나시겠어요? "
+        mode="NEGATIVE"
+        onClose={close}
+        onConfirm={() => {
+          handleLeave();
+          close();
+        }}
+        open={isOpen}
+        title="바른생활을 떠나시겠어요?"
+      />
+    ));
+  };
 
   const handleOnClick = () => {
     if (type === 'leave') {
-      console.log('leave');
-      // api 통신 추가
-      // `${process.env.NEXT_PUBLIC_BASE_URL}/members`
+      handleOverlay();
     } else {
       console.log('logout');
       // api 통신 추가
