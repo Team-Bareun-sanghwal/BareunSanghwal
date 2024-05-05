@@ -10,11 +10,13 @@ import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.factory.OAuth2MemberPrincipalFactory;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
+import life.bareun.diary.member.service.MemberService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
@@ -26,6 +28,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     private final SecretKey key;
     private final long accessTokenLifetimeSeconds;
     private final long refreshTokenLifetimeSeconds;
+
 
 
     public AuthTokenProviderImpl(
@@ -116,12 +119,18 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
 
         Long id = Long.parseLong((String) claims.get("memberId"));
         Role role = Role.valueOf((String) claims.get("role"));
+        OAuth2Provider oAuth2Provider = OAuth2Provider.PROTECTED;
 
-        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.of(id, role);
+        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.of(
+            id,
+            role,
+            oAuth2Provider
+        );
+
         return new OAuth2AuthenticationToken(
             oAuth2MemberPrincipal,
             oAuth2MemberPrincipal.getAuthorities(),
-            "[PROTECTED]" // OAuth2 Provider는 토큰에 포함되지 않고, 인증에 필요한 정보가 아니다.
+            oAuth2Provider.getValue() // OAuth2 Provider는 토큰에 포함되지 않고, 인증에 필요한 정보가 아니다.
         );
     }
 

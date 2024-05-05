@@ -43,12 +43,13 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
 
     private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         String provider = userRequest.getClientRegistration().getClientName();
-        OAuth2Provider oAuth2Provider = null;
-        try {
-            oAuth2Provider = OAuth2Provider.valueOf(provider);
-        } catch (IllegalArgumentException e) { // 이상한 provider
+
+        // 이상한 provider
+        if (!OAuth2Provider.validate(provider)) {
             throw new AuthException(SecurityErrorCode.BAD_OAUTH_INFO);
         }
+
+        OAuth2Provider oAuth2Provider = OAuth2Provider.valueOf(provider);
 
         System.out.println("Client name: " + provider);
         System.out.println("Scope: " + userRequest.getClientRegistration().getScopes());
@@ -72,12 +73,13 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         String sub = switch (oAuth2Provider) {
             case GOOGLE -> (String) attrs.get("sub");
             case KAKAO -> Long.toString((Long) attrs.get("id"));
+            case PROTECTED -> OAuth2Provider.PROTECTED.getValue();
         };
 
         MemberPrincipal memberPrincipal = loginOrRegister(sub, oAuth2Provider);
 
         // 여기서 반환된 정보가 SecurityContext에 등록된다.
-        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.firstAuth(
+        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.authForLogin(
             memberPrincipal,
             (DefaultOAuth2User) oAuth2User
         );

@@ -7,6 +7,7 @@ import java.util.Date;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
+import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,16 +41,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         System.out.println("refreshToken: " + refreshToken);
 
         // 응답
-        int statusCode = oAuth2MemberPrincipal.isNewMember()
-            ? HttpStatus.CREATED.value()
-            : HttpStatus.OK.value();
-        // AuthLoginResDto authLoginRes = AuthLoginResDto.builder()
-        //     .accessToken(accessToken)
-        //     .refreshToken(refreshToken)
-        //     .build();
-
-        // response.setHeader(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken);
-        // response.setHeader(SecurityConfig.REFRESH_TOKEN_HEADER, refreshToken);
+        int statusCode = oAuth2MemberPrincipal.getMemberStatus().getCode();
 
         long accessTokenMaxAge = authTokenProvider.getExpiry(
             authTokenProvider.tokenToAuthToken(accessToken)
@@ -63,7 +55,12 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         long refreshTokenMaxAge = authTokenProvider.getExpiry(
             authTokenProvider.tokenToAuthToken(refreshToken)
         ).toSeconds();
-        ResponseUtil.addRefreshTokenCookie(response, refreshToken, refreshTokenMaxAge);
+        ResponseUtil.addRefreshTokenCookie(
+            response,
+            refreshToken,
+            refreshTokenMaxAge
+        );
+
         // ResponseUtil.writeSuccess(
         //     response,
         //     BaseResponse.success(
