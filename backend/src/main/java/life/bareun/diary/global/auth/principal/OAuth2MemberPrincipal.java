@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import life.bareun.diary.global.auth.embed.MemberStatus;
 import life.bareun.diary.global.auth.embed.OAuth2MemberAuthority;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import lombok.AllArgsConstructor;
@@ -21,20 +22,21 @@ public class OAuth2MemberPrincipal implements OAuth2User {
     @Getter
     private final OAuth2Provider oAuth2Provider;
     @Getter
-    private final boolean isNewMember;
+    private final MemberStatus memberStatus;
 
     private Map<String, Object> attributes;
 
 
-    // 로그인 이후에만 쓰이는 생성자
+    // 회원 정보 입력 후에만 쓰이는 생성자
     public OAuth2MemberPrincipal(
         Long memberId,
-        List<OAuth2MemberAuthority> authorities
+        List<OAuth2MemberAuthority> authorities,
+        OAuth2Provider oAuth2Provider
     ) {
         this.memberId = memberId;
         this.authorities = authorities;
-        this.oAuth2Provider = null;
-        this.isNewMember = true;
+        this.oAuth2Provider = oAuth2Provider;
+        this.memberStatus = MemberStatus.OLD;
     }
 
     @Override

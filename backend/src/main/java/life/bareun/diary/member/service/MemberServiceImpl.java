@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import life.bareun.diary.global.auth.embed.MemberStatus;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.exception.AuthException;
 import life.bareun.diary.global.auth.exception.SecurityErrorCode;
@@ -77,38 +78,50 @@ public class MemberServiceImpl implements MemberService {
     private final HabitTrackerRepository habitTrackerRepository;
     private final MemberHabitRepository memberHabitRepository;
 
-    @Transactional(readOnly = true)
-    public boolean existsBySub(String sub) {
-        return memberRepository.existsBySub(sub);
-    }
-
-
     @Override
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
-        AtomicBoolean isNewMember = new AtomicBoolean(false);
+        // AtomicBoolean isNewMember = new AtomicBoolean(false);
+        AtomicReference<MemberStatus> memberStatus = new AtomicReference<>();
 
-        Member member = memberRepository.findBySub(sub).orElseGet(
-            () -> {
-                isNewMember.set(true);
-                Member savedMember = memberRepository.save(
-                    Member.create(sub, oAuth2Provider)
-                );
-                memberRecoveryRepository.save(
-                    MemberRecovery.create(savedMember)
-                );
+        Member member = memberRepository.findBySub(sub)
+            .orElseGet(
+                // 신규회원
+                () -> {
+                    memberStatus.set(MemberStatus.NEW);
+                    Member savedMember = memberRepository.save(
+                        Member.create(sub, oAuth2Provider)
+                    );
+                    memberRecoveryRepository.save(
+                        MemberRecovery.create(savedMember)
+                    );
 
-                streakService.createInitialMemberStreak(savedMember);
-                return savedMember;
-            }
+                    streakService.createInitialMemberStreak(savedMember);
+                    return savedMember;
+                }
+            );
+        
+        // orElseGet에서 return되지 않았음 -> 신규회원이 아님
+        // 해당 회원의 정보가 입력되었는지 검증한다.
+        memberStatus.set(
+            isNullMember(member) ? MemberStatus.NUL : MemberStatus.OLD
         );
 
         return new MemberPrincipal(
             member.getId(),
             member.getRole(),
             member.getProvider(),
-            isNewMember.get()
+            memberStatus.get()
         );
+    }
+
+    private boolean isNullMember(Member member) {
+        boolean isNickNameNull = (member.getNickname() == null);
+        boolean isBirthNull = (member.getBirth() == null);
+        boolean isGenderNull = (member.getGender() == null);
+        boolean isJobNull = (member.getJob() == null);
+
+        return isNickNameNull || isBirthNull || isGenderNull || isJobNull;
     }
 
     @Override
