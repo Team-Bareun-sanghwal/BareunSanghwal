@@ -37,6 +37,7 @@ export default function Home() {
       <button onClick={handleOverlay}>BottomSheet 열기</button>
       <button onClick={handleAlertBox}>AlertBox 열기</button>
       <button onClick={() => router.push('/tree')}>나무로가기</button>
+      <button onClick={() => router.push('/signin')}>횐가입</button>
       <NavBar mode="HOME" />
     </>
   );
