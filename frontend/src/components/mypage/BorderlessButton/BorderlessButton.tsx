@@ -13,16 +13,23 @@ interface IPropType {
 export const BorderlessButton = ({ type }: IPropType) => {
   const router = useRouter();
 
-  const url =
-    type === 'leave'
-      ? 'https://www.leave' // 회원 탈퇴 경로
-      : 'https://www.logout'; // 로그아웃 경로
+  const handleOnClick = () => {
+    if (type === 'leave') {
+      console.log('leave');
+      // api 통신 추가
+      // `${process.env.NEXT_PUBLIC_BASE_URL}/members`
+    } else {
+      console.log('logout');
+      // api 통신 추가
+      // `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`
+    }
+  };
 
   return (
     <button
       type="button"
       className="w-[7rem] flex items-center"
-      onClick={() => router.push(url)}
+      onClick={handleOnClick}
     >
       {type === 'leave' ? (
         <>

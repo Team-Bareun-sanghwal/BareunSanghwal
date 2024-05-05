@@ -48,12 +48,7 @@ export const SignInForm = () => {
       ));
       setTimeout(() => overlay.close(), 2000);
     } else {
-      // API 호출
-      $Fetch({
-        method: 'PATCH',
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/members`,
-        cache: 'default',
-      });
+      // api 통신 추가
     }
   };
 
