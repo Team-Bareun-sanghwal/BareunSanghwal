@@ -23,11 +23,11 @@ export async function $Fetch({ method, url, data, cache }: Request) {
     headers: {
       'Content-Type': 'application/json',
       // 배포 버전
-      // Authorization: `${authorization}`,
+      Authorization: `${authorization}`,
 
       // 로컬 버전
-      Authorization:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDgzMDU3NSwiZXhwIjoxNzE0ODMxMTc1fQ._PG2fxeenVolm2O31SdRGmls46y5S7rqwlI6gGEexyc',
+      // Authorization:
+      // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEzIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDg5MzQxMCwiZXhwIjoxNzE0ODk0MDEwfQ.hDn0y0SkOWavcBFojXuz3XK6eAFUdOxbrHmiAoBWgRY',
     },
     body: JSON.stringify(data),
   });

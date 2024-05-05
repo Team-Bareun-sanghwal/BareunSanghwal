@@ -15,11 +15,11 @@ export default async function Page() {
     cache: 'default',
   });
   console.log(jsonAccess);
-  if (jsonAccess.body.status === 200) {
+  if ((await jsonAccess.status) === 200) {
     // result = await jsonAccess.body.data.products;
-    redirect('/tree');
+    // redirect('/tree');
   } else {
-    redirect('/signin');
+    // redirect('/signin');
   }
 
   // if (jsonAccess.body.status === 401) {
@@ -38,7 +38,8 @@ export default async function Page() {
 
   return (
     <>
-      <div>{jsonAccess.body.status}</div>
+      <div>{jsonAccess.status}</div>
+      <div>{jsonAccess.message}</div>
       <hr />
 
       {/* {result?.map((r: any) => {
