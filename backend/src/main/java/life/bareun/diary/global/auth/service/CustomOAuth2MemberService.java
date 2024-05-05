@@ -73,12 +73,13 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         String sub = switch (oAuth2Provider) {
             case GOOGLE -> (String) attrs.get("sub");
             case KAKAO -> Long.toString((Long) attrs.get("id"));
+            case PROTECTED -> OAuth2Provider.PROTECTED.getValue();
         };
 
         MemberPrincipal memberPrincipal = loginOrRegister(sub, oAuth2Provider);
 
         // 여기서 반환된 정보가 SecurityContext에 등록된다.
-        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.firstAuth(
+        OAuth2MemberPrincipal oAuth2MemberPrincipal = OAuth2MemberPrincipalFactory.authForLogin(
             memberPrincipal,
             (DefaultOAuth2User) oAuth2User
         );
