@@ -1,9 +1,5 @@
 import { cookies } from 'next/headers';
 
-const cookieStore = cookies();
-const authorization = cookieStore.get('Authorization')?.value;
-const refreshToken = cookieStore.get('RefreshToken')?.value;
-
 type Request = {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;
@@ -17,6 +13,10 @@ type Request = {
     | 'default';
 };
 export async function $Fetch({ method, url, data, cache }: Request) {
+  const cookieStore = cookies();
+  const authorization = cookieStore.get('Authorization')?.value;
+  const refreshToken = cookieStore.get('RefreshToken')?.value;
+
   const res = await fetch(url, {
     method,
     cache: cache,
@@ -31,7 +31,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
     },
     body: JSON.stringify(data),
   });
-  return res.json();
+  return res.json;
 
   if (res.ok) {
     return res.json();
