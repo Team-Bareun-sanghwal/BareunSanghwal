@@ -16,7 +16,6 @@ import life.bareun.diary.global.auth.exception.SecurityErrorCode;
 import life.bareun.diary.global.auth.factory.OAuth2MemberPrincipalFactory;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
-import life.bareun.diary.member.service.MemberService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
@@ -28,7 +27,6 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     private final SecretKey key;
     private final long accessTokenLifetimeSeconds;
     private final long refreshTokenLifetimeSeconds;
-
 
 
     public AuthTokenProviderImpl(
