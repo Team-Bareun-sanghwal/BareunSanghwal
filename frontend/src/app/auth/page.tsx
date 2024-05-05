@@ -14,7 +14,7 @@ export default async function Page() {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
     cache: 'default',
   });
-  console.log(jsonAccess.body.status);
+  console.log(jsonAccess);
   if (jsonAccess.body.status === 200) {
     // result = await jsonAccess.body.data.products;
     redirect('/tree');
