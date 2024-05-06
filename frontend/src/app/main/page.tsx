@@ -95,6 +95,7 @@ export default async function Page() {
   const longestStreakCount =
     longestStreak.data == null ? 0 : longestStreak.data.longestStreak;
 
+  console.log(habitListData.data);
   const { total, tree } = myPoint.data;
   return (
     <>

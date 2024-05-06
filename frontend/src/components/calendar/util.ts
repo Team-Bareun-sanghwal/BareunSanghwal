@@ -42,7 +42,7 @@ export const getYear = (): string => {
 // format: true -> MM
 // format: false -> M
 export const getMonth = (format: boolean): string => {
-  const month = new Date().getDate() + 2;
+  const month = new Date().getMonth() + 1;
   return format ? ('0' + month).slice(-2) : month + '';
 };
 

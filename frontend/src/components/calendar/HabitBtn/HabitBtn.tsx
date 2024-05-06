@@ -3,7 +3,7 @@ import { IMemberHabit } from '@/app/mock';
 export const HabitBtn = ({ memberHabitId, alias, icon }: IMemberHabit) => {
   return (
     <>
-      <div className="flex flex-col items-center justify-center ">
+      <div className="flex flex-col items-center justify-center overflow-hidden ">
         <button className="bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full">
           {icon}
         </button>
