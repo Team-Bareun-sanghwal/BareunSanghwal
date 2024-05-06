@@ -1,7 +1,8 @@
 import Image from 'next/image';
+import { ReactElement } from 'react';
 
 interface IGuideBoxProps {
-  guideText: string;
+  guideText: string | ReactElement;
   onClick?: () => void;
 }
 
@@ -9,7 +10,7 @@ export const GuideBox = ({ guideText, ...props }: IGuideBoxProps) => {
   return (
     <section
       className={
-        'w-[34rem] h-[6rem] p-[1rem] flex gap-[1rem] items-center justify-center rounded-[1rem] bg-custom-light-gray'
+        'w-[34rem] h-[6rem] p-[1rem] flex gap-[1rem] items-center justify-start rounded-[1rem] bg-custom-light-gray'
       }
       {...props}
     >
@@ -20,7 +21,11 @@ export const GuideBox = ({ guideText, ...props }: IGuideBoxProps) => {
         alt={'clock'}
         className="w-[4rem] h-[4rem]"
       ></Image>
-      <p className="custom-light-text">{guideText}</p>
+      {typeof guideText === 'string' ? (
+        <p className="custom-light-text">{guideText}</p>
+      ) : (
+        { ...guideText }
+      )}
     </section>
   );
 };
