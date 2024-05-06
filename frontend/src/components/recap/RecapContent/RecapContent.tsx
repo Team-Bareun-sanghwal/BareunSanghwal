@@ -114,7 +114,7 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     },
   ];
 
-  const [pageIdx, setPageIdx] = useState(4);
+  const [pageIdx, setPageIdx] = useState(0);
 
   const increasePageIdx = () => {
     if (pageIdx === 8) {
