@@ -124,7 +124,7 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
   };
 
   return (
-    <div className="bg-custom-black w-full h-screen flex flex-col p-[1rem]">
+    <div className="bg-custom-black w-full h-screen flex flex-col p-[1rem] items-center">
       <ProgressBar pageIdx={pageIdx} increasePageIdx={increasePageIdx} />
       <RecapHeader memberName={memberName} year={year} month={month} />
       {pageIdx === 8 ? null : (

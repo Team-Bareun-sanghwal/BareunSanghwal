@@ -14,7 +14,7 @@ export const RecapHabitList = ({
   rateByMemberHabitList: IDataType[];
 }) => {
   return (
-    <div className="w-full flex justify-between items-center h-[50rem] text-white">
+    <div className="w-[35rem] flex justify-between items-center h-[50rem] text-white">
       <div className="w-full h-[50rem] pl-[4rem] flex flex-col justify-center gap-[6rem]">
         {rateByMemberHabitList.map((data, index) => {
           const colorIdx = Math.round(

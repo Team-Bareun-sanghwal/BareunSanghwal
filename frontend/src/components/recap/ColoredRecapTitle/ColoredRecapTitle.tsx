@@ -1,6 +1,6 @@
 interface IPropType {
   title: string;
-  colorIdx: 0 | 1 | 2 | 3 | 4;
+  colorIdx: number;
 }
 
 export const ColoredRecapTitle = ({ title, colorIdx }: IPropType) => {
