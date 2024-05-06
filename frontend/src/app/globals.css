@@ -125,4 +125,21 @@
       transform: scale(1.05);
     }
   }
+
+  /* 팔랑이는 애니메이션 */
+
+  .flying-div {
+    animation: fly-in 2s ease-in-out;
+  }
+  @keyframes fly-in {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(-45deg);
+    }
+    50% {
+      transform: translateX(50%) translateY(50%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(0%) translateY(0%) rotate(0deg);
+    }
+  }
 }

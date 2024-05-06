@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ProgressBar } from '../ProgressBar/ProgressBar';
 import { RecapHeader } from '../RecapHeader/RecapHeader';
 import { RecapTitle } from '../RecapTitle/RecapTitle';
@@ -11,6 +12,8 @@ import { RecapPieChart } from '../RecapPieChart/RecapPieChart';
 import { RecapStars } from '../RecapStars/RecapStars';
 import { RecapKeyword } from '../RecapKeyword/RecapKeyword';
 import { RecapFinish } from '../RecapFinish/RecapFinish';
+import { RecapImage } from '../RecapImage/RecapImage';
+import { RecapAnimal } from '../RecapAnimal/RecapAnimal';
 
 interface IPropType {
   year: number;
@@ -51,6 +54,8 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     image,
   } = data;
 
+  const router = useRouter();
+
   // 페이지 별 타이틀, 페이지 배열로 만들 것
   const recapContentArr = [
     {
@@ -85,11 +90,7 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     },
     {
       title: '내 습관을 동물로 말하자면...',
-      content: (
-        <div key={4} className="text-white">
-          크앙
-        </div>
-      ),
+      content: <RecapAnimal key={4} mostSubmitTime={mostSubmitTime} />,
     },
     {
       title: '이번 달에 모든 별은 몇 개?',
@@ -101,30 +102,29 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
     },
     {
       title: '이번 달 나의 대표 사진이에요!',
-      content: (
-        <div key={7} className="text-white">
-          사진사진
-        </div>
-      ),
+      content: <RecapImage key={7} image={image} />,
     },
     {
       title: `${month}월도 너무 잘했어요!`,
-      content: <RecapFinish month={month} key={8} />,
+      content: <RecapFinish key={8} month={month} />,
     },
     {
-      title: ``,
-      content: null,
+      title: `${month}월도 너무 잘했어요!`,
+      content: <RecapFinish key={9} month={month} />,
     },
   ];
 
-  const [pageIdx, setPageIdx] = useState(8);
+  const [pageIdx, setPageIdx] = useState(4);
 
   const increasePageIdx = () => {
+    if (pageIdx === 8) {
+      router.back();
+    }
     setPageIdx((prev) => prev + 1);
   };
 
   return (
-    <div className="bg-custom-black w-full h-[screen] flex flex-col">
+    <div className="bg-custom-black w-full h-screen flex flex-col p-[1rem]">
       <ProgressBar pageIdx={pageIdx} increasePageIdx={increasePageIdx} />
       <RecapHeader memberName={memberName} year={year} month={month} />
       {pageIdx === 8 ? null : (
