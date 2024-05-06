@@ -36,3 +36,10 @@ export interface IRegisteredHabitData {
   alias: string | null;
   icon: string | null;
 }
+
+export interface ISimpleHabitListData {
+  memberHabitId: number;
+  name: string;
+  alias: string;
+  dayList: number[];
+}

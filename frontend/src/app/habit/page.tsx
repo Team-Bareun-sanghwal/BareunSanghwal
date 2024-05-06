@@ -6,7 +6,7 @@ import { ICompletedHabit } from './_types';
 
 export default async function Page() {
   // const activatedHabitList = await getActivatedHabitList();
-  // console.log(activatedHabitList);
+  // console.log(activatedHabitList.data);
 
   const completedHabitList = await getCompletedHabitList();
   const completedHabitListData = completedHabitList.data.memberHabitList;

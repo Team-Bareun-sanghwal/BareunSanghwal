@@ -14,13 +14,18 @@ import {
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
-import { IUserAmountData, IRegisteredHabitData } from '../../_types';
+import {
+  IUserAmountData,
+  IRegisteredHabitData,
+  ISimpleHabitListData,
+} from '../../_types';
 import { registerHabit } from '../../_apis/registerHabit';
 
 interface IDayOrPeriodStepComponent {
   onPrev: () => void;
   onNext: () => void;
   userAmountData: IUserAmountData;
+  simpleHabitListData: ISimpleHabitListData[];
   data: IRegisteredHabitData;
 }
 
@@ -28,6 +33,7 @@ export const DayOrPeriod = ({
   onPrev,
   onNext,
   userAmountData,
+  simpleHabitListData,
   data,
 }: IDayOrPeriodStepComponent) => {
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
@@ -146,19 +152,15 @@ export const DayOrPeriod = ({
                       },
                     ]}
                   />
+
                   <HabitDayChart
-                    habitList={[
-                      {
-                        habitDayList: [2, 4, 7],
-                        habitId: 1,
-                        name: '물 2L 마시기',
-                      },
-                      {
-                        habitDayList: [3, 4, 6],
-                        habitId: 2,
-                        name: '프로틴 주스 마시기',
-                      },
-                    ]}
+                    habitList={simpleHabitListData.map((simpleHabit) => {
+                      return {
+                        habitDayList: simpleHabit.dayList,
+                        habitId: simpleHabit.memberHabitId,
+                        name: simpleHabit.alias,
+                      };
+                    })}
                   />
                 </div>
               ),

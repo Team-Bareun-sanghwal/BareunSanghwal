@@ -8,17 +8,23 @@ import { Recommend } from './Recommend';
 import { Nickname } from './Nickname';
 import { DayOrPeriod } from './DayOrPeriod';
 import { Complete } from './Complete';
-import { IHabitListData, IRegisteredHabitData } from '../../_types';
+import {
+  IHabitListData,
+  IRegisteredHabitData,
+  ISimpleHabitListData,
+} from '../../_types';
 import { IUserAmountData } from '../../_types';
 
 export const HabitRegisterFunnel = ({
   popularCategoryListData,
   similarCategoryListData,
   userAmountData,
+  simpleHabitListData,
 }: {
   popularCategoryListData: IHabitListData[];
   similarCategoryListData: IHabitListData[];
   userAmountData: IUserAmountData;
+  simpleHabitListData: ISimpleHabitListData[];
 }) => {
   const { Funnel, setStep } = useFunnel('QUESTION_STEP');
   const [data, setData] = useState<IRegisteredHabitData>({
@@ -75,6 +81,7 @@ export const HabitRegisterFunnel = ({
             setStep('COMPLETE_STEP');
           }}
           userAmountData={userAmountData}
+          simpleHabitListData={simpleHabitListData}
           data={data}
         />
       </Funnel.Step>
