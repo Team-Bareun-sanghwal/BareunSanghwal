@@ -8,6 +8,9 @@ import { HabitChecker } from '@/components/main/HabitChecker/HabitChecker';
 import { LongestStreak } from '@/components/main/LongestStreak/LongestStreak';
 import { IMemberHabit, IDayInfo, setDayInfo } from '@/app/mock';
 import { getYear, getMonth, getToday } from '@/components/calendar/util';
+import { GetServerSideProps } from 'next';
+
+import { $Fetch } from '@/apis';
 
 interface ICalenderProps {
   dayOfWeekFirst: number;
@@ -16,6 +19,8 @@ interface ICalenderProps {
   themeColor: ThemeColor;
   proportion: number;
   longestStreak: number;
+  year: number;
+  month: number;
 }
 
 export const Calender = ({
@@ -25,6 +30,9 @@ export const Calender = ({
   themeColor,
   proportion,
   longestStreak,
+  year,
+  month,
+
   ...props
 }: ICalenderProps) => {
   const isUnique =
@@ -34,7 +42,7 @@ export const Calender = ({
     themeColor === 'sunny_summer';
   return (
     <>
-      <MonthLabel month={getMonth(false)} year={getYear()} />
+      <MonthLabel month={month + ''} year={year + ''} />
       <HabitBtnList habitList={memberHabitList} />
       <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />

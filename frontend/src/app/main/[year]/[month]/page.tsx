@@ -1,15 +1,25 @@
 import { Calender, NavBar, HabitBtnList } from '@/components';
 import { $Fetch } from '@/apis';
-import { getDateFormat, getFirstDay } from '@/components/calendar/util';
+import {
+  getDateFormat,
+  getFirstDay,
+  convertMonthFormat,
+} from '@/components/calendar/util';
 import { MainTitle } from '@/components/main/MainTitle/MainTitle';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
 import { HabitChecker } from '@/components';
 import { LongestStreak } from '@/components';
-
-export default async function Page() {
+import { GetServerSideProps } from 'next';
+export default async function Page(props: {
+  params: { year: number; month: number };
+}) {
+  const year = props.params.year;
+  const month = props.params.month;
+  console.log(year, month);
+  props.params.month;
   const streakData = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${getDateFormat(true)}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${year}-${convertMonthFormat(props.params.month)}`,
     cache: 'no-cache',
   });
 
@@ -115,10 +125,12 @@ export default async function Page() {
       <Calender
         dayInfo={dayInfo}
         memberHabitList={habitList}
-        dayOfWeekFirst={getFirstDay() - 1}
+        dayOfWeekFirst={dayOfWeekFirst}
         themeColor={streakName}
         proportion={achieveProportion}
         longestStreak={longestStreakCount}
+        year={year}
+        month={month}
       />
       <DailyPhrase phrase="시작은 반이 아니라 시작입니다." />
       <div className="flex h-[8rem]"></div>

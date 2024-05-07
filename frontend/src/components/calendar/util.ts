@@ -43,9 +43,12 @@ export const getYear = (): string => {
 // format: false -> M
 export const getMonth = (format: boolean): string => {
   const month = new Date().getMonth() + 1;
-  return format ? ('0' + month).slice(-2) : month + '';
+  return format ? convertMonthFormat(month) : month + '';
 };
 
+export const convertMonthFormat = (month: number): string => {
+  return ('0' + month).slice(-2);
+};
 // DD
 // format: true -> DD
 // format: false -> D
