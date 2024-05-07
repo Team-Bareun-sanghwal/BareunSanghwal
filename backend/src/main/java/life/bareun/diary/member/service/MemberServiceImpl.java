@@ -508,7 +508,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberHabitTrackersResDto habitTrackers(String memberHabitId) {
+        // 필요시 memberId 데이터베이스 존재 여부 체크
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Long longMemberHabitId = Long.parseLong(memberHabitId);
 
