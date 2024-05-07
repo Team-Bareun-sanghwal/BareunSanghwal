@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
                 productDto -> {
                     if (productDto.getName().equals(STREAK_RECOVERY_NAME)) {
                         productDto.setPrice(
-                            memberRecoveryRepository.findById(id)
+                            memberRecoveryRepository.findByMemberId(id)
                                 .orElseThrow(
                                     () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
                                 )
