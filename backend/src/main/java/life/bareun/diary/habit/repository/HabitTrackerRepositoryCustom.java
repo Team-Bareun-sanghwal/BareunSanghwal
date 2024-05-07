@@ -27,4 +27,6 @@ public interface HabitTrackerRepositoryCustom {
     Long countByMemberId(Long memberId);
 
     List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId);
+
+    List<Integer> findAllCreatedYear(Long memberId, Long memberHabitId);
 }

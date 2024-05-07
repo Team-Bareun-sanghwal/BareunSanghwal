@@ -117,4 +117,17 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
             .orderBy(hour.asc())
             .fetch();
     }
+
+    @Override
+    public List<Integer> findAllCreatedYear(Long memberId, Long memberHabitId) {
+        return queryFactory
+            .selectDistinct(habitTracker.createdYear.intValue())
+            .from(habitTracker)
+            .where(
+                habitTracker.memberHabit.id.eq(memberHabitId)
+                    .and(habitTracker.memberHabit.member.id.eq(memberId))
+            )
+            .orderBy(habitTracker.createdYear.desc())
+            .fetch();
+    }
 }
