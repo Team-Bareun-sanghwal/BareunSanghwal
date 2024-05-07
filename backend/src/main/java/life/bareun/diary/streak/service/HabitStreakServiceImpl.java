@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.member.entity.Member;

@@ -20,9 +20,6 @@ public class SchedulingConfig {
     private final RecapService recapService;
     private final MemberService memberService;
     private final StreakService streakService;
-
-    private final MemberService memberService;
-
     private final NotificationService notificationService;
 
     // ┌───────────── second (0-59)
@@ -62,7 +59,9 @@ public class SchedulingConfig {
 
     // 6시간마다
     @Scheduled(cron = "0 0 */6 * * ?")
-    public void renewHabitRank() { habitService.renewHabitRank(); }
+    public void renewHabitRank() {
+        habitService.renewHabitRank();
+    }
 
     // 매 월 00시에 무료 리커버리 지급
     @Scheduled(cron = "0 0 0 1 * ?")
@@ -72,13 +71,19 @@ public class SchedulingConfig {
 
     // 10시 5분까지 행운 포인트 미수확한 사람들
     @Scheduled(cron = "0 5 22 * * ?")
-    public void sentNotificationLuckyPoint() { notificationService.sendNotification(1L); }
+    public void sentNotificationLuckyPoint() {
+        notificationService.sendNotification(1L);
+    }
 
     // 10시까지 하나의 해빗 트래커라도 미수행한 사람들
     @Scheduled(cron = "0 0 22 * * ?")
-    public void sendNotificationUnaccompanied() { notificationService.sendNotification(2L); }
+    public void sendNotificationUnaccompanied() {
+        notificationService.sendNotification(2L);
+    }
 
     // 새벽 12시 반, 오늘의 한 마디 알림
     @Scheduled(cron = "0 30 0 * * ?")
-    public void sendNotificationDailyPhrase() { notificationService.sendNotification(4L); }
+    public void sendNotificationDailyPhrase() {
+        notificationService.sendNotification(4L);
+    }
 }

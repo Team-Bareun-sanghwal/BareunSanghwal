@@ -1,11 +1,5 @@
 package life.bareun.diary.member.service;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import life.bareun.diary.global.security.embed.OAuth2Provider;
-import life.bareun.diary.global.security.principal.MemberPrincipal;
-import life.bareun.diary.global.security.token.AuthTokenProvider;
-import life.bareun.diary.global.security.util.AuthUtil;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -35,7 +29,6 @@ import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
->>>>>>> backend/src/main/java/life/bareun/diary/member/service/MemberServiceImpl.java
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
@@ -105,9 +98,9 @@ public class MemberServiceImpl implements MemberService {
                         MemberRecovery.create(savedMember)
                     );
 
-                streakService.initialMemberStreak(savedMember);
-                return savedMember;
-            };
+                    streakService.initialMemberStreak(savedMember);
+                    return savedMember;
+                });
 
         // orElseGet에서 return되지 않았음 -> 신규회원이 아님
         // 해당 회원의 정보가 입력되었는지 검증한다.
