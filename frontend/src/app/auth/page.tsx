@@ -1,14 +1,15 @@
 'use client';
 
-import { redirect, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Page() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get('status');
 
   if (code === '200') {
-    redirect('/main');
+    router.push('/main');
   } else {
-    redirect('/signin');
+    router.push('/signin');
   }
 }
