@@ -259,7 +259,6 @@ public class RecapServiceImpl implements RecapService {
             .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_RECAP));
         List<RecapHabitAccomplished> recapHabitAccomplishedList = recapHabitAccomplishedRepository.findAllByRecap_OrderByActionCountDesc(
             recap);
-
         // ratio 비율 상위 다섯개 및 사용자 해빗 달성률의 평균 구하기
         String mostSucceededMemberHabit = recapHabitAccomplishedRepository.findByRecapAndIsBest(
             recap, true).getMemberHabit().getAlias();
@@ -282,7 +281,9 @@ public class RecapServiceImpl implements RecapService {
             (o1, o2) -> (o2.actionCount() + o2.missCount()) - (o1.actionCount() + o1.missCount()));
 
         // 첫 5개 요소를 제외한 나머지 요소를 삭제
-        recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
+        if(recapMemberHabitRateDtoList.size() > 5) {
+            recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
+        }
 
         // mostSucceededHabit과 rateByHabitList를 구하기
         List<RecapHabitRatio> recapHabitRatioList = recapHabitRatioRepository.findTop4ByRecap_OrderByRatioDesc(
