@@ -100,6 +100,12 @@ public class StreakServiceImpl implements StreakService {
     }
 
     @Override
+    public void deleteHabitStreak(MemberHabit memberHabit) {
+        habitStreakService.deleteHabitTotalStreak(memberHabit);
+        habitStreakService.deleteHabitDailyStreak(memberHabit);
+    }
+
+    @Override
     public void recoveryStreak() {
 
     }

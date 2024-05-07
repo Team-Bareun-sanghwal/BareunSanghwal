@@ -17,10 +17,12 @@ public interface StreakService {
     void initialMemberStreak(Member member);
 
     void initialHabitStreak(MemberHabit memberHabit);
-    
+
     void createDailyStreak(Member member, LocalDate date);
 
     void achieveStreak(MemberHabit memberHabit);
+
+    void deleteHabitStreak(MemberHabit memberHabit);
 
     void recoveryStreak();
 }

@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HabitTotalStreakRepository extends JpaRepository<HabitTotalStreak, Long> {
 
     Optional<HabitTotalStreak> findByMemberHabit(MemberHabit memberHabit);
+
+    void deleteByMemberHabit(MemberHabit memberHabit);
 }

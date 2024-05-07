@@ -13,6 +13,8 @@ public interface HabitStreakService {
 
     HabitDailyStreak achieveHabitStreak(MemberHabit memberHabit);
 
+    void deleteHabitTotalStreak(MemberHabit memberHabit);
+
     void deleteHabitDailyStreak(MemberHabit memberHabit);
 
     HabitStreakResDto getHabitStreakResDtoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
