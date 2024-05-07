@@ -5,8 +5,8 @@ import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
+import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
-import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
@@ -45,7 +45,7 @@ public interface MemberService {
 
     MemberStatisticResDto statistic();
 
-    MemberHabitsResDto habits();
+    MemberHabitListResDto habits();
 
     MemberTreePointResDto treePoint();
 

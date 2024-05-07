@@ -21,16 +21,16 @@ import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
+import life.bareun.diary.member.dto.MemberHabitListElementDto;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
-import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberTopHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
+import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
-import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
@@ -283,12 +283,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberHabitsResDto habits() {
+    public MemberHabitListResDto habits() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
-        List<MemberHabitsDto> memberHabits = memberHabitRepository
+        List<MemberHabitListElementDto> memberHabits = memberHabitRepository
             .findAllByMemberIdOrderByCreatedDatetime(id);
 
-        return new MemberHabitsResDto(
+        return new MemberHabitListResDto(
             memberHabits
         );
     }
@@ -299,32 +299,50 @@ public class MemberServiceImpl implements MemberService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
         // 내림차순 정렬된 데이터, 각 MemberPracticedHabitDto의 value는 비율
+        // 데이터가 없는 경우 공백 리스트([])
         List<MemberTopHabitDto> topHabits = processTopHabits(
             habitTrackerRepository.findTopHabits(memberId),
             memberId
         );
 
+        // 가장 많이 수행한 해빗 이름
+        // 데이터가 없는 경우 null
         String maxPracticedHabit = topHabits.isEmpty() ? null : topHabits.get(0).habit();
 
         // 요일 별 달성 횟수
         // 최대 또는 최대값 중복 허용
         List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek
-            = practiceCountPerDayOfWeek(memberId);
+            = practiceCountListPerDayOfWeek(memberId);
 
         // 4 (0~24시까지 1시간 단위로 24개)
-        List<MemberPracticeCountPerHourDto> practiceCountPerHour
-            = habitTrackerRepository.countPracticedHabitsPerHour(memberId);
-        practiceCountPerHour = processPracticeCountPerHour(practiceCountPerHour);
+        List<MemberPracticeCountPerHourDto> practiceCountPerHour = processPracticeCountPerHour(
+            habitTrackerRepository.countPracticedHabitsPerHour(memberId)
+        );
 
-        LocalDate createdAt = memberRepository.findById(memberId).orElseThrow(
-            () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-        ).getCreatedDateTime().toLocalDate();
+        LocalDate memberCreatedDate = memberRepository.findById(memberId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            )
+            .getCreatedDateTime()
+            .toLocalDate();
         LocalDate now = LocalDate.now();
 
-        int totalDays = (int) ChronoUnit.DAYS.between(createdAt, now);
+        // 총 서비스 사용 일 수
+        int totalDays = (int) ChronoUnit.DAYS.between(
+            memberCreatedDate,
+            now
+        );
+
+        // 스트릭 관련 데이터
         MemberStreakResDto memberStreakDto = streakService.getMemberStreakResDto();
+
+        // 스트릭을 채운 날의 수
         int streakDays = memberStreakDto.achieveStreakCount();
+
+        // 별을 받은(모든 해빗을 달성한) 날의 수
         int starredDays = memberStreakDto.starCount();
+
+        // 최장 스트릭
         int longestStreak = memberStreakDto.longestStreakCount();
 
         return MemberStatisticResDto.builder()
@@ -366,45 +384,49 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional(readOnly = true)
-    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek(Long memberId) {
-        List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtos
+    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek(
+        Long memberId) {
+        // colorIdx가 없는 DTO의 리스트를 받는다.
+        List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtoList
             = habitTrackerRepository.countPracticedHabitsPerDayOfWeek(memberId);
 
-        if (habitPracticeCountPerDayOfWeekDtos.isEmpty()) {
+        if (habitPracticeCountPerDayOfWeekDtoList.isEmpty()) {
             return new ArrayList<>();
         }
 
-        int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
+        // 요일 별 수행횟수의 최대, 최소 값을 구한다.
+        int maxValue = habitPracticeCountPerDayOfWeekDtoList.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
             .max()
             .getAsInt();
-        int minValue = habitPracticeCountPerDayOfWeekDtos.stream()
+        int minValue = habitPracticeCountPerDayOfWeekDtoList.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
             .min()
             .getAsInt();
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek =
-            habitPracticeCountPerDayOfWeekDtos.stream()
-            .map(
-                habitPracticeCountPerDayOfWeekDto -> {
-                    int value = habitPracticeCountPerDayOfWeekDto.value();
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek =
+            habitPracticeCountPerDayOfWeekDtoList.stream()
+                .map(
+                    // map()을 통해 colorIdx를 설정한다.
+                    habitPracticeCountPerDayOfWeekDto -> {
+                        int value = habitPracticeCountPerDayOfWeekDto.value();
 
-                    int colorIdx = COLOR_INDEX_DEFAULT;
-                    if (value == minValue) {
-                        colorIdx = COLOR_INDEX_MIN;
-                    } else if (value == maxValue) {
-                        colorIdx = COLOR_INDEX_MAX;
+                        int colorIdx = COLOR_INDEX_DEFAULT;
+                        if (value == minValue) {
+                            colorIdx = COLOR_INDEX_MIN;
+                        } else if (value == maxValue) {
+                            colorIdx = COLOR_INDEX_MAX;
+                        }
+
+                        return new MemberPracticeCountPerDayOfWeekDto(
+                            DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
+                            value,
+                            colorIdx
+                        );
                     }
+                ).toList();
 
-                    return new MemberPracticeCountPerDayOfWeekDto(
-                        DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
-                        value,
-                        colorIdx
-                    );
-                }
-            ).toList();
-
-        return practiceCountsPerDayOfWeek;
+        return practiceCountListPerDayOfWeek;
     }
 
 

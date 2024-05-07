@@ -4,8 +4,8 @@ import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
+import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
-import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
@@ -189,8 +189,8 @@ public class MemberController {
     }
 
     @GetMapping("/habits")
-    public ResponseEntity<BaseResponse<MemberHabitsResDto>> habits() {
-        MemberHabitsResDto memberHabitsResDto = memberService.habits();
+    public ResponseEntity<BaseResponse<MemberHabitListResDto>> habits() {
+        MemberHabitListResDto memberHabitListResDto = memberService.habits();
 
         return ResponseEntity
             .status(
@@ -200,7 +200,7 @@ public class MemberController {
                 BaseResponse.success(
                     HttpStatus.OK.value(),
                     "사용자의 해빗 목록을 읽어왔습니다.",
-                    memberHabitsResDto
+                    memberHabitListResDto
                 )
             );
     }

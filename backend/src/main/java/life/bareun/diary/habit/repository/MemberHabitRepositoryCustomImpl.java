@@ -5,9 +5,8 @@ import static life.bareun.diary.habit.entity.QMemberHabit.memberHabit;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import life.bareun.diary.member.dto.MemberHabitsDto;
+import life.bareun.diary.member.dto.MemberHabitListElementDto;
 import life.bareun.diary.habit.dto.MemberHabitModifyDto;
-import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,10 +24,10 @@ public class MemberHabitRepositoryCustomImpl implements MemberHabitRepositoryCus
     }
 
     @Override
-    public List<MemberHabitsDto> findAllByMemberIdOrderByCreatedDatetime(Long id) {
+    public List<MemberHabitListElementDto> findAllByMemberIdOrderByCreatedDatetime(Long id) {
         return queryFactory.select(
                 Projections.constructor(
-                    MemberHabitsDto.class,
+                    MemberHabitListElementDto.class,
                     memberHabit.habit.name.as("name"),
                     memberHabit.alias.as("alias"),
                     memberHabit.id.as("memberHabitId"),
