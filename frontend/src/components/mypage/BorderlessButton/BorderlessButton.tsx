@@ -2,10 +2,12 @@
 
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { useOverlay } from '@/hooks/use-overlay';
+import { useRouter } from 'next/navigation';
 import {
   FaceFrownIcon,
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
+import { deleteMemberInfo } from '@/app/(member)/mypage/_apis/deleteMemberInfo';
 
 interface IPropType {
   type: string;
@@ -13,11 +15,14 @@ interface IPropType {
 
 export const BorderlessButton = ({ type }: IPropType) => {
   const overlay = useOverlay();
+  const router = useRouter();
 
-  const handleLeave = () => {
+  const handleLeave = async () => {
     console.log('leave');
-    // api 통신 추가
-    // `${process.env.NEXT_PUBLIC_BASE_URL}/members`
+    const result = await deleteMemberInfo();
+    if ((await result) === 200) {
+      router.push('/');
+    }
   };
 
   const handleOverlay = () => {

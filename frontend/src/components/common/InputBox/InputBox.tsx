@@ -26,7 +26,7 @@ export const InputBox = ({
       : /^[A-Za-z0-9ㄱ-ㅎ가-힣!?@#$%^&*\s]{1,15}$/;
 
   const [lineColor, setLineColor] = useState<string>(
-    defaultValue ? 'border-b-custom-success' : 'border-b-custom-error',
+    defaultValue ? 'border-b-custom-yellow-green' : 'border-b-custom-error',
   );
 
   const [guideText, setGuideText] = useState<string>(() =>
@@ -38,7 +38,7 @@ export const InputBox = ({
   );
 
   const [guideTextColor, setGuideTextColor] = useState<string>(
-    defaultValue ? 'text-custom-success' : 'text-custom-error',
+    defaultValue ? 'text-custom-yellow-green' : 'text-custom-error',
   );
 
   return (
