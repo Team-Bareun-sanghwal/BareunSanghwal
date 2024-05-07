@@ -42,7 +42,7 @@ export const Calender = ({
     themeColor === 'sunny_summer';
   return (
     <>
-      <MonthLabel month={month + ''} year={year + ''} />
+      <MonthLabel month={month} year={year} />
       <HabitBtnList habitList={memberHabitList} />
       <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />

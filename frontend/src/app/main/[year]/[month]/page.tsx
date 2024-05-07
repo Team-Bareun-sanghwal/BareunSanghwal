@@ -22,7 +22,6 @@ export default async function Page(props: {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${year}-${convertMonthFormat(props.params.month)}`,
     cache: 'no-cache',
   });
-
   const colorData = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/color/streak`,
@@ -37,11 +36,11 @@ export default async function Page(props: {
 
   //test api
   //1. 사용 가능한 스트릭 리커버리 개수
-  const streakRecovoeryCount = await $Fetch({
-    method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovoery-count`,
-    cache: 'no-cache',
-  });
+  // const streakRecovoeryCount = await $Fetch({
+  //   method: 'GET',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovoery-count`,
+  //   cache: 'no-cache',
+  // });
 
   //2. 최장 스트릭 수
   const longestStreak = await $Fetch({
@@ -51,32 +50,32 @@ export default async function Page(props: {
   });
 
   //3. 스트릭 리커버리 구매
-  const purchaseStreakRecovery = await $Fetch({
-    method: 'PATCH',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/recovery`,
-    cache: 'no-cache',
-  });
+  // const purchaseStreakRecovery = await $Fetch({
+  //   method: 'PATCH',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/recovery`,
+  //   cache: 'no-cache',
+  // });
 
   //4. 스트릭 색상 구매
-  const purchaseStreakColor = await $Fetch({
-    method: 'PATCH',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/color/streak/${getDateFormat(true)}`,
-    cache: 'no-cache',
-  });
+  // const purchaseStreakColor = await $Fetch({
+  //   method: 'PATCH',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/color/streak/${getDateFormat(true)}`,
+  //   cache: 'no-cache',
+  // });
 
   //5. 나무 구매
-  const purchaseStreakTree = await $Fetch({
-    method: 'PATCH',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/color/tree`,
-    cache: 'no-cache',
-  });
+  // const purchaseStreakTree = await $Fetch({
+  //   method: 'PATCH',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/color/tree`,
+  //   cache: 'no-cache',
+  // });
 
   //6. 스트릭 리커버리 사용
-  const streakRecovoery = await $Fetch({
-    method: 'POST',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
-    cache: 'no-cache',
-  });
+  // const streakRecovoery = await $Fetch({
+  //   method: 'POST',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
+  //   cache: 'no-cache',
+  // });
 
   //7. 오늘 완료된 해빗들
   const habitsToday = await $Fetch({
@@ -86,11 +85,11 @@ export default async function Page(props: {
   });
 
   //8. 오늘의 문구
-  const dailyPhrase = await $Fetch({
-    method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/today-phrase`,
-    cache: 'no-cache',
-  });
+  // const dailyPhrase = await $Fetch({
+  //   method: 'GET',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/today-phrase`,
+  //   cache: 'no-cache',
+  // });
 
   //9. 내 보유 포인트
   const myPoint = await $Fetch({
@@ -99,15 +98,13 @@ export default async function Page(props: {
     cache: 'no-cache',
   });
 
+  console.log(streakData);
   const { achieveProportion, dayInfo, dayOfWeekFirst } = streakData.data;
   const { streakName } = colorData.data;
   const { habitList } =
     habitListData.data === null ? { habitList: [] } : habitListData.data;
   const longestStreakCount =
     longestStreak.data == null ? 0 : longestStreak.data.longestStreak;
-
-  console.log(habitListData.data);
-  const { total, tree } = myPoint.data;
   return (
     <>
       <MainTitle

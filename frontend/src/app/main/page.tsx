@@ -119,6 +119,8 @@ export default async function Page() {
         themeColor={streakName}
         proportion={achieveProportion}
         longestStreak={longestStreakCount}
+        year={2024}
+        month={8}
       />
       <DailyPhrase phrase="시작은 반이 아니라 시작입니다." />
       <div className="flex h-[8rem]"></div>
