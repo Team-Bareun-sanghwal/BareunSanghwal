@@ -1,20 +1,23 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import { GuideText } from '../GuideText/GuideText';
 import { PlusIcon, ArrowPathIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
-export const ImageUploadBox = () => {
-  const [inputImageFile, setInputImageFile] = useState<File | null>(null);
-
+export const ImageUploadBox = ({
+  image,
+  setImage,
+}: {
+  image: File | null;
+  setImage: (image: File | null) => void;
+}) => {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedImageFile = event.target.files && event.target.files[0];
-    if (selectedImageFile) setInputImageFile(selectedImageFile);
+    if (selectedImageFile) setImage(selectedImageFile);
   };
 
   const handleImageDelete = () => {
-    setInputImageFile(null);
+    setImage(null);
   };
 
   return (
@@ -26,10 +29,10 @@ export const ImageUploadBox = () => {
       <GuideText text="해빗 이미지는 추후에 목록이나 리캡에서 확인할 수 있어요!" />
 
       <div className="flex flex-col gap-[0.5rem]">
-        {inputImageFile ? (
+        {image ? (
           <div className="w-full h-[25rem] border-dashed border-[0.1rem] rounded-[1rem] border-custom-dark-gray bg-custom-light-gray flex justify-center items-center">
             <Image
-              src={URL.createObjectURL(inputImageFile)}
+              src={URL.createObjectURL(image)}
               width={200}
               height={200}
               alt="업로드 이미지"
@@ -51,7 +54,7 @@ export const ImageUploadBox = () => {
             ></input>
           </label>
         )}
-        {inputImageFile && (
+        {image && (
           <ul className="self-end custom-semibold-text flex gap-[1rem]">
             <li>
               <label

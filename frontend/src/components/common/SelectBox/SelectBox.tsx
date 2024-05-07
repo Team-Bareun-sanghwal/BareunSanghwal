@@ -8,7 +8,7 @@ interface IOptionType {
 interface SelectBoxProps {
   label?: string;
   options: IOptionType[];
-  defaultValue: string;
+  defaultValue: string | null;
   setDefaultValue: (newValue: string) => void;
 }
 
