@@ -8,25 +8,39 @@ import {
   GiftIcon,
   UserIcon,
 } from '@heroicons/react/24/solid';
+import Link from 'next/link';
 
 interface INavBarProps {
   mode: 'HOME' | 'HABIT' | 'REWARD' | 'REPORT' | 'MY_INFO';
-  onClick?: () => void;
 }
 
-export const NavBar = ({ mode, ...props }: INavBarProps) => {
+export const NavBar = ({ mode }: INavBarProps) => {
   const menus = {
-    HOME: [<HomeIcon key={mode} className="w-[3rem] h-[3rem]" />, '홈'],
+    HOME: [
+      <HomeIcon key={mode} className="w-[3rem] h-[3rem]" />,
+      '홈',
+      '/main',
+    ],
     HABIT: [
       <Square3Stack3DIcon key={mode} className="w-[3rem] h-[3rem]" />,
       '해빗',
+      '/habit',
     ],
-    REWARD: [<GiftIcon key={mode} className="w-[3rem] h-[3rem]" />, '보상'],
+    REWARD: [
+      <GiftIcon key={mode} className="w-[3rem] h-[3rem]" />,
+      '보상',
+      '/tree',
+    ],
     REPORT: [
       <ChartPieIcon key={mode} className="w-[3rem] h-[3rem]" />,
       '리포트',
+      '/statistics',
     ],
-    MY_INFO: [<UserIcon key={mode} className="w-[3rem] h-[3rem]" />, '내 정보'],
+    MY_INFO: [
+      <UserIcon key={mode} className="w-[3rem] h-[3rem]" />,
+      '내 정보',
+      '/mypage',
+    ],
   };
 
   const [focusedMenu, setFocusedMenu] = useState('HOME');
@@ -43,23 +57,23 @@ export const NavBar = ({ mode, ...props }: INavBarProps) => {
         className={
           'h-[8rem] px-[1rem] py-[1.5rem] flex items-center justify-around rounded-t-[2rem] bg-custom-white border-t backdrop-blur-0'
         }
-        {...props}
       >
         {Object.entries(menus).map((menu, index) => {
           const keyName = menu[0];
-          const [icon, koreanKeyName] = menu[1];
+          const [icon, koreanKeyName, url] = menu[1];
 
           return (
-            <section
-              className={`flex flex-col gap-[0.5rem] items-center cursor-pointer ${keyName === focusedMenu ? 'text-custom-yellow-green' : 'text-custom-medium-gray'}`}
-              onClick={() => setFocusedMenu(keyName)}
-              key={`${keyName}-${index}`}
-            >
-              <>
-                {icon}
-                <p className="custom-light-text">{koreanKeyName}</p>
-              </>
-            </section>
+            <Link href={url as string} key={`${keyName}-${index}`}>
+              <section
+                className={`flex flex-col gap-[0.5rem] items-center cursor-pointer ${keyName === focusedMenu ? 'text-custom-yellow-green' : 'text-custom-medium-gray'}`}
+                onClick={() => setFocusedMenu(keyName)}
+              >
+                <>
+                  {icon}
+                  <p className="custom-light-text">{koreanKeyName}</p>
+                </>
+              </section>
+            </Link>
           );
         })}
       </nav>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 interface IRecapData {
   recapId: number;
   image: string;
-  period: Date;
+  period: string;
 }
 
 interface IRecapDataPerYear {
@@ -64,7 +64,7 @@ export const RecapContentBox = ({ recapTotalData }: IRecapContentBoxProps) => {
                   <li key={index}>
                     <RecapImageContent
                       imgSrc="/images/icon-clock.png"
-                      dateText={`${recap.period.getMonth() + 1}월`}
+                      dateText={`${recap.period.split('-')[1]}월`}
                       recapId={recap.recapId}
                     />
                   </li>
