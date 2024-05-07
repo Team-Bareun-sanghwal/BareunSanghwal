@@ -7,18 +7,20 @@ import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
-import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
+import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
-import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
+import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.exception.HabitErrorCode;
 import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
+import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,8 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     private final HabitTrackerRepository habitTrackerRepository;
 
     private final MemberHabitRepository memberHabitRepository;
+
+    private final StreakService streakService;
 
     @Override
     // 요일 기준으로 해빗 트래커 생성
@@ -99,6 +103,11 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
+
+        HabitTracker habitTracker = habitTrackerRepository.findById(habitTrackerModifyReqDto.habitTrackerId())
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
+
+        streakService.achieveStreak(habitTracker.getMemberHabit());
     }
 
     @Override
@@ -107,7 +116,8 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         LocalDate localDate = LocalDate.now();
         return HabitTrackerTodayResDto.builder()
             .habitTrackerTodayDtoList(habitTrackerRepository.findAllTodayHabitTracker(
-                HabitTrackerTodayFactorDto.builder().memberId(AuthUtil.getMemberIdFromAuthentication()).createdYear(localDate.getYear())
+                HabitTrackerTodayFactorDto.builder().memberId(AuthUtil.getMemberIdFromAuthentication())
+                    .createdYear(localDate.getYear())
                     .createdMonth(localDate.getMonthValue())
                     .createdDay(localDate.getDayOfMonth()).build())).build();
     }
@@ -148,6 +158,16 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     // 가장 마지막에 작성한 해빗 트래커 찾기
     public HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto) {
         return habitTrackerRepository.findLastHabitTracker(habitTrackerLastDto);
+    }
+
+    @Override
+    public Long getHabitTrackerCount(MemberHabit memberHabit, LocalDate date) {
+        return habitTrackerRepository.getHabitTrackerCountByMemberHabitAndDate(
+            HabitTrackerScheduleDto.builder()
+                .memberHabit(memberHabit)
+                .date(date)
+                .build()
+        );
     }
 
     // 날짜 문자열 만들기

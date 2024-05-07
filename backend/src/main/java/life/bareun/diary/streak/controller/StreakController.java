@@ -31,7 +31,8 @@ public class StreakController {
     }
 
     @GetMapping(value = {"/{dateString}/{memberHabitId}", "/{dateString}"})
-    public ResponseEntity<BaseResponse<?>> findAllMemberStreakByHabit(@PathVariable("dateString") String dateString,
+    public ResponseEntity<BaseResponse<HabitStreakResDto>> findAllMemberStreakByHabit(
+        @PathVariable("dateString") String dateString,
         @PathVariable(name = "memberHabitId", required = false) Long memberHabitId) {
 
         HabitStreakResDto habitStreakResDto = null;

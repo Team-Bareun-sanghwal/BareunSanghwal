@@ -7,10 +7,12 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import life.bareun.diary.habit.dto.HabitTrackerCountDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -43,8 +45,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<HabitTrackerTodayDto>
-    findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
+    public List<HabitTrackerTodayDto> findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
         return queryFactory.select(
                 Projections.constructor(HabitTrackerTodayDto.class,
                     habitTracker.memberHabit.habit.name, habitTracker.memberHabit.alias,
@@ -66,6 +67,30 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                     .where(habitTracker.memberHabit.eq(habitTrackerLastDto.memberHabit()))
             ).and(habitTracker.memberHabit.eq(habitTrackerLastDto.memberHabit())))
             .fetchOne();
+    }
+
+    @Override
+    public Long getHabitTrackerCountByMemberAndDate(HabitTrackerCountDto habitTrackerCountDto) {
+        return queryFactory.select(habitTracker.id.count())
+            .from(habitTracker)
+            .where(
+                habitTracker.member.eq(habitTrackerCountDto.member())
+                    .and(habitTracker.createdYear.eq(habitTrackerCountDto.date().getYear()))
+                    .and(habitTracker.createdMonth.eq(habitTrackerCountDto.date().getMonthValue()))
+                    .and(habitTracker.createdDay.eq(habitTrackerCountDto.date().getDayOfMonth()))
+            ).fetchFirst();
+    }
+
+    @Override
+    public Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto) {
+        return queryFactory.select(habitTracker.id.count())
+            .from(habitTracker)
+            .where(
+                habitTracker.memberHabit.eq(habitTrackerScheduleDto.memberHabit())
+                    .and(habitTracker.createdYear.eq(habitTrackerScheduleDto.date().getYear()))
+                    .and(habitTracker.createdMonth.eq(habitTrackerScheduleDto.date().getMonthValue()))
+                    .and(habitTracker.createdDay.eq(habitTrackerScheduleDto.date().getDayOfMonth()))
+            ).fetchFirst();
     }
 
     @Override

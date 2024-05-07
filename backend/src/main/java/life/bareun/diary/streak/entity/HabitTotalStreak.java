@@ -2,6 +2,7 @@ package life.bareun.diary.streak.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ public class HabitTotalStreak {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_habit_id")
     private MemberHabit memberHabit;
 
@@ -45,5 +46,17 @@ public class HabitTotalStreak {
     @Builder
     public HabitTotalStreak(MemberHabit memberHabit) {
         this.memberHabit = memberHabit;
+    }
+
+    public void modifyLongestStreak(int longestStreak) {
+        this.longestStreak = longestStreak;
+    }
+
+    public void modifyAchieveTrackerCount(int achieveTrackerCount) {
+        this.achieveTrackerCount = achieveTrackerCount;
+    }
+
+    public void modifyTotalTrackerCount(int totalTrackerCount) {
+        this.totalTrackerCount = totalTrackerCount;
     }
 }

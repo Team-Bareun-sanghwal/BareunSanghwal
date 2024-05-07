@@ -11,7 +11,9 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
+import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.streak.dto.StreakInfoByDayDto;
+import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.entity.QHabitDailyStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,8 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<StreakInfoByDayDto> findStreakDayInfoByMemberHabitId(LocalDate firstDayOfMonth,
-        LocalDate lastDayOfMonth, Long memberHabitId) {
+    public List<StreakInfoByDayDto> findStreakDayInfoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
         QHabitDailyStreak subHabitDailyStreak = new QHabitDailyStreak("sub");
 
         return jpaQueryFactory.select(
@@ -58,15 +60,15 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
             .join(memberHabit.member, member)
             .where(
                 habitDailyStreak.memberHabit.id.eq(memberHabitId),
-                isCreatedDateInMonth(firstDayOfMonth, lastDayOfMonth)
+                isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
             )
             .groupBy(habitDailyStreak.createdDate)
             .fetch();
     }
 
     @Override
-    public List<StreakInfoByDayDto> findStreakDayInfoByMemberId(LocalDate firstDayOfMonth, LocalDate lastDayOfMonth,
-        Long memberId) {
+    public List<StreakInfoByDayDto> findStreakDayInfoByMemberId(Long memberId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
         QHabitDailyStreak subHabitDailyStreak = new QHabitDailyStreak("sub");
 
         return jpaQueryFactory.select(
@@ -97,13 +99,28 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
             .join(memberHabit.member, member)
             .where(
                 member.id.eq(memberId),
-                isCreatedDateInMonth(firstDayOfMonth, lastDayOfMonth)
+                isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
             )
             .groupBy(habitDailyStreak.createdDate)
             .fetch();
     }
 
-    private BooleanExpression isCreatedDateInMonth(LocalDate firstDay, LocalDate lastDay) {
+    @Override
+    public List<HabitDailyStreak> findAllHabitDailyStreakByMemberHabitIdBetweenStartDateAndEndDate(
+        MemberHabit memberHabit, LocalDate startDate, LocalDate endDate) {
+        return jpaQueryFactory.select(
+                Projections.constructor(
+                    HabitDailyStreak.class
+                )
+            )
+            .from(habitDailyStreak)
+            .where(
+                habitDailyStreak.memberHabit.eq(memberHabit)
+                    .and(isCreatedDateInRange(startDate, endDate)))
+            .fetch();
+    }
+
+    private BooleanExpression isCreatedDateInRange(LocalDate firstDay, LocalDate lastDay) {
         return habitDailyStreak.createdDate.between(firstDay, lastDay);
     }
 }

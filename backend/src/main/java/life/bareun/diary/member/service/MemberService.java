@@ -1,7 +1,8 @@
 package life.bareun.diary.member.service;
 
-import life.bareun.diary.global.auth.embed.OAuth2Provider;
-import life.bareun.diary.global.auth.principal.MemberPrincipal;
+import java.util.List;
+import life.bareun.diary.global.security.embed.OAuth2Provider;
+import life.bareun.diary.global.security.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
@@ -12,6 +13,7 @@ import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 
 public interface MemberService {
@@ -29,6 +31,8 @@ public interface MemberService {
     MemberStreakColorResDto streakColor();
 
     MemberTreeColorResDto treeColor();
+
+    List<Member> findAllMember();
 
     void grantFreeRecoveryToAllMembers();
 

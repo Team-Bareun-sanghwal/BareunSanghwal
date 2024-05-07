@@ -2,6 +2,7 @@ package life.bareun.diary.habit.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.entity.Member;
@@ -20,6 +21,9 @@ public interface HabitTrackerRepository extends JpaRepository<HabitTracker, Long
 
     List<HabitTracker> findAllByMemberHabitAndContentIsNotNullAndSucceededTimeBetween(
         MemberHabit memberHabit, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    Optional<HabitTracker> findByMemberHabitAndCreatedYearAndCreatedMonthAndCreatedDay(
+        MemberHabit memberHabit, int createdYear, int createdMonth, int createdDay);
 
     List<HabitTracker> findAllByMemberAndSucceededTimeIsNotNullAndSucceededTimeBetween(
         Member member, LocalDateTime startDateTime, LocalDateTime endDateTime);
