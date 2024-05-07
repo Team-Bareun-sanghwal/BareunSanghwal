@@ -1,14 +1,36 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
-import { Button, ProgressBox, SelectBox } from '@/components';
+import {
+  Button,
+  ProgressBox,
+  SelectBox,
+  LoadingBottomSheet,
+} from '@/components';
 import dynamic from 'next/dynamic';
 import lottieJson from '@/../public/lotties/lottie-note.json';
-import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
+import { useOverlay } from '@/hooks/use-overlay';
 
 const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
-export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+interface IQuestionStepComponent {
+  onPrev: () => void;
+  onNext: (nextStep: string, isCategorySet: boolean) => void;
+}
+
+export const Question = ({ onPrev, onNext }: IQuestionStepComponent) => {
+  const [isAlreadySet, setIsAlreadySet] = useState<string | null>(null);
+
+  const overlay = useOverlay();
+
+  const handleRecommendOverlay = () => {
+    overlay.open(({ isOpen }) => (
+      <LoadingBottomSheet
+        title="최적의 습관을 찾는 중입니다..."
+        open={isOpen}
+      />
+    ));
+    setTimeout(() => overlay.close(), 2500);
+  };
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
@@ -26,9 +48,17 @@ export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
           beforeStageIndex={-1}
         ></ProgressBox>
 
-        <label className="custom-bold-text text-custom-matcha">
-          어떤 습관을 지킬지 정하셨나요?
-        </label>
+        <div className="flex flex-col gap-[0.5rem] items-center">
+          <span className="custom-bold-text text-custom-matcha">
+            어떤 습관을 지킬지 정하셨나요?
+          </span>
+          <span className="custom-medium-text">
+            {"'네' 를 누르면 바로 카테고리/별칭 설정 단계로,"}
+          </span>
+          <span className="custom-medium-text">
+            {"'아니오' 를 누르면 추천 단계로 넘어가요."}
+          </span>
+        </div>
 
         <LottieBox
           loop
@@ -39,18 +69,25 @@ export const Question = ({ onPrev, onNext }: IFunnelComponent) => {
 
         <SelectBox
           options={[
-            { key: 'YES', value: '네' },
-            { key: 'NO', value: '아니오' },
+            { key: 'TRUE', value: '네' },
+            { key: 'FALSE', value: '아니오' },
           ]}
-          defaultValue=""
-          setDefaultValue={() => {}}
+          defaultValue={isAlreadySet}
+          setDefaultValue={setIsAlreadySet}
         />
       </div>
 
       <Button
         isActivated={isAlreadySet === null ? false : true}
         label="다음"
-        onClick={onNext}
+        onClick={() => {
+          if (isAlreadySet === 'FALSE') {
+            handleRecommendOverlay();
+            onNext('RECOMMEND_STEP', true);
+          } else if (isAlreadySet === 'TRUE') {
+            onNext('NICKNAME_STEP', false);
+          }
+        }}
       />
     </div>
   );

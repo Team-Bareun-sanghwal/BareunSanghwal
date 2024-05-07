@@ -20,8 +20,6 @@ export const LoginButton = ({ platform }: ILoginButtonProps) => {
   };
 
   const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
-  const status = searchParams.get('status');
-  console.log(status);
 
   return (
     <button

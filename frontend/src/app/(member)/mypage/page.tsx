@@ -1,8 +1,11 @@
 import { NavBar } from '@/components';
 import { BorderlessButton } from '@/components/mypage/BorderlessButton/BorderlessButton';
 import { InfoModifyList } from '@/components/mypage/InfoModifyList/InfoModifyList';
+import { getMemberInfo } from './_apis/getMemberInfo';
 
-export default function Page() {
+export default async function Page() {
+  const { nickname, gender, job, birthDate } = await getMemberInfo();
+
   return (
     <div className="h-screen">
       <div className="bg-custom-white px-[1rem] pt-[1rem] pb-[11rem] flex flex-col justify-between min-h-full">
@@ -12,10 +15,10 @@ export default function Page() {
           </p>
           <InfoModifyList
             userData={{
-              nickname: '잉잉',
-              birthDate: '1999-01-07',
-              gender: 'F',
-              job: 'STUDENT',
+              nickname: nickname,
+              birthDate: birthDate,
+              gender: gender,
+              job: job,
             }}
           />
         </div>

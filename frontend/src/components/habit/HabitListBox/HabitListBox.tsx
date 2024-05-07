@@ -9,8 +9,8 @@ import {
 
 interface IHabitListBoxProps {
   mode: 'GOING' | 'UPDATE' | 'COMPLETED' | 'REGISTER';
-  name: string;
-  alias: string;
+  name: string | null;
+  alias: string | null;
   iconSrc: string;
   dayList?: string[];
   createdAt: Date;

@@ -26,6 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
 
 # vercel
@@ -40,3 +41,9 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# next-pwa
+/public/workbox-*.js
+/public/workbox-*.js.*
+/public/sw.js
+/public/sw.js.*

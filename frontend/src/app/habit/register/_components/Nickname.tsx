@@ -1,15 +1,30 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { Button, ProgressBox, HabitSearchBox, InputBox } from '@/components';
-import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
 import { Picker } from '@/components/common/Picker/Picker';
 
-export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+interface INicknameStep {
+  onPrev: () => void;
+  onNext: (alias: string, icon: string, selectedHabitId: number | null) => void;
+  isCategorySet: boolean;
+  habitId: number | null;
+}
+
+export const Nickname = ({
+  onPrev,
+  onNext,
+  isCategorySet,
+  habitId,
+}: INicknameStep) => {
+  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
+    habitId,
+  );
+  const [alias, setAlias] = useState<string | null>(null);
+  const [icon, setIcon] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col gap-[3rem]">
+      <div className="w-full flex flex-col gap-[3rem] pb-[2rem]">
         <nav className="flex self-start gap-[0.5rem] items-center">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
@@ -23,33 +38,47 @@ export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
           beforeStageIndex={1}
         ></ProgressBox>
 
-        <HabitSearchBox
-          searchedList={[
-            {
-              habitId: 1,
-              name: '운동하기',
-            },
-            {
-              habitId: 2,
-              name: '생활 운동',
-            },
-          ]}
-        />
+        {!isCategorySet && (
+          <HabitSearchBox
+            selectedHabitId={selectedHabitId}
+            setSelectedHabitId={setSelectedHabitId}
+          />
+        )}
 
         <InputBox
           isLabel={true}
           mode="HABITNICKNAME"
           defaultValue=""
-          setDefaultValue={() => {}}
+          setDefaultValue={setAlias}
         />
 
-        <Picker label="해빗 아이콘을 골라주세요" />
+        <Picker
+          label="해빗 아이콘을 골라주세요"
+          selectedEmoji={icon}
+          setSelectedEmoji={setIcon}
+        />
       </div>
 
       <Button
-        isActivated={isAlreadySet === null ? false : true}
+        isActivated={
+          isCategorySet
+            ? alias && icon
+              ? true
+              : false
+            : selectedHabitId && alias && icon
+              ? true
+              : false
+        }
         label="다음"
-        onClick={onNext}
+        onClick={
+          isCategorySet
+            ? alias && icon
+              ? () => onNext(alias, icon, selectedHabitId)
+              : () => {}
+            : selectedHabitId && alias && icon
+              ? () => onNext(alias, icon, selectedHabitId)
+              : () => {}
+        }
       />
     </div>
   );
