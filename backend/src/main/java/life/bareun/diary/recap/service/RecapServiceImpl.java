@@ -196,13 +196,17 @@ public class RecapServiceImpl implements RecapService {
                     .mostFrequencyTime(occasion).build());
 
             if (notificationTokenMap.containsKey(recapMemberDto.member().getId())) {
-                notificationService.createNotification(
-                    NotificationResultTokenDto.builder().member(recapMemberDto.member()).content(
-                            String.format(notificationCategory.getContent(),
-                                recapMemberDto.member().getNickname(), nowMonth.getYear(),
-                                nowMonth.getMonthValue()))
-                        .token(notificationTokenMap.get(recapMemberDto.member().getId())).build(),
-                    notificationCategory);
+                try {
+                    notificationService.createNotification(
+                        NotificationResultTokenDto.builder().member(recapMemberDto.member()).content(
+                                String.format(notificationCategory.getContent(),
+                                    recapMemberDto.member().getNickname(), nowMonth.getYear(),
+                                    nowMonth.getMonthValue()))
+                            .token(notificationTokenMap.get(recapMemberDto.member().getId())).build(),
+                        notificationCategory);
+                } catch(Exception e) {
+                    log.error("Member{}에게 리캡 알림을 전송하는 데 실패했습니다.", recapMemberDto.member().getId());
+                }
             }
         }
     }
