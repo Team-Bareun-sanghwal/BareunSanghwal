@@ -1,15 +1,17 @@
 'use client';
 
+import { postMemberInfo } from '@/app/(member)/mypage/_apis/postMemberInfo';
 import { InputBox, ScrollDatePicker, SelectBox } from '@/components';
 import { TinyButton } from '@/components/common/TinyButton/TinyButton';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 interface IPropType {
   title: string;
+  desc: string;
   prevData: string;
 }
 
-export const InfoModify = ({ title, prevData }: IPropType) => {
+export const InfoModify = ({ title, desc, prevData }: IPropType) => {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(prevData);
 
@@ -29,20 +31,19 @@ export const InfoModify = ({ title, prevData }: IPropType) => {
   };
 
   const saveData = () => {
-    // api 통신 추가
-
+    postMemberInfo({ title: title, data: value });
     toggleIsOpen();
   };
 
   const modifyContent =
-    title === '닉네임' ? (
+    desc === '닉네임' ? (
       <InputBox
         mode="NICKNAME"
         isLabel={false}
         defaultValue={value}
         setDefaultValue={setValue}
       />
-    ) : title === '성별' ? (
+    ) : desc === '성별' ? (
       <SelectBox
         options={[
           { key: 'M', value: '남자' },
@@ -52,7 +53,7 @@ export const InfoModify = ({ title, prevData }: IPropType) => {
         defaultValue={value}
         setDefaultValue={setValue}
       />
-    ) : title === '직업' ? (
+    ) : desc === '직업' ? (
       <SelectBox
         options={[
           { key: 'STUDENT', value: '학생' },
@@ -73,10 +74,10 @@ export const InfoModify = ({ title, prevData }: IPropType) => {
       <div className="w-full flex justify-between">
         <div className="flex items-center">
           <p className="w-[6rem] text-left custom-semibold-text text-custom-matcha">
-            {title}
+            {desc}
           </p>
           <p className="custom-medium-text text-custom-black">
-            {['성별', '직업'].includes(title) ? keyValueMap.get(value) : value}
+            {['성별', '직업'].includes(desc) ? keyValueMap.get(value) : value}
           </p>
         </div>
 

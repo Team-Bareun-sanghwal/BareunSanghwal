@@ -6,23 +6,26 @@ interface IPropType {
   gender: string;
   job: string;
 }
-
 export const InfoModifyList = ({ userData }: { userData: IPropType }) => {
   const mypageArr = [
     {
-      title: '닉네임',
+      title: 'nickname',
+      desc: '닉네임',
       prevData: userData.nickname,
     },
     {
-      title: '성별',
+      title: 'gender',
+      desc: '성별',
       prevData: userData.gender,
     },
     {
-      title: '직업',
+      title: 'job',
+      desc: '직업',
       prevData: userData.job,
     },
     {
-      title: '생일',
+      title: 'birthDate',
+      desc: '생일',
       prevData: userData.birthDate,
     },
   ];
@@ -34,6 +37,7 @@ export const InfoModifyList = ({ userData }: { userData: IPropType }) => {
           <InfoModify
             key={data.title}
             title={data.title}
+            desc={data.desc}
             prevData={data.prevData}
           />
         );
