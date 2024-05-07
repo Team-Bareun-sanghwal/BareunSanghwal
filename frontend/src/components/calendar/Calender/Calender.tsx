@@ -21,7 +21,7 @@ interface ICalenderProps {
   longestStreak: number;
   year: number;
   month: number;
-  habitId: number;
+  habitId?: number;
 }
 
 export const Calender = ({
