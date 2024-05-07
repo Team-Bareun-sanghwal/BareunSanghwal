@@ -1,8 +1,10 @@
 package life.bareun.diary.member.controller;
 
+import co.elastic.clients.elasticsearch.xpack.usage.Base;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
@@ -255,6 +257,23 @@ public class MemberController {
                     HttpStatus.OK.value(),
                     String.format("%d번 해빗의 해빗 트래커 정보를 읽어왔습니다,", Integer.parseInt(memberHabitId)),
                     memberHabitTrackersResDto
+                )
+            );
+    }
+
+    @GetMapping("/daily-phrase")
+    public ResponseEntity<BaseResponse<MemberDailyPhraseResDto>> daliyPhrase() {
+        MemberDailyPhraseResDto memberDailyPhraseResDto = memberService.dailyPhrase();
+
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "오늘의 문구를 읽어 왔습니다.",
+                    memberDailyPhraseResDto
                 )
             );
     }

@@ -42,11 +42,13 @@ import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.mapper.MemberMapper;
+import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.product.exception.ProductErrorCode;
@@ -80,6 +82,7 @@ public class MemberServiceImpl implements MemberService {
     private final TreeColorRepository treeColorRepository;
     private final HabitTrackerRepository habitTrackerRepository;
     private final MemberHabitRepository memberHabitRepository;
+    private final MemberDailyPhraseRepository memberDailyPhraseRepository;
 
     @Override
     @Transactional
@@ -446,6 +449,24 @@ public class MemberServiceImpl implements MemberService {
         return new MemberHabitTrackersResDto(
             habitTrackerGroupList,
             yearList
+        );
+    }
+
+    @Override
+    public MemberDailyPhraseResDto dailyPhrase() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        MemberDailyPhrase memberDailyPhrase = memberDailyPhraseRepository.findByMember(member)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
+            );
+
+        return new MemberDailyPhraseResDto(
+            memberDailyPhrase.getDailyPhrase().getPhrase()
         );
     }
 }

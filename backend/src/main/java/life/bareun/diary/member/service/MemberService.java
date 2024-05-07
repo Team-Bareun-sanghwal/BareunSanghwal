@@ -4,6 +4,7 @@ import java.util.List;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
@@ -49,4 +50,6 @@ public interface MemberService {
     MemberTreePointResDto treePoint();
 
     MemberHabitTrackersResDto habitTrackers(String memberHabitId);
+
+    MemberDailyPhraseResDto dailyPhrase();
 }
