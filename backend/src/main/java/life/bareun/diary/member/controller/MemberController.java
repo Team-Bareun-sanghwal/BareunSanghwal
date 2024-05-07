@@ -1,6 +1,5 @@
 package life.bareun.diary.member.controller;
 
-import co.elastic.clients.elasticsearch.xpack.usage.Base;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
