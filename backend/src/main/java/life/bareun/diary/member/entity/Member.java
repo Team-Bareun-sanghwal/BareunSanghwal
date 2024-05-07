@@ -102,22 +102,23 @@ public class Member {
     @Column(name = "member_habits")
     private List<MemberHabit> memberHabitList;
 
-    private Member(String sub, OAuth2Provider oAuth2Provider) {
+    private Member(String sub, OAuth2Provider oAuth2Provider, Tree defaultTree) {
         this.sub = sub;
         this.provider = oAuth2Provider;
-
         this.role = Role.ROLE_USER;
         this.point = 0;
         this.currentStreakColorId = 1;
         this.currentTreeColorId = 1;
+        this.tree = defaultTree;
         this.paidRecoveryCount = 0;
     }
 
     public static Member create(
         String sub,
-        OAuth2Provider oAuth2Provider
+        OAuth2Provider oAuth2Provider,
+        Tree defaultTree
     ) {
-        return new Member(sub, oAuth2Provider);
+        return new Member(sub, oAuth2Provider, defaultTree);
     }
 
     public void update(MemberUpdateReqDto memberUpdateReqDto) {

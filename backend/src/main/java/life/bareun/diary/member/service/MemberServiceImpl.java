@@ -21,7 +21,6 @@ import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
-import life.bareun.diary.habit.service.HabitTrackerService;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
@@ -50,6 +49,7 @@ import life.bareun.diary.member.mapper.MemberMapper;
 import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.repository.TreeRepository;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
@@ -68,12 +68,13 @@ public class MemberServiceImpl implements MemberService {
     private static final int COLOR_INDEX_DEFAULT = 1;
     private static final int COLOR_INDEX_MIN = 0;
 
+    private static final Long DEFAULT_TREE_ID = 1L;
+
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final AuthTokenProvider authTokenProvider;
     private final AuthTokenService authTokenService;
     private final StreakService streakService;
-    private final HabitTrackerService habitTrackerService;
 
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
@@ -82,6 +83,7 @@ public class MemberServiceImpl implements MemberService {
     private final HabitTrackerRepository habitTrackerRepository;
     private final MemberHabitRepository memberHabitRepository;
     private final MemberDailyPhraseRepository memberDailyPhraseRepository;
+    private final TreeRepository treeRepository;
 
     @Override
     @Transactional
@@ -95,7 +97,11 @@ public class MemberServiceImpl implements MemberService {
                 () -> {
                     memberStatus.set(MemberStatus.NEW);
                     Member savedMember = memberRepository.save(
-                        Member.create(sub, oAuth2Provider)
+                        Member.create(
+                            sub,
+                            oAuth2Provider,
+                            treeRepository.getReferenceById(DEFAULT_TREE_ID)
+                        )
                     );
                     memberRecoveryRepository.save(
                         MemberRecovery.create(savedMember)
