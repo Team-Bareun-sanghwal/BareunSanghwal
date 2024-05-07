@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 interface IMonthLabel {
-  year: number;
-  month: number;
+  year: string;
+  month: string;
 }
 export const MonthLabel = ({ year, month }: IMonthLabel) => {
   const y = year;
