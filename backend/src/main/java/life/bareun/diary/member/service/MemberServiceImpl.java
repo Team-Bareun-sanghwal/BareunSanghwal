@@ -23,12 +23,14 @@ import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.habit.service.HabitTrackerService;
+import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
@@ -413,5 +415,31 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         return new MemberTreePointResDto(point);
+    }
+
+    @Override
+    public MemberHabitTrackersResDto habitTrackers(String memberHabitId) {
+        Long memberId = AuthUtil.getMemberIdFromAuthentication();
+        Long longMemberHabitId = Long.parseLong(memberHabitId);
+
+        List<Integer> yearList = habitTrackerRepository.findAllCreatedYear(
+            memberId,
+            longMemberHabitId
+        );
+        List<MemberHabitTrackerDto> habitTrackerGroupList = new ArrayList<>();
+        for (Integer year : yearList) {
+            habitTrackerGroupList.add(
+                habitTrackerRepository.findAllHabitTrackerId(
+                    year,
+                    memberId,
+                    longMemberHabitId
+                )
+            );
+        }
+
+        return new MemberHabitTrackersResDto(
+            habitTrackerGroupList,
+            yearList
+        );
     }
 }

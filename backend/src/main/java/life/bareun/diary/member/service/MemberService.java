@@ -3,6 +3,7 @@ package life.bareun.diary.member.service;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.principal.MemberPrincipal;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
@@ -42,4 +43,6 @@ public interface MemberService {
     MemberHabitsResDto habits();
 
     MemberTreePointResDto treePoint();
+
+    MemberHabitTrackersResDto habitTrackers(String memberHabitId);
 }
