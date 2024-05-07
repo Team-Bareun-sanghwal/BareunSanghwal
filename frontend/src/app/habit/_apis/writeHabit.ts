@@ -1,21 +1,29 @@
 export async function writeHabit(
-  image: string,
-  habitCompletionReqDto: {
+  image: File | null,
+  HabitTrackerModifyReqDto: {
     habitTrackerId: number;
-    content: string;
+    content: string | null;
   },
 ) {
+  const habitFormData = new FormData();
+  if (image) habitFormData.append('image', image);
+  habitFormData.append(
+    'HabitTrackerModifyReqDto',
+    new Blob([JSON.stringify(HabitTrackerModifyReqDto)], {
+      type: 'application/json',
+    }),
+  );
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/habits/completion`,
     {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
         Authorization:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6IjEiLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzE0MTA0Njg3LCJleHAiOjE3MTMzMzMzOTEwODd9.fiwjrUdcc14-eLMUuhYtYQxLEP9eEynCnUMyBTdjXBI',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjE2Iiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNTAzOTczOCwiZXhwIjoxNzE1OTAzNzM4fQ.KvEeNhUaAmp6clxvQnj2X4tB8GRytsV2xkvWLH6S6uk',
       },
       credentials: 'include',
-      body: JSON.stringify({ image, habitCompletionReqDto }),
+      body: habitFormData,
     },
   );
 

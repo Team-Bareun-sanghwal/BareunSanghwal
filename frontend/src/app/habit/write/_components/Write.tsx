@@ -10,8 +10,15 @@ import {
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
+import { writeHabit } from '../../_apis/writeHabit';
 
-export const HabitWriteComponent = () => {
+export const Write = ({
+  onPrev,
+  onNext,
+}: {
+  onPrev: () => void;
+  onNext: () => void;
+}) => {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
 
@@ -23,7 +30,11 @@ export const HabitWriteComponent = () => {
         description="기록을 완료한다면 오늘 기록해야 할 해빗 중 3개를 완료하고 13일째 스트릭을 유지할 수 있게 됩니다!"
         mode="POSITIVE"
         onClose={close}
-        onConfirm={close}
+        onConfirm={async () => {
+          await writeHabit(image, { habitTrackerId: 35, content: text });
+          onNext();
+          close();
+        }}
         open={isOpen}
         title="기록을 완료하시겠어요?"
       />
@@ -36,7 +47,7 @@ export const HabitWriteComponent = () => {
         <nav className="flex self-start gap-[0.5rem] items-center">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
-            onClick={() => {}}
+            onClick={() => onPrev()}
           />
           <span className="custom-bold-text">해빗 기록</span>
         </nav>

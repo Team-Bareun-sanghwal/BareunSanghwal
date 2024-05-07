@@ -43,3 +43,11 @@ export interface ISimpleHabitListData {
   alias: string;
   dayList: number[];
 }
+
+export interface IWriteHabitData {
+  image: File | null;
+  HabitTrackerModifyReqDto: {
+    habitTrackerId: number;
+    content: string | null;
+  };
+}
