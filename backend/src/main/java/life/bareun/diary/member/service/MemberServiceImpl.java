@@ -285,7 +285,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findAll();
     }
 
-    //월마다 수행되는 메소드
+    // 월마다 수행되는 메소드
     @Transactional
     public void initStreakRecoveryForAllMembersMonthly() {
         // 회원 탈퇴 시 MemberRecovery가 먼저 삭제되므로
@@ -519,6 +519,12 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
+
+        // 오늘 받았다면
+        if (member.getLastHarvestedDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
+            throw new MemberException(MemberErrorCode.ALREADY_HARVESTED);
+        }
+
         Tree tree = member.getTree();
         int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
 
