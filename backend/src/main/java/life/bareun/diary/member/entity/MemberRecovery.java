@@ -56,7 +56,7 @@ public class MemberRecovery {
         }
     }
 
-    public void sendFreeRecovery() {
+    public void grantFreeRecovery() {
         if (freeRecoveryCount < MAX_FREE_RECOVERY_COUNT) {
             freeRecoveryCount += 1;
         }

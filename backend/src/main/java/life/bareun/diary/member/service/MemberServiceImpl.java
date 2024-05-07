@@ -286,7 +286,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
-    public void grantFreeRecoveryToAllMembers() {
+    public void initStreakRecoveryForAllMembersMonthly() {
         // 회원 탈퇴 시 MemberRecovery가 먼저 삭제되므로
         // memberRecovery의 memberId가 Member 테이블에 있는지 확인할 필요가 없다.
         List<MemberRecovery> memberRecoveries = memberRecoveryRepository.findAll();

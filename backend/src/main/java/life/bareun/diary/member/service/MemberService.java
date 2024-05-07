@@ -35,7 +35,7 @@ public interface MemberService {
 
     List<Member> findAllMember();
 
-    void grantFreeRecoveryToAllMembers();
+    void initStreakRecoveryForAllMembersMonthly();
 
     MemberPointResDto point();
 
