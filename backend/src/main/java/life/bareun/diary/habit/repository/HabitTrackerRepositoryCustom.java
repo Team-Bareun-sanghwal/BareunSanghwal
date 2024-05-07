@@ -8,8 +8,10 @@ import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
+import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
+import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 
@@ -30,6 +32,8 @@ public interface HabitTrackerRepositoryCustom {
     List<MemberPracticedHabitDto> findTopHabits(Long memberId);
 
     Long countByMemberId(Long memberId);
+
+    List<HabitPracticeCountPerDayOfWeekDto> countPracticedHabitsPerDayOfWeek(Long memberId);
 
     List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId);
 

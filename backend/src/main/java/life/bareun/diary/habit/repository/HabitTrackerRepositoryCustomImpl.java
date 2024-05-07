@@ -15,6 +15,7 @@ import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
+import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
@@ -45,7 +46,8 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<HabitTrackerTodayDto> findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
+    public List<HabitTrackerTodayDto> findAllTodayHabitTracker(
+        HabitTrackerTodayFactorDto habitTrackerTodayFactorDto) {
         return queryFactory.select(
                 Projections.constructor(HabitTrackerTodayDto.class,
                     habitTracker.memberHabit.habit.name, habitTracker.memberHabit.alias,
@@ -82,13 +84,15 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto) {
+    public Long getHabitTrackerCountByMemberHabitAndDate(
+        HabitTrackerScheduleDto habitTrackerScheduleDto) {
         return queryFactory.select(habitTracker.id.count())
             .from(habitTracker)
             .where(
                 habitTracker.memberHabit.eq(habitTrackerScheduleDto.memberHabit())
                     .and(habitTracker.createdYear.eq(habitTrackerScheduleDto.date().getYear()))
-                    .and(habitTracker.createdMonth.eq(habitTrackerScheduleDto.date().getMonthValue()))
+                    .and(habitTracker.createdMonth.eq(
+                        habitTrackerScheduleDto.date().getMonthValue()))
                     .and(habitTracker.createdDay.eq(habitTrackerScheduleDto.date().getDayOfMonth()))
             ).fetchFirst();
     }
@@ -123,6 +127,23 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
+    public List<HabitPracticeCountPerDayOfWeekDto> countPracticedHabitsPerDayOfWeek(Long memberId) {
+        return queryFactory
+            .select(
+                Projections.constructor(
+                    HabitPracticeCountPerDayOfWeekDto.class,
+                    habitTracker.day.intValue().as("day"),
+                    habitTracker.day.count().intValue().as("value")
+                )
+            )
+            .from(habitTracker)
+            .where(habitTracker.member.id.eq(memberId))
+            .groupBy(habitTracker.day)
+            .orderBy(habitTracker.day.asc())
+            .fetch();
+    }
+
+    @Override
     public List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId) {
         NumberTemplate<Integer> hour = Expressions.numberTemplate(
             Integer.class,
@@ -139,6 +160,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 )
             )
             .from(habitTracker)
+            .where(habitTracker.member.id.eq(memberId))
             .groupBy(hour)
             .orderBy(hour.asc())
             .fetch();
