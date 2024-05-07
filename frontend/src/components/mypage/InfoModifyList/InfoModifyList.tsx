@@ -28,7 +28,7 @@ export const InfoModifyList = ({ userData }: { userData: IPropType }) => {
   ];
 
   return (
-    <div className="flex flex-col gap-[1rem]">
+    <div className="flex flex-col gap-[4rem]">
       {mypageArr.map((data) => {
         return (
           <InfoModify

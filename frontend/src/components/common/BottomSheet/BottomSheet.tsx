@@ -7,12 +7,18 @@ import { motion } from 'framer-motion';
 interface IBottomSheetProps {
   title: string;
   description: string;
-  mode: 'POSITIVE' | 'NEGATIVE' | 'RECOVERY' | 'NONE';
+  mode:
+    | 'POSITIVE'
+    | 'NEGATIVE'
+    | 'RECOVERY'
+    | 'PURCHASE_STREAK'
+    | 'PURCHASE_TREE'
+    | 'PURCHASE_RECOVERY'
+    | 'NONE';
   open: boolean;
   onClose?: () => void;
   onConfirm?: () => void;
 }
-
 const container = {
   show: { y: 0, opacity: 1 },
   hidden: { y: '100%', opacity: 0 },
@@ -33,8 +39,13 @@ export const BottomSheet = ({
         ? 'error'
         : mode === 'RECOVERY'
           ? 'lightning'
-          : '';
-
+          : mode === 'PURCHASE_STREAK'
+            ? 'item-streak-color'
+            : mode === 'PURCHASE_TREE'
+              ? 'item-tree'
+              : mode === 'PURCHASE_RECOVERY'
+                ? 'item-recovery'
+                : '';
   return (
     <>
       {open && (

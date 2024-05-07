@@ -42,11 +42,13 @@ interface XAxisConfigType {
 }
 
 export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
-  const borderRadius = 15;
+  const borderRadius = 10;
+  let maxValue = 0;
 
   const colorArr = ['#277530', '#d4d4d8', '#94439e'];
 
   const processedData = data.map((day) => {
+    maxValue = Math.max(maxValue, day.value);
     return { ...day, color: colorArr[day.colorIdx] };
   });
 
@@ -67,6 +69,7 @@ export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
   const yAxisConfig = {
     visible: false,
     minimum: 0,
+    maximum: maxValue + 20,
     majorGridLines: { width: 0 },
     majorTickLines: { width: 0 },
     lineStyle: { width: 0 },
@@ -97,7 +100,8 @@ export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
       primaryYAxis={yAxisConfig}
       chartArea={chatAreaConfig}
       legendSettings={legendSettings}
-      className="w-[34rem]"
+      height="250px"
+      width="250px"
     >
       <Inject services={[ColumnSeries, Legend, Tooltip, DataLabel, Category]} />
       <SeriesCollectionDirective>

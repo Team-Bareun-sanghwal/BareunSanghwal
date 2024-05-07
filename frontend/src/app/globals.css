@@ -4,7 +4,8 @@
 @tailwind utilities;
 
 @layer base {
-  html, pre {
+  html,
+  pre {
     font-family: 'pretendard', sans-serif;
     font-size: 62.5%;
   }
@@ -44,13 +45,14 @@
   /* 그라데이션 테두리 */
   .custom-gradient-border {
     border: 0.3rem solid transparent;
-    background-image: linear-gradient(#fff, #fff), linear-gradient(to right, #db719e 0%, #5a9ed0 100%);
+    background-image: linear-gradient(#fff, #fff),
+      linear-gradient(to right, #db719e 0%, #5a9ed0 100%);
     background-origin: border-box;
     background-clip: content-box, border-box;
   }
 
   /* 리캡 스포트라이트 */
-.spotlight {
+  .spotlight {
     width: 0;
     height: 0;
     position: absolute;
@@ -59,8 +61,7 @@
     transform: translateX(-50%);
     animation: spotlight-grow 3s ease;
   }
-
-  @keyframes spotlight-grow {                                                                                                                                                                                                                                                                                                                          
+  @keyframes spotlight-grow {
     0% {
       border-left: 5rem solid transparent;
       border-right: 5rem solid transparent;
@@ -74,8 +75,8 @@
     }
   }
 
-  /* 리캡 진행 블록*/
-.progressBlock {
+  /* 리캡 진행 블록 */
+  .progressBlock {
     width: 3.3rem;
     height: 0.5rem;
     background-color: white;
@@ -83,14 +84,62 @@
     transition: width 10s ease-in-out;
     animation: progressBlock-grow 10s linear forwards;
   }
-
   @keyframes progressBlock-grow {
     0% {
-        transform: scaleX(0);
+      transform: scaleX(0);
     }
     100% {
-        transform: scaleX(1);
+      transform: scaleX(1);
     }
   }
 
+  /* 반짝임 애니메이션 */
+  .animationBlink {
+    transition: color 1s ease-in-out;
+    animation: recap-blink 1s infinite alternate;
+  }
+  @keyframes recap-blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+
+  /* 줌 인/아웃 애니메이션 */
+  .animationZoom {
+    transition: margin 1s ease-in-out;
+    animation: zoom 1s infinite alternate;
+  }
+  @keyframes zoom {
+    0% {
+      margin-bottom: 1rem;
+      transform: scale(1);
+    }
+    100% {
+      margin-bottom: -1rem;
+      transform: scale(1.05);
+    }
+  }
+
+  /* 팔랑이는 애니메이션 */
+
+  .flying-div {
+    animation: fly-in 2s ease-in-out;
+  }
+  @keyframes fly-in {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(-45deg);
+    }
+    50% {
+      transform: translateX(50%) translateY(50%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(0%) translateY(0%) rotate(0deg);
+    }
+  }
 }

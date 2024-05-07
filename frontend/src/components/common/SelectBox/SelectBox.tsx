@@ -21,7 +21,7 @@ export const SelectBox = ({
   return (
     <section className="w-full flex flex-col gap-[1rem]">
       {label && (
-        <label className="custom-semibold-text text-custom-black">
+        <label className="custom-semibold-text text-custom-matcha">
           {label}
         </label>
       )}
