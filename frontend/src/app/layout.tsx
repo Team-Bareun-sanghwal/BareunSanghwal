@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: '바른생활',
   description: '나만의 해빗 관리',
   icons: {
-    icon: '/images/icon-block1.png',
+    icon: '/images/icon-favicon.png',
   },
 };
 
