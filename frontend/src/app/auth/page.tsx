@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { TinyButton } from '@/components';
-import { $Fetch } from '@/utils/fetch-method';
+import { $Fetch } from '@/apis';
 import { redirect } from 'next/navigation';
 
 export default async function Page() {
