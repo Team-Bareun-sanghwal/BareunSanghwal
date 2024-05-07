@@ -1,12 +1,18 @@
 'use client';
-import { IMemberHabit } from '@/app/mock';
+
 import { useRouter } from 'next/navigation';
+
 export const HabitBtn = ({
   memberHabitId,
   alias,
   icon,
   habitId,
-}: IMemberHabit) => {
+}: {
+  memberHabitId: number;
+  alias: string;
+  icon: string;
+  habitId?: number;
+}) => {
   const router = useRouter();
 
   const onClickRouter = () => {
@@ -16,6 +22,7 @@ export const HabitBtn = ({
       router.push(`/main/2024/5/${memberHabitId}`);
     }
   };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center overflow-hidden">

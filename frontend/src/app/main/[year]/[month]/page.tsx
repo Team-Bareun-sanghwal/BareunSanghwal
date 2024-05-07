@@ -84,11 +84,11 @@ export default async function Page(props: {
   });
 
   //8. 오늘의 문구
-  // const dailyPhrase = await $Fetch({
-  //   method: 'GET',
-  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/today-phrase`,
-  //   cache: 'no-cache',
-  // });
+  const dailyPhrase = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/daily-phrase`,
+    cache: 'no-cache',
+  });
 
   //9. 내 보유 포인트
   const myPoint = await $Fetch({
@@ -104,6 +104,8 @@ export default async function Page(props: {
     habitListData.data === null ? { habitList: [] } : habitListData.data;
   const longestStreakCount =
     longestStreak.data == null ? 0 : longestStreak.data.longestStreak;
+  console.log(dailyPhrase);
+  console.log(dayInfo);
   return (
     <>
       <MainTitle

@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 
 import { getMonth } from '../util';
 interface IMonthLabel {
-  year: number;
-  month: number;
+  year: string;
+  month: string;
 }
 export const MonthLabel = ({ year, month }: IMonthLabel) => {
   const router = useRouter();
@@ -24,13 +24,15 @@ export const MonthLabel = ({ year, month }: IMonthLabel) => {
     <>
       <div className="flex w-full space-x-4 justify-around my-4">
         <ChevronLeftIcon
-          onClick={() => routeMonth(prevMonth(year, month))}
+          onClick={() => routeMonth(prevMonth(parseInt(year), parseInt(month)))}
           className="w-8 h-8"
         />
         <p className="flex font-bold text-3xl text-center">{month}월</p>
         {getMonth(false) !== month + '' ? (
           <ChevronRightIcon
-            onClick={() => routeMonth(nextMonth(year, month))}
+            onClick={() =>
+              routeMonth(nextMonth(parseInt(year), parseInt(month)))
+            }
             className="w-8 h-8"
           />
         ) : (

@@ -43,13 +43,13 @@ export const Calender = ({
     themeColor === 'sunny_summer';
   return (
     <>
-      <MonthLabel month={month} year={year} />
+      <MonthLabel month={month + ''} year={year + ''} />
       <HabitBtnList habitId={habitId} />
       <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />
       <div className="grid grid-cols-7 gap-4 p-1 m-2.5">
         {setDayInfo(dayInfo, dayOfWeekFirst).map((info, index) =>
-          info.day < 0 ? (
+          info.dayNumber < 0 ? (
             <div key={index}></div>
           ) : (
             <Streak
@@ -58,7 +58,7 @@ export const Calender = ({
               achieveCount={info.achieveCount}
               year={year}
               month={month}
-              day={info.day}
+              dayNumber={info.dayNumber}
               isUnique={isUnique}
               habitCnt={memberHabitList.length}
               habitId={habitId}

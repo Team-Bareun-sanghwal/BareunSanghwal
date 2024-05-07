@@ -9,7 +9,7 @@ interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
-  day?: number;
+  dayNumber?: number;
   month?: number;
   year?: number;
   habitCnt?: number;
@@ -20,7 +20,7 @@ interface StreakProps {
 export const Streak = ({
   themeColor,
   achieveCount,
-  day,
+  dayNumber,
   month,
   year,
   isUnique,
@@ -43,7 +43,7 @@ export const Streak = ({
         onClose={close}
         onConfirm={() => Recovoery()}
         open={isOpen}
-        title={`${day}일의 스트릭을 복구하시겠어요?`}
+        title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
       />
     ));
   };
@@ -64,7 +64,7 @@ export const Streak = ({
       overlay.open(({ isOpen, close }) => (
         // 구매 성공 응답 시
         <BottomSheet
-          description={`${day}일의 스트릭이 복구되었어요!`}
+          description={`${dayNumber}일의 스트릭이 복구되었어요!`}
           mode="POSITIVE"
           onClose={close}
           open={isOpen}
@@ -85,6 +85,7 @@ export const Streak = ({
     }
   };
   const streakOpacity = [10, 40, 55, 60, 70, 80, 90, 100];
+
   const basicStreakStyle =
     'text-white text-xl aspect-square rounded-lg relative';
   function getClassName() {
@@ -106,14 +107,14 @@ export const Streak = ({
     <button onClick={() => onClickStreakRecovery()} className={customClassName}>
       <a
         className={
-          getToday(false) === day + '' &&
+          getToday(false) === dayNumber + '' &&
           getMonth(false) === month + '' &&
           getYear() === year + ''
             ? 'flex text-white text-2xl w-full h-full rounded-md border-custom-dark-gray border-2 items-center justify-center'
             : ''
         }
       >
-        {day}
+        {dayNumber}
       </a>
       {habitCnt != 0 && habitCnt == achieveCount && (
         <StarIcon className="w-4 h-4 absolute right-1 top-1" />
