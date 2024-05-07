@@ -11,6 +11,7 @@ import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.service.MemberService;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
@@ -35,6 +36,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
     private final MemberDailyStreakRepository memberDailyStreakRepository;
     private final HabitTrackerRepository habitTrackerRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     /**
      * 초기 회원 가입 시에 호출. 멤버 전체 스트릭과 해당 날짜의 멤버 일일 스트릭을 생성.
@@ -134,6 +136,11 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             Math.max(
                 memberTotalStreak.getLongestStreak(),
                 memberDailyStreakToday.getCurrentStreak()));
+
+        // 갱신된 최장 스트릭이 10의 배수면 레벨업
+        if (memberTotalStreak.getLongestStreak() % 10 == 0) {
+            memberService.treeLevelUp();
+        }
 
         // 만약 내일의 멤버 데일리 스트릭이 존재하면 currentStreak을 이어준다.
         memberDailyStreakRepository.findByMemberAndCreatedDate(member, today.plusDays(1))
