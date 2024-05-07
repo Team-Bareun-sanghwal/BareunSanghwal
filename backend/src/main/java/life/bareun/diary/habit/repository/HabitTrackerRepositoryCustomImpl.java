@@ -7,13 +7,14 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.Objects;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
+import life.bareun.diary.habit.dto.HabitTrackerDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.entity.HabitTracker;
+import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import lombok.RequiredArgsConstructor;
@@ -116,5 +117,50 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
             .groupBy(hour)
             .orderBy(hour.asc())
             .fetch();
+    }
+
+    @Override
+    public List<Integer> findAllCreatedYear(Long memberId, Long memberHabitId) {
+        return queryFactory
+            .selectDistinct(habitTracker.createdYear.intValue())
+            .from(habitTracker)
+            .where(
+                habitTracker.memberHabit.id.eq(memberHabitId)
+                    .and(habitTracker.memberHabit.member.id.eq(memberId))
+            )
+            .orderBy(habitTracker.createdYear.desc())
+            .fetch();
+    }
+
+    @Override
+    public MemberHabitTrackerDto findAllHabitTrackerByMemberHabitId(
+        Integer year,
+        Long memberId,
+        Long memberHabitId
+    ) {
+        List<HabitTrackerDto> habitTrackerList = queryFactory
+            .select(
+                Projections.constructor(
+                    HabitTrackerDto.class,
+                    habitTracker.id,
+                    habitTracker.succeededTime,
+                    habitTracker.content,
+                    habitTracker.image,
+                    habitTracker.createdMonth,
+                    habitTracker.createdDay
+                )
+            )
+            .from(habitTracker)
+            .where(
+                habitTracker.memberHabit.id.eq(memberHabitId)
+                    .and(habitTracker.memberHabit.member.id.eq(memberId))
+                    .and(habitTracker.createdYear.eq(year))
+            )
+            .fetch();
+
+        return new MemberHabitTrackerDto(
+            year,
+            habitTrackerList
+        );
     }
 }

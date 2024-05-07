@@ -3,11 +3,11 @@ package life.bareun.diary.habit.repository;
 import java.util.List;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
+import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
-import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.entity.HabitTracker;
-import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
+import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 
@@ -18,7 +18,7 @@ public interface HabitTrackerRepositoryCustom {
     void modifyHabitTracker(HabitTrackerModifyDto habitTrackerModifyDto);
 
     List<HabitTrackerTodayDto>
-        findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto);
+    findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto);
 
     HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto);
 
@@ -27,4 +27,8 @@ public interface HabitTrackerRepositoryCustom {
     Long countByMemberId(Long memberId);
 
     List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId);
+
+    List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId);
+
+    MemberHabitTrackerDto findAllHabitTrackerByYearAndMemberHabitId(Integer year, Long memberId, Long memberHabitId);
 }
