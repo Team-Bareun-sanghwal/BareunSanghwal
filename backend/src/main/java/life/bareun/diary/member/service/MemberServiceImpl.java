@@ -91,6 +91,17 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDailyPhraseRepository memberDailyPhraseRepository;
     private final TreeRepository treeRepository;
 
+    @Transactional(readOnly = true)
+    protected Member getCurrentMember() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        return member;
+    }
+
 
     @Override
     @Transactional
@@ -208,13 +219,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
-            );
-
+        Member member = getCurrentMember();
         member.update(memberUpdateReqDto);
         memberRepository.save(member);
     }
@@ -232,23 +237,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberInfoResDto info() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
-
-        return MemberMapper.INSTANCE.toMemberInfoRes(member);
+        return MemberMapper.INSTANCE.toMemberInfoRes(getCurrentMember());
     }
 
     @Override
     public MemberStreakColorResDto streakColor() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
-
+        Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
                 member.getCurrentStreakColorId()
             )
@@ -262,11 +256,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberTreeColorResDto treeColor() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         String treeColorName = treeColorRepository.findById(
                 member.getCurrentStreakColorId()
@@ -304,13 +294,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberPointResDto point() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
-
-        return new MemberPointResDto(member.getPoint());
+        return new MemberPointResDto(getCurrentMember().getPoint());
     }
 
     @Override
@@ -323,11 +307,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberStreakRecoveryCountResDto streakRecoveryCount() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         Integer freeRecoveryCount = memberRecoveryRepository.findByMember(member)
             .orElseThrow(
@@ -380,12 +360,7 @@ public class MemberServiceImpl implements MemberService {
             habitTrackerRepository.countPracticedHabitsPerHour(memberId)
         );
 
-        LocalDate memberCreatedDate = memberRepository.findById(memberId)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            )
-            .getCreatedDateTime()
-            .toLocalDate();
+        LocalDate memberCreatedDate = getCurrentMember().getCreatedDateTime().toLocalDate();
         LocalDate now = LocalDate.now();
 
         // 총 서비스 사용 일 수
@@ -513,12 +488,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberTreePointResDto treePoint() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         // 오늘 받았다면
         if (member.getLastHarvestedDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
@@ -562,12 +534,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberDailyPhraseResDto dailyPhrase() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         MemberDailyPhrase memberDailyPhrase = memberDailyPhraseRepository.findByMember(member)
             .orElseThrow(
