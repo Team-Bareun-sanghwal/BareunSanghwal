@@ -51,144 +51,142 @@ export const setDayInfo = (
   return dayInfoList;
 };
 
-export function fetchStreakResponse() {
-  const StreakResponse: IStreaksReponse = {
-    achieveProportion: 88,
-    dayOfWeekFirst: 0,
-    memberHabitList: [
+export const StreakResponse: IStreaksReponse = {
+  achieveProportion: 88,
+  dayOfWeekFirst: 0,
+  memberHabitList: [
+    {
+      memberHabitId: 1,
+      alias: '팔굽혀펴기 100회',
+      icon: '💪',
+    },
+    {
+      memberHabitId: 2,
+      alias: '스쿼트 100회',
+      icon: '🦵',
+    },
+    {
+      memberHabitId: 3,
+      alias: '100km 달리기',
+      icon: '🏃',
+    },
+    {
+      memberHabitId: 4,
+      alias: '영양제',
+      icon: '🍎',
+    },
+    {
+      memberHabitId: 5,
+      alias: '기타연습',
+      icon: '🎸',
+    },
+    {
+      memberHabitId: 6,
+      alias: '5시 기상',
+      icon: '🔔',
+    },
+    {
+      memberHabitId: 7,
+      alias: '11시 취침',
+      icon: '🛏',
+    },
+  ],
+  dayInfo: setDayInfo(
+    [
       {
-        memberHabitId: 1,
-        alias: '팔굽혀펴기 100회',
-        icon: '💪',
+        dayNumber: 1,
+        achieveCount: 3,
+        totalCount: 3,
       },
       {
-        memberHabitId: 2,
-        alias: '스쿼트 100회',
-        icon: '🦵',
+        dayNumber: 2,
+        achieveCount: 3,
+        totalCount: 3,
       },
       {
-        memberHabitId: 3,
-        alias: '100km 달리기',
-        icon: '🏃',
+        dayNumber: 4,
+        achieveCount: 3,
+        totalCount: 3,
       },
       {
-        memberHabitId: 4,
-        alias: '영양제',
-        icon: '🍎',
+        dayNumber: 5,
+        achieveCount: 1,
+        totalCount: 3,
       },
       {
-        memberHabitId: 5,
-        alias: '기타연습',
-        icon: '🎸',
+        dayNumber: 6,
+        achieveCount: 2,
+        totalCount: 3,
       },
       {
-        memberHabitId: 6,
-        alias: '5시 기상',
-        icon: '🔔',
+        dayNumber: 7,
+        achieveCount: 2,
+        totalCount: 3,
       },
       {
-        memberHabitId: 7,
-        alias: '11시 취침',
-        icon: '🛏',
+        dayNumber: 8,
+        achieveCount: 2,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 9,
+        achieveCount: 3,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 11,
+        achieveCount: 3,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 12,
+        achieveCount: 1,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 13,
+        achieveCount: 3,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 14,
+        achieveCount: 3,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 15,
+        achieveCount: 3,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 16,
+        achieveCount: 2,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 17,
+        achieveCount: 1,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 18,
+        achieveCount: 2,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 22,
+        achieveCount: 2,
+        totalCount: 3,
+      },
+      {
+        dayNumber: 23,
+        achieveCount: 3,
+        totalCount: 3,
       },
     ],
-    dayInfo: setDayInfo(
-      [
-        {
-          dayNumber: 1,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 2,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 4,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 5,
-          achieveCount: 1,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 6,
-          achieveCount: 2,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 7,
-          achieveCount: 2,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 8,
-          achieveCount: 2,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 9,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 11,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 12,
-          achieveCount: 1,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 13,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 14,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 15,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 16,
-          achieveCount: 2,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 17,
-          achieveCount: 1,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 18,
-          achieveCount: 2,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 22,
-          achieveCount: 2,
-          totalCount: 3,
-        },
-        {
-          dayNumber: 23,
-          achieveCount: 3,
-          totalCount: 3,
-        },
-      ],
-      0,
-    ),
-  };
-}
+    0,
+  ),
+};
 
 export function fetchStreakTheme(): Promise<{ streak_color: ThemeColor }> {
   return new Promise((resolve) => {
