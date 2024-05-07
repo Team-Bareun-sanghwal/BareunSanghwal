@@ -20,35 +20,32 @@ export const Habit: Story = {
     habitTotalData: [
       {
         year: 2024,
-        habitList: [
+        habitTrackerList: [
           {
             content: '운동!!!!!1',
-            day: 1,
-            createdAt: new Date('2024-03-26'),
             habitTrackerId: 1,
             image: 'basic',
             succeededTime: new Date('2024-03-26'),
+            period: '3월 3일',
           },
           {
             content: '운동!!!!!2',
-            day: 2,
-            createdAt: new Date('2024-03-25'),
+
             habitTrackerId: 2,
             image: 'basic',
             succeededTime: new Date('2024-03-25'),
+            period: '3월 3일',
           },
           {
             content: '운동!!!!!3',
-            day: 3,
-            createdAt: new Date('2024-03-24'),
+            period: '3월 3일',
             habitTrackerId: 3,
             image: 'basic',
             succeededTime: new Date('2024-03-24'),
           },
           {
             content: '운동!!!!!4',
-            day: 4,
-            createdAt: new Date('2024-03-23'),
+            period: '3월 3일',
             habitTrackerId: 4,
             image: 'basic',
             succeededTime: new Date('2024-03-23'),
@@ -57,19 +54,17 @@ export const Habit: Story = {
       },
       {
         year: 2023,
-        habitList: [
+        habitTrackerList: [
           {
             content: '운동!!!!!5',
-            day: 5,
-            createdAt: new Date('2023-12-22'),
+            period: '3월 3일',
             habitTrackerId: 5,
             image: 'basic',
             succeededTime: new Date('2023-12-26'),
           },
           {
             content: '운동!!!!!6',
-            day: 6,
-            createdAt: new Date('2023-11-22'),
+            period: '3월 3일',
             habitTrackerId: 6,
             image: 'basic',
             succeededTime: new Date('2023-11-26'),
