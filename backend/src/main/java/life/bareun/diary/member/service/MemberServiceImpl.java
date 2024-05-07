@@ -25,6 +25,7 @@ import life.bareun.diary.member.dto.MemberHabitListElementDto;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
+import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.MemberTopHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
@@ -50,6 +51,8 @@ import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
+import life.bareun.diary.product.entity.StreakColor;
+import life.bareun.diary.product.entity.TreeColor;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
@@ -69,6 +72,9 @@ public class MemberServiceImpl implements MemberService {
     private static final int COLOR_INDEX_MIN = 0;
 
     private static final Long DEFAULT_TREE_ID = 1L;
+    private static final String DEFAULT_STREAK_COLOR_NAME = "bareun_sanghwal";
+    private static final String DEFAULT_TREE_COLOR_NAME = "green";
+
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -85,6 +91,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDailyPhraseRepository memberDailyPhraseRepository;
     private final TreeRepository treeRepository;
 
+
     @Override
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
@@ -96,13 +103,18 @@ public class MemberServiceImpl implements MemberService {
                 // 신규회원
                 () -> {
                     memberStatus.set(MemberStatus.NEW);
-                    Member savedMember = memberRepository.save(
-                        Member.create(
-                            sub,
-                            oAuth2Provider,
-                            treeRepository.getReferenceById(DEFAULT_TREE_ID)
-                        )
+
+                    Member newMember = Member.create(
+                        MemberRegisterDto.builder()
+                            .sub(sub)
+                            .oAuth2Provider(oAuth2Provider)
+                            .defaultTree(getDefaultTree())
+                            .defaultStreakColorId(getDefaultStreakColorId())
+                            .defaultTreeColorId(getDefaultTreeColorId())
+                            .build()
                     );
+
+                    Member savedMember = memberRepository.save(newMember);
                     memberRecoveryRepository.save(
                         MemberRecovery.create(savedMember)
                     );
@@ -125,6 +137,7 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+
     private boolean isNullMember(Member member) {
         boolean isNickNameNull = (member.getNickname() == null);
         boolean isBirthNull = (member.getBirth() == null);
@@ -132,6 +145,50 @@ public class MemberServiceImpl implements MemberService {
         boolean isJobNull = (member.getJob() == null);
 
         return isNickNameNull || isBirthNull || isGenderNull || isJobNull;
+    }
+
+    private Tree getDefaultTree() {
+        return treeRepository.findById(DEFAULT_TREE_ID)
+            .orElseGet(
+                () -> {
+                    List<Tree> treeList = treeRepository.findAll();
+                    if (!treeList.isEmpty()) {
+                        return treeList.get(0);
+                    } else {
+                        throw new MemberException(MemberErrorCode.NO_INITIAL_DATA_TREE);
+                    }
+                }
+            );
+    }
+
+    private Integer getDefaultStreakColorId() {
+        return streakColorRepository.findByName(DEFAULT_STREAK_COLOR_NAME)
+            .orElseGet(
+                () -> {
+                    List<StreakColor> streakColorList = streakColorRepository.findAll();
+                    if (!streakColorList.isEmpty()) {
+                        return streakColorList.get(0);
+                    } else {
+                        throw new MemberException(MemberErrorCode.NO_INITIAL_DATA_STREAK_COLOR);
+                    }
+                }
+            )
+            .getId();
+    }
+
+    private Integer getDefaultTreeColorId() {
+        return treeColorRepository.findByName(DEFAULT_TREE_COLOR_NAME)
+            .orElseGet(
+                () -> {
+                    List<TreeColor> treeColorList = treeColorRepository.findAll();
+                    if (!treeColorList.isEmpty()) {
+                        return treeColorList.get(0);
+                    } else {
+                        throw new MemberException(MemberErrorCode.NO_INITIAL_DATA_TREE_COLOR);
+                    }
+                }
+            )
+            .getId();
     }
 
     @Override

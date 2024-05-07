@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface StreakColorRepository extends JpaRepository<StreakColor, Integer> {
 
     List<StreakColor> findByStreakColorGrade(StreakColorGrade streakColorGrade);
+    Optional<StreakColor> findByName(String name);
 }
