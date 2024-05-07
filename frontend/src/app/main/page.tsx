@@ -62,11 +62,11 @@ export default async function Page() {
   });
 
   //6. 스트릭 리커버리 사용
-  const streakRecovoery = await $Fetch({
-    method: 'POST',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
-    cache: 'no-cache',
-  });
+  // const streakRecovoery = await $Fetch({
+  //   method: 'POST',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
+  //   cache: 'no-cache',
+  // });
 
   //7. 오늘 완료된 해빗들
   const habitsToday = await $Fetch({

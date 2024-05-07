@@ -22,11 +22,11 @@ export const Streak = ({
   habitCnt,
   ...props
 }: StreakProps) => {
-  const Recovery = $Fetch({
-    method: 'POST',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
-    cache: 'no-cache',
-  });
+  // const Recovery = $Fetch({
+  //   method: 'POST',
+  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
+  //   cache: 'no-cache',
+  // });
 
   const overlay = useOverlay();
   const onClickStreakRecovery = () => {
