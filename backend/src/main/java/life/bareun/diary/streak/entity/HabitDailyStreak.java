@@ -44,7 +44,7 @@ public class HabitDailyStreak {
     @NotNull
     private int currentStreak;
 
-    @Column(name = "create_date")
+    @Column(name = "created_date")
     @NotNull
     private LocalDate createdDate;
 

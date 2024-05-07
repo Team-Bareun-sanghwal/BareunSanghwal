@@ -4,6 +4,7 @@ import java.util.List;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.response.HabitMatchResDto;
+import life.bareun.diary.habit.dto.response.HabitRankResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveSimpleResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
@@ -30,4 +31,8 @@ public interface HabitService {
     MemberHabitActiveSimpleResDto findAllActiveSimpleMemberHabit();
 
     List<MemberHabit> findAllActiveMemberHabitByMember(Member member);
+
+    void renewHabitRank();
+
+    HabitRankResDto findAllHabitRank();
 }

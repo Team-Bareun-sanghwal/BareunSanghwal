@@ -1,13 +1,23 @@
 package life.bareun.diary.habit.service;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import life.bareun.diary.global.security.util.AuthUtil;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import life.bareun.diary.global.elastic.dto.ElasticDto;
+import life.bareun.diary.global.elastic.service.ElasticService;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitMatchDto;
+import life.bareun.diary.habit.dto.HabitRecommendDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
@@ -20,18 +30,21 @@ import life.bareun.diary.habit.dto.MemberHabitNonActiveDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
 import life.bareun.diary.habit.dto.response.HabitMatchResDto;
+import life.bareun.diary.habit.dto.response.HabitRankResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitActiveSimpleResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitNonActiveResDto;
 import life.bareun.diary.habit.dto.response.MemberHabitResDto;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitDay;
+import life.bareun.diary.habit.entity.HabitRecommend;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.exception.HabitErrorCode;
 import life.bareun.diary.habit.exception.HabitException;
 import life.bareun.diary.habit.repository.HabitDayRepository;
+import life.bareun.diary.habit.repository.HabitRecommendRepository;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
@@ -44,6 +57,8 @@ import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,9 +84,17 @@ public class HabitServiceImpl implements HabitService {
 
     private final StreakService streakService;
 
+    private final ElasticService elasticService;
+
+    private final HabitRecommendRepository habitRecommendRepository;
+
+    // 엘라스틱서치 로그 수집을 위한 logger
+    private final Logger rankLogger = LoggerFactory.getLogger("rank-log");
+
     @Override
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
+        rankLogger.info("rank-log {} {}", habitCreateReqDto.habitId(), "랭킹 순위에 반영됩니다.");
         // 멤버, 해빗 가져오기
         Habit habit = habitRepository.findById(habitCreateReqDto.habitId())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
@@ -89,8 +112,8 @@ public class HabitServiceImpl implements HabitService {
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
                         MaintainWay.PERIOD).maintainAmount(habitCreateReqDto.period()).build());
-            // 주기 방식으로 트래커 목록 생성
-            LocalDate startDay = LocalDate.now().plusDays(habitCreateReqDto.period());
+            // 주기 방식으로 트래커 목록 생성(내일부터)
+            LocalDate startDay = LocalDate.now().plusDays(1L);
             createHabitTrackerByPeriod(startDay, lastDay, member, memberHabit,
                 habitCreateReqDto.period());
         } else {
@@ -197,13 +220,17 @@ public class HabitServiceImpl implements HabitService {
                 HabitTracker habitTracker = habitTrackerService.findLastHabitTracker(
                     HabitTrackerLastDto.builder().memberHabit(memberHabit).build());
 
-                // 주기를 더한 날이 말일보다 더 크게 될 때까지 증가
-                int startDay = habitTracker.getCreatedDay();
-                while (startDay < lastDayOfNowMonth) {
-                    startDay += memberHabit.getMaintainAmount();
+                // 만약 말일에 생성되기 때문에 해빗 트래커가 하나도 없다면 1일부터 생성
+                int startDay = 1;
+                if(habitTracker != null) {
+                    // 주기를 더한 날이 말일보다 더 크게 될 때까지 증가
+                    startDay = habitTracker.getCreatedDay();
+                    while (startDay <= lastDayOfNowMonth) {
+                        startDay += memberHabit.getMaintainAmount();
+                    }
+                    // 말일을 빼서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
+                    startDay -= lastDayOfNowMonth;
                 }
-                // 말일을 뺴서 다음 달의 해당 해빗의 첫 해빗 트래커 날짜를 구함
-                startDay -= lastDayOfNowMonth;
                 LocalDate startDate = LocalDate.of(nowMonth.getYear(),
                     nextMonth.getMonth().getValue(), startDay);
                 // 주기 방식으로 생성
@@ -246,6 +273,7 @@ public class HabitServiceImpl implements HabitService {
             HabitDailyStreak habitDailyStreak = habitDailyStreakRepository
                 .findByMemberHabitAndCreatedDate(memberHabit, LocalDate.now())
                 .orElseThrow(() -> new StreakException(HabitDailyStreakErrorCode.NOT_FOUND_HABIT_DAILY_STREAK));
+
             List<Integer> dayList = habitDayRepository.findAllDayByMemberHabit(memberHabit);
             memberHabitActiveDtoList.add(
                 MemberHabitActiveDto.builder().name(memberHabit.getHabit().getName())
@@ -310,6 +338,64 @@ public class HabitServiceImpl implements HabitService {
     @Override
     public List<MemberHabit> findAllActiveMemberHabitByMember(Member member) {
         return memberHabitRepository.findAllByIsDeletedAndMember(false, member);
+    }
+
+    @Override
+    public void renewHabitRank() {
+        List<ElasticDto> logList = elasticService.findAllElasticLog();
+        Map<Long, Long> logMap = new ConcurrentHashMap<>();
+        for (ElasticDto elasticDto : logList) {
+            logMap.put(elasticDto.habitId(),
+                logMap.getOrDefault(elasticDto.habitId(), 0L) + 1L);
+        }
+        PriorityQueue<long[]> priorityQueue = new PriorityQueue<>((o1, o2) -> {
+            // index=1의 값에 따라 내림차순 정렬
+            return Long.compare(o2[1], o1[1]);
+        });
+
+        for (Long id : logMap.keySet()) {
+            priorityQueue.offer(new long[]{id, logMap.get(id)});
+        }
+
+        habitRecommendRepository.deleteAll();
+        int totalCount = 10;
+        Set<Long> set = new ConcurrentSkipListSet<>();
+        while (!priorityQueue.isEmpty() && totalCount-- > 0) {
+            long[] habitCount = priorityQueue.poll();
+            Habit habit = habitRepository.findById(habitCount[0])
+                .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
+            habitRecommendRepository.save(HabitRecommend.builder().habit(habit).build());
+            set.add(habitCount[0]);
+            log.info(Arrays.toString(habitCount));
+        }
+
+        // 만약 총 10개가 되지 않으면
+        if (totalCount > 0) {
+            SecureRandom secureRandom = new SecureRandom();
+            while (totalCount > 0) {
+                Long randomNumber = secureRandom.nextInt(313) + 1L;
+                if (set.contains(randomNumber)) {
+                    continue;
+                }
+                totalCount--;
+                set.add(randomNumber);
+                Habit habit = habitRepository.findById(randomNumber)
+                    .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT));
+                habitRecommendRepository.save(HabitRecommend.builder().habit(habit).build());
+            }
+        }
+    }
+
+    @Override
+    public HabitRankResDto findAllHabitRank() {
+        List<HabitRecommend> habitRecommendList = habitRecommendRepository.findAllByOrderByIdAsc();
+        List<HabitRecommendDto> habitRecommendDtoList = new ArrayList<>();
+        for (HabitRecommend habitRecommend : habitRecommendList) {
+            habitRecommendDtoList.add(
+                HabitRecommendDto.builder().habitId(habitRecommend.getHabit().getId())
+                    .name(habitRecommend.getHabit().getName()).build());
+        }
+        return HabitRankResDto.builder().habitList(habitRecommendDtoList).build();
     }
 
     // 주기에 따른 해빗 트래커 생성

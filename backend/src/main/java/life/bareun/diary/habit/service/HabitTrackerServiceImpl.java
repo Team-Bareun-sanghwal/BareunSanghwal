@@ -3,7 +3,7 @@ package life.bareun.diary.habit.service;
 import java.time.LocalDate;
 import java.util.List;
 import life.bareun.diary.global.config.ImageConfig;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;

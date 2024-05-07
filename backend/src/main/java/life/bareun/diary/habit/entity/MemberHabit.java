@@ -20,7 +20,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
@@ -62,7 +61,6 @@ public class MemberHabit {
     @Column(name = "maintain_amount")
     private int maintainAmount;
 
-    @UpdateTimestamp
     @Column(name = "succeeded_datetime")
     private LocalDateTime succeededDatetime;
 

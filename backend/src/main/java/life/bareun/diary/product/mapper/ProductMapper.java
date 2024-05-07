@@ -12,7 +12,6 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     // Product -> ProductDto 매핑
-    @Mapping(source = "product.key", target = "key")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "introduction", target = "introduction")
     @Mapping(source = "description", target = "description")

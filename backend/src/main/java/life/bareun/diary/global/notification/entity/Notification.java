@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import life.bareun.diary.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,10 @@ public class Notification {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_category_id")
     private NotificationCategory notificationCategory;
 
@@ -41,8 +46,9 @@ public class Notification {
     private LocalDateTime createdDatetime;
 
     @Builder
-    public Notification(NotificationCategory notificationCategory, String content, Boolean isRead,
-        LocalDateTime createdDatetime) {
+    public Notification(Member member, NotificationCategory notificationCategory, String content,
+        Boolean isRead, LocalDateTime createdDatetime) {
+        this.member = member;
         this.notificationCategory = notificationCategory;
         this.content = content;
         this.isRead = isRead;

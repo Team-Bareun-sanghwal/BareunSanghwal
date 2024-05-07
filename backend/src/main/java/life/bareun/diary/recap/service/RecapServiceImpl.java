@@ -12,8 +12,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.config.WebClientConfig;
-import life.bareun.diary.global.security.util.AuthUtil;
+import life.bareun.diary.global.notification.dto.NotificationResultTokenDto;
+import life.bareun.diary.global.notification.entity.NotificationCategory;
+import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
+import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
+import life.bareun.diary.global.notification.service.NotificationService;
 import life.bareun.diary.habit.entity.Habit;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.habit.entity.MemberHabit;
@@ -77,19 +82,27 @@ public class RecapServiceImpl implements RecapService {
 
     private final WebClientConfig webClient;
 
+    private final NotificationTokenRepository notificationTokenRepository;
+
+    private final NotificationCategoryRepository notificationCategoryRepository;
+
+    private final NotificationService notificationService;
+
     @Value("${gpt.api.key}")
     private String apiKey;
 
     @Value("${gpt.api.model}")
     private String apiModel;
 
-    private static final String PROMPT = " 라는 내용을 가장 핵심이 되는 한 단어로 요약해주세요. 반드시 명사여야 하고, 가장 많이 언급되는 단어를 기반으로 해야 합니다. 특수기호가 없어야 합니다.";
+    private static final String PROMPT = " 라는 내용을 가장 핵심이 되는 한 단어로 요약해주세요. 반드시 명사여야 하고, 가장 많이 언급되는 단어를 기반으로 해야 합니다. 특수기호가 없어야 하며 5글자 이내로 유쾌하게 해주세요.";
     private static final String IMAGE_BASIC = "basic";
 
     @Override
     public void createRecap() {
         // 두 번 이상 완료한 사용자 해빗을 하나라도 가지고 있는 사용자 리스트
         // 자정에 시작하기 때문에 전 달에 달성한 목록을 가져와야 함
+        
+        // 실제 서비스 시 변경
         // LocalDate nowMonth = LocalDate.now().minusMonths(1L);
         LocalDate nowMonth = LocalDate.now();
         List<RecapMemberDto> recapMemberList = recapRepository.findAllAppropriateMember(
@@ -100,6 +113,14 @@ public class RecapServiceImpl implements RecapService {
         LocalDateTime startDateTime = nowMonth.withDayOfMonth(1).atStartOfDay();
         LocalDateTime endDateTime = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth())
             .atTime(23, 59, 59);
+
+        // Redis에 존재하는 사용자 토큰 목록
+        Map<Long, String> notificationTokenMap = notificationTokenRepository.findAllNotificationToken();
+
+        // 커스텀할 content
+        NotificationCategory notificationCategory = notificationCategoryRepository.findById(3L)
+            .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_NOTIFICATION_CATEGORY));
+
         for (RecapMemberDto recapMemberDto : recapMemberList) {
             Member member = findMember();
             // 처음에 recap을 생성
@@ -157,8 +178,9 @@ public class RecapServiceImpl implements RecapService {
             String imageUrl = findRandomImage(bestHabitId);
 
             // 가장 많이 제출한 시간대 구하기
-            int currentTime = findMostSubmitTime(nowMonth, member);
+            int currentTime = findMostSubmitTime(startDateTime, endDateTime, member);
             Occasion occasion = findOccasion(currentTime);
+
             // 별 개수 구하기
             LocalDate startDate = nowMonth.withDayOfMonth(1);
             LocalDate endDate = nowMonth.withDayOfMonth(nowMonth.lengthOfMonth());
@@ -172,6 +194,20 @@ public class RecapServiceImpl implements RecapService {
                 RecapModifyDto.builder().recap(recap).wholeStreak(wholeStreak)
                     .maxHabitImage(imageUrl).mostFrequencyWord(keyword)
                     .mostFrequencyTime(occasion).build());
+
+            if (notificationTokenMap.containsKey(recapMemberDto.member().getId())) {
+                try {
+                    notificationService.createNotification(
+                        NotificationResultTokenDto.builder().member(recapMemberDto.member()).content(
+                                String.format(notificationCategory.getContent(),
+                                    recapMemberDto.member().getNickname(), nowMonth.getYear(),
+                                    nowMonth.getMonthValue()))
+                            .token(notificationTokenMap.get(recapMemberDto.member().getId())).build(),
+                        notificationCategory);
+                } catch(Exception e) {
+                    log.error("Member{}에게 리캡 알림을 전송하는 데 실패했습니다.", recapMemberDto.member().getId());
+                }
+            }
         }
     }
 
@@ -223,7 +259,6 @@ public class RecapServiceImpl implements RecapService {
             .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_RECAP));
         List<RecapHabitAccomplished> recapHabitAccomplishedList = recapHabitAccomplishedRepository.findAllByRecap_OrderByActionCountDesc(
             recap);
-
         // ratio 비율 상위 다섯개 및 사용자 해빗 달성률의 평균 구하기
         String mostSucceededMemberHabit = recapHabitAccomplishedRepository.findByRecapAndIsBest(
             recap, true).getMemberHabit().getAlias();
@@ -246,7 +281,9 @@ public class RecapServiceImpl implements RecapService {
             (o1, o2) -> (o2.actionCount() + o2.missCount()) - (o1.actionCount() + o1.missCount()));
 
         // 첫 5개 요소를 제외한 나머지 요소를 삭제
-        recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
+        if(recapMemberHabitRateDtoList.size() > 5) {
+            recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
+        }
 
         // mostSucceededHabit과 rateByHabitList를 구하기
         List<RecapHabitRatio> recapHabitRatioList = recapHabitRatioRepository.findTop4ByRecap_OrderByRatioDesc(
@@ -300,23 +337,25 @@ public class RecapServiceImpl implements RecapService {
             }).block();
     }
 
-    private int findMostSubmitTime(LocalDate nowMonth, Member member) {
-        int timeMax = 0;
+    private int findMostSubmitTime(LocalDateTime startDateTime, LocalDateTime endDateTime,
+        Member member) {
+        // 사용자가 이번 달에 완료한 해빗 트래커 리스트
+        List<HabitTracker> habitTrackerList = habitTrackerRepository
+            .findAllByMemberAndSucceededTimeIsNotNullAndSucceededTimeBetween(
+                member, startDateTime, endDateTime);
+        Map<Integer, Integer> timeMap = new ConcurrentHashMap<>();
+        for (HabitTracker habitTracker : habitTrackerList) {
+            int time = habitTracker.getSucceededTime().getHour();
+            int factor = time / 6;
+            timeMap.put(factor, timeMap.getOrDefault(factor, 0) + 1);
+        }
+
         int currentTime = 0;
-        int endDay = nowMonth.lengthOfMonth();
-        for (int time = 5; time < 24; time += 6) {
-            int timeCount = 0;
-            for (int day = 1; day <= endDay; day++) {
-                LocalDateTime startDateTime = nowMonth.withDayOfMonth(day)
-                    .atTime(time - 5, 0, 0);
-                LocalDateTime endDateTime = nowMonth.withDayOfMonth(day)
-                    .atTime(time, 59, 59);
-                timeCount += habitTrackerRepository.countByMemberAndSucceededTimeBetween(member,
-                    startDateTime, endDateTime);
-            }
-            if (timeMax < timeCount) {
-                timeMax = timeCount;
-                currentTime = time;
+        int maxTime = 0;
+        for (int key : timeMap.keySet()) {
+            if (maxTime < timeMap.get(key)) {
+                currentTime = key;
+                maxTime = timeMap.get(key);
             }
         }
         return currentTime;
@@ -412,9 +451,9 @@ public class RecapServiceImpl implements RecapService {
 
     private Occasion findOccasion(int currentTime) {
         return switch (currentTime) {
-            case 5 -> Occasion.DAWN;
-            case 11 -> Occasion.MORNING;
-            case 17 -> Occasion.EVENING;
+            case 0 -> Occasion.DAWN;
+            case 1 -> Occasion.MORNING;
+            case 2 -> Occasion.EVENING;
             default -> Occasion.NIGHT;
         };
     }

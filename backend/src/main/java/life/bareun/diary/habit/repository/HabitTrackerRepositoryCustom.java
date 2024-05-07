@@ -9,6 +9,9 @@ import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.entity.HabitTracker;
+import life.bareun.diary.member.dto.MemberHabitTrackerDto;
+import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
+import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 
 public interface HabitTrackerRepositoryCustom {
 
@@ -23,4 +26,15 @@ public interface HabitTrackerRepositoryCustom {
     Long getHabitTrackerCountByMemberAndDate(HabitTrackerCountDto habitTrackerCountDto);
 
     Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto);
+
+    List<MemberPracticedHabitDto> findTopHabits(Long memberId);
+
+    Long countByMemberId(Long memberId);
+
+    List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId);
+
+    List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId);
+
+    MemberHabitTrackerDto findAllHabitTrackerByYearAndMemberHabitId(Integer year, Long memberId, Long memberHabitId);
+    
 }
