@@ -51,3 +51,16 @@ export interface IWriteHabitData {
     content: string | null;
   };
 }
+
+export interface IHabitTrackerData {
+  habitTrackerId: number;
+  succeededTime: Date;
+  content: string;
+  image: string;
+  period: string;
+}
+
+export interface IWriteListData {
+  year: number;
+  habitTrackerList: IHabitTrackerData[];
+}
