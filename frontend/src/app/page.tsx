@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function Page() {
   return (
-    <div className="bg-custom-matcha w-full h-screen">
+    <div className="relative bg-custom-matcha w-full h-screen">
       <div className="w-[10rem] absolute top-[20rem] right-[4rem] text-center flex flex-col gap-[1rem]">
         <div className="text-white w-full custom-medium-text flex justify-center absolute logo-desc">
           <p>오늘도,</p>
