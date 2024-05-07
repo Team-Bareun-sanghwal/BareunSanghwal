@@ -1,9 +1,9 @@
 package life.bareun.diary.member.dto;
 
 
-public record MemberPracticedHabitDto(
+public record MemberTopHabitDto(
     String habit,
-    long value
+    int value
 ) {
 
 }

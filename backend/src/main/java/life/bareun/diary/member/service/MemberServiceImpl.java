@@ -26,7 +26,7 @@ import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
-import life.bareun.diary.member.dto.MemberPracticedHabitDto;
+import life.bareun.diary.member.dto.MemberTopHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
@@ -235,6 +235,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberPointResDto point() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
@@ -246,12 +247,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberLongestStreakResDto longestStreak() {
         int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
         return new MemberLongestStreakResDto(longestStreak);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberStreakRecoveryCountResDto streakRecoveryCount() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
@@ -273,6 +276,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberHabitsResDto habits() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         List<MemberHabitsDto> memberHabits = memberHabitRepository
@@ -288,8 +292,8 @@ public class MemberServiceImpl implements MemberService {
     public MemberStatisticResDto statistic() {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
-        // 내림차순 정렬된 데이터
-        List<MemberPracticedHabitDto> topHabits = processTopHabits(
+        // 내림차순 정렬된 데이터, 각 MemberPracticedHabitDto의 value는 비율
+        List<MemberTopHabitDto> topHabits = processTopHabits(
             habitTrackerRepository.findTopHabits(memberId),
             memberId
         );
@@ -330,20 +334,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional(readOnly = true)
-    protected List<MemberPracticedHabitDto> processTopHabits(
-        List<MemberPracticedHabitDto> topHabits,
+    protected List<MemberTopHabitDto> processTopHabits(
+        List<MemberTopHabitDto> topHabits,
         Long memberId
     ) {
-        long counts = habitTrackerRepository.countByMemberId(memberId);
+        int count = habitTrackerRepository.countByMemberId(memberId).intValue();
 
-        if (counts > topHabits.size()) {
-            long sum = topHabits.stream()
-                .mapToLong(MemberPracticedHabitDto::value)
+        // 전체 갯수가 topHabits 갯수보다 많다면
+        if (count > topHabits.size()) {
+            // 100에서 topHabits의 합을 뺀 값이 기타가 된다.
+            int sum = topHabits.stream()
+                .mapToInt(MemberTopHabitDto::value)
                 .sum();
-            long etcValue = counts - sum;
+            int etcValue = 100 - sum;
 
             topHabits.add(
-                new MemberPracticedHabitDto(
+                new MemberTopHabitDto(
                     "기타",
                     etcValue
                 )
@@ -362,16 +368,17 @@ public class MemberServiceImpl implements MemberService {
             return new ArrayList<>();
         }
 
-        final int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
+        int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
             .max()
             .getAsInt();
         int minValue = habitPracticeCountPerDayOfWeekDtos.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
-            .max()
+            .min()
             .getAsInt();
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = habitPracticeCountPerDayOfWeekDtos.stream()
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek =
+            habitPracticeCountPerDayOfWeekDtos.stream()
             .map(
                 habitPracticeCountPerDayOfWeekDto -> {
                     int value = habitPracticeCountPerDayOfWeekDto.value();
