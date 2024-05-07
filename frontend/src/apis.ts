@@ -16,7 +16,8 @@ type Request = {
 };
 export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
-  const authorization = cookieStore.get('Authorization')?.value;
+  const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  // const authorization = cookieStore.get('Authorization')?.value;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   try {
@@ -32,7 +33,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
     // if (res.status != 200) {
     //   throw new Error(`[HTTP ERR] Status : ${res.status}`);
     // }
-    return res.json();
+    return await res.json();
   } catch (e) {
     console.log('Fetch Error : ', e);
     throw e;
