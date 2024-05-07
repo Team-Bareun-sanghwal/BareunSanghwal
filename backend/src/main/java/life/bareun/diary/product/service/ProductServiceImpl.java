@@ -51,7 +51,11 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductListResDto productList() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
-        int freeRecoveryCount = memberRecoveryRepository.findById(id)
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+        int freeRecoveryCount = memberRecoveryRepository.findByMember(member)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             )
@@ -63,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
                 productDto -> {
                     if (productDto.getName().equals(STREAK_RECOVERY_NAME)) {
                         productDto.setPrice(
-                            memberRecoveryRepository.findByMemberId(id)
+                            memberRecoveryRepository.findByMember(member)
                                 .orElseThrow(
                                     () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
                                 )
@@ -179,7 +183,7 @@ public class ProductServiceImpl implements ProductService {
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
 
-        MemberRecovery memberRecovery = memberRecoveryRepository.findByMemberId(id)
+        MemberRecovery memberRecovery = memberRecoveryRepository.findByMember(member)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
             );

@@ -30,6 +30,7 @@ import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
 import life.bareun.diary.member.dto.MemberPracticedHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
@@ -251,16 +252,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberStreakRecoveryCountResDto streakRecoveryCount() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
 
-        Integer freeRecoveryCount = memberRecoveryRepository.findByMemberId(id)
+        Integer freeRecoveryCount = memberRecoveryRepository.findByMember(member)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             ).getFreeRecoveryCount();
 
-        Integer paidRecoveryCount = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            ).getPaidRecoveryCount();
+        Integer paidRecoveryCount = member.getPaidRecoveryCount();
 
         return new MemberStreakRecoveryCountResDto(
             freeRecoveryCount + paidRecoveryCount,
