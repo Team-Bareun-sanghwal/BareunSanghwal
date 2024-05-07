@@ -241,6 +241,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional(noRollbackFor = NotificationException.class)
     public void createNotification(NotificationResultTokenDto notificationResultTokenDto,
         NotificationCategory notificationCategory) {
         log.info(notificationResultTokenDto.toString());
@@ -250,6 +251,10 @@ public class NotificationServiceImpl implements NotificationService {
                 .content(notificationResultTokenDto.content())
                 .notificationCategory(notificationCategory).isRead(false).build());
 
+        sendNotificationAsync(notificationResultTokenDto);
+    }
+
+    private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
             .setWebpushConfig(
                 WebpushConfig.builder().putHeader("ttl", "300")
