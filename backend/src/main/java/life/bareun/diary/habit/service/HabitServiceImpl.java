@@ -260,8 +260,8 @@ public class HabitServiceImpl implements HabitService {
             }
 
             // 현재 사용자 해빗의 스트릭
-            HabitDailyStreak habitDailyStreak = habitDailyStreakRepository.findByMemberHabit(
-                memberHabit);
+            HabitDailyStreak habitDailyStreak = habitDailyStreakRepository.findByMemberHabitAndCreatedDate(
+                memberHabit, LocalDate.now());
             List<Integer> dayList = habitDayRepository.findAllDayByMemberHabit(memberHabit);
             memberHabitActiveDtoList.add(
                 MemberHabitActiveDto.builder().name(memberHabit.getHabit().getName())
