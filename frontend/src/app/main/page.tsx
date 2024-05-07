@@ -1,3 +1,24 @@
+<<<<<<< 4b1cb9ba204f1d8b5975a7a3314dec8fbc941230
+'use client';
+// pages/main/page.tsx
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+const Page = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    router.push(`/main/${year}/${month}`);
+  }, [router]);
+
+  return null;
+};
+
+export default Page;
+=======
 // import { Calender } from '@/components';
 // import { $Fetch } from '@/apis';
 // import { NavBar } from '@/components';
@@ -119,3 +140,4 @@ export default async function Page() {
     </>
   );
 }
+>>>>>>> e97beaa316cd8f278d9bcda394fb4b3f1b205bd4

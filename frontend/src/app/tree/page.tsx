@@ -18,7 +18,6 @@ interface IItem {
   description: string;
   price: number;
 }
-const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 interface IItemResponse {
   key: string;
   name: string;
@@ -26,6 +25,9 @@ interface IItemResponse {
   description: string;
   price: number;
 }
+
+const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
+
 export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -35,16 +37,14 @@ export default function Page() {
   });
   useEffect(() => {
     setItemListResponse(ItemListResponseSample);
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/products`, {
+
+    $Fetch({
       method: 'GET',
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
       cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: process.env.NEXT_PUBLIC_ACCESS_TOKEN as string,
-      },
     })
       .then((res) => {
-        return res.json();
+        return res;
       })
       .then((data) => {
         setItemListResponse(data);
@@ -53,6 +53,7 @@ export default function Page() {
       .catch((error) => {
         console.error('ERR:', error);
       });
+
     if (isLoading) {
       const timer = setTimeout(() => {
         setIsLoading(false);
