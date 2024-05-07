@@ -123,6 +123,23 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
+    public List<HabitPracticeCountPerDayOfWeekDto> countPracticedHabitsPerDayOfWeek(Long memberId) {
+        return queryFactory
+            .select(
+                Projections.constructor(
+                    HabitPracticeCountPerDayOfWeekDto.class,
+                    habitTracker.day.intValue().as("day"),
+                    habitTracker.day.count().intValue().as("value")
+                )
+            )
+            .from(habitTracker)
+            .where(habitTracker.member.id.eq(memberId))
+            .groupBy(habitTracker.day)
+            .orderBy(habitTracker.day.asc())
+            .fetch();
+    }
+
+    @Override
     public List<MemberPracticeCountPerHourDto> countPracticedHabitsPerHour(Long memberId) {
         NumberTemplate<Integer> hour = Expressions.numberTemplate(
             Integer.class,
