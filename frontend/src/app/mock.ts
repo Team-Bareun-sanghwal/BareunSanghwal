@@ -10,6 +10,7 @@ export interface IMemberHabit {
   memberHabitId: number;
   alias: string;
   icon: string;
+  habitId?: number;
 }
 export interface IDayInfo {
   day: number;

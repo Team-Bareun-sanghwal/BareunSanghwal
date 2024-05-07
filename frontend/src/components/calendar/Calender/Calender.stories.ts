@@ -28,6 +28,7 @@ export const Activated: Story = {
     longestStreak: 3,
     year: 2024,
     month: 5,
+    habitId: 1,
   },
   parameters: {
     viewports: { defaultViewport: 'mobile1' },

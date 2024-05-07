@@ -13,6 +13,7 @@ interface StreakProps {
   month?: number;
   year?: number;
   habitCnt?: number;
+  habitId?: number;
   onClick?: () => void;
 }
 
@@ -24,6 +25,7 @@ export const Streak = ({
   year,
   isUnique,
   habitCnt,
+  habitId,
   ...props
 }: StreakProps) => {
   // const Recovery = $Fetch({
@@ -89,6 +91,9 @@ export const Streak = ({
     if (achieveCount === 0) {
       return `bg-streak-none ${basicStreakStyle}`;
     }
+    if (habitId === 0) {
+      return `bg-streak-${themeColor}-${achieveCount} opacity-${streakOpacity[7]} ${basicStreakStyle}`;
+    }
     if (isUnique) {
       return `bg-streak-${themeColor}-${achieveCount} opacity-${streakOpacity[achieveCount]} ${basicStreakStyle}`;
     } else {
@@ -97,7 +102,6 @@ export const Streak = ({
   }
   const customClassName = getClassName();
 
-  console.log(day, month, year, getToday(false), getMonth(false), getYear());
   return (
     <button onClick={() => onClickStreakRecovery()} className={customClassName}>
       <a

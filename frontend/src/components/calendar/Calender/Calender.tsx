@@ -21,6 +21,7 @@ interface ICalenderProps {
   longestStreak: number;
   year: number;
   month: number;
+  habitId: number;
 }
 
 export const Calender = ({
@@ -32,7 +33,7 @@ export const Calender = ({
   longestStreak,
   year,
   month,
-
+  habitId,
   ...props
 }: ICalenderProps) => {
   const isUnique =
@@ -43,7 +44,7 @@ export const Calender = ({
   return (
     <>
       <MonthLabel month={month} year={year} />
-      <HabitBtnList habitList={memberHabitList} />
+      <HabitBtnList habitId={habitId} />
       <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />
       <div className="grid grid-cols-7 gap-4 p-1 m-2.5">
@@ -60,6 +61,7 @@ export const Calender = ({
               day={info.day}
               isUnique={isUnique}
               habitCnt={memberHabitList.length}
+              habitId={habitId}
             />
           ),
         )}

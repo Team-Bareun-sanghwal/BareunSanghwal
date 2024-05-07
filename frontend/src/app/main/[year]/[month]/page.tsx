@@ -9,7 +9,6 @@ import { MainTitle } from '@/components/main/MainTitle/MainTitle';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
 import { HabitChecker } from '@/components';
 import { LongestStreak } from '@/components';
-import { GetServerSideProps } from 'next';
 export default async function Page(props: {
   params: { year: number; month: number };
 }) {
