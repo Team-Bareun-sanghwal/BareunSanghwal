@@ -51,7 +51,7 @@ export const HabitWriteComponent = () => {
               title: '텍스트 작성',
             },
             {
-              component: <ImageUploadBox />,
+              component: <ImageUploadBox image={image} setImage={setImage} />,
               title: '이미지 첨부',
             },
           ]}
