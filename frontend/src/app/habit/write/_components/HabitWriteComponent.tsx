@@ -15,9 +15,6 @@ export const HabitWriteComponent = () => {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
 
-  console.log(text);
-  console.log(image);
-
   const overlay = useOverlay();
 
   const handleWriteOverlay = () => {
@@ -47,7 +44,7 @@ export const HabitWriteComponent = () => {
         <TabBox
           tabs={[
             {
-              component: <TextAreaBox setText={setText} />,
+              component: <TextAreaBox text={text} setText={setText} />,
               title: '텍스트 작성',
             },
             {

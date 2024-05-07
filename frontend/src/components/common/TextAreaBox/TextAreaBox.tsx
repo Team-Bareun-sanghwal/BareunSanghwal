@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { GuideText } from '../GuideText/GuideText';
 
 export const TextAreaBox = ({
+  text,
   setText,
 }: {
+  text: string | null;
   setText: (text: string) => void;
 }) => {
-  const [textLength, setTextLength] = useState<number>(0);
+  const [textLength, setTextLength] = useState<number>(text?.length || 0);
   const [outlineColor, setOutlineColor] = useState<string>(
     'outline-custom-green',
   );
@@ -25,6 +27,7 @@ export const TextAreaBox = ({
         className={`${outlineColor} h-[25rem] p-[1rem] pb-[2rem] text-custom-black rounded-[1rem] resize-none custom-semibold-text bg-custom-light-gray`}
         placeholder="내용을 작성해주세요."
         maxLength={100}
+        defaultValue={text || undefined}
         onChange={(event) => {
           if (event.target.value.length > 100) {
             setOutlineColor('outline-custom-error');

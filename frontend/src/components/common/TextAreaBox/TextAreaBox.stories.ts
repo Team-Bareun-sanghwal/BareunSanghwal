@@ -12,6 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Main: Story = {
   args: {
+    text: '안녕',
     setText: () => {},
   },
 };

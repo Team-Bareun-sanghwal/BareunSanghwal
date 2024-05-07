@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import { GuideText } from '../GuideText/GuideText';
 import { PlusIcon, ArrowPathIcon, XMarkIcon } from '@heroicons/react/24/solid';
