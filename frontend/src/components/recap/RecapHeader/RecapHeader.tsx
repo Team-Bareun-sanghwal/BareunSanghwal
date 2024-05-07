@@ -12,8 +12,7 @@ interface IPropType {
 export const RecapHeader = ({ memberName, year, month }: IPropType) => {
   const router = useRouter();
   const handleOnClick = () => {
-    // 추후 리캡 목록 경로로 변경
-    router.push('/');
+    router.back();
   };
 
   return (

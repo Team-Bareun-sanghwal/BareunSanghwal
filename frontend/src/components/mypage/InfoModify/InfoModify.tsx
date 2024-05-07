@@ -29,7 +29,9 @@ export const InfoModify = ({ title, prevData }: IPropType) => {
   };
 
   const saveData = () => {
-    // api 통신
+    // api 통신 추가
+
+    toggleIsOpen();
   };
 
   const modifyContent =
@@ -68,7 +70,7 @@ export const InfoModify = ({ title, prevData }: IPropType) => {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="w-full flex justify-between my-[2rem]">
+      <div className="w-full flex justify-between">
         <div className="flex items-center">
           <p className="w-[6rem] text-left custom-semibold-text text-custom-matcha">
             {title}
@@ -84,7 +86,7 @@ export const InfoModify = ({ title, prevData }: IPropType) => {
           <TinyButton mode="MODIFY" label="수정" onClick={toggleIsOpen} />
         )}
       </div>
-      {isOpen ? modifyContent : null}
+      {isOpen ? <div className="w-full mt-[3rem]">{modifyContent}</div> : null}
     </div>
   );
 };

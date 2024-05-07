@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface IRecapData {
   recapId: number;
@@ -27,7 +28,7 @@ const RecapImageContent = ({
   recapId: number;
 }) => {
   return (
-    <div className="relative cursor-pointer" onClick={() => {}}>
+    <Link href={`/recap/${recapId}`} className="relative">
       <div className="size-full bg-custom-black-with-opacity absolute"></div>
       <p className="absolute bottom-[0.5rem] right-[0.5rem] custom-semibold-text text-custom-white">
         {dateText}
@@ -40,7 +41,7 @@ const RecapImageContent = ({
         alt={'clock'}
         className="size-full object-cover"
       ></Image>
-    </div>
+    </Link>
   );
 };
 

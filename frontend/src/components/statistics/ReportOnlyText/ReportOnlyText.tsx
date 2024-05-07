@@ -14,7 +14,7 @@ export const ReportOnlyText = ({
   longest_streak,
 }: IDataProps) => {
   return (
-    <div className="w-full bg-custom-light-gray p-[1rem] flex flex-col gap-[1rem] rounded-[1rem]">
+    <div className="w-full bg-custom-light-gray px-[1.5rem] py-[1rem] flex flex-col gap-[1rem] rounded-[1rem]">
       <ColoredSentence
         textFront="지금까지 "
         textMiddle={whole_days.toString()}
