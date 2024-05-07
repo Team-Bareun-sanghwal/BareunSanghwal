@@ -53,7 +53,7 @@ export const SignInForm = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="bg-custom-white w-[36rem] p-[1rem] flex flex-col justify-between h-full">
       <div className="flex flex-col gap-[2.5rem]">
         <InputBox
           isLabel={true}
