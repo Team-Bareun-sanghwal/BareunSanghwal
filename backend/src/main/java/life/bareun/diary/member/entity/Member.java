@@ -158,4 +158,8 @@ public class Member {
     public void addPoint(Integer amount) {
         this.point += amount;
     }
+
+    public void updateTree(Tree tree) {
+        this.tree = tree;
+    }
 }

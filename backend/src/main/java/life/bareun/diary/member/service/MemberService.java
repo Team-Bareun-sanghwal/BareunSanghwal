@@ -52,4 +52,6 @@ public interface MemberService {
     MemberHabitTrackersResDto habitTrackers(String memberHabitId);
 
     MemberDailyPhraseResDto dailyPhrase();
+
+    void treeLevelUp();
 }
