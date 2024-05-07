@@ -1,3 +1,5 @@
+import { cookies } from 'next/headers';
+
 type Request = {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   url: string;
@@ -11,13 +13,17 @@ type Request = {
     | 'default';
 };
 export async function $Fetch({ method, url, data, cache }: Request) {
+  const cookieStore = cookies();
+  const authorization = cookieStore.get('Authorization')?.value;
+  const refreshToken = cookieStore.get('RefreshToken')?.value;
+
   try {
     const res = await fetch(url, {
       method,
       cache: cache,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: process.env.NEXT_PUBLIC_ACCESS_TOKEN as string,
+        Authorization: authorization as string,
       },
       body: JSON.stringify(data),
     });
