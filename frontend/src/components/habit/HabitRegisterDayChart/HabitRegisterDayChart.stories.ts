@@ -18,6 +18,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Main: Story = {
   args: {
+    dayOfWeek: [1, 2],
+    setDayOfWeek: () => {},
+    setPeriod: () => {},
     habitRegisterDayList: [
       { englishDayName: 'monday', registerCount: 1024 },
       { englishDayName: 'tuesday', registerCount: 2048 },

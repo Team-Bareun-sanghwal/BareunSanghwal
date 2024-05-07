@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { GuideText } from '@/components/common/GuideText/GuideText';
 import {
@@ -15,6 +14,9 @@ interface IHabitRegisterDayData {
 }
 
 interface IHabitRegisterDayChartProps {
+  dayOfWeek: number[];
+  setDayOfWeek: (dayOfWeek: number[]) => void;
+  setPeriod: (nullValue: null) => void;
   habitRegisterDayList: IHabitRegisterDayData[];
 }
 
@@ -57,18 +59,19 @@ const HabitDayBar = ({
 };
 
 export const HabitRegisterDayChart = ({
+  dayOfWeek,
+  setDayOfWeek,
+  setPeriod,
   habitRegisterDayList,
 }: IHabitRegisterDayChartProps) => {
-  // 상위 컴포넌트에서 관리해야 할 상태(선택한 요일)
-  const [selectedDays, setSelectedDays] = useState<number[]>([]);
-
   const handleSelectedDays = (dayIndex: number) => {
-    if (selectedDays.includes(dayIndex)) {
-      setSelectedDays((prev) => {
-        return prev.filter((value: number) => value !== dayIndex);
-      });
+    if (dayOfWeek?.includes(dayIndex)) {
+      setDayOfWeek(
+        [...dayOfWeek].filter((value: number) => value !== dayIndex),
+      );
     } else {
-      setSelectedDays((prev) => [...prev, dayIndex]);
+      setDayOfWeek([...dayOfWeek, dayIndex]);
+      setPeriod(null);
     }
   };
 
@@ -96,7 +99,7 @@ export const HabitRegisterDayChart = ({
               koreanDayName={convertEnglishDayNameToKoreanDayName(
                 habit.englishDayName,
               )}
-              isClicked={selectedDays.includes(
+              isClicked={dayOfWeek.includes(
                 convertEnglishDayNameToIndex(habit.englishDayName),
               )}
               click={() =>

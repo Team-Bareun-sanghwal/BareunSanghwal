@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   GuideBox,
   HabitListBox,
@@ -14,6 +15,7 @@ import { useOverlay } from '@/hooks/use-overlay';
 export const HabitUpdateComponent = () => {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
+  const router = useRouter();
   const overlay = useOverlay();
 
   const handleCompleteOverlay = () => {
@@ -84,7 +86,8 @@ export const HabitUpdateComponent = () => {
         onDeleteClick={handleDeleteOverlay}
       />
 
-      <PlusButton />
+      {/* 진행 중인 해빗이 이미 7개일 때 AlertBox 띄우기*/}
+      <PlusButton onClick={() => router.push('/habit/register')} />
     </div>
   );
 };

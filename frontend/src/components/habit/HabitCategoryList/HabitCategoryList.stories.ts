@@ -20,6 +20,9 @@ export const Popular: Story = {
   args: {
     mode: 'POPULAR',
     label: '사람들이 가장 많이 진행하고 있는 해빗 10개',
+    selectedHabitId: 1,
+    setSelectedHabitId: () => {},
+    setSelectedHabitName: () => {},
     habitListData: [
       {
         name: '근력 쌓기',
@@ -69,6 +72,9 @@ export const Similar: Story = {
   args: {
     mode: 'SIMILAR',
     label: '나와 비슷한 사람들이 진행하고 있는 해빗 10개',
+    selectedHabitId: 1,
+    setSelectedHabitId: () => {},
+    setSelectedHabitName: () => {},
     habitListData: [
       {
         name: '근력 쌓기',

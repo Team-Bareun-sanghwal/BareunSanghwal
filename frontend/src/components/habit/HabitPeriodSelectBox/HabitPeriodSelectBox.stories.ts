@@ -12,5 +12,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Main: Story = {
-  args: {},
+  args: {
+    period: 2,
+    setPeriod: () => {},
+    setDayOfWeek: () => {},
+  },
 };

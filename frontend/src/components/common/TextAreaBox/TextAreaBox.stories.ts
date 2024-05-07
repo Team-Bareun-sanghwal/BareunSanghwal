@@ -10,4 +10,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Main: Story = {};
+export const Main: Story = {
+  args: {
+    text: '안녕',
+    setText: () => {},
+  },
+};
