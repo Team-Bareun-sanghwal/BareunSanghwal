@@ -60,8 +60,8 @@ export const InputBox = ({
           ) {
             if (regExp.test(event.target.value)) {
               setDefaultValue(event.target.value);
-              setLineColor('border-b-custom-success');
-              setGuideTextColor('text-custom-success');
+              setLineColor('border-b-custom-yellow-green');
+              setGuideTextColor('text-custom-yellow-green');
               if (mode === 'NICKNAME') {
                 setGuideText('좋은 닉네임이네요!');
               } else if (mode === 'HABITNICKNAME') {
