@@ -26,8 +26,8 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<StreakInfoByDayDto> findStreakDayInfoByMemberHabitId(LocalDate firstDayOfMonth,
-        LocalDate lastDayOfMonth, Long memberHabitId) {
+    public List<StreakInfoByDayDto> findStreakDayInfoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
         QHabitDailyStreak subHabitDailyStreak = new QHabitDailyStreak("sub");
 
         return jpaQueryFactory.select(
@@ -67,8 +67,8 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
     }
 
     @Override
-    public List<StreakInfoByDayDto> findStreakDayInfoByMemberId(LocalDate firstDayOfMonth, LocalDate lastDayOfMonth,
-        Long memberId) {
+    public List<StreakInfoByDayDto> findStreakDayInfoByMemberId(Long memberId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
         QHabitDailyStreak subHabitDailyStreak = new QHabitDailyStreak("sub");
 
         return jpaQueryFactory.select(

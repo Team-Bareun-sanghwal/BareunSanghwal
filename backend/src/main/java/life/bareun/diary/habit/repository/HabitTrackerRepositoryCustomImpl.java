@@ -9,6 +9,7 @@ import life.bareun.diary.habit.dto.HabitTrackerCountDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -68,9 +69,21 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
             .from(habitTracker)
             .where(
                 habitTracker.member.eq(habitTrackerCountDto.member())
-                    .and(habitTracker.createdYear.eq(habitTrackerCountDto.date().getDayOfYear()))
+                    .and(habitTracker.createdYear.eq(habitTrackerCountDto.date().getYear()))
                     .and(habitTracker.createdMonth.eq(habitTrackerCountDto.date().getMonthValue()))
                     .and(habitTracker.createdDay.eq(habitTrackerCountDto.date().getDayOfMonth()))
+            ).fetchFirst();
+    }
+
+    @Override
+    public Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto) {
+        return queryFactory.select(habitTracker.id.count())
+            .from(habitTracker)
+            .where(
+                habitTracker.memberHabit.eq(habitTrackerScheduleDto.memberHabit())
+                    .and(habitTracker.createdYear.eq(habitTrackerScheduleDto.date().getYear()))
+                    .and(habitTracker.createdMonth.eq(habitTrackerScheduleDto.date().getMonthValue()))
+                    .and(habitTracker.createdDay.eq(habitTrackerScheduleDto.date().getDayOfMonth()))
             ).fetchFirst();
     }
 }

@@ -1,6 +1,7 @@
 package life.bareun.diary.streak.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import life.bareun.diary.global.security.util.AuthUtil;
@@ -10,6 +11,8 @@ import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.streak.dto.StreakInfoByDayDto;
+import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.entity.HabitTotalStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
@@ -20,7 +23,6 @@ import life.bareun.diary.streak.exception.MemberTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.repository.HabitTotalStreakRepository;
-import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +38,6 @@ public class HabitStreakServiceImpl implements HabitStreakService {
     private final HabitTotalStreakRepository habitTotalStreakRepository;
     private final HabitDailyStreakRepository habitDailyStreakRepository;
     private final MemberTotalStreakRepository memberTotalStreakRepository;
-    private final MemberDailyStreakRepository memberDailyStreakRepository;
     private final MemberRepository memberRepository;
     private final HabitTrackerRepository habitTrackerRepository;
 
@@ -49,11 +50,9 @@ public class HabitStreakServiceImpl implements HabitStreakService {
         );
 
         /*
-        초기 해빗 생성 시에 오늘 자와 내일 자 해빗 데일리 스트릭을 생성.
-        해빗 데일리 스트릭을 생성하는 시점이 스케줄러의 작동 시점의 이후일 수 있으므로.
+        초기 해빗 생성 시에 오늘 자의 해빗 데일리 스트릭을 생성.
          */
         createHabitDailyStreak(memberHabit, LocalDate.now());
-        createHabitDailyStreak(memberHabit, LocalDate.now().plusDays(1));
     }
 
     @Override
@@ -102,6 +101,8 @@ public class HabitStreakServiceImpl implements HabitStreakService {
         /*
         해빗 데일리 스트릭 생성 시 해당 날짜에 해빗 트래커가 존재하면
         해빗 토탈 스트릭의 토탈 트래커 개수도 증가.
+        멤버 데일리 스트릭이 존재하면 전체 트래커 수도 증가.
+        멤버 토탈 스트릭이 전체 트래커 수를 증가하고 멤버 데일리 스트릭에 아직 어떤 트래커도 없으면 전체 스트릭 수도 증가.
          */
         if (achieveTypeToday.get().equals(AchieveType.NOT_ACHIEVE)) {
             habitTotalStreakRepository.findByMemberHabit(memberHabit)
@@ -109,17 +110,10 @@ public class HabitStreakServiceImpl implements HabitStreakService {
                     habitTotalStreak.modifyTotalTrackerCount(habitTotalStreak.getTotalTrackerCount() + 1);
                 });
         }
-
-        /*
-         * TODO: 젼영빈 / 해당 날짜의 멤버 일일 스트릭의 토탈 트래커 수를 갱신하는 로직도 필요하다.
-         *  해당 날짜의 멤버 일일 스트릭이 존재한다면 갱신해주어야겠지만,
-         *  아직 존재하지 않는다면 멤버 일일 스트릭을 만드는 시점에 계산하여도 된다.
-         *  멤버 일일 스트릭이 존재하는지 검사하고 존재한다면 토탈 트래커 수를 갱신하는 로직을 추가하자.
-         */
     }
 
     @Override
-    public void modifyHabitDailyStreak(MemberHabit memberHabit) {
+    public HabitDailyStreak achieveHabitStreak(MemberHabit memberHabit) {
         // TODO: 전영빈 / 구체적인 날짜의 지정이 필요하다면 파라메터로 바꿔주자.
         LocalDate today = LocalDate.now();
 
@@ -148,22 +142,7 @@ public class HabitStreakServiceImpl implements HabitStreakService {
                 throw new StreakException(HabitTotalStreakErrorCode.NOT_FOUND_HABIT_TOTAL_STREAK);
             });
 
-        // 다음 날의 해빗 데일리 스트릭이 존재하면 currentStreak 값을 함께 수정.
-        habitDailyStreakRepository.findByMemberHabitAndCreatedDate(memberHabit, today.plusDays(1))
-            .ifPresent(habitDailyStreakTomorrow -> {
-                habitDailyStreakTomorrow.modifyCurrentStreak(habitDailyStreakToday.getCurrentStreak());
-            });
-
-        /*
-         * TODO: 전영빈 / 멤버 데일리 스트릭의 달성 트래커 수와 별 획득 필드,
-         *  멤버 토탈 스트릭의 달성 트래커 수와 별 획득 수를 갱신하는 로직이 추가되어야 한다.
-         *  상위 서비스에서 넣어주자.
-         */
-        // memberTotalStreakRepository.findByMember(getCurrentMember())
-        //     .ifPresentOrElse(memberTotalStreak -> {
-        //         memberTotalStreak.modifyAchieveStreakCount();
-        //     })
-        //         .orElseThrow(() -> new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK))
+        return habitDailyStreakToday;
     }
 
     @Override
@@ -203,8 +182,54 @@ public class HabitStreakServiceImpl implements HabitStreakService {
             });
     }
 
+    @Override
+    public HabitStreakResDto getHabitStreakResDtoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
+        List<StreakInfoByDayDto> streakDayInfoList = habitDailyStreakRepository
+            .findStreakDayInfoByMemberHabitId(memberHabitId, firstDayOfMonth, lastDayOfMonth);
+
+        int achieveCount = 0;
+        int totalCount = 0;
+        for (StreakInfoByDayDto dto : streakDayInfoList) {
+            achieveCount += dto.achieveCount();
+            totalCount += dto.totalCount();
+        }
+
+        return HabitStreakResDto.builder()
+            .achieveProportion(getProportion(achieveCount, totalCount))
+            .dayOfWeekFirst(firstDayOfMonth.getDayOfWeek().getValue() - 1)
+            .dayInfo(habitDailyStreakRepository.findStreakDayInfoByMemberHabitId(memberHabitId, firstDayOfMonth,
+                lastDayOfMonth))
+            .build();
+    }
+
+    @Override
+    public HabitStreakResDto getHabitStreakResDtoByMemberId(Long memberId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
+        List<StreakInfoByDayDto> streakDayInfoList = habitDailyStreakRepository
+            .findStreakDayInfoByMemberId(memberId, firstDayOfMonth, lastDayOfMonth);
+
+        int achieveCount = 0;
+        int totalCount = 0;
+        for (StreakInfoByDayDto dto : streakDayInfoList) {
+            achieveCount += dto.achieveCount();
+            totalCount += dto.totalCount();
+        }
+
+        return HabitStreakResDto.builder()
+            .achieveProportion(getProportion(achieveCount, totalCount))
+            .dayOfWeekFirst(firstDayOfMonth.getDayOfWeek().getValue() - 1)
+            .dayInfo(habitDailyStreakRepository.findStreakDayInfoByMemberId(memberId, firstDayOfMonth, lastDayOfMonth))
+            .build();
+
+    }
+
     private Member getCurrentMember() {
         return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    private double getProportion(int achieveCount, int totalCount) {
+        return Math.round((double) achieveCount / (double) totalCount * 100.0);
     }
 }

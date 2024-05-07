@@ -11,6 +11,7 @@ import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
@@ -47,12 +48,11 @@ public class MemberStreakServiceImpl implements MemberStreakService {
                 .build()
         );
 
-        createMemberDailyStreak(member, AchieveType.NOT_EXISTED, LocalDate.now());
-        createMemberDailyStreak(member, AchieveType.NOT_EXISTED, LocalDate.now());
+        createMemberDailyStreak(member, LocalDate.now());
     }
 
     @Override
-    public void createMemberDailyStreak(Member member, AchieveType achieveType, LocalDate date) {
+    public void createMemberDailyStreak(Member member, LocalDate date) {
         AtomicReference<AchieveType> achieveTypeToday = new AtomicReference<>(AchieveType.NOT_EXISTED);
         AtomicInteger currentStreakToday = new AtomicInteger(0);
 
@@ -72,6 +72,10 @@ public class MemberStreakServiceImpl implements MemberStreakService {
                 .build()
         ));
 
+        if (totalTrackerCount > 0) {
+            achieveTypeToday.set(AchieveType.NOT_ACHIEVE);
+        }
+
         memberDailyStreakRepository.findByMemberAndCreatedDate(member, date.minusDays(1))
             .ifPresent(memberDailyStreak -> {
                 if (!memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
@@ -90,96 +94,67 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         );
     }
 
-    /**
-     * 스케줄러로 호출. 해당 날짜의 트래커가 생성된 뒤에 전체 스트릭 수를 1 만큼 증가. 전체 트래커 수를 trackerCount 만큼 증가.
-     */
+
     @Override
-    public void modifyMemberTotalStreakTotalField(int trackerCount) {
-        MemberTotalStreak memberTotalStreak = findMemberTotalStreak();
-
-        memberTotalStreak.modifyAchieveStreakCount(memberTotalStreak.getTotalStreakCount() + 1);
-        memberTotalStreak.modifyTotalTrackerCount(memberTotalStreak.getTotalTrackerCount() + trackerCount);
-    }
-
-    /**
-     * 멤버가 트래커를 달성했을 때 호출. 달성한 트래커 개수를 1만큼 증가. 멤버 일일 스트릭의 achieveType이 NOT_ACHIEVE이면 달성 스트릭을 1만큼 증가. starFlag가 true면 별
-     * 개수를 1만큼 증가.
-     * <p>
-     * TODO: 전영빈 // 외부에서 호출될 이유가 없으므로 상속을 포기하고 private로 돌릴 지 고민 중.
-     */
-    @Override
-    public void modifyMemberTotalStreakAchieveField(boolean streakFlag, boolean starFlag) {
-        MemberTotalStreak memberTotalStreak = findMemberTotalStreak();
-
-        memberTotalStreak.modifyAchieveTrackerCount(memberTotalStreak.getAchieveTrackerCount() + 1);
-        if (streakFlag) {
-            memberTotalStreak.modifyAchieveStreakCount(memberTotalStreak.getAchieveTrackerCount() + 1);
-        }
-
-        if (starFlag) {
-            memberTotalStreak.modifyStarCount(memberTotalStreak.getStarCount() + 1);
-        }
-    }
-
-    /**
-     * 멤버 전체 스트릭을 반환.
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public MemberTotalStreak findMemberTotalStreak() {
-        Member member = getCurrentMember();
-
-        return memberTotalStreakRepository.findByMember(member)
-            .orElseThrow(() ->
-                new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
-    }
-
-    /**
-     * 멤버 일일 스트릭을 반환.
-     */
-    @Override
-    public Optional<MemberDailyStreak> findMemberDailyStreak(LocalDate date) {
-        Member member = getCurrentMember();
-
-        return memberDailyStreakRepository.findByMemberAndCreatedDate(member, date);
-    }
-
-    /**
-     * 멤버가 트래커를 달성했을 때 호출. 달성 트래커 수를 1만큼 증가. 멤버가 오늘 트래커를 달성한 적이 없으면 현재 스트릭 수를 1만큼 증가.
-     */
-    @Override
-    public void modifyMemberDailyStreak() {
-        MemberDailyStreak memberDailyStreak = findMemberDailyStreak(LocalDate.now())
+    public void achieveMemberStreak(Member member, int currentStreak) {
+        LocalDate today = LocalDate.now();
+        MemberDailyStreak memberDailyStreakToday = memberDailyStreakRepository
+            .findByMemberAndCreatedDate(member, today)
             .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK));
 
-        if (memberDailyStreak.getAchieveType().equals(AchieveType.NOT_EXISTED)) {
-            // TODO: 전영빈 / NOT_EXISTED 면 트래커가 존재하지 않는다는 것이니까 트레커가 존재하지 않는 다는 익셉션 반환.
-            throw new StreakException(MemberDailyStreakErrorCode.NO_TRACKER);
-        }
+        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
+            .orElseThrow(() -> new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
 
-        if (memberDailyStreak.getAchieveTrackerCount() == memberDailyStreak.getTotalTrackerCount()) {
-            // TODO: 전영빈 / 이미 달성한 트래커의 개수와 전체 트래커의 개수가 같으면 오늘은 더 이상 달성할 트래커가 존재하지 않는 다는 것.
-            // 이 익셉션의 처리 의무를 어디로 주는게 맞을까?
+        // 이미 별을 획득한 경우, 즉 주어진 해빗을 모두 해결했을 경우
+        if (memberDailyStreakToday.isStared()) {
             throw new StreakException(MemberDailyStreakErrorCode.NOT_ENOUGH_TRACKER_TO_ACHIEVE);
         }
-
-        memberDailyStreak.modifyAchieveTrackerCount(memberDailyStreak.getAchieveTrackerCount() + 1);
-
-        boolean streakFlag = false;
-        boolean starFlag = false;
-
-        if (memberDailyStreak.getAchieveTrackerCount() == memberDailyStreak.getTotalTrackerCount()) {
-            streakFlag = true;
+        // 트래커가 존재하지 않는 경우
+        if (memberDailyStreakToday.getTotalTrackerCount() == 0) {
+            throw new StreakException(MemberDailyStreakErrorCode.NO_EXISTED_TRACKER);
         }
 
-        if (memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
-            starFlag = true;
-            memberDailyStreak.modifyCurrentStreak(memberDailyStreak.getCurrentStreak() + 1);
+        // 아직 오늘 한 번도 완료한 해빗 트래커가 없는 경우
+        if (memberDailyStreakToday.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+            memberDailyStreakToday.modifyCurrentStreak(memberDailyStreakToday.getCurrentStreak() + 1);
+            memberDailyStreakToday.modifyAchieveType(AchieveType.ACHIEVE);
+            memberTotalStreak.modifyAchieveStreakCount(memberTotalStreak.getAchieveStreakCount() + 1);
         }
 
-        memberDailyStreak.modifyAchieveType(AchieveType.ACHIEVE);
+        // 오늘 달성한 트래커 수를 증가시키고 달성 트래커 수 == 전체 트래커 수라면 별 획득
+        memberDailyStreakToday.modifyAchieveTrackerCount(memberDailyStreakToday.getAchieveTrackerCount() + 1);
+        memberTotalStreak.modifyAchieveTrackerCount(memberTotalStreak.getAchieveTrackerCount() + 1);
+        if (memberDailyStreakToday.getAchieveTrackerCount() == memberDailyStreakToday.getTotalTrackerCount()) {
+            memberDailyStreakToday.modifyIsStared(true);
+            memberTotalStreak.modifyStarCount(memberTotalStreak.getStarCount() + 1);
+        }
 
-        modifyMemberTotalStreakAchieveField(streakFlag, starFlag);
+        // 멤버 전체 스트릭의 최장 스트릭을 갱신
+        memberTotalStreak.modifyLongestStreak(
+            Math.max(
+                memberTotalStreak.getLongestStreak(),
+                memberDailyStreakToday.getCurrentStreak()));
+
+        // 만약 내일의 멤버 데일리 스트릭이 존재하면 currentStreak을 이어준다.
+        memberDailyStreakRepository.findByMemberAndCreatedDate(member, today.plusDays(1))
+            .ifPresent(memberDailyStreakTomorrow -> {
+                memberDailyStreakTomorrow.modifyCurrentStreak(memberDailyStreakToday.getCurrentStreak());
+            });
+    }
+
+    @Override
+    public MemberStreakResDto getMemberStreakResDto(Member member) {
+        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
+            .orElseThrow(() -> new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
+
+        return MemberStreakResDto.builder().totalStreakCount(memberTotalStreak.getTotalStreakCount())
+            .achieveStreakCount(memberTotalStreak.getAchieveStreakCount()).starCount(memberTotalStreak.getStarCount())
+            .longestStreakCount(memberTotalStreak.getLongestStreak()).build();
+    }
+
+    @Override
+    public Optional<MemberDailyStreak> findMemberDailyStreak(Member member, LocalDate date) {
+        return memberDailyStreakRepository.findByMemberAndCreatedDate(member, date);
     }
 
     /**

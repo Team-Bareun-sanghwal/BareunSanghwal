@@ -5,6 +5,7 @@ import life.bareun.diary.habit.dto.HabitTrackerCountDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
+import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.entity.HabitTracker;
@@ -18,6 +19,8 @@ public interface HabitTrackerRepositoryCustom {
     List<HabitTrackerTodayDto> findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto);
 
     HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto);
-
+    
     Long getHabitTrackerCountByMemberAndDate(HabitTrackerCountDto habitTrackerCountDto);
+
+    Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto);
 }

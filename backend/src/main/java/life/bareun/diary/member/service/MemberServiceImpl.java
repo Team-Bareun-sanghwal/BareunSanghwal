@@ -1,5 +1,6 @@
 package life.bareun.diary.member.service;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import life.bareun.diary.global.security.embed.OAuth2Provider;
 import life.bareun.diary.global.security.principal.MemberPrincipal;
@@ -142,5 +143,10 @@ public class MemberServiceImpl implements MemberService {
             .getName();
 
         return new MemberTreeColorResDto(treeColorName);
+    }
+
+    @Override
+    public List<Member> findAllMember() {
+        return memberRepository.findAll();
     }
 }

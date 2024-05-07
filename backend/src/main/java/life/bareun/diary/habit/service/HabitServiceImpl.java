@@ -41,6 +41,7 @@ import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.exception.HabitDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
+import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,8 @@ public class HabitServiceImpl implements HabitService {
 
     private final HabitDailyStreakRepository habitDailyStreakRepository;
 
+    private final StreakService streakService;
+
     @Override
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
@@ -76,10 +79,13 @@ public class HabitServiceImpl implements HabitService {
         // 달의 마지막 연, 월, 일 가져오기
         LocalDate lastDay = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth())
             .atEndOfMonth();
+
+        MemberHabit memberHabit = null;
+
         // 만약 말일이라면 아무것도 안함
         // 말일이 아니라면 말일까지 증가시키면서 맞는 조건에만 생성
         if (habitCreateReqDto.dayOfWeek() == null) {
-            MemberHabit memberHabit = memberHabitRepository.save(
+            memberHabit = memberHabitRepository.save(
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
                         MaintainWay.PERIOD).maintainAmount(habitCreateReqDto.period()).build());
@@ -88,7 +94,7 @@ public class HabitServiceImpl implements HabitService {
             createHabitTrackerByPeriod(startDay, lastDay, member, memberHabit,
                 habitCreateReqDto.period());
         } else {
-            MemberHabit memberHabit = memberHabitRepository.save(
+            memberHabit = memberHabitRepository.save(
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
                         MaintainWay.DAY).maintainAmount(0).build());
@@ -106,6 +112,8 @@ public class HabitServiceImpl implements HabitService {
                 createHabitTrackerByDay(startDay, lastDay, member, memberHabit, day);
             }
         }
+
+        streakService.initialHabitStreak(memberHabit);
     }
 
     @Override
@@ -297,6 +305,11 @@ public class HabitServiceImpl implements HabitService {
         }
         return MemberHabitActiveSimpleResDto.builder()
             .memberHabitList(memberHabitActiveSimpleDtoList).build();
+    }
+
+    @Override
+    public List<MemberHabit> findAllActiveMemberHabitByMember(Member member) {
+        return memberHabitRepository.findAllByIsDeletedAndMember(false, member);
     }
 
     // 주기에 따른 해빗 트래커 생성

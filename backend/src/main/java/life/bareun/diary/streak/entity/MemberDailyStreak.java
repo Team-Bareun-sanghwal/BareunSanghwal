@@ -75,6 +75,10 @@ public class MemberDailyStreak {
         this.achieveTrackerCount = achieveTrackerCount;
     }
 
+    public void modifyTotalTrackerCount(int totalTrackerCount) {
+        this.totalTrackerCount = totalTrackerCount;
+    }
+
     public void modifyIsStared(boolean isStared) {
         this.isStared = isStared;
     }
