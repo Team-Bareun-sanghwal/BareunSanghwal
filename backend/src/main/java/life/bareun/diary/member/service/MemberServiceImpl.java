@@ -235,6 +235,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberPointResDto point() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
@@ -246,12 +247,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberLongestStreakResDto longestStreak() {
         int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
         return new MemberLongestStreakResDto(longestStreak);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberStreakRecoveryCountResDto streakRecoveryCount() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id)
@@ -273,6 +276,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberHabitsResDto habits() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
         List<MemberHabitsDto> memberHabits = memberHabitRepository
