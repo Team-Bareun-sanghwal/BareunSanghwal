@@ -3,6 +3,7 @@ package life.bareun.diary.member.controller;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
+import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -231,6 +233,28 @@ public class MemberController {
                     HttpStatus.OK.value(),
                     String.format("%d 포인트를 획득했습니다.", memberTreePointResDto.point()),
                     memberTreePointResDto
+                )
+            );
+    }
+
+    @GetMapping("/{memberHabitId}/tracker")
+    public ResponseEntity<BaseResponse<MemberHabitTrackersResDto>> habitTrackers(
+        @PathVariable
+        String memberHabitId
+    ) {
+        MemberHabitTrackersResDto memberHabitTrackersResDto = memberService.habitTrackers(
+            memberHabitId
+        );
+
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    String.format("%d번 해빗의 해빗 트래커 정보를 읽어왔습니다,", Integer.parseInt(memberHabitId)),
+                    memberHabitTrackersResDto
                 )
             );
     }
