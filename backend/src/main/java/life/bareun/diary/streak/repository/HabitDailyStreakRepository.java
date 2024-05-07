@@ -11,6 +11,6 @@ public interface HabitDailyStreakRepository extends JpaRepository<HabitDailyStre
 
     Optional<HabitDailyStreak> findByMemberHabitAndCreatedDate(MemberHabit memberHabit, LocalDate date);
 
-    // HabitDailyStreak findByMemberHabitAndCreatedDate(MemberHabit memberHabit, LocalDate localDate);
+    void deleteAllByMemberHabit(MemberHabit memberHabit);
 
 }

@@ -15,11 +15,9 @@ import life.bareun.diary.streak.dto.StreakInfoByDayDto;
 import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.entity.HabitTotalStreak;
-import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import life.bareun.diary.streak.exception.HabitDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.HabitTotalStreakErrorCode;
-import life.bareun.diary.streak.exception.MemberTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.repository.HabitTotalStreakRepository;
@@ -146,40 +144,13 @@ public class HabitStreakServiceImpl implements HabitStreakService {
     }
 
     @Override
+    public void deleteHabitTotalStreak(MemberHabit memberHabit) {
+        habitTotalStreakRepository.deleteByMemberHabit(memberHabit);
+    }
+
+    @Override
     public void deleteHabitDailyStreak(MemberHabit memberHabit) {
-        // TODO: 구체적인 날짜의 지정이 필요하다면 파라메터로 바꿔주자.
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
-
-        HabitTotalStreak habitTotalStreak = habitTotalStreakRepository.findByMemberHabit(memberHabit)
-            .orElseThrow(() -> new StreakException(HabitTotalStreakErrorCode.NOT_FOUND_HABIT_TOTAL_STREAK));
-
-        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(getCurrentMember())
-            .orElseThrow(() -> new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
-
-        /*
-         * 내일부터 이후 한 달동안의 해빗 데일리 스트릭을 조회하여 삭제.
-         * 해빗 데일리 스트릭의 생성 조건 상, 삭제될 수 있는 레코드는 오늘과 내일의 레코드 두 가지밖에 없다.
-         * 오늘의 해빗 데일리 스트릭을 삭제할 경우, 다른 테이블이 함께 변동됨에 따라 별을 획득하게 될 가능성이 존재한다.
-         * 서비스적으로 악용될 수 있을 것이라 생각되어 오늘자의 해빗 일일 스트릭은 삭제하지 않고 남겨두자.
-         */
-        habitDailyStreakRepository.findAllHabitDailyStreakByMemberHabitIdBetweenStartDateAndEndDate(
-                memberHabit, tomorrow, tomorrow.plusMonths(1))
-            .forEach(habitDailyStreak -> {
-                /*
-                 * AchieveType이 NOT_EXISTED가 아닌 경우,
-                 * 즉 그 날에 해빗 트래커가 존재하는 경우 해빗 전체 트래커 개수를 1만큼 감소.
-                 * 멤버 전체 스트릭에서 전체 트래커 개수를 1만큼 감소.
-                 * 멤버 일일 스트릭에서 전체 트래커 개수를 1만큼 감소.
-                 */
-                if (!habitDailyStreak.getAchieveType().equals(AchieveType.NOT_EXISTED)) {
-                    habitTotalStreak.modifyTotalTrackerCount(habitTotalStreak.getTotalTrackerCount() - 1);
-                    memberTotalStreak.modifyTotalTrackerCount(memberTotalStreak.getTotalTrackerCount() - 1);
-
-                    // TODO: 전영빈 / 멤버 일일 스트릭의 토탈 트래커 수를 업데이트하는 로직을 추가해야 한다.
-                }
-
-                habitDailyStreakRepository.delete(habitDailyStreak);
-            });
+        habitDailyStreakRepository.deleteAllByMemberHabit(memberHabit);
     }
 
     @Override
