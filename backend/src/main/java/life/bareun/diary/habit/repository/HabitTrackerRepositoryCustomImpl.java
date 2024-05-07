@@ -120,7 +120,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<Integer> findAllCreatedYear(Long memberId, Long memberHabitId) {
+    public List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId) {
         return queryFactory
             .selectDistinct(habitTracker.createdYear.intValue())
             .from(habitTracker)
@@ -133,7 +133,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public MemberHabitTrackerDto findAllHabitTrackerByMemberHabitId(
+    public MemberHabitTrackerDto findAllHabitTrackerByYearAndMemberHabitId(
         Integer year,
         Long memberId,
         Long memberHabitId

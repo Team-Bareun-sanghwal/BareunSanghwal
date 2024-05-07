@@ -422,14 +422,14 @@ public class MemberServiceImpl implements MemberService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Long longMemberHabitId = Long.parseLong(memberHabitId);
 
-        List<Integer> yearList = habitTrackerRepository.findAllCreatedYear(
+        List<Integer> yearList = habitTrackerRepository.findAllCreatedYearByMemberHabitId(
             memberId,
             longMemberHabitId
         );
         List<MemberHabitTrackerDto> habitTrackerGroupList = new ArrayList<>();
         for (Integer year : yearList) {
             habitTrackerGroupList.add(
-                habitTrackerRepository.findAllHabitTrackerId(
+                habitTrackerRepository.findAllHabitTrackerByYearAndMemberHabitId(
                     year,
                     memberId,
                     longMemberHabitId
