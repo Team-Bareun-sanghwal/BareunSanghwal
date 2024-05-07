@@ -12,10 +12,11 @@ import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
 
 export const HabitWriteComponent = () => {
-  // 진행 중인 해빗 목록 fetch
-  // 완료한 해빗 목록 fetch
+  const [text, setText] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
 
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+  console.log(text);
+  console.log(image);
 
   const overlay = useOverlay();
 
@@ -46,7 +47,7 @@ export const HabitWriteComponent = () => {
         <TabBox
           tabs={[
             {
-              component: <TextAreaBox />,
+              component: <TextAreaBox setText={setText} />,
               title: '텍스트 작성',
             },
             {
@@ -58,7 +59,7 @@ export const HabitWriteComponent = () => {
       </div>
 
       <Button
-        isActivated={isAlreadySet === null ? false : true}
+        isActivated={text && text.length <= 100 ? true : false}
         label="완료"
         onClick={handleWriteOverlay}
       />

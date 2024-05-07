@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import { GuideText } from '../GuideText/GuideText';
 
-export const TextAreaBox = () => {
+export const TextAreaBox = ({
+  setText,
+}: {
+  setText: (text: string) => void;
+}) => {
   const [textLength, setTextLength] = useState<number>(0);
   const [outlineColor, setOutlineColor] = useState<string>(
     'outline-custom-green',
@@ -28,6 +32,7 @@ export const TextAreaBox = () => {
             setOutlineColor('outline-custom-green');
           }
           setTextLength(event.target.value.length);
+          setText(event.target.value);
         }}
       ></textarea>
 
