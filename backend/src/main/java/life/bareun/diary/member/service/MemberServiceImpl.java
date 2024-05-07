@@ -285,6 +285,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findAll();
     }
 
+    //월마다 수행되는 메소드
     @Transactional
     public void initStreakRecoveryForAllMembersMonthly() {
         // 회원 탈퇴 시 MemberRecovery가 먼저 삭제되므로
@@ -292,7 +293,10 @@ public class MemberServiceImpl implements MemberService {
         List<MemberRecovery> memberRecoveries = memberRecoveryRepository.findAll();
 
         for (MemberRecovery memberRecovery : memberRecoveries) {
-            memberRecovery.sendFreeRecovery();
+            // 무료 리커버리를 발급하고
+            memberRecovery.grantFreeRecovery();
+            // 리커버리 가격을 초기화한다.
+            memberRecovery.initRecoveryPrice();
             memberRecoveryRepository.save(memberRecovery);
         }
     }

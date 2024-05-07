@@ -23,6 +23,7 @@ public class MemberRecovery {
 
     private static final int MAX_PRICE = 2_000_000_000;
     private static final int MAX_FREE_RECOVERY_COUNT = 1;
+    private static final int INITIAL_PRICE = 140;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,5 +61,9 @@ public class MemberRecovery {
         if (freeRecoveryCount < MAX_FREE_RECOVERY_COUNT) {
             freeRecoveryCount += 1;
         }
+    }
+
+    public void initRecoveryPrice() {
+        currentRecoveryPrice = INITIAL_PRICE;
     }
 }
