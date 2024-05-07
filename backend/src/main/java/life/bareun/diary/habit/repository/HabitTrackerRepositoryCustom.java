@@ -11,9 +11,8 @@ import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
 import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
-import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
-import life.bareun.diary.member.dto.MemberPracticedHabitDto;
+import life.bareun.diary.member.dto.MemberTopHabitDto;
 
 public interface HabitTrackerRepositoryCustom {
 

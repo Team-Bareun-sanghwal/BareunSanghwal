@@ -19,7 +19,7 @@ import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.entity.HabitTracker;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
-import life.bareun.diary.member.dto.MemberPracticedHabitDto;
+import life.bareun.diary.member.dto.MemberTopHabitDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -98,7 +98,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<MemberPracticedHabitDto> findTopHabits(Long memberId) {
+    public List<MemberTopHabitDto> findTopHabits(Long memberId) {
         Double countAll = queryFactory
             .select(habitTracker.id.count().doubleValue())
             .from(habitTracker)
@@ -108,7 +108,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
         return queryFactory
             .select(
                 Projections.constructor(
-                    MemberPracticedHabitDto.class,
+                    MemberTopHabitDto.class,
                     habitTracker.memberHabit.alias.as("habit"),
                     habitTracker.id.count()
                         .multiply(100)
