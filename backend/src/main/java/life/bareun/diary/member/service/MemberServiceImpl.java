@@ -368,16 +368,17 @@ public class MemberServiceImpl implements MemberService {
             return new ArrayList<>();
         }
 
-        final int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
+        int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
             .max()
             .getAsInt();
         int minValue = habitPracticeCountPerDayOfWeekDtos.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
-            .max()
+            .min()
             .getAsInt();
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = habitPracticeCountPerDayOfWeekDtos.stream()
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek =
+            habitPracticeCountPerDayOfWeekDtos.stream()
             .map(
                 habitPracticeCountPerDayOfWeekDto -> {
                     int value = habitPracticeCountPerDayOfWeekDto.value();
