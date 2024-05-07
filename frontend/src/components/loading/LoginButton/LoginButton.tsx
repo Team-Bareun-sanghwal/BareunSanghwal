@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 interface ILoginButtonProps {
@@ -9,16 +9,23 @@ interface ILoginButtonProps {
 
 export const LoginButton = ({ platform }: ILoginButtonProps) => {
   const router = useRouter();
-  const url =
-    platform === 'kakao'
-      ? 'https://www.kakaocorp.com/page/'
-      : 'https://www.google.co.kr/?hl=ko';
+  const searchParams = useSearchParams();
+
+  const signIn = async () => {
+    const url =
+      platform === 'kakao'
+        ? process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL!
+        : process.env.NEXT_PUBLIC_OAUTH_GOOGLE_URL!;
+    router.push(url);
+  };
 
   const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
+  const status = searchParams.get('status');
+  console.log(status);
 
   return (
     <button
-      onClick={() => router.push(url)}
+      onClick={signIn}
       className={`w-[34rem] h-[3rem] ${bgColor} rounded-[0.8rem] flex items-center justify-center`}
     >
       <Image

@@ -29,7 +29,7 @@ interface IPropType {
   mostSuccessedHabit: string;
 }
 
-const legendSetting: CircularChart3DLegendSettingsModel = {
+const legendSettings: CircularChart3DLegendSettingsModel = {
   visible: true,
   width: '300',
   textStyle: {
@@ -66,7 +66,7 @@ export const RecapPieChart = ({
         tilt={5}
         depth={40}
         width="400"
-        legendSettings={legendSetting}
+        legendSettings={legendSettings}
       >
         <Inject
           services={[
