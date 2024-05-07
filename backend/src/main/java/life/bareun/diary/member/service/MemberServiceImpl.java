@@ -4,7 +4,6 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ import life.bareun.diary.global.auth.service.AuthTokenService;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.AuthUtil;
-import life.bareun.diary.habit.dto.response.HabitTrackerWeekResDto;
+import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.habit.service.HabitTrackerService;
@@ -294,12 +293,13 @@ public class MemberServiceImpl implements MemberService {
             habitTrackerRepository.findTopHabits(memberId),
             memberId
         );
-        String maxPracticedHabit = topHabits.get(0).habit();
+
+        String maxPracticedHabit = topHabits.isEmpty() ? null : topHabits.get(0).habit();
 
         // 요일 별 달성 횟수
         // 최대 또는 최대값 중복 허용
         List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek
-            = practiceCountPerDayOfWeek();
+            = practiceCountPerDayOfWeek(memberId);
 
         // 4 (0~24시까지 1시간 단위로 24개)
         List<MemberPracticeCountPerHourDto> practiceCountPerHour
@@ -354,35 +354,42 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional(readOnly = true)
-    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek() {
-        HabitTrackerWeekResDto weekly = habitTrackerService.findAllWeekHabitTracker();
-        List<Integer> weeklyValues = Arrays.asList(
-            weekly.monday(), weekly.tuesday(), weekly.wednesday(),
-            weekly.thursday(), weekly.friday(),
-            weekly.saturday(), weekly.sunday()
-        );
-        int maxValue = weeklyValues.stream().max(Integer::compare).get();
-        int minValue = weeklyValues.stream().min(Integer::compare).get();
+    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek(Long memberId) {
+        List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtos
+            = habitTrackerRepository.countPracticedHabitsPerDayOfWeek(memberId);
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = new ArrayList<>(7);
-        for (int i = 0; i < weeklyValues.size(); ++i) {
-            int val = weeklyValues.get(i);
-            int colorIndex;
-            if (val == minValue) {
-                colorIndex = COLOR_INDEX_MIN;
-            } else if (val == maxValue) {
-                colorIndex = COLOR_INDEX_MAX;
-            } else {
-                colorIndex = COLOR_INDEX_DEFAULT;
-            }
-            practiceCountsPerDayOfWeek.add(
-                new MemberPracticeCountPerDayOfWeekDto(
-                    DayOfWeek.getValueByIndex(i),
-                    val,
-                    colorIndex
-                )
-            );
+        if (habitPracticeCountPerDayOfWeekDtos.isEmpty()) {
+            return new ArrayList<>();
         }
+
+        final int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
+            .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
+            .max()
+            .getAsInt();
+        int minValue = habitPracticeCountPerDayOfWeekDtos.stream()
+            .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
+            .max()
+            .getAsInt();
+
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek = habitPracticeCountPerDayOfWeekDtos.stream()
+            .map(
+                habitPracticeCountPerDayOfWeekDto -> {
+                    int value = habitPracticeCountPerDayOfWeekDto.value();
+
+                    int colorIdx = COLOR_INDEX_DEFAULT;
+                    if (value == minValue) {
+                        colorIdx = COLOR_INDEX_MIN;
+                    } else if (value == maxValue) {
+                        colorIdx = COLOR_INDEX_MAX;
+                    }
+
+                    return new MemberPracticeCountPerDayOfWeekDto(
+                        DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
+                        value,
+                        colorIdx
+                    );
+                }
+            ).toList();
 
         return practiceCountsPerDayOfWeek;
     }
