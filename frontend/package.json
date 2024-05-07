@@ -20,6 +20,7 @@
     "@syncfusion/ej2-react-charts": "^25.1.40",
     "autoprefixer": "^10.4.19",
     "emoji-picker-react": "^4.9.2",
+    "firebase": "^10.11.1",
     "framer-motion": "^11.1.1",
     "gsap": "^3.12.5",
     "next": "14.2.1",
