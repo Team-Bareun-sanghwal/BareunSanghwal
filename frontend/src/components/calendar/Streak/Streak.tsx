@@ -3,13 +3,15 @@ import { StarIcon } from '@heroicons/react/24/solid';
 import { useOverlay } from '@/hooks/use-overlay';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { ThemeColor } from '../CalenderConfig';
-import { getToday, getDateFormat } from '../util';
+import { getToday, getMonth, getYear } from '../util';
 import { $Fetch } from '@/apis';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
   day?: number;
+  month?: number;
+  year?: number;
   habitCnt?: number;
   onClick?: () => void;
 }
@@ -18,6 +20,8 @@ export const Streak = ({
   themeColor,
   achieveCount,
   day,
+  month,
+  year,
   isUnique,
   habitCnt,
   ...props
@@ -110,10 +114,17 @@ export const Streak = ({
   const onClick = () => {
     console.log(day);
   };
+  console.log(day, month, year, getToday(false), getMonth(false), getYear());
   return (
     <button onClick={() => onClickStreakRecovery()} className={customClassName}>
       <a
-        className={getToday(false) === day ? 'text-2xl border-b-2 w-8 h-8' : ''}
+        className={
+          getToday(false) === day + '' &&
+          getMonth(false) === month + '' &&
+          getYear() === year + ''
+            ? 'flex text-white text-2xl w-full h-full rounded-md border-custom-dark-gray border-2 items-center justify-center'
+            : ''
+        }
       >
         {day}
       </a>

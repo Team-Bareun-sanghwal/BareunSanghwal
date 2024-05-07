@@ -52,9 +52,9 @@ export const convertMonthFormat = (month: number): string => {
 // DD
 // format: true -> DD
 // format: false -> D
-export const getToday = (format: boolean): number | string => {
+export const getToday = (format: boolean): string => {
   const today = new Date().getDate();
-  return format ? ('0' + today).slice(-2) : (today as number);
+  return format ? ('0' + today).slice(-2) : today + '';
 };
 
 // YYYY-MM-DDk
