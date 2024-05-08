@@ -551,29 +551,4 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-    @Override
-    @Transactional
-    public void treeLevelUp() {
-        Member member = getCurrentMember();
-        Tree currentTree = member.getTree();
-
-        // 레벨을 기준으로 오름차순 정렬된 나무 리스트를 얻는다.
-        List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
-
-        // 현재 사용자 나무의 인덱스 값을 얻는다.
-        int treeIndex = -1;
-        for (int i = 0; i < orderedTreeList.size(); ++i) {
-            if (Objects.equals(currentTree.getLevel(),orderedTreeList.get(i).getLevel())) {
-                treeIndex = i;
-                break;
-            }
-        }
-
-        // 인덱스 범위를 벗어나지 않도록 1을 더한다.
-        treeIndex = Math.min(treeIndex + 1, orderedTreeList.size() - 1);
-        member.updateTree(orderedTreeList.get(treeIndex));
-
-        // 바뀐 나무를 저장한다.
-        memberRepository.save(member);
-    }
 }
