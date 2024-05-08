@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.dto.MemberRegisterDto;
@@ -173,5 +174,19 @@ public class Member {
 
     public void updateTree(Tree tree) {
         this.tree = tree;
+    }
+
+    public void delete() {
+        sub = String.format("DeletedUser%d", id);
+        isDeleted = true;
+        deleteInfo();
+    }
+
+    private void deleteInfo() {
+        this.nickname = null;
+        this.birth = null;
+        this.gender = null;
+        this.job = null;
+        this.provider = null;
     }
 }
