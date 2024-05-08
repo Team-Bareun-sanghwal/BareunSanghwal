@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
         // origin 이상 bound 미만의 무작위 실수 값
         // 구간 [1.0, 101.0)의 수 중 랜덤 값을 추출하고
         // 열린 구간 (100.0, 101.0) 사이의 수가 추출되면 100.0으로 치환한다.
-        double gotchaGradeWeight = Math.min(RANDOM.nextFloat(bound) + 1.0, bound);
+        double gotchaGradeWeight = Math.min(RANDOM.nextFloat()*bound + 1.0, bound);
 
         // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
         double weightSum = 0.0;
@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<StreakColor> streakColors = streakColorRepository.findAllByStreakColorGrade(
             gotchaGrade);
-        StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
+        StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt() * streakColors.size());
 
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id).orElseThrow(
@@ -144,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
 
         // 2. 랜덤 뽑기
         int treeColorCount = treeColors.size();
-        TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
+        TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt()*treeColorCount);
 
         // 3. 나무 색 변경권 가격 정보 얻기
         Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
