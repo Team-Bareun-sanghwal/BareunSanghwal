@@ -40,4 +40,7 @@ public class MemberDailyPhrase {
         this.dailyPhrase = dailyPhrase;
     }
 
+    public static MemberDailyPhrase create(Member member, DailyPhrase dailyPhrase) {
+        return new MemberDailyPhrase(member, dailyPhrase);
+    }
 }
