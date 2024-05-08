@@ -33,7 +33,7 @@ export const Write = ({
         mode="POSITIVE"
         onClose={close}
         onConfirm={async () => {
-          await writeHabit(image, {
+          const result = await writeHabit(image, {
             habitTrackerId: habitTrackerId,
             content: text,
           });

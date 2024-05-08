@@ -14,6 +14,7 @@ interface IHabitListBoxProps {
   iconSrc: string;
   dayList?: string[];
   currentStreak?: number;
+  memberHabitId?: number;
   habitTrackerId?: number;
   createdAt: Date;
   completedAt?: Date;
@@ -55,6 +56,7 @@ export const HabitListBox = ({
   iconSrc,
   dayList,
   currentStreak,
+  memberHabitId,
   habitTrackerId,
   createdAt,
   completedAt,
@@ -65,7 +67,10 @@ export const HabitListBox = ({
 
   return (
     <section className="w-full rounded-[1rem] p-[1rem] flex flex-col gap-[1rem] bg-custom-light-gray">
-      <div className="flex items-center justify-between gap-[1rem]">
+      <div
+        className="flex items-center justify-between gap-[1rem]"
+        onClick={() => router.push(`/habit/list/${memberHabitId}`)}
+      >
         <div className="flex gap-[0.5rem] items-center flex-shrink-0">
           <button
             className={`${mode !== 'COMPLETED' ? 'bg-gradient-to-r from-custom-pink to-custom-sky' : 'bg-custom-white'} w-[6rem] h-[6rem] rounded-full flex items-center justify-center`}
