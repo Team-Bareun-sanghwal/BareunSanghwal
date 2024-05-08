@@ -104,6 +104,8 @@ public class Member {
     @Column(name = "member_habits")
     private List<MemberHabit> memberHabitList;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @Builder
     private Member(
