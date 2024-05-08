@@ -1,6 +1,6 @@
 'use client';
 
-import { requestPermission } from '@/worker/firebase-messaging-sw';
+import { requestToken } from '@/worker/firebase-messaging-sw';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Page() {
@@ -9,7 +9,7 @@ export default function Page() {
   const code = searchParams.get('status');
 
   if (code === '200') {
-    requestPermission();
+    requestToken();
     router.push('/main');
   } else {
     router.push('/signin');
