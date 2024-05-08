@@ -39,9 +39,6 @@ export const DayOrPeriod = ({
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
   const [period, setPeriod] = useState<number | null>(null);
 
-  console.log(dayOfWeek);
-  console.log(period);
-
   const overlay = useOverlay();
 
   const handleRegisterOverlay = () => {
@@ -69,7 +66,7 @@ export const DayOrPeriod = ({
                             ? '토'
                             : '일';
               })}
-            iconSrc="/images/icon-clock.png"
+            iconSrc={data?.icon || ''}
             mode="REGISTER"
             name={data?.habitName}
           />

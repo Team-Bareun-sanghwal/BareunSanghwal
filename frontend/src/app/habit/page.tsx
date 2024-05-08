@@ -5,8 +5,8 @@ import { getCompletedHabitList } from './_apis/getAllCompletedHabitList';
 import { ICompletedHabit } from './_types';
 
 export default async function Page() {
-  // const activatedHabitList = await getActivatedHabitList();
-  // console.log(activatedHabitList.data);
+  const activatedHabitList = await getActivatedHabitList();
+  const activatedHabitListData = activatedHabitList.data.memberHabitList;
 
   const completedHabitList = await getCompletedHabitList();
   const completedHabitListData = completedHabitList.data.memberHabitList;
@@ -19,7 +19,11 @@ export default async function Page() {
         <TabBox
           tabs={[
             {
-              component: <HabitUpdateComponent />,
+              component: (
+                <HabitUpdateComponent
+                  activatedHabitListData={activatedHabitListData}
+                />
+              ),
               title: '진행 중인 해빗',
             },
             {
@@ -34,7 +38,7 @@ export default async function Page() {
                           key={`completedHabit-${completedHabit.memberHabitId}`}
                           alias={completedHabit.alias}
                           name={completedHabit.name}
-                          iconSrc="/images/icon-lightning.png"
+                          iconSrc={completedHabit.icon}
                           mode="COMPLETED"
                           completedAt={new Date(completedHabit.succeededTime)}
                           createdAt={new Date(completedHabit.createdAt)}
