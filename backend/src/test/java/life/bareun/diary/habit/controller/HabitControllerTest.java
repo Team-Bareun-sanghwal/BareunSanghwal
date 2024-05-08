@@ -30,23 +30,16 @@ import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
-import life.bareun.diary.habit.service.HabitService;
-import life.bareun.diary.habit.service.HabitTrackerService;
 import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
-import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
-import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
-import life.bareun.diary.streak.service.HabitStreakService;
 import life.bareun.diary.streak.service.MemberStreakService;
-import life.bareun.diary.streak.service.StreakService;
-import org.elasticsearch.monitor.os.OsStats.Mem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,6 +74,9 @@ class HabitControllerTest {
     private HabitTrackerRepository habitTrackerRepository;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private HabitRepository habitRepository;
 
     @Autowired
@@ -88,9 +84,6 @@ class HabitControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private MemberRepository memberRepository;
 
     @Autowired
     AuthTokenProvider authTokenProvider;
@@ -202,7 +195,8 @@ class HabitControllerTest {
 
         memberStreakService.createInitialMemberStreak(member);
 
-        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member).orElseThrow();
+        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
+            .orElseThrow();
         memberTotalStreak.modifyTotalTrackerCount(1);
         memberTotalStreakRepository.save(memberTotalStreak);
 
@@ -374,7 +368,8 @@ class HabitControllerTest {
 
         memberStreakService.createInitialMemberStreak(member);
 
-        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member).orElseThrow();
+        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
+            .orElseThrow();
         memberTotalStreak.modifyTotalTrackerCount(1);
         memberTotalStreakRepository.save(memberTotalStreak);
 
