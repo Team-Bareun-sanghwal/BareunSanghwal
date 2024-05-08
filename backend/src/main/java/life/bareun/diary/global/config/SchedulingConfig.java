@@ -86,4 +86,8 @@ public class SchedulingConfig {
     public void sendNotificationDailyPhrase() {
         notificationService.sendNotification(4L);
     }
+
+    // 자정, 오늘의 한 마디 변경
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void renewDailyPhrase() { memberService.renewDailyPhrase(); }
 }
