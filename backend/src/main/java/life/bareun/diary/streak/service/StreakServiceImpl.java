@@ -123,13 +123,14 @@ public class StreakServiceImpl implements StreakService {
         }
 
         Member member = getCurrentMember();
+        LocalDate firstDate = LocalDate.of(date.getYear(), date.getMonthValue(), 1).minusDays(1);
+        memberStreakService.recoveryMemberDailyStreak(member, date); //clear
 
-        LocalDate firstDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), 1).minusDays(1);
-        useStreakRecovery(member);
-        memberStreakService.recoveryMemberDailyStreak(member, date);
         int longestStreak = memberStreakService
             .recoveryMemberDailyStreakCount(member, firstDate, today);
         memberStreakService.recoveryMemberTotalStreak(member, longestStreak);
+
+        useStreakRecovery(member);
     }
 
     private void useStreakRecovery(Member member) {
