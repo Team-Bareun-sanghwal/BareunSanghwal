@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<StreakColor> streakColors = streakColorRepository.findAllByStreakColorGrade(
             gotchaGrade);
-        StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt() * streakColors.size());
+        StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
 
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id).orElseThrow(
@@ -144,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
 
         // 2. 랜덤 뽑기
         int treeColorCount = treeColors.size();
-        TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt()*treeColorCount);
+        TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 3. 나무 색 변경권 가격 정보 얻기
         Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
