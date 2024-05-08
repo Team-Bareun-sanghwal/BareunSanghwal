@@ -136,10 +136,22 @@ public class Member {
     }
 
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
-        this.nickname = memberUpdateReqDto.nickname();
-        this.birth = memberUpdateReqDto.birthDate();
-        this.gender = memberUpdateReqDto.gender();
-        this.job = memberUpdateReqDto.job();
+        if (memberUpdateReqDto == null) {
+            return;
+        }
+
+        Optional.ofNullable(memberUpdateReqDto.nickname())
+            .filter(newNickname -> !newNickname.isEmpty())
+            .ifPresent(newNickname -> this.nickname = newNickname);
+
+        Optional.ofNullable(memberUpdateReqDto.birthDate())
+            .ifPresent(newBirthDate -> this.birth = newBirthDate);
+
+        Optional.ofNullable(memberUpdateReqDto.gender())
+            .ifPresent(newGender -> this.gender = newGender);
+
+        Optional.ofNullable(memberUpdateReqDto.job())
+            .ifPresent(newJob -> this.job = newJob);
     }
 
     public void usePoint(Integer amount) {
