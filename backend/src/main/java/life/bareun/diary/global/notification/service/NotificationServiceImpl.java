@@ -1,5 +1,10 @@
 package life.bareun.diary.global.notification.service;
 
+import com.google.firebase.messaging.AndroidConfig;
+import com.google.firebase.messaging.AndroidNotification;
+import com.google.firebase.messaging.ApnsConfig;
+import com.google.firebase.messaging.Aps;
+import com.google.firebase.messaging.ApsAlert;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.WebpushConfig;
@@ -11,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.notification.dto.NotificationDateDto;
 import life.bareun.diary.global.notification.dto.NotificationDto;
 import life.bareun.diary.global.notification.dto.NotificationPhraseDto;
@@ -19,16 +25,15 @@ import life.bareun.diary.global.notification.dto.NotificationStatusModifyDto;
 import life.bareun.diary.global.notification.dto.NotificationTokenDto;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
 import life.bareun.diary.global.notification.dto.response.NotificationListResDto;
-import life.bareun.diary.global.notification.entity.Notification;
 import life.bareun.diary.global.notification.entity.NotificationCategory;
 import life.bareun.diary.global.notification.entity.NotificationToken;
+import life.bareun.diary.global.notification.entity.Notification;
 import life.bareun.diary.global.notification.exception.NotificationErrorCode;
 import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
 import life.bareun.diary.global.notification.repository.NotificationRepository;
 import life.bareun.diary.global.notification.repository.NotificationTokenRepository;
 import life.bareun.diary.member.entity.DailyPhrase;
-import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.repository.DailyPhraseRepository;
@@ -240,6 +245,7 @@ public class NotificationServiceImpl implements NotificationService {
         return resultTokenMap;
     }
 
+    // 만약 알림 전송에 실패하면, 알림 저장까지 롤백되기 때문에 noRollbackFor을 걸어줌
     @Override
     @Transactional(noRollbackFor = NotificationException.class)
     public void createNotification(NotificationResultTokenDto notificationResultTokenDto,
@@ -256,11 +262,26 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
-            .setWebpushConfig(
-                WebpushConfig.builder().putHeader("ttl", "300")
-                    .setNotification(
-                        new WebpushNotification("bareun", notificationResultTokenDto.content()))
-                    .build()).build();
+            .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400").setNotification(
+                new WebpushNotification("bareun", notificationResultTokenDto.content())).build())
+            .setAndroidConfig(
+                AndroidConfig.builder()
+                    .setTtl(86400)
+                    .setNotification(AndroidNotification.builder()
+                        .setTitle("bareun")
+                        .setBody(notificationResultTokenDto.content())
+                        .setClickAction("https://bareun.life/notification").build()).build()
+            )
+            .setApnsConfig(
+                ApnsConfig.builder()
+                    .putHeader("apns-expiration",
+                        String.valueOf((System.currentTimeMillis() / 1000) + 86400))
+                    .setAps(Aps.builder()
+                        .setAlert(ApsAlert.builder().setTitle("bareun")
+                            .setBody(notificationResultTokenDto.content()).build())
+                        .setCategory("https://bareun.life/notification").build()).build()
+            )
+            .build();
         try {
             FirebaseMessaging.getInstance().sendAsync(message).get();
         } catch (Exception e) {
