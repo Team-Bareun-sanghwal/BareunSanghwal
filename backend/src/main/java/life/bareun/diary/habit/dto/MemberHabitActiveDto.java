@@ -21,6 +21,8 @@ public record MemberHabitActiveDto(
 
     int currentStreak,
 
-    List<Integer> dayList
+    List<Integer> dayList,
+
+    Boolean isSucceeded
 
 ) { }

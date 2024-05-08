@@ -459,6 +459,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.data.memberHabitList[0].createdAt").isNotEmpty())
             .andExpect(jsonPath("$.data.memberHabitList[0].habitTrackerId").value(0))
             .andExpect(jsonPath("$.data.memberHabitList[0].currentStreak").value(0))
+            .andExpect(jsonPath("$.data.memberHabitList[0].isSucceeded").value(false))
             .andExpect(jsonPath("$.data.memberHabitList[0].dayList").isEmpty());
     }
 

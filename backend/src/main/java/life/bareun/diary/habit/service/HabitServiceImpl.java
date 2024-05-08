@@ -13,9 +13,9 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.elastic.dto.ElasticDto;
 import life.bareun.diary.global.elastic.service.ElasticService;
-import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitMatchDto;
 import life.bareun.diary.habit.dto.HabitRecommendDto;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
@@ -222,7 +222,7 @@ public class HabitServiceImpl implements HabitService {
 
                 // 만약 말일에 생성되기 때문에 해빗 트래커가 하나도 없다면 1일부터 생성
                 int startDay = 1;
-                if(habitTracker != null) {
+                if (habitTracker != null) {
                     // 주기를 더한 날이 말일보다 더 크게 될 때까지 증가
                     startDay = habitTracker.getCreatedDay();
                     while (startDay <= lastDayOfNowMonth) {
@@ -266,13 +266,27 @@ public class HabitServiceImpl implements HabitService {
             for (HabitTrackerTodayDto habitTrackerTodayDto : habitTrackerList) {
                 if (Objects.equals(habitTrackerTodayDto.memberHabitId(), memberHabit.getId())) {
                     habitTrackerId = habitTrackerTodayDto.habitTrackerId();
+                    break;
                 }
+            }
+
+            HabitTracker habitTracker = null;
+
+            if (habitTrackerId != 0L) {
+                habitTracker = habitTrackerRepository.findById(habitTrackerId)
+                    .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
+            }
+
+            boolean isSucceeded = false;
+            if (habitTracker != null && habitTracker.getSucceededTime() != null) {
+                isSucceeded = true;
             }
 
             // 현재 사용자 해빗의 스트릭
             HabitDailyStreak habitDailyStreak = habitDailyStreakRepository
                 .findByMemberHabitAndCreatedDate(memberHabit, LocalDate.now())
-                .orElseThrow(() -> new StreakException(HabitDailyStreakErrorCode.NOT_FOUND_HABIT_DAILY_STREAK));
+                .orElseThrow(() -> new StreakException(
+                    HabitDailyStreakErrorCode.NOT_FOUND_HABIT_DAILY_STREAK));
 
             List<Integer> dayList = habitDayRepository.findAllDayByMemberHabit(memberHabit);
             memberHabitActiveDtoList.add(
@@ -280,7 +294,8 @@ public class HabitServiceImpl implements HabitService {
                     .alias(memberHabit.getAlias()).memberHabitId(memberHabit.getId())
                     .icon(memberHabit.getIcon()).createdAt(memberHabit.getCreatedDatetime())
                     .habitTrackerId(habitTrackerId)
-                    .currentStreak(habitDailyStreak.getCurrentStreak()).dayList(dayList).build());
+                    .currentStreak(habitDailyStreak.getCurrentStreak()).dayList(dayList)
+                    .isSucceeded(isSucceeded).build());
         }
         return MemberHabitActiveResDto.builder().memberHabitList(memberHabitActiveDtoList).build();
     }
