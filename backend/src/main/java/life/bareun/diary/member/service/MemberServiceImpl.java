@@ -114,8 +114,10 @@ public class MemberServiceImpl implements MemberService {
             .orElseGet(
                 // 신규회원
                 () -> {
+                    // 신규 회원의 상태 값 설정
                     memberStatus.set(MemberStatus.NEW);
-
+                    
+                    // 사용자 데이터 생성
                     Member newMember = Member.create(
                         MemberRegisterDto.builder()
                             .sub(sub)
@@ -125,9 +127,9 @@ public class MemberServiceImpl implements MemberService {
                             .defaultTreeColorId(getDefaultTreeColorId())
                             .build()
                     );
+                    Member savedMember = memberRepository.save(newMember);
 
                     // 신규 사용자의 리커버리 현황 데이터 생성
-                    Member savedMember = memberRepository.save(newMember);
                     memberRecoveryRepository.save(
                         MemberRecovery.create(savedMember)
                     );
@@ -143,7 +145,9 @@ public class MemberServiceImpl implements MemberService {
                         MemberDailyPhrase.create(newMember, initDailyPhrase)
                     );
 
+                    // 신규 사용자 스트릭 데이터 생성
                     streakService.initialMemberStreak(savedMember);
+
                     return savedMember;
                 }
             );

@@ -8,24 +8,28 @@ import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthTokenServiceImpl implements AuthTokenService {
 
-    private final RedisTemplate<Long, String> authRedisTemplate;
+    private final StringRedisTemplate authRedisTemplate;
     private final AuthTokenProvider authTokenProvider;
 
     @Autowired
     public AuthTokenServiceImpl(
         @Qualifier(value = "authRedisTemplate")
-        RedisTemplate<Long, String> authRedisTemplate,
+        StringRedisTemplate authRedisTemplate,
         AuthTokenProvider authTokenProvider
     ) {
         this.authRedisTemplate = authRedisTemplate;
         this.authTokenProvider = authTokenProvider;
+    }
+
+    private static String toKey(Long id) {
+        return String.format("refreshToken:%d", id);
     }
 
     @Override
@@ -34,7 +38,11 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         AuthToken authRefreshToken = authTokenProvider.tokenToAuthToken(refreshToken);
         Duration expiry = authTokenProvider.getExpiry(authRefreshToken);
 
-        authRedisTemplate.opsForValue().set(id, refreshToken, expiry);
+        authRedisTemplate.opsForValue().set(
+            toKey(id),
+            refreshToken,
+            expiry
+        );
     }
 
     @Override
@@ -55,6 +63,6 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Transactional(readOnly = true)
     protected String findById(Long id) {
-        return authRedisTemplate.opsForValue().get(id);
+        return authRedisTemplate.opsForValue().get(toKey(id));
     }
 }
