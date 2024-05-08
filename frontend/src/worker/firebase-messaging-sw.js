@@ -16,11 +16,6 @@ export async function requestToken() {
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
-  const permission = await Notification.requestPermission();
-  if (permission === 'denied') {
-    return;
-  }
-
   const token = await getToken(messaging, {
     vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY,
   });
