@@ -187,6 +187,5 @@ public class Member {
         this.birth = null;
         this.gender = null;
         this.job = null;
-        this.provider = null;
     }
 }
