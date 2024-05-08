@@ -188,4 +188,14 @@ public class Member {
         this.gender = null;
         this.job = null;
     }
+
+    public boolean isPaidRecoveryAvailable() {
+        return paidRecoveryCount > 0;
+    }
+
+    public void usePaidRecovery() {
+        if (isPaidRecoveryAvailable()) {
+            paidRecoveryCount -= 1;
+        }
+    }
 }

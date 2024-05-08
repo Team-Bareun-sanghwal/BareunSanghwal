@@ -116,7 +116,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> {
                     // 신규 회원의 상태 값 설정
                     memberStatus.set(MemberStatus.NEW);
-                    
+
                     // 사용자 데이터 생성
                     Member newMember = Member.create(
                         MemberRegisterDto.builder()
