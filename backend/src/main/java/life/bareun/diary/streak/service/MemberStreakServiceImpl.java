@@ -100,7 +100,6 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         );
     }
 
-
     @Override
     public void achieveMemberStreak(Member member, int currentStreak) {
         LocalDate today = LocalDate.now();
@@ -187,4 +186,59 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         return memberDailyStreakRepository.findByMemberAndCreatedDate(member, date);
     }
 
+    @Override
+    public void recoveryMemberDailyStreak(Member member, LocalDate date) {
+        MemberDailyStreak memberDailyStreak = memberDailyStreakRepository.findByMemberAndCreatedDate(member, date)
+            .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK));
+
+        if (!memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+            throw new StreakException(MemberDailyStreakErrorCode.UNRECOVERABLE_ACHIEVE_TYPE);
+        }
+
+        memberDailyStreak.modifyAchieveType(AchieveType.RECOVERY);
+    }
+
+    @Override
+    public int recoveryMemberDailyStreakCount(Member member, LocalDate startDate, LocalDate endDate) {
+
+        List<MemberDailyStreak> memberDailyStreakList = memberDailyStreakRepository
+            .findByMemberAndCreatedDateBetweenOrderByCreatedDate(member, startDate, endDate);
+        if (memberDailyStreakList.isEmpty()) {
+            throw new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_WHOLE_MEMBER_DAILY_STREAK);
+        }
+
+        int currentStreak = memberDailyStreakList.get(0).getCurrentStreak();
+        int longestStreak = memberDailyStreakList.get(0).getCurrentStreak();
+
+        for (int i = 1; i < memberDailyStreakList.size(); i++) {
+            if (memberDailyStreakList.get(i - 1).getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+                currentStreak = 0;
+            }
+
+            if (memberDailyStreakList.get(i).getAchieveType().equals(AchieveType.ACHIEVE)) {
+                currentStreak++;
+            }
+
+            memberDailyStreakList.get(i).modifyCurrentStreak(currentStreak);
+            longestStreak = Math.max(longestStreak, currentStreak);
+        }
+
+        return longestStreak;
+    }
+
+    @Override
+    public void recoveryMemberTotalStreak(Member member, int longestStreak) {
+        memberTotalStreakRepository.findByMember(member)
+            .ifPresent(memberTotalStreak -> {
+                memberTotalStreak.modifyLongestStreak(Math.max(memberTotalStreak.getLongestStreak(), longestStreak));
+            });
+    }
+
+    /**
+     * 멤버 엔티티 반환.
+     */
+    private Member getCurrentMember() {
+        return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
+            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+    }
 }

@@ -1,6 +1,7 @@
 package life.bareun.diary.streak.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
@@ -12,4 +13,7 @@ public interface MemberDailyStreakRepository extends JpaRepository<MemberDailySt
 
     int countByIsStaredAndMemberAndCreatedDateBetween(Boolean isStared, Member member,
         LocalDate startDate, LocalDate endDate);
+
+    List<MemberDailyStreak> findByMemberAndCreatedDateBetweenOrderByCreatedDate(Member member, LocalDate startDate,
+        LocalDate endDate);
 }

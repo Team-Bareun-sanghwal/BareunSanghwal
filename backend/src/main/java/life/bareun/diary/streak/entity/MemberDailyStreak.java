@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table
 public class MemberDailyStreak {
 

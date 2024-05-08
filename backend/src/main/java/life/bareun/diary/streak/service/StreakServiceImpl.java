@@ -12,6 +12,8 @@ import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
+import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
+import life.bareun.diary.streak.exception.StreakException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -83,8 +85,7 @@ public class StreakServiceImpl implements StreakService {
 
     @Override
     public void createDailyStreak(Member member, LocalDate date) {
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
-            member);
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false, member);
 
         for (MemberHabit memberHabit : memberHabitList) {
             habitStreakService.createHabitDailyStreak(memberHabit, date);
@@ -106,8 +107,24 @@ public class StreakServiceImpl implements StreakService {
     }
 
     @Override
-    public void recoveryStreak() {
+    public void recoveryStreak(LocalDate date) {
+        /*
+         * 리커버리를 사용하려는 날짜가 현재 날짜와 같거나 이후이면 혹은 현재 날짜의 달에 포함되지 않는 경우
+         * 해당 날짜에는 리커버리를 사용할 수 없으므로 예외 발생.
+         */
+        LocalDate today = LocalDate.now();
+        if (!date.isBefore(today)
+            || (date.getYear() != today.getYear() || date.getMonthValue() != today.getMonthValue())) {
+            throw new StreakException(MemberDailyStreakErrorCode.UNAVAILABLE_TIME_ACCESS);
+        }
 
+        Member member = getCurrentMember();
+        LocalDate firstDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), 1).minusDays(1);
+
+        memberStreakService.recoveryMemberDailyStreak(member, date);
+        int longestStreak = memberStreakService
+            .recoveryMemberDailyStreakCount(member, firstDate, today);
+        memberStreakService.recoveryMemberTotalStreak(member, longestStreak);
     }
 
     /**

@@ -49,12 +49,14 @@ public class SchedulingConfig {
     // 다음 날짜의 해빗 일일 스트릭과 멤버 일일 스트릭 생성
     @Scheduled(cron = "0 0 0 * * ?")
     public void createDailyStreak() {
+        log.info("[SCHEDULER] 일일 스트릭 생성 시작");
         LocalDate today = LocalDate.now();
 
         memberService.findAllMember()
             .forEach(member -> {
                 streakService.createDailyStreak(member, today);
             });
+        log.info("[SCHEDULER] 일일 스트릭 생성 완료");
     }
 
     // 6시간마다

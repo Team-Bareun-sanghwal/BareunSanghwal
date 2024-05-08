@@ -5,6 +5,10 @@ import life.bareun.diary.streak.dto.StreakInfoByDayDto;
 import lombok.Builder;
 
 @Builder
-public record HabitStreakResDto(double achieveProportion, int dayOfWeekFirst, List<StreakInfoByDayDto> dayInfo) {
+public record HabitStreakResDto(
+    double achieveProportion,
+    int dayOfWeekFirst,
+    List<StreakInfoByDayDto> dayInfo
+) {
 
 }
