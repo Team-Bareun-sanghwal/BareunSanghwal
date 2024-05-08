@@ -25,9 +25,9 @@ import life.bareun.diary.global.notification.dto.NotificationStatusModifyDto;
 import life.bareun.diary.global.notification.dto.NotificationTokenDto;
 import life.bareun.diary.global.notification.dto.request.NotificationReqDto;
 import life.bareun.diary.global.notification.dto.response.NotificationListResDto;
+import life.bareun.diary.global.notification.entity.Notification;
 import life.bareun.diary.global.notification.entity.NotificationCategory;
 import life.bareun.diary.global.notification.entity.NotificationToken;
-import life.bareun.diary.global.notification.entity.Notification;
 import life.bareun.diary.global.notification.exception.NotificationErrorCode;
 import life.bareun.diary.global.notification.exception.NotificationException;
 import life.bareun.diary.global.notification.repository.NotificationCategoryRepository;
@@ -262,8 +262,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
-            .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400").setNotification(
-                new WebpushNotification("bareun", notificationResultTokenDto.content())).build())
+            .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400")
+                .putData("url", "http://localhost:3000/notification").setNotification(
+                    new WebpushNotification("bareun", notificationResultTokenDto.content()))
+                .build())
             .setAndroidConfig(
                 AndroidConfig.builder()
                     .setTtl(86400)
