@@ -5,6 +5,7 @@ import {
   ArrowPathIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
 
 interface IHabitListBoxProps {
   mode: 'GOING' | 'UPDATE' | 'COMPLETED' | 'REGISTER';
@@ -13,6 +14,7 @@ interface IHabitListBoxProps {
   iconSrc: string;
   dayList?: string[];
   currentStreak?: number;
+  habitTrackerId?: number;
   createdAt: Date;
   completedAt?: Date;
   onDeleteClick?: () => void;
@@ -53,11 +55,14 @@ export const HabitListBox = ({
   iconSrc,
   dayList,
   currentStreak,
+  habitTrackerId,
   createdAt,
   completedAt,
   onDeleteClick,
   onCompleteClick,
 }: IHabitListBoxProps) => {
+  const router = useRouter();
+
   return (
     <section className="w-full rounded-[1rem] p-[1rem] flex flex-col gap-[1rem] bg-custom-light-gray">
       <div className="flex items-center justify-between gap-[1rem]">
@@ -144,10 +149,15 @@ export const HabitListBox = ({
       {mode !== 'COMPLETED' && mode !== 'REGISTER' && (
         <nav className="mx-auto flex items-center cursor-pointer">
           {mode === 'GOING' ? (
-            <>
+            <div
+              className="flex items-center"
+              onClick={() => {
+                router.push(`/habit/write/${habitTrackerId}`);
+              }}
+            >
               <span className="text-custom-dark-gray">기록하러 가기</span>
               <ChevronRightIcon className="w-[1.8rem] h-[1.8rem] text-custom-dark-gray" />
-            </>
+            </div>
           ) : (
             <ul className="flex divide-x-[0.1rem] divide-custom-medium-gray">
               <li
