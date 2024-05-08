@@ -32,9 +32,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
-    private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
-    private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
+    // private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
+    // private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
+    // private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
+
+    private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
+    private static final String GOTCHA_TREE_KEY = "gotcha_tree";
+    private static final String STREAK_RECOVERY_KEY = "recovery";
+
     private static final int FACTOR = 2; // 리커버리 구매 시 곱해질 값
 
     private final static SecureRandom RANDOM = new SecureRandom();
@@ -55,17 +60,12 @@ public class ProductServiceImpl implements ProductService {
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
-        int freeRecoveryCount = memberRecoveryRepository.findByMember(member)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            )
-            .getFreeRecoveryCount();
 
         List<ProductDto> products = productRepository.findAll().stream()
             .map(ProductMapper.INSTANCE::toProductDto)
             .peek(
                 productDto -> {
-                    if (productDto.getName().equals(STREAK_RECOVERY_NAME)) {
+                    if (productDto.getName().equals(STREAK_RECOVERY_KEY)) {
                         productDto.setPrice(
                             memberRecoveryRepository.findByMember(member)
                                 .orElseThrow(
@@ -94,14 +94,14 @@ public class ProductServiceImpl implements ProductService {
             .toList();
 
         // 끝 범위는 전체 색상 가중치의 합
-        double bound = streakColorGrades.stream()
+        float bound = (float) streakColorGrades.stream()
             .mapToDouble(val -> Double.valueOf(val.getWeight()))
             .sum();
 
         // origin 이상 bound 미만의 무작위 실수 값
         // 구간 [1.0, 101.0)의 수 중 랜덤 값을 추출하고
         // 열린 구간 (100.0, 101.0) 사이의 수가 추출되면 100.0으로 치환한다.
-        double gotchaGradeWeight = Math.min(RANDOM.nextDouble(bound) + 1, bound);
+        double gotchaGradeWeight = Math.min(RANDOM.nextFloat(bound) + 1.0, bound);
 
         // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
         double weightSum = 0.0;
@@ -123,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
             () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
         );
 
-        Integer amount = productRepository.findByName(GOTCHA_STREAK_NAME)
+        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
             .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
@@ -147,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 3. 나무 색 변경권 가격 정보 얻기
-        Integer amount = productRepository.findByName(GOTCHA_TREE_NAME)
+        Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )

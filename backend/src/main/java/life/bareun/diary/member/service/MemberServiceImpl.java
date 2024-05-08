@@ -135,8 +135,8 @@ public class MemberServiceImpl implements MemberService {
                     );
 
                     // 신규 사용자의 오늘의 문구 데이터 생성
-                    long dailyPhraseCount = dailyPhraseRepository.count();
-                    long dailyPhraseId = RANDOM.nextLong(dailyPhraseCount) + 1L;
+                    int dailyPhraseCount = (int) dailyPhraseRepository.count();
+                    long dailyPhraseId = RANDOM.nextInt(dailyPhraseCount) + 1;
                     DailyPhrase initDailyPhrase = dailyPhraseRepository.findById(dailyPhraseId)
                         .orElseThrow(
                             () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)

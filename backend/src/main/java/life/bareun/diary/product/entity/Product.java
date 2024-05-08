@@ -31,6 +31,10 @@ public class Product {
     @Column(name = "name")
     private String name;
 
+    @Length(min = 1, max = 30)
+    @Column(name = "key")
+    private String key;
+
     @Length(min = 1, max = 150)
     @Column(name = "introduction")
     private String introduction;
