@@ -95,12 +95,11 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     protected Member getCurrentMember() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
+
+        return memberRepository.findById(id)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
-
-        return member;
     }
 
 
