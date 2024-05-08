@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendNotification(Long notificationCategoryId) {
         NotificationCategory notificationCategory = findNotificationCategory(
-            notificationCategoryId);
+            2L);
 
         // 현재 Redis에 존재하는 토큰 목록
         Map<Long, String> notificationTokenMap = findAllExistMessageToken();
