@@ -1,6 +1,7 @@
 package life.bareun.diary.streak.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.streak.dto.request.StreakRecoveryReqDto;
 import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.service.StreakService;
@@ -9,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,5 +51,15 @@ public class StreakController {
 
         return ResponseEntity.status(HttpStatus.OK.value())
             .body(BaseResponse.success(HttpStatus.OK.value(), message, habitStreakResDto));
+    }
+
+    @PatchMapping("/recovery")
+    public ResponseEntity<BaseResponse<?>> recoveryStreak(
+        @RequestBody StreakRecoveryReqDto streakRecoveryReqDto) {
+        
+        streakService.recoveryStreak(streakRecoveryReqDto.date());
+
+        return ResponseEntity.status(HttpStatus.OK.value())
+            .body(BaseResponse.success(HttpStatus.OK.value(), "성공적으로 리커버리가 적용되었습니다.", null));
     }
 }

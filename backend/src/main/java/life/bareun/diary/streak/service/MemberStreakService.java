@@ -20,6 +20,8 @@ public interface MemberStreakService {
 
     void recoveryMemberDailyStreak(Member member, LocalDate date);
 
-    void recoveryMemberDailyStreakCount(Member member, LocalDate startDate, LocalDate endDate);
+    int recoveryMemberDailyStreakCount(Member member, LocalDate startDate, LocalDate endDate);
+
+    void recoveryMemberTotalStreak(Member member, int longestStreak);
 
 }

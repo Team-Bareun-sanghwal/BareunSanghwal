@@ -12,7 +12,7 @@ import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
-import life.bareun.diary.streak.exception.HabitDailyStreakErrorCode;
+import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -115,15 +115,16 @@ public class StreakServiceImpl implements StreakService {
         LocalDate today = LocalDate.now();
         if (!date.isBefore(today)
             || (date.getYear() != today.getYear() || date.getMonthValue() != today.getMonthValue())) {
-            throw new StreakException(HabitDailyStreakErrorCode.UNAVAILABLE_TIME_ACCESS);
+            throw new StreakException(MemberDailyStreakErrorCode.UNAVAILABLE_TIME_ACCESS);
         }
 
         Member member = getCurrentMember();
         LocalDate firstDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), 1).minusDays(1);
-        LocalDate endDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), date.lengthOfMonth());
 
         memberStreakService.recoveryMemberDailyStreak(member, date);
-        memberStreakService.recoveryMemberDailyStreakCount(member, firstDate, endDate);
+        int longestStreak = memberStreakService
+            .recoveryMemberDailyStreakCount(member, firstDate, today);
+        memberStreakService.recoveryMemberTotalStreak(member, longestStreak);
     }
 
     /**
