@@ -5,6 +5,8 @@ import Point from '../Point/Point';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { useOverlay } from '@/hooks/use-overlay';
 import { $Fetch } from '@/apis';
+import ColoredText from '../ColoredText/ColoredText';
+import Pallete from '../Pallete/Pallete';
 interface IItemProps {
   keyname: string;
   name: string;
@@ -50,7 +52,7 @@ const Purchase = async (key: string) => {
         : 'recovery';
   const response = await $Fetch({
     method: 'PATCH',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/${path}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/${path}`,
     cache: 'no-cache',
   });
   return response;
@@ -92,18 +94,22 @@ const Item = ({
           : 'PURCHASE_RECOVERY';
     Purchase(key)
       .then((response) => {
+        console.log(response);
         //구매 성공
         if (response.status === 200) {
-          console.log(response);
+          console.log(response.data.streakColorName);
           overlay.open(({ isOpen, close }) => (
             <BottomSheet
               description="구매 완료"
-              mode={mode}
+              mode="RESULT"
               onClose={close}
               onConfirm={close}
               open={isOpen}
               title="야호!"
-            />
+            >
+              <Pallete color={response.data.streakColorName} />
+              <ColoredText color={response.data.streakColorName} />
+            </BottomSheet>
           ));
           // 잔액 부족
         } else if (response.status === 402) {
