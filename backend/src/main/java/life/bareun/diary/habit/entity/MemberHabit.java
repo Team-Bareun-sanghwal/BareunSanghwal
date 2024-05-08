@@ -66,7 +66,7 @@ public class MemberHabit {
 
     @Builder
     public MemberHabit(Habit habit, Member member, String alias, String icon, Boolean isDeleted,
-        MaintainWay maintainWay, int maintainAmount) {
+        MaintainWay maintainWay, int maintainAmount, LocalDateTime succeededDatetime) {
         this.habit = habit;
         this.member = member;
         this.alias = alias;
@@ -74,6 +74,7 @@ public class MemberHabit {
         this.isDeleted = isDeleted;
         this.maintainWay = maintainWay;
         this.maintainAmount = maintainAmount;
+        this.succeededDatetime = succeededDatetime;
     }
 
 }
