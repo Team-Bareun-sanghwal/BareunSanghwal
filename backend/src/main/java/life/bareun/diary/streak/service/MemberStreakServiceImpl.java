@@ -1,6 +1,8 @@
 package life.bareun.diary.streak.service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -8,9 +10,12 @@ import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.HabitTrackerCountDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.repository.TreeRepository;
+import life.bareun.diary.member.service.MemberService;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
@@ -35,6 +40,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
     private final MemberDailyStreakRepository memberDailyStreakRepository;
     private final HabitTrackerRepository habitTrackerRepository;
     private final MemberRepository memberRepository;
+    private final TreeRepository treeRepository;
 
     /**
      * 초기 회원 가입 시에 호출. 멤버 전체 스트릭과 해당 날짜의 멤버 일일 스트릭을 생성.
@@ -135,6 +141,30 @@ public class MemberStreakServiceImpl implements MemberStreakService {
                 memberTotalStreak.getLongestStreak(),
                 memberDailyStreakToday.getCurrentStreak()));
 
+        // 갱신된 최장 스트릭이 10의 배수면 나무 레벨업
+        if (memberTotalStreak.getLongestStreak() % 10 == 0) {
+            Tree currentTree = member.getTree();
+
+            // 레벨을 기준으로 오름차순 정렬된 나무 리스트를 얻는다.
+            List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
+
+            // 현재 사용자 나무의 인덱스 값을 얻는다.
+            int treeIndex = -1;
+            for (int i = 0; i < orderedTreeList.size(); ++i) {
+                if (Objects.equals(currentTree.getLevel(), orderedTreeList.get(i).getLevel())) {
+                    treeIndex = i;
+                    break;
+                }
+            }
+
+            // 인덱스 범위를 벗어나지 않도록 1을 더한다.
+            treeIndex = Math.min(treeIndex + 1, orderedTreeList.size() - 1);
+            member.updateTree(orderedTreeList.get(treeIndex));
+
+            // 바뀐 나무를 저장한다.
+            memberRepository.save(member);
+        }
+
         // 만약 내일의 멤버 데일리 스트릭이 존재하면 currentStreak을 이어준다.
         memberDailyStreakRepository.findByMemberAndCreatedDate(member, today.plusDays(1))
             .ifPresent(memberDailyStreakTomorrow -> {
@@ -157,11 +187,4 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         return memberDailyStreakRepository.findByMemberAndCreatedDate(member, date);
     }
 
-    /**
-     * 멤버 엔티티 반환.
-     */
-    private Member getCurrentMember() {
-        return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
-    }
 }

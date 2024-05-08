@@ -16,14 +16,17 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.habit.entity.MemberHabit;
+import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,7 +37,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "member")
-
 public class Member {
 
     @Id
@@ -102,29 +104,55 @@ public class Member {
     @Column(name = "member_habits")
     private List<MemberHabit> memberHabitList;
 
-    private Member(String sub, OAuth2Provider oAuth2Provider) {
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Builder
+    private Member(
+        String sub,
+        OAuth2Provider oAuth2Provider,
+        Tree defaultTree,
+        Integer defaultStreakColorId,
+        Integer defaultTreeColorId
+    ) {
         this.sub = sub;
         this.provider = oAuth2Provider;
-
         this.role = Role.ROLE_USER;
         this.point = 0;
-        this.currentStreakColorId = 1;
-        this.currentTreeColorId = 1;
+        this.currentStreakColorId = defaultStreakColorId;
+        this.currentTreeColorId = defaultTreeColorId;
+        this.tree = defaultTree;
         this.paidRecoveryCount = 0;
+        this.isDeleted = false;
     }
 
-    public static Member create(
-        String sub,
-        OAuth2Provider oAuth2Provider
-    ) {
-        return new Member(sub, oAuth2Provider);
+    public static Member create(MemberRegisterDto memberRegisterDto) {
+        return Member.builder()
+            .sub(memberRegisterDto.sub())
+            .oAuth2Provider(memberRegisterDto.oAuth2Provider())
+            .defaultTree(memberRegisterDto.defaultTree())
+            .defaultStreakColorId(memberRegisterDto.defaultStreakColorId())
+            .defaultTreeColorId(memberRegisterDto.defaultTreeColorId())
+            .build();
     }
 
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
-        this.nickname = memberUpdateReqDto.nickname();
-        this.birth = memberUpdateReqDto.birthDate();
-        this.gender = memberUpdateReqDto.gender();
-        this.job = memberUpdateReqDto.job();
+        if (memberUpdateReqDto == null) {
+            return;
+        }
+
+        Optional.ofNullable(memberUpdateReqDto.nickname())
+            .filter(newNickname -> !newNickname.isEmpty())
+            .ifPresent(newNickname -> this.nickname = newNickname);
+
+        Optional.ofNullable(memberUpdateReqDto.birthDate())
+            .ifPresent(newBirthDate -> this.birth = newBirthDate);
+
+        Optional.ofNullable(memberUpdateReqDto.gender())
+            .ifPresent(newGender -> this.gender = newGender);
+
+        Optional.ofNullable(memberUpdateReqDto.job())
+            .ifPresent(newJob -> this.job = newJob);
     }
 
     public void usePoint(Integer amount) {
@@ -142,5 +170,22 @@ public class Member {
 
     public void addPoint(Integer amount) {
         this.point += amount;
+    }
+
+    public void updateTree(Tree tree) {
+        this.tree = tree;
+    }
+
+    public void delete() {
+        sub = String.format("DeletedUser%d", id);
+        isDeleted = true;
+        deleteInfo();
+    }
+
+    private void deleteInfo() {
+        this.nickname = null;
+        this.birth = null;
+        this.gender = null;
+        this.job = null;
     }
 }

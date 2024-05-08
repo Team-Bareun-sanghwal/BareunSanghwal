@@ -2,7 +2,7 @@ package life.bareun.diary.member.dto;
 
 import java.time.LocalDateTime;
 
-public record MemberHabitsDto(
+public record MemberHabitListElementDto(
     String name,
     String alias,
     Long memberHabitId,
