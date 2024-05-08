@@ -40,6 +40,7 @@ import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
+import life.bareun.diary.member.entity.DailyPhrase;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.entity.MemberRecovery;
@@ -47,6 +48,7 @@ import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.mapper.MemberMapper;
+import life.bareun.diary.member.repository.DailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
@@ -90,6 +92,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberHabitRepository memberHabitRepository;
     private final MemberDailyPhraseRepository memberDailyPhraseRepository;
     private final TreeRepository treeRepository;
+    private final DailyPhraseRepository dailyPhraseRepository;
 
     @Transactional(readOnly = true)
     protected Member getCurrentMember() {
@@ -123,9 +126,21 @@ public class MemberServiceImpl implements MemberService {
                             .build()
                     );
 
+                    // 신규 사용자의 리커버리 현황 데이터 생성
                     Member savedMember = memberRepository.save(newMember);
                     memberRecoveryRepository.save(
                         MemberRecovery.create(savedMember)
+                    );
+
+                    // 신규 사용자의 오늘의 문구 데이터 생성
+                    long dailyPhraseCount = dailyPhraseRepository.count();
+                    long dailyPhraseId = RANDOM.nextLong(dailyPhraseCount) + 1L;
+                    DailyPhrase initDailyPhrase = dailyPhraseRepository.findById(dailyPhraseId)
+                        .orElseThrow(
+                            () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+                        );
+                    memberDailyPhraseRepository.save(
+                        MemberDailyPhrase.create(newMember, initDailyPhrase)
                     );
 
                     streakService.initialMemberStreak(savedMember);
@@ -236,6 +251,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberStreakColorResDto streakColor() {
         Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
@@ -250,6 +266,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberTreeColorResDto treeColor() {
         Member member = getCurrentMember();
 
