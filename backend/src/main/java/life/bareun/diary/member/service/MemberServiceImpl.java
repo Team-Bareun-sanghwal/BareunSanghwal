@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import life.bareun.diary.global.auth.embed.MemberStatus;
@@ -106,7 +105,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberPrincipal loginOrRegister(String sub, OAuth2Provider oAuth2Provider) {
-        // AtomicBoolean isNewMember = new AtomicBoolean(false);
         AtomicReference<MemberStatus> memberStatus = new AtomicReference<>();
 
         Member member = memberRepository.findBySub(sub)
@@ -132,9 +130,10 @@ public class MemberServiceImpl implements MemberService {
 
                     streakService.initialMemberStreak(savedMember);
                     return savedMember;
-                });
+                }
+            );
 
-        // orElseGet에서 return되지 않았음 -> 신규회원이 아님
+        // orElseGet()이 호출되지 않음 -> findBySub로 찾아짐
         // 해당 회원의 정보가 입력되었는지 검증한다.
         memberStatus.set(
             isNullMember(member) ? MemberStatus.NUL : MemberStatus.OLD
@@ -221,7 +220,7 @@ public class MemberServiceImpl implements MemberService {
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
         Member member = getCurrentMember();
         member.update(memberUpdateReqDto);
-        memberRepository.save(member);
+        // memberRepository.save(member);
     }
 
     @Override
