@@ -260,19 +260,18 @@ public class NotificationServiceImpl implements NotificationService {
         sendNotificationAsync(notificationResultTokenDto);
     }
 
-    // notificationResultTokenDto.content()
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
             .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400")
                 .setNotification(
-                    new WebpushNotification("bareun", "임시 알림입니다.", "icon-url"))
+                    new WebpushNotification("bareun", notificationResultTokenDto.content(), "icon-url"))
                 .build())
             .setAndroidConfig(
                 AndroidConfig.builder()
                     .setTtl(86400)
                     .setNotification(AndroidNotification.builder()
                         .setTitle("bareun")
-                        .setBody("임시 알림입니다.")
+                        .setBody(notificationResultTokenDto.content())
                         .setClickAction("https://bareun.life/notification").build()).build()
             )
             .setApnsConfig(
@@ -281,7 +280,7 @@ public class NotificationServiceImpl implements NotificationService {
                         String.valueOf((System.currentTimeMillis() / 1000) + 86400))
                     .setAps(Aps.builder()
                         .setAlert(ApsAlert.builder().setTitle("bareun")
-                            .setBody("임시 알림입니다.").build())
+                            .setBody(notificationResultTokenDto.content()).build())
                         .setCategory("https://bareun.life/notification").build()).build()
             )
             .putData("url", "http://localhost:3000/notification")
