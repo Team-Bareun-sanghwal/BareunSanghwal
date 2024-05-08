@@ -1,3 +1,14 @@
+export interface IActivatedHabit {
+  name: string;
+  alias: string;
+  memberHabitId: number;
+  icon: string;
+  createdAt: Date;
+  habitTrackerId: number;
+  currentStreak: number;
+  dayList: number[];
+}
+
 export interface ICompletedHabit {
   name: string;
   alias: string;

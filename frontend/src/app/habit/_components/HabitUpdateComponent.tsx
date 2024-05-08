@@ -11,8 +11,13 @@ import {
   AlertBox,
 } from '@/components';
 import { useOverlay } from '@/hooks/use-overlay';
+import { IActivatedHabit } from '../_types';
 
-export const HabitUpdateComponent = () => {
+export const HabitUpdateComponent = ({
+  activatedHabitListData,
+}: {
+  activatedHabitListData: IActivatedHabit[];
+}) => {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const router = useRouter();
@@ -76,15 +81,21 @@ export const HabitUpdateComponent = () => {
         />
       )}
 
-      <HabitListBox
-        alias="물 2L 마시기"
-        createdAt={new Date('2024-04-22T00:00:00.000Z')}
-        iconSrc="/images/icon-clock.png"
-        mode={isUpdating ? 'UPDATE' : 'GOING'}
-        name="건강하기"
-        onCompleteClick={handleCompleteOverlay}
-        onDeleteClick={handleDeleteOverlay}
-      />
+      {activatedHabitListData.map((habit) => {
+        return (
+          <HabitListBox
+            key={`habit-${habit.memberHabitId}`}
+            alias={habit.alias}
+            createdAt={new Date(habit.createdAt)}
+            iconSrc={habit.icon}
+            mode={isUpdating ? 'UPDATE' : 'GOING'}
+            name={habit.name}
+            currentStreak={habit.currentStreak}
+            onCompleteClick={handleCompleteOverlay}
+            onDeleteClick={handleDeleteOverlay}
+          />
+        );
+      })}
 
       {/* 진행 중인 해빗이 이미 7개일 때 AlertBox 띄우기*/}
       <PlusButton onClick={() => router.push('/habit/register')} />

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import {
   ChevronRightIcon,
   ArrowPathIcon,
@@ -13,11 +12,39 @@ interface IHabitListBoxProps {
   alias: string | null;
   iconSrc: string;
   dayList?: string[];
+  currentStreak?: number;
   createdAt: Date;
   completedAt?: Date;
   onDeleteClick?: () => void;
   onCompleteClick?: () => void;
 }
+
+const mapNumberToString = (num: number) => {
+  switch (num) {
+    case 0:
+      return [0, 1, 2, 3, 5, 6, 8, 9, 11, 12, 13, 14];
+    case 1:
+      return [0, 1, 4, 7, 10, 12, 13, 14];
+    case 2:
+      return [0, 1, 2, 5, 6, 7, 8, 9, 12, 13, 14];
+    case 3:
+      return [0, 1, 2, 5, 6, 7, 8, 11, 12, 13, 14];
+    case 4:
+      return [0, 2, 3, 5, 6, 7, 8, 11, 14];
+    case 5:
+      return [0, 1, 2, 3, 6, 7, 8, 11, 12, 13, 14];
+    case 6:
+      return [0, 1, 2, 3, 6, 7, 8, 9, 11, 12, 13, 14];
+    case 7:
+      return [0, 1, 2, 3, 5, 6, 8, 11, 14];
+    case 8:
+      return [0, 1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14];
+    case 9:
+      return [0, 1, 2, 3, 5, 6, 7, 8, 11, 14];
+  }
+
+  return [0, 1, 2, 3, 5, 6, 8, 9, 11, 12, 13, 14];
+};
 
 export const HabitListBox = ({
   mode,
@@ -25,6 +52,7 @@ export const HabitListBox = ({
   alias,
   iconSrc,
   dayList,
+  currentStreak,
   createdAt,
   completedAt,
   onDeleteClick,
@@ -37,13 +65,7 @@ export const HabitListBox = ({
           <button
             className={`${mode !== 'COMPLETED' ? 'bg-gradient-to-r from-custom-pink to-custom-sky' : 'bg-custom-white'} w-[6rem] h-[6rem] rounded-full flex items-center justify-center`}
           >
-            <Image
-              src={iconSrc}
-              width={35}
-              height={35}
-              alt="해빗 아이콘"
-              className="bg-contain"
-            />
+            <span className="text-[3rem]">{iconSrc}</span>
           </button>
 
           <div className="flex flex-col gap-[0.2rem]">
@@ -63,21 +85,41 @@ export const HabitListBox = ({
           </div>
         </div>
 
-        {mode !== 'REGISTER' ? (
-          <div className="grid grid-cols-11 gap-y-[0.1rem] gap-x-[0.2rem]">
-            {Array.from({ length: 55 }, () => 0).map((_, index) => {
-              const selectedPixelIndexes = [
-                0, 1, 2, 13, 24, 23, 22, 33, 44, 45, 46, 4, 5, 6, 17, 28, 27,
-                26, 39, 50, 49, 48, 8, 9, 20, 31, 42, 53, 52, 54,
-              ];
-
-              return (
-                <div
-                  key={`box-${index}`}
-                  className={`${selectedPixelIndexes.includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
-                ></div>
-              );
-            })}
+        {mode !== 'REGISTER' && currentStreak !== undefined ? (
+          <div className="flex gap-[0.7rem]">
+            {Math.floor(currentStreak / 100) !== 0 && (
+              <div className="grid grid-cols-3 gap-y-[0.1rem] gap-x-[0.2rem]">
+                {Array.from({ length: 15 }, () => 0).map((_, index) => {
+                  return (
+                    <div
+                      key={`box1-${index}`}
+                      className={`${mapNumberToString(Math.floor(currentStreak / 100)).includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
+                    ></div>
+                  );
+                })}
+              </div>
+            )}
+            <div className="grid grid-cols-3 gap-y-[0.1rem] gap-x-[0.2rem]">
+              {Math.floor((currentStreak % 100) / 10) !== 0 &&
+                Array.from({ length: 15 }, () => 0).map((_, index) => {
+                  return (
+                    <div
+                      key={`box2-${index}`}
+                      className={`${mapNumberToString(Math.floor((currentStreak % 100) / 10)).includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
+                    ></div>
+                  );
+                })}
+            </div>
+            <div className="grid grid-cols-3 gap-y-[0.1rem] gap-x-[0.2rem]">
+              {Array.from({ length: 15 }, () => 0).map((_, index) => {
+                return (
+                  <div
+                    key={`box3-${index}`}
+                    className={`${mapNumberToString(Math.floor(currentStreak % 10)).includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
+                  ></div>
+                );
+              })}
+            </div>
           </div>
         ) : (
           <div className="flex gap-[0.2rem] items-center justify-end flex-wrap">
