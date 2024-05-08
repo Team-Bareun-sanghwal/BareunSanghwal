@@ -39,6 +39,7 @@ export default async function Page() {
                           alias={completedHabit.alias}
                           name={completedHabit.name}
                           iconSrc={completedHabit.icon}
+                          memberHabitId={completedHabit.memberHabitId}
                           mode="COMPLETED"
                           completedAt={new Date(completedHabit.succeededTime)}
                           createdAt={new Date(completedHabit.createdAt)}

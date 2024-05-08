@@ -95,6 +95,7 @@ export const HabitUpdateComponent = ({
             mode={isUpdating ? 'UPDATE' : 'GOING'}
             name={habit.name}
             currentStreak={habit.currentStreak}
+            memberHabitId={habit.memberHabitId}
             habitTrackerId={habit.habitTrackerId}
             onCompleteClick={() =>
               handleCompleteOverlay(habit.memberHabitId, habit.alias)

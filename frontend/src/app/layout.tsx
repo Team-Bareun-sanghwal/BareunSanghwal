@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="bg-custom-black-with-opacity">
+      <body>
         <Provider>
           <div className="w-dvw h-dvh bg-custom-white mx-auto">{children}</div>
         </Provider>
