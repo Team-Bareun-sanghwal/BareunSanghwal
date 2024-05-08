@@ -114,7 +114,8 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        List<StreakColor> streakColors = streakColorRepository.findByStreakColorGrade(gotchaGrade);
+        List<StreakColor> streakColors = streakColorRepository.findAllByStreakColorGrade(
+            gotchaGrade);
         StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
 
         Long id = AuthUtil.getMemberIdFromAuthentication();

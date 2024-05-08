@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import life.bareun.diary.global.auth.embed.MemberStatus;
@@ -21,17 +22,17 @@ import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.dto.response.HabitPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
-import life.bareun.diary.habit.service.HabitTrackerService;
+import life.bareun.diary.member.dto.MemberHabitListElementDto;
 import life.bareun.diary.member.dto.MemberHabitTrackerDto;
-import life.bareun.diary.member.dto.MemberHabitsDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerDayOfWeekDto;
 import life.bareun.diary.member.dto.MemberPracticeCountPerHourDto;
+import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.MemberTopHabitDto;
 import life.bareun.diary.member.dto.embed.DayOfWeek;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
+import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
-import life.bareun.diary.member.dto.response.MemberHabitsResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
@@ -50,6 +51,9 @@ import life.bareun.diary.member.mapper.MemberMapper;
 import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.repository.TreeRepository;
+import life.bareun.diary.product.entity.StreakColor;
+import life.bareun.diary.product.entity.TreeColor;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
@@ -68,12 +72,16 @@ public class MemberServiceImpl implements MemberService {
     private static final int COLOR_INDEX_DEFAULT = 1;
     private static final int COLOR_INDEX_MIN = 0;
 
+    private static final Long DEFAULT_TREE_ID = 1L;
+    private static final String DEFAULT_STREAK_COLOR_NAME = "bareun_sanghwal";
+    private static final String DEFAULT_TREE_COLOR_NAME = "green";
+
+
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final AuthTokenProvider authTokenProvider;
     private final AuthTokenService authTokenService;
     private final StreakService streakService;
-    private final HabitTrackerService habitTrackerService;
 
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
@@ -82,6 +90,19 @@ public class MemberServiceImpl implements MemberService {
     private final HabitTrackerRepository habitTrackerRepository;
     private final MemberHabitRepository memberHabitRepository;
     private final MemberDailyPhraseRepository memberDailyPhraseRepository;
+    private final TreeRepository treeRepository;
+
+    @Transactional(readOnly = true)
+    protected Member getCurrentMember() {
+        Long id = AuthUtil.getMemberIdFromAuthentication();
+        Member member = memberRepository.findById(id)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        return member;
+    }
+
 
     @Override
     @Transactional
@@ -94,9 +115,18 @@ public class MemberServiceImpl implements MemberService {
                 // 신규회원
                 () -> {
                     memberStatus.set(MemberStatus.NEW);
-                    Member savedMember = memberRepository.save(
-                        Member.create(sub, oAuth2Provider)
+
+                    Member newMember = Member.create(
+                        MemberRegisterDto.builder()
+                            .sub(sub)
+                            .oAuth2Provider(oAuth2Provider)
+                            .defaultTree(getDefaultTree())
+                            .defaultStreakColorId(getDefaultStreakColorId())
+                            .defaultTreeColorId(getDefaultTreeColorId())
+                            .build()
                     );
+
+                    Member savedMember = memberRepository.save(newMember);
                     memberRecoveryRepository.save(
                         MemberRecovery.create(savedMember)
                     );
@@ -119,6 +149,7 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+
     private boolean isNullMember(Member member) {
         boolean isNickNameNull = (member.getNickname() == null);
         boolean isBirthNull = (member.getBirth() == null);
@@ -126,6 +157,50 @@ public class MemberServiceImpl implements MemberService {
         boolean isJobNull = (member.getJob() == null);
 
         return isNickNameNull || isBirthNull || isGenderNull || isJobNull;
+    }
+
+    private Tree getDefaultTree() {
+        return treeRepository.findById(DEFAULT_TREE_ID)
+            .orElseGet(
+                () -> {
+                    List<Tree> treeList = treeRepository.findAll();
+                    if (!treeList.isEmpty()) {
+                        return treeList.get(0);
+                    } else {
+                        throw new MemberException(MemberErrorCode.NO_INITIAL_DATA_TREE);
+                    }
+                }
+            );
+    }
+
+    private Integer getDefaultStreakColorId() {
+        return streakColorRepository.findByName(DEFAULT_STREAK_COLOR_NAME)
+            .orElseGet(
+                () -> {
+                    List<StreakColor> streakColorList = streakColorRepository.findAll();
+                    if (!streakColorList.isEmpty()) {
+                        return streakColorList.get(0);
+                    } else {
+                        throw new MemberException(MemberErrorCode.NO_INITIAL_DATA_STREAK_COLOR);
+                    }
+                }
+            )
+            .getId();
+    }
+
+    private Integer getDefaultTreeColorId() {
+        return treeColorRepository.findByName(DEFAULT_TREE_COLOR_NAME)
+            .orElseGet(
+                () -> {
+                    List<TreeColor> treeColorList = treeColorRepository.findAll();
+                    if (!treeColorList.isEmpty()) {
+                        return treeColorList.get(0);
+                    } else {
+                        throw new MemberException(MemberErrorCode.NO_INITIAL_DATA_TREE_COLOR);
+                    }
+                }
+            )
+            .getId();
     }
 
     @Override
@@ -145,13 +220,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER)
-            );
-
+        Member member = getCurrentMember();
         member.update(memberUpdateReqDto);
         memberRepository.save(member);
     }
@@ -169,23 +238,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberInfoResDto info() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
-
-        return MemberMapper.INSTANCE.toMemberInfoRes(member);
+        return MemberMapper.INSTANCE.toMemberInfoRes(getCurrentMember());
     }
 
     @Override
     public MemberStreakColorResDto streakColor() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
-
+        Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
                 member.getCurrentStreakColorId()
             )
@@ -199,11 +257,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberTreeColorResDto treeColor() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         String treeColorName = treeColorRepository.findById(
                 member.getCurrentStreakColorId()
@@ -222,14 +276,18 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findAll();
     }
 
+    // 월마다 수행되는 메소드
     @Transactional
-    public void grantFreeRecoveryToAllMembers() {
+    public void initStreakRecoveryForAllMembersMonthly() {
         // 회원 탈퇴 시 MemberRecovery가 먼저 삭제되므로
         // memberRecovery의 memberId가 Member 테이블에 있는지 확인할 필요가 없다.
         List<MemberRecovery> memberRecoveries = memberRecoveryRepository.findAll();
 
         for (MemberRecovery memberRecovery : memberRecoveries) {
-            memberRecovery.sendFreeRecovery();
+            // 무료 리커버리를 발급하고
+            memberRecovery.grantFreeRecovery();
+            // 리커버리 가격을 초기화한다.
+            memberRecovery.initRecoveryPrice();
             memberRecoveryRepository.save(memberRecovery);
         }
     }
@@ -237,13 +295,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberPointResDto point() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
-
-        return new MemberPointResDto(member.getPoint());
+        return new MemberPointResDto(getCurrentMember().getPoint());
     }
 
     @Override
@@ -256,11 +308,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberStreakRecoveryCountResDto streakRecoveryCount() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         Integer freeRecoveryCount = memberRecoveryRepository.findByMember(member)
             .orElseThrow(
@@ -277,12 +325,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberHabitsResDto habits() {
+    public MemberHabitListResDto habits() {
         Long id = AuthUtil.getMemberIdFromAuthentication();
-        List<MemberHabitsDto> memberHabits = memberHabitRepository
+        List<MemberHabitListElementDto> memberHabits = memberHabitRepository
             .findAllByMemberIdOrderByCreatedDatetime(id);
 
-        return new MemberHabitsResDto(
+        return new MemberHabitListResDto(
             memberHabits
         );
     }
@@ -293,32 +341,45 @@ public class MemberServiceImpl implements MemberService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         // 수행 횟수 기준 상위 5개, 나머지는 기타로 합치기
         // 내림차순 정렬된 데이터, 각 MemberPracticedHabitDto의 value는 비율
+        // 데이터가 없는 경우 공백 리스트([])
         List<MemberTopHabitDto> topHabits = processTopHabits(
             habitTrackerRepository.findTopHabits(memberId),
             memberId
         );
 
+        // 가장 많이 수행한 해빗 이름
+        // 데이터가 없는 경우 null
         String maxPracticedHabit = topHabits.isEmpty() ? null : topHabits.get(0).habit();
 
         // 요일 별 달성 횟수
         // 최대 또는 최대값 중복 허용
         List<MemberPracticeCountPerDayOfWeekDto> dataPerDayOfWeek
-            = practiceCountPerDayOfWeek(memberId);
+            = practiceCountListPerDayOfWeek(memberId);
 
         // 4 (0~24시까지 1시간 단위로 24개)
-        List<MemberPracticeCountPerHourDto> practiceCountPerHour
-            = habitTrackerRepository.countPracticedHabitsPerHour(memberId);
-        practiceCountPerHour = processPracticeCountPerHour(practiceCountPerHour);
+        List<MemberPracticeCountPerHourDto> practiceCountPerHour = processPracticeCountPerHour(
+            habitTrackerRepository.countPracticedHabitsPerHour(memberId)
+        );
 
-        LocalDate createdAt = memberRepository.findById(memberId).orElseThrow(
-            () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-        ).getCreatedDateTime().toLocalDate();
+        LocalDate memberCreatedDate = getCurrentMember().getCreatedDateTime().toLocalDate();
         LocalDate now = LocalDate.now();
 
-        int totalDays = (int) ChronoUnit.DAYS.between(createdAt, now);
+        // 총 서비스 사용 일 수
+        int totalDays = (int) ChronoUnit.DAYS.between(
+            memberCreatedDate,
+            now
+        );
+
+        // 스트릭 관련 데이터
         MemberStreakResDto memberStreakDto = streakService.getMemberStreakResDto();
+
+        // 스트릭을 채운 날의 수
         int streakDays = memberStreakDto.achieveStreakCount();
+
+        // 별을 받은(모든 해빗을 달성한) 날의 수
         int starredDays = memberStreakDto.starCount();
+
+        // 최장 스트릭
         int longestStreak = memberStreakDto.longestStreakCount();
 
         return MemberStatisticResDto.builder()
@@ -360,45 +421,49 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional(readOnly = true)
-    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountPerDayOfWeek(Long memberId) {
-        List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtos
+    protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek(
+        Long memberId) {
+        // colorIdx가 없는 DTO의 리스트를 받는다.
+        List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtoList
             = habitTrackerRepository.countPracticedHabitsPerDayOfWeek(memberId);
 
-        if (habitPracticeCountPerDayOfWeekDtos.isEmpty()) {
+        if (habitPracticeCountPerDayOfWeekDtoList.isEmpty()) {
             return new ArrayList<>();
         }
 
-        int maxValue = habitPracticeCountPerDayOfWeekDtos.stream()
+        // 요일 별 수행횟수의 최대, 최소 값을 구한다.
+        int maxValue = habitPracticeCountPerDayOfWeekDtoList.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
             .max()
             .getAsInt();
-        int minValue = habitPracticeCountPerDayOfWeekDtos.stream()
+        int minValue = habitPracticeCountPerDayOfWeekDtoList.stream()
             .mapToInt(HabitPracticeCountPerDayOfWeekDto::value)
             .min()
             .getAsInt();
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountsPerDayOfWeek =
-            habitPracticeCountPerDayOfWeekDtos.stream()
-            .map(
-                habitPracticeCountPerDayOfWeekDto -> {
-                    int value = habitPracticeCountPerDayOfWeekDto.value();
+        List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek =
+            habitPracticeCountPerDayOfWeekDtoList.stream()
+                .map(
+                    // map()을 통해 colorIdx를 설정한다.
+                    habitPracticeCountPerDayOfWeekDto -> {
+                        int value = habitPracticeCountPerDayOfWeekDto.value();
 
-                    int colorIdx = COLOR_INDEX_DEFAULT;
-                    if (value == minValue) {
-                        colorIdx = COLOR_INDEX_MIN;
-                    } else if (value == maxValue) {
-                        colorIdx = COLOR_INDEX_MAX;
+                        int colorIdx = COLOR_INDEX_DEFAULT;
+                        if (value == minValue) {
+                            colorIdx = COLOR_INDEX_MIN;
+                        } else if (value == maxValue) {
+                            colorIdx = COLOR_INDEX_MAX;
+                        }
+
+                        return new MemberPracticeCountPerDayOfWeekDto(
+                            DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
+                            value,
+                            colorIdx
+                        );
                     }
+                ).toList();
 
-                    return new MemberPracticeCountPerDayOfWeekDto(
-                        DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
-                        value,
-                        colorIdx
-                    );
-                }
-            ).toList();
-
-        return practiceCountsPerDayOfWeek;
+        return practiceCountListPerDayOfWeek;
     }
 
 
@@ -424,12 +489,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MemberTreePointResDto treePoint() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
+
+        // 오늘 받았다면
+        if (member.getLastHarvestedDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
+            throw new MemberException(MemberErrorCode.ALREADY_HARVESTED);
+        }
+
         Tree tree = member.getTree();
         int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
 
@@ -441,7 +509,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberHabitTrackersResDto habitTrackers(String memberHabitId) {
+        // 필요시 memberId 데이터베이스 존재 여부 체크
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Long longMemberHabitId = Long.parseLong(memberHabitId);
 
@@ -467,12 +537,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberDailyPhraseResDto dailyPhrase() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         MemberDailyPhrase memberDailyPhrase = memberDailyPhraseRepository.findByMember(member)
             .orElseThrow(
@@ -482,5 +549,31 @@ public class MemberServiceImpl implements MemberService {
         return new MemberDailyPhraseResDto(
             memberDailyPhrase.getDailyPhrase().getPhrase()
         );
+    }
+
+    @Override
+    @Transactional
+    public void treeLevelUp() {
+        Member member = getCurrentMember();
+        Tree currentTree = member.getTree();
+
+        // 레벨을 기준으로 오름차순 정렬된 나무 리스트를 얻는다.
+        List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
+
+        // 현재 사용자 나무의 인덱스 값을 얻는다.
+        int treeIndex = -1;
+        for (int i = 0; i < orderedTreeList.size(); ++i) {
+            if (Objects.equals(currentTree.getLevel(),orderedTreeList.get(i).getLevel())) {
+                treeIndex = i;
+                break;
+            }
+        }
+
+        // 인덱스 범위를 벗어나지 않도록 1을 더한다.
+        treeIndex = Math.min(treeIndex + 1, orderedTreeList.size() - 1);
+        member.updateTree(orderedTreeList.get(treeIndex));
+
+        // 바뀐 나무를 저장한다.
+        memberRepository.save(member);
     }
 }
