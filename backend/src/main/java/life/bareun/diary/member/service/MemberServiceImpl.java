@@ -236,6 +236,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberStreakColorResDto streakColor() {
         Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
@@ -250,6 +251,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MemberTreeColorResDto treeColor() {
         Member member = getCurrentMember();
 
