@@ -1,15 +1,12 @@
 'use client';
-import Tree from '@/components/tree/Tree';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import lottieJson from '@/../public/lotties/lottie-lego.json';
 import Item from '@/components/point/Item/Item';
+import { MyPoint } from '@/components/point/MyPoint/MyPoint';
 import { $Fetch } from '@/apis';
-import { ItemListResponseSample } from '../mock';
-interface IItemList {
-  products: IItem[];
-}
+const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
 interface IItem {
   key: string;
@@ -18,58 +15,50 @@ interface IItem {
   description: string;
   price: number;
 }
-interface IItemResponse {
-  key: string;
-  name: string;
-  introduction: string;
-  description: string;
-  price: number;
-}
 
-const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
+interface IItemList {
+  products: IItem[];
+}
 
 export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [showLoader, setShowLoader] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const [ItemListResponse, setItemListResponse] = useState<IItemList>({
     products: [],
   });
+
+  // 로딩 지연을 처리하는 useEffect
   useEffect(() => {
-    setItemListResponse(ItemListResponseSample);
-
-    $Fetch({
-      method: 'GET',
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
-      cache: 'no-cache',
-    })
-      .then((res) => {
-        return res;
-      })
-      .then((data) => {
-        setItemListResponse(data);
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('ERR:', error);
-      });
-
     if (isLoading) {
       const timer = setTimeout(() => {
-        setIsLoading(false);
         setShowLoader(false);
       }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
 
-  const Exit = () => {
-    setIsLoading(true);
+  useEffect(() => {
+    $Fetch({
+      method: 'GET',
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
+      cache: 'no-cache',
+    })
+      .then((data) => {
+        setItemListResponse(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('ERR:', error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const exit = () => {
     setShowLoader(true);
-    setTimeout(() => {
-      router.back();
-    }, 2000);
+    router.back();
   };
+
   return (
     <div>
       {showLoader ? (
@@ -83,13 +72,13 @@ export default function Page() {
         </div>
       ) : (
         <div className="w-full h-screen overflow-hidden relative">
-          <button onClick={Exit} className="absolute z-10 m-4 text-lg">
+          <button onClick={exit} className="absolute z-10 m-4 text-lg">
             {'<'} 뒤로가기
           </button>
-          <Tree color="red" />
           <div className="absolute bottom-0 w-full gap-3 p-3">
             <div className="flex flex-col justify-center gap-4">
-              {ItemListResponseSample.products?.map((item) => (
+              <MyPoint />
+              {ItemListResponse.products.map((item) => (
                 <Item
                   key={item.key}
                   keyname={item.key}
