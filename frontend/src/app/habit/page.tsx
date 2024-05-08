@@ -13,7 +13,7 @@ export default async function Page() {
 
   return (
     <>
-      <div className="p-[1rem] flex flex-col gap-[1rem]">
+      <div className="p-[1rem] flex flex-col gap-[1rem] pb-[11rem]">
         <span className="custom-bold-text">나의 해빗</span>
 
         <TabBox
