@@ -283,7 +283,7 @@ public class NotificationServiceImpl implements NotificationService {
                             .setBody(notificationResultTokenDto.content()).build())
                         .setCategory("https://bareun.life/notification").build()).build()
             )
-            .putData("url", "http://localhost:3000/notification")
+            .putData("url", "https://bareun.life/notification")
             .build();
         try {
             FirebaseMessaging.getInstance().sendAsync(message).get();
