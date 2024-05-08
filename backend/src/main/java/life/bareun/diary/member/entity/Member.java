@@ -36,7 +36,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "member")
-
 public class Member {
 
     @Id
@@ -123,11 +122,10 @@ public class Member {
         this.currentTreeColorId = defaultTreeColorId;
         this.tree = defaultTree;
         this.paidRecoveryCount = 0;
+        this.isDeleted = false;
     }
 
-    public static Member create(
-        MemberRegisterDto memberRegisterDto
-    ) {
+    public static Member create(MemberRegisterDto memberRegisterDto) {
         return Member.builder()
             .sub(memberRegisterDto.sub())
             .oAuth2Provider(memberRegisterDto.oAuth2Provider())
