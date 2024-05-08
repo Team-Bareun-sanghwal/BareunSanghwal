@@ -7,5 +7,9 @@ export const MyPoint = async () => {
     cache: 'no-cache',
   });
 
-  return <Point point={response.data.point} />;
+  return (
+    <>
+      <Point point={response.data.point} />
+    </>
+  );
 };

@@ -110,7 +110,7 @@ export default async function Page(props: {
   console.log(dailyPhrase);
   console.log(dayInfo);
   return (
-    <>
+    <div className="min-h-screen">
       <MainTitle
         total={habitList.length}
         succeed={habitsToday.data.memberHabitList.length}
@@ -137,6 +137,6 @@ export default async function Page(props: {
       <DailyPhrase />
       <div className="flex h-[8rem]"></div>
       <NavBar mode="HOME" />
-    </>
+    </div>
   );
 }
