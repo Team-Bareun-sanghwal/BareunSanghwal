@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "notificationToken", timeToLive = 60 * 60 * 3) //3시간
+@RedisHash(value = "notificationToken", timeToLive = 60 * 60 * 24) //24시간
 @ToString
 public class NotificationToken {
 
