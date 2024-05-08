@@ -262,15 +262,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
-            .setNotification(
-                com.google.firebase.messaging.Notification.builder()
-                    .setTitle("bareun")
-                    .setBody(notificationResultTokenDto.content())
-                    .build()
-            )
             .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400")
                 .setNotification(
-                    new WebpushNotification("bareun", notificationResultTokenDto.content()))
+                    new WebpushNotification("bareun", notificationResultTokenDto.content(), "icon-url"))
                 .build())
             .setAndroidConfig(
                 AndroidConfig.builder()
