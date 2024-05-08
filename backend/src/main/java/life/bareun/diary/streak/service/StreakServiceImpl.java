@@ -6,13 +6,16 @@ import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
+import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
+import life.bareun.diary.streak.exception.StreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +33,7 @@ public class StreakServiceImpl implements StreakService {
     private final MemberStreakService memberStreakService;
     private final HabitStreakService habitStreakService;
     private final MemberRepository memberRepository;
+    private final MemberRecoveryRepository memberRecoveryRepository;
 
     /**
      * 멤버 전체 스트릭을 memberStreakResDto의 형태로 반환.
@@ -119,13 +123,38 @@ public class StreakServiceImpl implements StreakService {
         }
 
         Member member = getCurrentMember();
-        LocalDate firstDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), 1).minusDays(1);
 
+        LocalDate firstDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), 1).minusDays(1);
+        useStreakRecovery(member);
         memberStreakService.recoveryMemberDailyStreak(member, date);
         int longestStreak = memberStreakService
             .recoveryMemberDailyStreakCount(member, firstDate, today);
         memberStreakService.recoveryMemberTotalStreak(member, longestStreak);
     }
+
+    private void useStreakRecovery(Member member) {
+        // 무료 있으면 무료 씀
+        MemberRecovery memberRecovery = memberRecoveryRepository.findByMember(member)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
+
+        // 무료 리커버리를 사용할 수 있다면
+        if (memberRecovery.isFreeRecoveryAvailable()) {
+            // 사용하고 함수 종료
+            memberRecovery.useFreeRecovery();
+            return;
+        }
+
+        // 유료 리커버리 사용
+        if (member.isPaidRecoveryAvailable()) {
+            member.usePaidRecovery();
+        } else {
+            throw new MemberException(MemberErrorCode.STREAK_RECOVERY_UNAVAILABLE);
+        }
+    }
+
+
 
     /**
      * 멤버 엔티티 반환.
