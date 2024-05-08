@@ -30,9 +30,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       },
       body: JSON.stringify(data),
     });
-    // if (res.status != 200) {
-    //   throw new Error(`[HTTP ERR] Status : ${res.status}`);
-    // }
+
     return await res.json();
   } catch (e) {
     console.log('Fetch Error : ', e);

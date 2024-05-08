@@ -76,7 +76,7 @@ export default async function Page(props: {
         month={month}
         habitId={habitId}
       />
-      <DailyPhrase phrase="시작은 반이 아니라 시작입니다." />
+      <DailyPhrase />
       <div className="flex h-[8rem]"></div>
       <NavBar mode="HOME" />
     </>

@@ -9,6 +9,9 @@ import { MainTitle } from '@/components/main/MainTitle/MainTitle';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
 import { HabitChecker } from '@/components';
 import { LongestStreak } from '@/components';
+import { MyPoint } from '@/components/point/MyPoint/MyPoint';
+import Point from '@/components/point/Point/Point';
+import { MyStreakRecovery } from '@/components/main/MyStreakRecovery/MyStreakRecovery';
 export default async function Page(props: {
   params: { year: number; month: number };
 }) {
@@ -130,7 +133,8 @@ export default async function Page(props: {
         year={year}
         month={month}
       />
-      <DailyPhrase phrase="시작은 반이 아니라 시작입니다." />
+      <MyStreakRecovery />
+      <DailyPhrase />
       <div className="flex h-[8rem]"></div>
       <NavBar mode="HOME" />
     </>

@@ -1,3 +1,4 @@
+'use client';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Point from '../Point/Point';
@@ -60,7 +61,7 @@ const Item = ({
         description={description}
         mode={mode}
         onClose={close}
-        onConfirm={() => succeed('구매 완료', '예에에')}
+        onConfirm={() => succeed('구매 완료', '야호!')}
         open={isOpen}
         title={introduction}
       />
