@@ -80,7 +80,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendNotification(Long notificationCategoryId) {
         NotificationCategory notificationCategory = findNotificationCategory(
-            2L);
+            notificationCategoryId);
 
         // 현재 Redis에 존재하는 토큰 목록
         Map<Long, String> notificationTokenMap = findAllExistMessageToken();
@@ -260,18 +260,19 @@ public class NotificationServiceImpl implements NotificationService {
         sendNotificationAsync(notificationResultTokenDto);
     }
 
+    // notificationResultTokenDto.content()
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
             .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400")
                 .setNotification(
-                    new WebpushNotification("bareun", notificationResultTokenDto.content(), "icon-url"))
+                    new WebpushNotification("bareun", "임시 알림입니다.", "icon-url"))
                 .build())
             .setAndroidConfig(
                 AndroidConfig.builder()
                     .setTtl(86400)
                     .setNotification(AndroidNotification.builder()
                         .setTitle("bareun")
-                        .setBody(notificationResultTokenDto.content())
+                        .setBody("임시 알림입니다.")
                         .setClickAction("https://bareun.life/notification").build()).build()
             )
             .setApnsConfig(
@@ -280,7 +281,7 @@ public class NotificationServiceImpl implements NotificationService {
                         String.valueOf((System.currentTimeMillis() / 1000) + 86400))
                     .setAps(Aps.builder()
                         .setAlert(ApsAlert.builder().setTitle("bareun")
-                            .setBody(notificationResultTokenDto.content()).build())
+                            .setBody("임시 알림입니다.").build())
                         .setCategory("https://bareun.life/notification").build()).build()
             )
             .putData("url", "http://localhost:3000/notification")
