@@ -1,3 +1,7 @@
+import { cookies } from 'next/headers';
+
+const cookieStore = cookies();
+
 export async function writeHabit(
   image: File | null,
   HabitTrackerModifyReqDto: {
@@ -19,8 +23,8 @@ export async function writeHabit(
     {
       method: 'PATCH',
       headers: {
-        // Authorization: `${cookieStore.get('Authorization')?.value}`,
-        Authorization: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+        Authorization: `${cookieStore.get('Authorization')?.value}`,
+        // Authorization: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
       },
       credentials: 'include',
       body: habitFormData,
