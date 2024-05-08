@@ -289,6 +289,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             FirebaseMessaging.getInstance().sendAsync(message).get();
         } catch (Exception e) {
+            log.error("알림 전송에 실패했습니다. {}", e.toString());
             throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
         }
     }
