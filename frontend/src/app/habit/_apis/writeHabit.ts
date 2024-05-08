@@ -1,3 +1,7 @@
+'use server';
+
+import { cookies } from 'next/headers';
+
 export async function writeHabit(
   image: File | null,
   HabitTrackerModifyReqDto: {
@@ -14,13 +18,14 @@ export async function writeHabit(
     }),
   );
 
+  const cookieStore = cookies();
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/habits/completion`,
     {
       method: 'PATCH',
       headers: {
-        Authorization:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjE2Iiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNTAzOTczOCwiZXhwIjoxNzE1OTAzNzM4fQ.KvEeNhUaAmp6clxvQnj2X4tB8GRytsV2xkvWLH6S6uk',
+        Authorization: `${cookieStore.get('Authorization')?.value}`,
       },
       credentials: 'include',
       body: habitFormData,
