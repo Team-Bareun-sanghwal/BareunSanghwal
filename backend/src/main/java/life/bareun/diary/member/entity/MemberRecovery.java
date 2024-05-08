@@ -66,4 +66,14 @@ public class MemberRecovery {
     public void initRecoveryPrice() {
         currentRecoveryPrice = INITIAL_PRICE;
     }
+
+    public boolean isFreeRecoveryAvailable() {
+        return freeRecoveryCount > 0;
+    }
+
+    public void useFreeRecovery() {
+        if (isFreeRecoveryAvailable()) {
+            freeRecoveryCount -= 1;
+        }
+    }
 }
