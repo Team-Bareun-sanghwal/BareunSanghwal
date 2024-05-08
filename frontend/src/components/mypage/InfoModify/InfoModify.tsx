@@ -4,6 +4,7 @@ import { postMemberInfo } from '@/app/(member)/mypage/_apis/postMemberInfo';
 import { InputBox, ScrollDatePicker, SelectBox } from '@/components';
 import { TinyButton } from '@/components/common/TinyButton/TinyButton';
 import { useState } from 'react';
+import { convertBirthday } from '@/components/common/Picker/utils';
 
 interface IPropType {
   title: string;
@@ -31,7 +32,21 @@ export const InfoModify = ({ title, desc, prevData }: IPropType) => {
   };
 
   const saveData = () => {
-    postMemberInfo({ title: title, data: value });
+    interface IDataType {
+      [key: string]: string | null;
+    }
+
+    const data: IDataType = {
+      nickname: null,
+      birthDate: null,
+      gender: null,
+      job: null,
+    };
+
+    const key: keyof IDataType = title;
+    data[key] = title === 'birthDate' ? convertBirthday(value) : value;
+
+    postMemberInfo({ data });
     toggleIsOpen();
   };
 
