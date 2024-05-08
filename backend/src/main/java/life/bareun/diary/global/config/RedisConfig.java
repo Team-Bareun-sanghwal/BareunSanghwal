@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -36,13 +37,12 @@ public class RedisConfig {
 
 
     @Bean(name = "authRedisTemplate")
-    public RedisTemplate<Long, String> authRedisTemplate(
+    public StringRedisTemplate authRedisTemplate(
         @Qualifier("authRedisConnectionFactory")
         RedisConnectionFactory authRedisConnectionFactory
     ) {
-        RedisTemplate<Long, String> redisTemplate = new RedisTemplate<>();
+        StringRedisTemplate redisTemplate = new StringRedisTemplate();
         redisTemplate.setConnectionFactory(authRedisConnectionFactory);
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setEnableTransactionSupport(true);
         return redisTemplate;
     }

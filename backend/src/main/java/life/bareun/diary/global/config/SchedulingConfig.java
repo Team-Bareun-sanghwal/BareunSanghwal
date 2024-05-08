@@ -68,7 +68,7 @@ public class SchedulingConfig {
     // 매 월 00시에 무료 리커버리 지급
     @Scheduled(cron = "0 0 0 1 * ?")
     public void provideFreeRecovery() {
-        memberService.grantFreeRecoveryToAllMembers();
+        memberService.initStreakRecoveryForAllMembersMonthly();
     }
 
     // 10시 5분까지 행운 포인트 미수확한 사람들
@@ -88,4 +88,8 @@ public class SchedulingConfig {
     public void sendNotificationDailyPhrase() {
         notificationService.sendNotification(4L);
     }
+
+    // 자정, 오늘의 한 마디 변경
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void renewDailyPhrase() { memberService.renewDailyPhrase(); }
 }
