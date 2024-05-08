@@ -24,5 +24,5 @@ public interface StreakService {
 
     void deleteHabitStreak(MemberHabit memberHabit);
 
-    void recoveryStreak();
+    void recoveryStreak(LocalDate date);
 }

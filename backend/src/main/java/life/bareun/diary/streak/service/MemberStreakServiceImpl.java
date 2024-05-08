@@ -157,6 +157,19 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         return memberDailyStreakRepository.findByMemberAndCreatedDate(member, date);
     }
 
+    @Override
+    public void recoveryMemberDailyStreak(Member member, LocalDate date) {
+        MemberDailyStreak memberDailyStreak = memberDailyStreakRepository.findByMemberAndCreatedDate(member, date)
+            .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK));
+
+        memberDailyStreak.modifyAchieveType(AchieveType.RECOVERY);
+    }
+
+    @Override
+    public void recoveryMemberDailyStreakCount(Member member, LocalDate startDate, LocalDate endDate) {
+
+    }
+
     /**
      * 멤버 엔티티 반환.
      */
