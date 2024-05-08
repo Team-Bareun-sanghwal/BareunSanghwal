@@ -30,10 +30,12 @@ import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
-import life.bareun.diary.member.dto.MemberHabitsDto;
+import life.bareun.diary.member.dto.MemberHabitListElementDto;
+import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.repository.TreeRepository;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
@@ -80,6 +82,9 @@ class HabitControllerTest {
     private HabitRepository habitRepository;
 
     @Autowired
+    private TreeRepository treeRepository;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -94,7 +99,10 @@ class HabitControllerTest {
 
     @BeforeEach
     void eachSetup() {
-        member = memberRepository.save(Member.create("mockMember", OAuth2Provider.GOOGLE));
+        member = memberRepository.save(Member.create(
+            MemberRegisterDto.builder().sub("mockMember").oAuth2Provider(OAuth2Provider.KAKAO)
+                .defaultStreakColorId(1).defaultTree(treeRepository.findById(1L).orElseThrow())
+                .defaultTreeColorId(1).build()));
         accessToken = authTokenProvider.createAccessToken(new Date(),
             String.valueOf(member.getId()),
             Role.ROLE_USER.name());
@@ -142,7 +150,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabitsDto> memberHabitList = memberHabitRepository.findAllByMemberIdOrderByCreatedDatetime(
+        List<MemberHabitListElementDto> memberHabitList = memberHabitRepository.findAllByMemberIdOrderByCreatedDatetime(
             member.getId());
 
         // 해빗 삭제(유지)
