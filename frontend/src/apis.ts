@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 type Request = {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   url: string;
-  data?: object;
+  data?: object | FormData;
   cache:
     | 'no-cache'
     | 'no-store'

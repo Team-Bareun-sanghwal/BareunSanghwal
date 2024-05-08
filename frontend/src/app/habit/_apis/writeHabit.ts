@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers';
+'use server';
 
-const cookieStore = cookies();
+import { cookies } from 'next/headers';
 
 export async function writeHabit(
   image: File | null,
@@ -17,6 +17,8 @@ export async function writeHabit(
       type: 'application/json',
     }),
   );
+
+  const cookieStore = cookies();
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/habits/completion`,
