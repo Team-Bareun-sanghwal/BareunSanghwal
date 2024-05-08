@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.dto.MemberRegisterDto;
@@ -36,7 +37,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "member")
-
 public class Member {
 
     @Id
@@ -104,6 +104,8 @@ public class Member {
     @Column(name = "member_habits")
     private List<MemberHabit> memberHabitList;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @Builder
     private Member(
@@ -121,11 +123,10 @@ public class Member {
         this.currentTreeColorId = defaultTreeColorId;
         this.tree = defaultTree;
         this.paidRecoveryCount = 0;
+        this.isDeleted = false;
     }
 
-    public static Member create(
-        MemberRegisterDto memberRegisterDto
-    ) {
+    public static Member create(MemberRegisterDto memberRegisterDto) {
         return Member.builder()
             .sub(memberRegisterDto.sub())
             .oAuth2Provider(memberRegisterDto.oAuth2Provider())
@@ -136,10 +137,22 @@ public class Member {
     }
 
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
-        this.nickname = memberUpdateReqDto.nickname();
-        this.birth = memberUpdateReqDto.birthDate();
-        this.gender = memberUpdateReqDto.gender();
-        this.job = memberUpdateReqDto.job();
+        if (memberUpdateReqDto == null) {
+            return;
+        }
+
+        Optional.ofNullable(memberUpdateReqDto.nickname())
+            .filter(newNickname -> !newNickname.isEmpty())
+            .ifPresent(newNickname -> this.nickname = newNickname);
+
+        Optional.ofNullable(memberUpdateReqDto.birthDate())
+            .ifPresent(newBirthDate -> this.birth = newBirthDate);
+
+        Optional.ofNullable(memberUpdateReqDto.gender())
+            .ifPresent(newGender -> this.gender = newGender);
+
+        Optional.ofNullable(memberUpdateReqDto.job())
+            .ifPresent(newJob -> this.job = newJob);
     }
 
     public void usePoint(Integer amount) {
@@ -161,5 +174,19 @@ public class Member {
 
     public void updateTree(Tree tree) {
         this.tree = tree;
+    }
+
+    public void delete() {
+        sub = String.format("DeletedUser%d", id);
+        isDeleted = true;
+        deleteInfo();
+    }
+
+    private void deleteInfo() {
+        this.nickname = null;
+        this.birth = null;
+        this.gender = null;
+        this.job = null;
+        this.provider = null;
     }
 }
