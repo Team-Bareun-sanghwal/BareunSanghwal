@@ -8,6 +8,7 @@ import {
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { deleteMemberInfo } from '@/app/(member)/mypage/_apis/deleteMemberInfo';
+import { $Fetch } from '@/apis';
 
 interface IPropType {
   type: string;
@@ -41,13 +42,16 @@ export const BorderlessButton = ({ type }: IPropType) => {
     ));
   };
 
-  const handleOnClick = () => {
+  const handleOnClick = async () => {
     if (type === 'leave') {
       handleOverlay();
     } else {
-      console.log('logout');
-      // api 통신 추가
-      // `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`
+      const result = await $Fetch({
+        method: 'POST',
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`,
+        cache: 'default',
+      });
+      console.log(await result);
     }
   };
 

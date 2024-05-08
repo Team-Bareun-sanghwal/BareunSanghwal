@@ -1,18 +1,15 @@
 import { $Fetch } from '@/apis';
 
 interface IPropType {
-  title: string;
-  data: string;
+  [key: string]: string | null;
 }
 
-export const postMemberInfo = async ({ title, data }: IPropType) => {
-  const requestData: { [key: string]: any } = {};
-  requestData[`${title}`] = data;
-
+export const postMemberInfo = async ({ data }: { data: IPropType }) => {
   const result = await $Fetch({
     method: 'PATCH',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members`,
     cache: 'default',
-    data: requestData,
+    data: data,
   });
+  return result;
 };
