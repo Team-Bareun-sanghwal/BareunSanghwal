@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
             .map(ProductMapper.INSTANCE::toProductDto)
             .peek(
                 productDto -> {
-                    if (productDto.getName().equals(STREAK_RECOVERY_KEY)) {
+                    if (productDto.getKey().equals(STREAK_RECOVERY_KEY)) {
                         productDto.setPrice(
                             memberRecoveryRepository.findByMember(member)
                                 .orElseThrow(
