@@ -34,7 +34,6 @@ export const setToken = async () => {
         });
         if ((await result.status) === 201) {
           console.log('4. 토큰 등록 완료!!');
-          // window.location.href = 'https://bareun.life/main';
         }
       }
     })
