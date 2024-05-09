@@ -264,13 +264,13 @@ public class NotificationServiceImpl implements NotificationService {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
             .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400")
                 .setNotification(
-                    new WebpushNotification("bareun", notificationResultTokenDto.content(), "icon-url"))
+                    new WebpushNotification("바른생활", notificationResultTokenDto.content(), "icon-url"))
                 .build())
             .setAndroidConfig(
                 AndroidConfig.builder()
                     .setTtl(86400)
                     .setNotification(AndroidNotification.builder()
-                        .setTitle("bareun")
+                        .setTitle("바른생활")
                         .setBody(notificationResultTokenDto.content())
                         .setClickAction("push_click").build()).build()
             )
@@ -279,7 +279,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .putHeader("apns-expiration",
                         String.valueOf((System.currentTimeMillis() / 1000) + 86400))
                     .setAps(Aps.builder()
-                        .setAlert(ApsAlert.builder().setTitle("bareun")
+                        .setAlert(ApsAlert.builder().setTitle("바른생활")
                             .setBody(notificationResultTokenDto.content()).build())
                         .setCategory("push_click").build()).build()
             )
