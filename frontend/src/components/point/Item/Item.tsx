@@ -55,6 +55,8 @@ const Purchase = async (key: string) => {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/${path}`,
     cache: 'no-cache',
   });
+  console.log(path);
+  console.log(response);
   return response;
 };
 
@@ -94,25 +96,45 @@ const Item = ({
           : 'PURCHASE_RECOVERY';
     Purchase(key)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         //구매 성공
         if (response.status === 200) {
           console.log(response.data.streakColorName);
           overlay.open(({ isOpen, close }) => (
             <BottomSheet
-              description="구매 완료"
-              mode="RESULT"
+              description=""
+              mode="NONE"
               onClose={close}
               onConfirm={close}
               open={isOpen}
-              title="야호!"
+              title="구매 완료!"
             >
-              <Pallete color={response.data.streakColorName} />
-              <ColoredText color={response.data.streakColorName} />
+              {key == 'gotcha_streak' && (
+                <>
+                  <Pallete color={response.data.streakColorName} />
+                  <ColoredText color={response.data.streakColorName} />
+                </>
+              )}
+              {key == 'gotcha_tree' && (
+                <>
+                  <ColoredText color={response.data.treeColorName} />
+                </>
+              )}
+              {key == 'recovery' && (
+                <>
+                  <div className="flex justify-center text-3xl ">
+                    <span className="text-2xl">스트릭 개수가 </span>
+                    <span className="text-2xl text-custom-matcha mx-2">
+                      {response.data.paidRecoveryCount}
+                    </span>
+                    <span className="text-2xl"> 개가 되었어요! </span>
+                  </div>
+                </>
+              )}
             </BottomSheet>
           ));
           // 잔액 부족
-        } else if (response.status === 402) {
+        } else if (response.status === 422) {
           overlay.open(({ isOpen, close }) => (
             <BottomSheet
               description="잔액이 부족합니다."

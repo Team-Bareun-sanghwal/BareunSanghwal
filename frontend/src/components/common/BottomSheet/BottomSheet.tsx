@@ -73,10 +73,11 @@ export const BottomSheet = ({
             <span className="custom-semibold-text text-pretty">{title}</span>
             <span className="custom-medium-text text-pretty">
               {description}
-              {children}
             </span>
           </div>
-
+          <span className="flex flex-col w-full content-center custom-regular-text text-pretty">
+            {children}
+          </span>
           {mode !== 'NONE' && (
             <Image
               priority={true}
