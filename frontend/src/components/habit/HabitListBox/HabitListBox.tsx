@@ -16,11 +16,11 @@ interface IHabitListBoxProps {
   period?: number;
   currentStreak?: number;
   memberHabitId?: number;
-  habitTrackerId?: number;
   createdAt: Date;
   completedAt?: Date;
   onDeleteClick?: () => void;
   onCompleteClick?: () => void;
+  onRegisterClick?: () => void;
 }
 
 const mapNumberToString = (num: number) => {
@@ -59,11 +59,11 @@ export const HabitListBox = ({
   period,
   currentStreak,
   memberHabitId,
-  habitTrackerId,
   createdAt,
   completedAt,
   onDeleteClick,
   onCompleteClick,
+  onRegisterClick,
 }: IHabitListBoxProps) => {
   const router = useRouter();
 
@@ -85,7 +85,7 @@ export const HabitListBox = ({
             <span className="block w-fit px-[0.8rem] py-[0.1rem] text-[1rem] font-medium rounded-[1rem] bg-custom-medium-gray">
               {name}
             </span>
-            <span className="text-custom-dark-gray text-[0.8rem] font-light">
+            <span className="text-custom-dark-gray text-[1rem] font-light">
               {mode === 'REGISTER' ? (
                 <></>
               ) : mode === 'COMPLETED' ? (
@@ -147,7 +147,9 @@ export const HabitListBox = ({
             })}
           </div>
         ) : (
-          <div className="px-[1rem] h-[2rem] flex items-center justify-center bg-custom-matcha text-custom-white custom-light-text rounded-[1rem]">{`${period}일마다`}</div>
+          mode === 'REGISTER' && (
+            <div className="px-[1rem] h-[2rem] flex items-center justify-center bg-custom-matcha text-custom-white custom-light-text rounded-[1rem]">{`${period}일마다`}</div>
+          )
         )}
       </div>
 
@@ -158,12 +160,7 @@ export const HabitListBox = ({
       {mode !== 'COMPLETED' && mode !== 'REGISTER' && (
         <nav className="mx-auto flex items-center cursor-pointer">
           {mode === 'GOING' ? (
-            <div
-              className="flex items-center"
-              onClick={() => {
-                router.push(`/habit/write/${habitTrackerId}`);
-              }}
-            >
+            <div className="w-full flex items-center" onClick={onRegisterClick}>
               <span className="text-custom-dark-gray">기록하러 가기</span>
               <ChevronRightIcon className="w-[1.8rem] h-[1.8rem] text-custom-dark-gray" />
             </div>

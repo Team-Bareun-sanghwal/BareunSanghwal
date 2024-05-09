@@ -210,7 +210,9 @@ export default function DayOrPeriod({
       <Button
         isActivated={dayOfWeek.length !== 0 || period ? true : false}
         label="완료"
-        onClick={handleRegisterOverlay}
+        onClick={
+          dayOfWeek.length !== 0 || period ? handleRegisterOverlay : () => {}
+        }
       />
     </div>
   );
