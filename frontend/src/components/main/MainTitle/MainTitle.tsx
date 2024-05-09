@@ -1,13 +1,27 @@
 import { BellButton } from '@/components/notification/BellButton/BellButton';
 import { PermissionButton } from '@/components/notification/PermissionButton/PermissionButton';
 import Image from 'next/image';
+interface IHabitTrackerDto {
+  name: string;
+  alias: string;
+  memberHabitId: number;
+  habitTrackerId: number;
+  icon: string;
+  succeededTime: number;
+  day: number;
+}
+interface IHabitTrackerTodayDtoList {
+  habitTrackerTodayDtoList: IHabitTrackerDto[];
+}
 export const MainTitle = ({
-  total,
-  succeed,
-}: {
-  total: number;
-  succeed: number;
-}) => {
+  habitTrackerTodayDtoList,
+}: IHabitTrackerTodayDtoList) => {
+  const total = habitTrackerTodayDtoList?.length || 0;
+  const succeed =
+    habitTrackerTodayDtoList?.filter(
+      (habit: IHabitTrackerDto) => habit.succeededTime > 0,
+    ).length || 0;
+
   const TitleMsg =
     total == 0
       ? '아직 해빗이 없어요...'

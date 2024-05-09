@@ -44,7 +44,7 @@ export default async function Page(props: {
 
   const habitsToday = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/non-active`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/today`,
     cache: 'no-cache',
   });
 
@@ -59,13 +59,12 @@ export default async function Page(props: {
   return (
     <div className="min-h-screen">
       <MainTitle
-        total={habitList.length}
-        succeed={habitsToday.data.memberHabitList.length}
+        habitTrackerTodayDtoList={habitsToday.data.habitTrackerTodayDtoList}
       />
       <HabitBtnList />
       <div className="flex w-full justify-around">
         <HabitChecker
-          achieveCount={habitsToday.data.memberHabitList.length}
+          achieveCount={habitsToday.data.habitTrackerTodayDtoList}
           totalCount={habitList.length}
         />
         <LongestStreak longestStreakCount={longestStreakCount} />
