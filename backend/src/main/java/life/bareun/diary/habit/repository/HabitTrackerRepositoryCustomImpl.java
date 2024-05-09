@@ -126,7 +126,9 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 )
             )
             .from(habitTracker)
-            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
+            .where(
+                habitTracker.memberHabit.member.id.longValue().eq(memberId)
+                .and(habitTracker.succeededTime.isNotNull()))
             .groupBy(habitTracker.memberHabit.id)
             .orderBy(habitTracker.id.count().desc())
             .limit(5)
