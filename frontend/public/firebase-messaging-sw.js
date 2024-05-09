@@ -25,6 +25,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// push 발생 시 알림 띄우기
 self.addEventListener('push', function (e) {
   if (!e.data.json()) return;
 
@@ -40,6 +41,7 @@ self.addEventListener('push', function (e) {
   registration.showNotification(notificationTitle, notificationOptions);
 });
 
+// 알림 클릭 시 알림 페이지로 이동
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
   event.waitUntil(clients.openWindow(event.notification.data.url));

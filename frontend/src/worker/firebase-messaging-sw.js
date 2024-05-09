@@ -29,7 +29,7 @@ export const setTokenHandler = async () => {
           url: `${process.env.NEXT_PUBLIC_BASE_URL}/notifications`,
           cache: 'default',
           data: {
-            notificationToken: token,
+            notificationToken: currentToken,
           },
         });
         if ((await result.status) === 200) {
