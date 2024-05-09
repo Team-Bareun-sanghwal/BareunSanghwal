@@ -268,11 +268,10 @@ public class NotificationServiceImpl implements NotificationService {
                 .build())
             .setAndroidConfig(
                 AndroidConfig.builder()
-                    .setTtl(86400)
                     .setNotification(AndroidNotification.builder()
                         .setTitle("bareun")
                         .setBody(notificationResultTokenDto.content())
-                        .setClickAction("https://bareun.life/notification").build()).build()
+                        .setClickAction("push_click").build()).build()
             )
             .setApnsConfig(
                 ApnsConfig.builder()
@@ -281,12 +280,13 @@ public class NotificationServiceImpl implements NotificationService {
                     .setAps(Aps.builder()
                         .setAlert(ApsAlert.builder().setTitle("bareun")
                             .setBody(notificationResultTokenDto.content()).build())
-                        .setCategory("https://bareun.life/notification").build()).build()
+                        .setCategory("push_click").build()).build()
             )
             .putData("url", "https://bareun.life/notification")
             .build();
         try {
-            FirebaseMessaging.getInstance().sendAsync(message).get();
+            FirebaseMessaging.getInstance().send(message);
+            log.info(message.toString());
         } catch (Exception e) {
             log.error("알림 전송에 실패했습니다. {}", e.toString());
             throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
