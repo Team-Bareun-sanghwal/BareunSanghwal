@@ -94,14 +94,15 @@ public class RecapServiceImpl implements RecapService {
     @Value("${gpt.api.model}")
     private String apiModel;
 
+    @Value("${cloud.aws.default}")
+    private String IMAGE_BASIC;
+
     private static final String PROMPT = " 라는 내용을 가장 핵심이 되는 한 단어로 요약해주세요. 반드시 명사여야 하고, 가장 많이 언급되는 단어를 기반으로 해야 합니다. 특수기호가 없어야 하며 5글자 이내로 유쾌하게 해주세요.";
-    private static final String IMAGE_BASIC = "basic";
 
     @Override
     public void createRecap() {
         // 두 번 이상 완료한 사용자 해빗을 하나라도 가지고 있는 사용자 리스트
         // 자정에 시작하기 때문에 전 달에 달성한 목록을 가져와야 함
-
          LocalDate nowMonth = LocalDate.now().minusMonths(1L);
         List<RecapMemberDto> recapMemberList = recapRepository.findAllAppropriateMember(
             RecapMonthDto.builder().year(nowMonth.getYear()).month(nowMonth.getMonth().getValue())
@@ -188,10 +189,12 @@ public class RecapServiceImpl implements RecapService {
 
             // 키워드 생성
             String keyword = createKeyWord(totalContent.toString()).content();
+            System.out.println(keyword);
             recapRepository.modifyRecap(
                 RecapModifyDto.builder().recap(recap).wholeStreak(wholeStreak)
                     .maxHabitImage(imageUrl).mostFrequencyWord(keyword)
                     .mostFrequencyTime(occasion).build());
+
 
             if (notificationTokenMap.containsKey(recapMemberDto.member().getId())) {
                 try {
