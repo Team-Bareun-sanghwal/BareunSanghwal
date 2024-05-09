@@ -2,15 +2,9 @@
 
 import { BellIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
-import { checkPermission } from '@/worker/firebase-messaging-sw';
-import { useEffect } from 'react';
 
 export const BellButton = () => {
   const router = useRouter();
-
-  useEffect(() => {
-    checkPermission();
-  }, []);
 
   return (
     <BellIcon
