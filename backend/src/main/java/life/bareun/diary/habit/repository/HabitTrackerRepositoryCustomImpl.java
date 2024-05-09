@@ -98,31 +98,13 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<MemberTopHabitDto> findTopHabits(Long memberId) {
-        Double countAll = queryFactory
-            .select(habitTracker.id.count().doubleValue())
-            .from(habitTracker)
-            .where(habitTracker.member.id.longValue().eq(memberId))
-            .fetchOne();
-
+    public List<MemberTopHabitDto> findAllTopHabit(Long memberId) {
         return queryFactory
             .select(
                 Projections.constructor(
                     MemberTopHabitDto.class,
                     habitTracker.memberHabit.alias.as("habit"),
-                    habitTracker.id.count()
-                        .multiply(100)
-                        .divide(countAll)
-                        .round()
-                        .intValue()
-                        .as("value")
-                    // Expressions.numberTemplate(
-                    //     Double.class,
-                    //     "ROUND({0}*100.0, 2)",
-                    //     habitTracker.id.count()
-                    //         .divide(countAll)
-                    // ).as("value")
-                    // habitTracker.id.count().intValue().as("value")
+                    habitTracker.memberHabit.count().intValue().as("value")
                 )
             )
             .from(habitTracker)

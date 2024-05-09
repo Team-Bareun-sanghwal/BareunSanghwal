@@ -28,7 +28,7 @@ public interface HabitTrackerRepositoryCustom {
 
     Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto);
 
-    List<MemberTopHabitDto> findTopHabits(Long memberId);
+    List<MemberTopHabitDto> findAllTopHabit(Long memberId);
 
     Long countByMemberId(Long memberId);
 
