@@ -2,8 +2,8 @@ package life.bareun.diary.streak.controller;
 
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.streak.dto.request.StreakRecoveryReqDto;
-import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
+import life.bareun.diary.streak.dto.response.MonthStreakResDto;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,29 +34,29 @@ public class StreakController {
     }
 
     @GetMapping(value = {"/{dateString}/{memberHabitId}", "/{dateString}"})
-    public ResponseEntity<BaseResponse<HabitStreakResDto>> findAllMemberStreakByHabit(
+    public ResponseEntity<BaseResponse<MonthStreakResDto>> findAllMemberStreakByHabit(
         @PathVariable("dateString") String dateString,
         @PathVariable(name = "memberHabitId", required = false) Long memberHabitId) {
 
-        HabitStreakResDto habitStreakResDto = null;
+        MonthStreakResDto monthStreakResDto = null;
         String message = null;
 
         if (memberHabitId != null) {
-            habitStreakResDto = streakService.getHabitStreakResDtoByMemberHabitId(dateString, memberHabitId);
+            monthStreakResDto = streakService.getHabitStreakResDtoByMemberHabitId(dateString, memberHabitId);
             message = "사용자의 월간 스트릭 중 선택한 해빗 스트릭 조회에 성공했습니다.";
         } else {
-            habitStreakResDto = streakService.getHabitStreakResDtoByMember(dateString);
-            message = "사용자의 월간 스트릭 중 선택한 해빗에 관련된 스트릭 조회에 성공했습니다.";
+            monthStreakResDto = streakService.getHabitStreakResDtoByMember(dateString);
+            message = "사용자의 월간 스트릭 스트릭 조회에 성공했습니다.";
         }
 
         return ResponseEntity.status(HttpStatus.OK.value())
-            .body(BaseResponse.success(HttpStatus.OK.value(), message, habitStreakResDto));
+            .body(BaseResponse.success(HttpStatus.OK.value(), message, monthStreakResDto));
     }
 
     @PatchMapping("/recovery")
     public ResponseEntity<BaseResponse<?>> recoveryStreak(
         @RequestBody StreakRecoveryReqDto streakRecoveryReqDto) {
-        
+
         streakService.recoveryStreak(streakRecoveryReqDto.date());
 
         return ResponseEntity.status(HttpStatus.OK.value())

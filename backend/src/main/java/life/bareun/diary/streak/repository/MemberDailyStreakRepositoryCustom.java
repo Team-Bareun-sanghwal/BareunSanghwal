@@ -4,9 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import life.bareun.diary.streak.dto.MonthStreakInfoDto;
 
-public interface HabitDailyStreakRepositoryCustom {
+public interface MemberDailyStreakRepositoryCustom {
 
-    List<MonthStreakInfoDto> findStreakDayInfoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+    List<MonthStreakInfoDto> findStreakDayInfoByMemberId(Long memberId, LocalDate firstDayOfMonth,
         LocalDate lastDayOfMonth);
-    
 }
