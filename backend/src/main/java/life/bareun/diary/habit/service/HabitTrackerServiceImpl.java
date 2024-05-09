@@ -104,7 +104,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
                 habitTrackerModifyReqDto.habitTrackerId())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
 
-        if(habitTracker.getSucceededTime() != null) {
+        if(habitTracker.getSucceededTime() != null || habitTrackerModifyReqDto.content() == null) {
             throw new HabitException(HabitErrorCode.INVALID_PARAMETER_HABIT_TRACKER);
         }
 
