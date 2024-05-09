@@ -16,7 +16,7 @@ export const SingleNotification = ({
   createdAt,
 }: INotificationType) => {
   const borderStyle = index === 0 ? 'border-b border-t' : 'border-b';
-  const backgroundStyle = isRead ? 'bg-custom-light-gray' : '';
+  const backgroundStyle = isRead ? '' : 'bg-custom-light-gray';
   const date = createdAt.replace('T', ' ');
 
   return (
