@@ -142,6 +142,9 @@ public class HabitServiceImpl implements HabitService {
     @Override
     // 사용자 해빗을 삭제
     public void deleteMemberHabit(HabitDeleteReqDto habitDeleteReqDto) {
+        streakService.deleteHabitStreak(memberHabitRepository.findById(habitDeleteReqDto.memberHabitId())
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT)));
+        
         // 만약 모두 삭제한다고 하면 이전 기록들까지 전부 삭제
         if (Boolean.TRUE.equals(habitDeleteReqDto.isDeleteAll())) {
             habitTrackerService.deleteAllHabitTracker(habitDeleteReqDto.memberHabitId());
