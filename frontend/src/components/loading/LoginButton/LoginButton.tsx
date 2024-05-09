@@ -11,21 +11,22 @@ interface ILoginButtonProps {
 export const LoginButton = ({ platform }: ILoginButtonProps) => {
   const router = useRouter();
 
-  // const signIn = async () => {
-  //   const url =
-  //     platform === 'kakao'
-  //       ? process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL!
-  //       : process.env.NEXT_PUBLIC_OAUTH_GOOGLE_URL!;
-  //   router.push(url);
-  // };
-
-  const signIn = () => {
-    if (platform === 'kakao') {
-      router.push(process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL as string);
-    } else {
-      clickPushHandler();
-    }
+  const signIn = async () => {
+    const url =
+      platform === 'kakao'
+        ? process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL!
+        : process.env.NEXT_PUBLIC_OAUTH_GOOGLE_URL!;
+    router.push(url);
   };
+
+  // const signIn = () => {
+  //   if (platform === 'kakao') {
+  //     const url = process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL!;
+  //     router.push(url);
+  //   } else {
+  //     clickPushHandler();
+  //   }
+  // };
 
   const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
 

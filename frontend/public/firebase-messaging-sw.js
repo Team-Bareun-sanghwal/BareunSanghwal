@@ -14,6 +14,8 @@ importScripts(
   'https://www.gstatic.com/firebasejs/9.0.2/firebase-messaging-compat.js',
 );
 
+// navigator.serviceWorker.register('firebase-messaging-sw');
+
 firebase.initializeApp({
   apiKey: 'AIzaSyAbcSOk4v64N_OtDrAwg6NqCfD4V9ybRVM',
   authDomain: 'bareun-life.firebaseapp.com',

@@ -9,7 +9,8 @@ export default function Page() {
   const code = searchParams.get('status');
 
   if (code === '200') {
-    setTokenHandler();
+    router.push('/main');
+    // setTokenHandler();
   } else {
     router.push('/signin');
   }
