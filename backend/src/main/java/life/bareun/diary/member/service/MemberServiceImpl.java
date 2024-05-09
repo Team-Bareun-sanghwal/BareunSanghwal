@@ -613,6 +613,26 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 현재 문장과 중복되지 않도록
+    @Transactional(readOnly = true)
+    protected DailyPhrase getNewDailyPhrase(String currentPhrase) {
+        int count = (int) dailyPhraseRepository.count();
+
+        DailyPhrase currentDailyPhrase = dailyPhraseRepository.findByPhrase(currentPhrase)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+            );
+
+        Long currentDailyPhraseId = currentDailyPhrase.getId();
+        Long newDailyPhraseId = null;
+
+        // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
+        while((newDailyPhraseId = RANDOM.nextLong(count) + 1L).equals(currentDailyPhraseId));
+
+        return dailyPhraseRepository.findById(newDailyPhraseId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+            );
     }
 
 }
