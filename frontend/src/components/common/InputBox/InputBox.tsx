@@ -42,7 +42,7 @@ export const InputBox = ({
   );
 
   return (
-    <section className="w-[34rem] flex flex-col items-start gap-[0.5rem]">
+    <section className="w-full flex flex-col items-start gap-[0.5rem]">
       {isLabel && (
         <label className="custom-semibold-text text-custom-matcha">
           {label}
@@ -50,7 +50,7 @@ export const InputBox = ({
       )}
 
       <input
-        className={`${lineColor} w-[34rem] bg-transparent custom-medium-text outline-none py-[0.5rem] border-b-[0.2rem]`}
+        className={`${lineColor} w-full bg-transparent custom-medium-text outline-none py-[0.5rem] border-b-[0.2rem] rounded-none`}
         placeholder={placeholder}
         defaultValue={defaultValue}
         onChange={(event) => {
