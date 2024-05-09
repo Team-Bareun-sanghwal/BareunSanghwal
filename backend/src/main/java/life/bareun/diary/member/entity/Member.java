@@ -164,8 +164,11 @@ public class Member {
         this.paidRecoveryCount += 1;
     }
 
-    public void changeTreeColor(Integer id) {
-        this.currentTreeColorId = id;
+    public void changeStreakColor(Integer streakColorId) {
+        this.currentStreakColorId = streakColorId;
+    }
+    public void changeTreeColor(Integer treeColorId) {
+        this.currentTreeColorId = treeColorId;
     }
 
     public void addPoint(Integer amount) {

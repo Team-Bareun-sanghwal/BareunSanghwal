@@ -114,15 +114,20 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
+        // 앞에서 랜덤으로 뽑은 등급에 해당하는 스트릭 색상 리스트 얻기
         List<StreakColor> streakColors = streakColorRepository.findAllByStreakColorGrade(
             gotchaGrade);
+
+        // 랜덤 스트릭 색상 뽑기
         StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
 
+        // 현재 사용자 엔티티 얻기
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(id).orElseThrow(
             () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
         );
 
+        // 스트릭 색상 변경권 가격을 얻고 사용자의 현재 보유 포인트와 비교한다.
         Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
             .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
@@ -130,8 +135,10 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
         }
 
+        // 예외가 발생하지 않으면(구매 가능한 상태면)
+        // 변경된 포인트 보유량과 스트릭 색상을 적용한다.
         member.usePoint(amount);
-        memberRepository.save(member);
+        member.changeStreakColor(gotchaStreakColor.getId());
 
         return new ProductStreakColorUpdateResDto(gotchaStreakColor.getName());
     }
@@ -168,9 +175,6 @@ public class ProductServiceImpl implements ProductService {
             )
             .getId();
         member.changeTreeColor(treeColorId);
-
-        // 6. 결과 반영
-        memberRepository.save(member);
 
         return new ProductTreeColorUpdateResDto(gotchaTreeColor.getName());
     }
