@@ -536,7 +536,7 @@ public class MemberServiceImpl implements MemberService {
         List<MemberHabitTrackerDto> habitTrackerGroupList = new ArrayList<>();
         for (Integer year : yearList) {
             habitTrackerGroupList.add(
-                habitTrackerRepository.findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(
+                habitTrackerRepository.findAllHabitTrackerBySuceededYearAndMemberHabitOrderByCreatedDate(
                     year,
                     memberId,
                     longMemberHabitId

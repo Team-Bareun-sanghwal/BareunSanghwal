@@ -40,7 +40,7 @@ public interface HabitTrackerRepositoryCustom {
 
     List<Integer> findAllSucceededYearByMemberHabitId(Long memberId, Long memberHabitId);
 
-    MemberHabitTrackerDto findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(
+    MemberHabitTrackerDto findAllHabitTrackerBySuceededYearAndMemberHabitOrderByCreatedDate(
         Integer year, Long memberId, Long memberHabitId
     );
 

@@ -132,6 +132,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
             .fetchOne();
     }
 
+
     @Override
     public List<HabitPracticeCountPerDayOfWeekDto> countPracticedHabitsPerDayOfWeek(Long memberId) {
         return queryFactory
@@ -202,7 +203,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public MemberHabitTrackerDto findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(
+    public MemberHabitTrackerDto findAllHabitTrackerBySuceededYearAndMemberHabitOrderByCreatedDate(
         Integer year,
         Long memberId,
         Long memberHabitId
