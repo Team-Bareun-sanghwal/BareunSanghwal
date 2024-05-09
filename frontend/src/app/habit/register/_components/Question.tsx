@@ -17,7 +17,7 @@ interface IQuestionStepComponent {
   onNext: (nextStep: string, isCategorySet: boolean) => void;
 }
 
-export const Question = ({ onPrev, onNext }: IQuestionStepComponent) => {
+export default function Question({ onPrev, onNext }: IQuestionStepComponent) {
   const [isAlreadySet, setIsAlreadySet] = useState<string | null>(null);
 
   const overlay = useOverlay();
@@ -91,4 +91,4 @@ export const Question = ({ onPrev, onNext }: IQuestionStepComponent) => {
       />
     </div>
   );
-};
+}

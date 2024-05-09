@@ -10,12 +10,12 @@ interface IRecommendStep {
   similarCategoryListData: IHabitListData[];
 }
 
-export const Recommend = ({
+export default function Recommend({
   onPrev,
   onNext,
   popularCategoryListData,
   similarCategoryListData,
-}: IRecommendStep) => {
+}: IRecommendStep) {
   const [selectedHabitId, setSelectedHabitId] = useState<number | null>(null);
   const [selectedHabitName, setSelectedHabitName] = useState<string | null>(
     null,
@@ -71,4 +71,4 @@ export const Recommend = ({
       />
     </div>
   );
-};
+}
