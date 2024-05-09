@@ -94,6 +94,11 @@ public class HabitServiceImpl implements HabitService {
     @Override
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
+        if((habitCreateReqDto.dayOfWeek() == null && habitCreateReqDto.period() == null)
+        || habitCreateReqDto.icon() == null || habitCreateReqDto.alias() == null) {
+            throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
+        }
+
         rankLogger.info("rank-log {} {}", habitCreateReqDto.habitId(), "랭킹 순위에 반영됩니다.");
         // 멤버, 해빗 가져오기
         Habit habit = habitRepository.findById(habitCreateReqDto.habitId())
