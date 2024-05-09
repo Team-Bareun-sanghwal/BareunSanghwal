@@ -208,6 +208,24 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
         Long memberId,
         Long memberHabitId
     ) {
+        NumberTemplate<Integer> succeededYear = Expressions.numberTemplate(
+            Integer.class,
+            "YEAR({0})",
+            habitTracker.succeededTime
+        );
+
+        NumberTemplate<Integer> succeededMonth = Expressions.numberTemplate(
+            Integer.class,
+            "MONTH({0})",
+            habitTracker.succeededTime
+        );
+
+        NumberTemplate<Integer> succeededDay = Expressions.numberTemplate(
+            Integer.class,
+            "DAY({0})",
+            habitTracker.succeededTime
+        );
+
         List<HabitTrackerDto> habitTrackerList = queryFactory
             .select(
                 Projections.constructor(
@@ -216,19 +234,27 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                     habitTracker.succeededTime,
                     habitTracker.content,
                     habitTracker.image,
-                    habitTracker.createdMonth,
-                    habitTracker.createdDay
+                    succeededMonth.intValue(),
+                    succeededDay.intValue()
                 )
             )
             .from(habitTracker)
             .where(
                 habitTracker.memberHabit.id.eq(memberHabitId)
+                    .and(habitTracker.succeededTime.isNotNull())
                     .and(habitTracker.memberHabit.member.id.eq(memberId))
-                    .and(habitTracker.createdYear.eq(year))
+                    .and(succeededYear.eq(year))
+                // .and(
+                //     habitTracker.createdMonth.lt(month) // 월이 작거나
+                //         .or(
+                //             habitTracker.createdMonth.eq(month) //월이 같고 일이 작거나 같음
+                //                 .and(habitTracker.createdDay.loe(day))
+                //         )
+                //     )
             )
             .orderBy(
-                habitTracker.createdMonth.desc(),
-                habitTracker.createdDay.desc()
+                succeededMonth.desc(),
+                succeededDay.desc()
             )
             .fetch();
 
