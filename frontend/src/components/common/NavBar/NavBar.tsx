@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { HomeIcon } from '@heroicons/react/24/solid';
-import { checkPermission } from '@/worker/firebase-messaging-sw';
 import {
   ChartPieIcon,
   Square3Stack3DIcon,
@@ -48,7 +47,6 @@ export const NavBar = ({ mode }: INavBarProps) => {
 
   useEffect(() => {
     setFocusedMenu(mode);
-    checkPermission();
   }, [mode]);
 
   return (

@@ -2,11 +2,13 @@
 // pages/main/page.tsx
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { checkPermission } from '@/worker/firebase-messaging-sw';
 
 const Page = () => {
   const router = useRouter();
 
   useEffect(() => {
+    checkPermission();
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
