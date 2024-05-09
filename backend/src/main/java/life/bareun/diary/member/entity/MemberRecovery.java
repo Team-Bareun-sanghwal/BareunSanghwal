@@ -23,7 +23,7 @@ public class MemberRecovery {
 
     private static final int MAX_PRICE = 2_000_000_000;
     private static final int MAX_FREE_RECOVERY_COUNT = 1;
-    private static final int INITIAL_PRICE = 140;
+    private static final int INITIAL_RECOVERY_PRICE = 150;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +42,7 @@ public class MemberRecovery {
     private MemberRecovery(Member member, Integer freeRecoveryCount) {
         this.member = member;
         this.freeRecoveryCount = freeRecoveryCount;
+        this.currentRecoveryPrice = INITIAL_RECOVERY_PRICE;
     }
 
     public static MemberRecovery create(Member member) {
@@ -64,7 +65,7 @@ public class MemberRecovery {
     }
 
     public void initRecoveryPrice() {
-        currentRecoveryPrice = INITIAL_PRICE;
+        currentRecoveryPrice = INITIAL_RECOVERY_PRICE;
     }
 
     public boolean isFreeRecoveryAvailable() {
