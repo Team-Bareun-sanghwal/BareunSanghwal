@@ -160,7 +160,10 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 )
             )
             .from(habitTracker)
-            .where(habitTracker.member.id.eq(memberId))
+            .where(
+                habitTracker.member.id.eq(memberId)
+                    .and(habitTracker.succeededTime.isNotNull())
+            )
             .groupBy(habitTracker.day)
             .orderBy(habitTracker.day.asc())
             .fetch();
