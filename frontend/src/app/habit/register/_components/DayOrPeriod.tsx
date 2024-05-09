@@ -29,13 +29,13 @@ interface IDayOrPeriodStepComponent {
   data: IRegisteredHabitData;
 }
 
-export const DayOrPeriod = ({
+export default function DayOrPeriod({
   onPrev,
   onNext,
   userAmountData,
   simpleHabitListData,
   data,
-}: IDayOrPeriodStepComponent) => {
+}: IDayOrPeriodStepComponent) {
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
   const [period, setPeriod] = useState<number | null>(null);
 
@@ -183,4 +183,4 @@ export const DayOrPeriod = ({
       />
     </div>
   );
-};
+}

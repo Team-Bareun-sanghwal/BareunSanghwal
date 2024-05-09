@@ -49,7 +49,7 @@ export const HabitCategoryList = ({
           return (
             <button
               key={`habitList-${index}`}
-              className={`${mode === 'POPULAR' && selectedHabitId !== data.habitId && (index === 0 || index === 1 || index === 2) && `outline-dashed ${outlineColor}`} ${selectedHabitId === data.habitId ? 'bg-custom-matcha text-custom-white' : 'bg-custom-light-gray text-custom-black'} min-w-fit h-[3.4rem] px-[1rem] py-[0.5rem] rounded-[1rem] custom-medium-text flex items-center gap-[0.5rem]`}
+              className={`${mode === 'POPULAR' && selectedHabitId !== data.habitId && (index === 0 || index === 1 || index === 2) && `outline-dashed ${outlineColor} outline-[0.1rem]`} ${selectedHabitId === data.habitId ? 'bg-custom-matcha text-custom-white' : 'bg-custom-light-gray text-custom-black'} min-w-fit h-[3.4rem] px-[1rem] py-[0.5rem] rounded-[1rem] custom-medium-text flex items-center gap-[0.5rem]`}
               onClick={() => {
                 setSelectedHabitId(data.habitId);
                 setSelectedHabitName(data.name);
