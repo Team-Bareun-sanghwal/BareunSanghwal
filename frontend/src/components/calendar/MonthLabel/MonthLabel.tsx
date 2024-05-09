@@ -22,12 +22,14 @@ export const MonthLabel = ({ year, month }: IMonthLabel) => {
   };
   return (
     <>
-      <div className="flex w-full space-x-4 justify-around my-4">
+      <div className="flex w-full space-x-4 justify-around my-4 items-center">
         <ChevronLeftIcon
           onClick={() => routeMonth(prevMonth(parseInt(year), parseInt(month)))}
           className="w-8 h-8"
         />
-        <p className="flex font-bold text-3xl text-center">{month}월</p>
+        <p className="flex font-bold text-3xl text-center items center">
+          {month}월
+        </p>
         {getMonth(false) !== month + '' ? (
           <ChevronRightIcon
             onClick={() =>

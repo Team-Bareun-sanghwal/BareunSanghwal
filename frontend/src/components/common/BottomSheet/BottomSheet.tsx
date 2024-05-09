@@ -14,10 +14,12 @@ interface IBottomSheetProps {
     | 'PURCHASE_STREAK'
     | 'PURCHASE_TREE'
     | 'PURCHASE_RECOVERY'
+    | 'RESULT'
     | 'NONE';
   open: boolean;
   onClose?: () => void;
   onConfirm?: () => void;
+  children?: React.ReactNode;
 }
 
 const container = {
@@ -32,6 +34,7 @@ export const BottomSheet = ({
   open,
   onClose,
   onConfirm,
+  children,
 }: IBottomSheetProps) => {
   const imageName =
     mode === 'POSITIVE'
@@ -72,7 +75,9 @@ export const BottomSheet = ({
               {description}
             </span>
           </div>
-
+          <span className="flex flex-col w-full content-center custom-regular-text text-pretty">
+            {children}
+          </span>
           {mode !== 'NONE' && (
             <Image
               priority={true}

@@ -19,7 +19,7 @@ function SkyDome() {
   );
 }
 function Model({ color }: { color: string }) {
-  const { scene } = useGLTF('/assets/orgTree.glb');
+  const { scene } = useGLTF('/assets/BigTree.glb');
   scene.position.set(-4.2, 0.2, -3);
   scene.scale.set(1.6, 1.6, 1.6);
   scene.traverse((child: THREE.Object3D) => {
@@ -73,7 +73,34 @@ export default function Tree({ color }: { color: string }) {
   const [position, setPosition] = useState({ x: 20, y: 16, z: 24 });
   const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
 
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  const meshRef = useRef();
+  const onClick = (event: any) => {
+    const { clientX, clientY } = event;
+    const { left, top, width, height } = event.target.getBoundingClientRect();
+
+    mouse.x = ((clientX - left) / width) * 2 - 1;
+    mouse.y = -((clientY - top) / height) * 2 + 1;
+
+    // raycaster.setFromCamera(mouse, camera);
+    // const intersects = raycaster.intersectObject(meshRef.current, true);
+
+    // if (intersects.length > 0) {
+    //   console.log('Mesh was clicked!');
+    //   // 여기에 원하는 클릭 이벤트 로직을 추가
+    // }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', onClick);
+    return () => {
+      document.removeEventListener('click', onClick);
+    };
+  }, []);
+
   const handleOnclick1 = () => {
+    console.log('hi');
     setPosition({ x: 5, y: 2, z: 0 });
     setTarget({ x: 10, y: 2, z: 0 });
   };
@@ -99,7 +126,6 @@ export default function Tree({ color }: { color: string }) {
           <pointLight position={[-10, -10, -10]} />
           <Suspense fallback={null}>
             <Model color={color} />
-            <GiftBox />
             <OutDoor />
             <SkyDome />
           </Suspense>
