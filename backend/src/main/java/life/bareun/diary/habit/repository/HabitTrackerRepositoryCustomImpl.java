@@ -139,7 +139,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 Projections.constructor(
                     HabitPracticeCountPerDayOfWeekDto.class,
                     habitTracker.day.intValue().as("day"),
-                    habitTracker.day.count().intValue().as("value")
+                    habitTracker.count().intValue().as("value")
                 )
             )
             .from(habitTracker)
@@ -180,14 +180,24 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
 
     @Override
     public List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId) {
+        NumberTemplate<Integer> succeededYear = Expressions.numberTemplate(
+            Integer.class,
+            "YEAR({0})",
+            habitTracker.succeededTime
+        );
+
         return queryFactory
-            .selectDistinct(habitTracker.createdYear.intValue())
+            .selectDistinct(succeededYear)
             .from(habitTracker)
             .where(
-                habitTracker.memberHabit.id.eq(memberHabitId)
-                    .and(habitTracker.memberHabit.member.id.eq(memberId))
+                habitTracker.succeededTime.isNotNull() // 실제로 수행했고
+                    .and(
+                        // 주어진 사용자 및 사용자 해빗 정보와 일치해야 한다.
+                        habitTracker.memberHabit.id.eq(memberHabitId)
+                            .and(habitTracker.memberHabit.member.id.eq(memberId))
+                    )
             )
-            .orderBy(habitTracker.createdYear.desc())
+            .orderBy(succeededYear.desc())
             .fetch();
     }
 
