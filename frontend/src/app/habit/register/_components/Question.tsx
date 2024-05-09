@@ -1,5 +1,6 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import {
+  GuideBox,
   Button,
   ProgressBox,
   SelectBox,

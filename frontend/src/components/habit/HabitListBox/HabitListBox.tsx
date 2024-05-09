@@ -13,6 +13,7 @@ interface IHabitListBoxProps {
   alias: string | null;
   iconSrc: string;
   dayList?: string[];
+  period?: number;
   currentStreak?: number;
   memberHabitId?: number;
   habitTrackerId?: number;
@@ -55,6 +56,7 @@ export const HabitListBox = ({
   alias,
   iconSrc,
   dayList,
+  period,
   currentStreak,
   memberHabitId,
   habitTrackerId,
@@ -131,7 +133,7 @@ export const HabitListBox = ({
               })}
             </div>
           </div>
-        ) : (
+        ) : dayList && !period ? (
           <div className="flex gap-[0.2rem] items-center justify-end flex-wrap">
             {dayList?.map((day, index) => {
               return (
@@ -144,6 +146,8 @@ export const HabitListBox = ({
               );
             })}
           </div>
+        ) : (
+          <div className="px-[1rem] h-[2rem] flex items-center justify-center bg-custom-matcha text-custom-white custom-light-text rounded-[1rem]">{`${period}일마다`}</div>
         )}
       </div>
 

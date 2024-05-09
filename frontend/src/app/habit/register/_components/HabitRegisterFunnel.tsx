@@ -68,12 +68,19 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="NICKNAME_STEP">
         <Nickname
           onPrev={() => setStep('QUESTION_STEP')}
-          onNext={(alias, icon, habitId) => {
+          onNext={(alias, icon, habitId, habitName) => {
             setStep('DAYORPERIOD_STEP');
-            setData({ ...data, alias: alias, icon: icon, habitId: habitId });
+            setData({
+              ...data,
+              alias: alias,
+              icon: icon,
+              habitId: habitId,
+              habitName: habitName,
+            });
           }}
           isCategorySet={data.isCategorySet}
           habitId={data.habitId}
+          habitName={data.habitName}
         />
       </Funnel.Step>
 

@@ -25,8 +25,8 @@ export async function writeHabit(
     {
       method: 'PATCH',
       headers: {
-        Authorization: `${cookieStore.get('Authorization')?.value}`,
-        // Authorization: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+        // Authorization: `${cookieStore.get('Authorization')?.value}`,
+        Authorization: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
       },
       credentials: 'include',
       body: habitFormData,

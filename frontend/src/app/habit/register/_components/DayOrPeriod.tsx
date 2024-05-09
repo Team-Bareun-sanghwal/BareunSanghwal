@@ -42,52 +42,83 @@ export default function DayOrPeriod({
   const overlay = useOverlay();
 
   const handleRegisterOverlay = () => {
-    overlay.open(({ isOpen, close }) => (
-      <HabitRegisterBottomSheet
-        element={
-          <HabitListBox
-            alias={data?.alias}
-            completedAt={new Date()}
-            createdAt={new Date()}
-            dayList={dayOfWeek
-              .sort((a, b) => a - b)
-              .map((num) => {
-                return num === 1
-                  ? '월'
-                  : num === 2
-                    ? '화'
-                    : num === 3
-                      ? '수'
-                      : num === 4
-                        ? '목'
-                        : num === 5
-                          ? '금'
-                          : num === 6
-                            ? '토'
-                            : '일';
-              })}
-            iconSrc={data?.icon || ''}
-            mode="REGISTER"
-            name={data?.habitName}
-          />
-        }
-        onClose={close}
-        onConfirm={() => {
-          close();
-          onNext();
+    overlay.open(({ isOpen, close }) =>
+      !period ? (
+        <HabitRegisterBottomSheet
+          element={
+            <HabitListBox
+              alias={data?.alias}
+              completedAt={new Date()}
+              createdAt={new Date()}
+              dayList={dayOfWeek
+                .sort((a, b) => a - b)
+                .map((num) => {
+                  return num === 1
+                    ? '월'
+                    : num === 2
+                      ? '화'
+                      : num === 3
+                        ? '수'
+                        : num === 4
+                          ? '목'
+                          : num === 5
+                            ? '금'
+                            : num === 6
+                              ? '토'
+                              : '일';
+                })}
+              iconSrc={data?.icon || ''}
+              mode="REGISTER"
+              name={data?.habitName}
+            />
+          }
+          onClose={close}
+          onConfirm={() => {
+            close();
+            onNext();
 
-          if (data.habitId && data.alias && data.icon)
-            registerHabit(
-              data.habitId,
-              data.alias,
-              data.icon,
-              dayOfWeek.length === 0 ? null : dayOfWeek,
-              period,
-            );
-        }}
-        open={isOpen}
-      />
-    ));
+            if (data.habitId && data.alias && data.icon)
+              registerHabit(
+                data.habitId,
+                data.alias,
+                data.icon,
+                dayOfWeek.length === 0 ? null : dayOfWeek,
+                period,
+              );
+          }}
+          open={isOpen}
+        />
+      ) : (
+        <HabitRegisterBottomSheet
+          element={
+            <HabitListBox
+              alias={data?.alias}
+              completedAt={new Date()}
+              createdAt={new Date()}
+              period={period}
+              iconSrc={data?.icon || ''}
+              mode="REGISTER"
+              name={data?.habitName}
+            />
+          }
+          onClose={close}
+          onConfirm={() => {
+            close();
+            onNext();
+
+            if (data.habitId && data.alias && data.icon)
+              registerHabit(
+                data.habitId,
+                data.alias,
+                data.icon,
+                dayOfWeek.length === 0 ? null : dayOfWeek,
+                period,
+              );
+          }}
+          open={isOpen}
+        />
+      ),
+    );
   };
 
   return (
@@ -113,7 +144,7 @@ export default function DayOrPeriod({
             {
               title: '요일',
               component: (
-                <div className="flex flex-col gap-[1rem]">
+                <div className="flex flex-col gap-[3rem]">
                   <HabitRegisterDayChart
                     dayOfWeek={dayOfWeek}
                     setDayOfWeek={setDayOfWeek}
@@ -178,7 +209,7 @@ export default function DayOrPeriod({
 
       <Button
         isActivated={dayOfWeek.length !== 0 || period ? true : false}
-        label="다음"
+        label="완료"
         onClick={handleRegisterOverlay}
       />
     </div>
