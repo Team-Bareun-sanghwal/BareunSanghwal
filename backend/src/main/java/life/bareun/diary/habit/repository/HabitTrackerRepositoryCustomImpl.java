@@ -232,6 +232,10 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                     .and(habitTracker.memberHabit.member.id.eq(memberId))
                     .and(habitTracker.createdYear.eq(year))
             )
+            .orderBy(
+                habitTracker.createdMonth.desc(),
+                habitTracker.createdDay.desc()
+            )
             .fetch();
 
         return new MemberHabitTrackerDto(
