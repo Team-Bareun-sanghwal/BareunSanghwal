@@ -91,5 +91,5 @@ public class SchedulingConfig {
 
     // 자정, 오늘의 한 마디 변경
     @Scheduled(cron = "0 0 0 * * ?")
-    public void renewDailyPhrase() { memberService.renewDailyPhrase(); }
+    public void updateMemberDailyPhrase() { memberService.updateMemberDailyPhraseForAllMembersDaily(); }
 }

@@ -585,7 +585,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void renewDailyPhrase() {
+    @Transactional
+    public void updateMemberDailyPhraseForAllMembersDaily() {
 
     }
 

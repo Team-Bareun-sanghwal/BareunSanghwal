@@ -53,5 +53,5 @@ public interface MemberService {
 
     MemberDailyPhraseResDto dailyPhrase();
 
-    void renewDailyPhrase();
+    void updateMemberDailyPhraseForAllMembersDaily();
 }
