@@ -179,7 +179,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId) {
+    public List<Integer> findAllSucceededYearByMemberHabitId(Long memberId, Long memberHabitId) {
         NumberTemplate<Integer> succeededYear = Expressions.numberTemplate(
             Integer.class,
             "YEAR({0})",

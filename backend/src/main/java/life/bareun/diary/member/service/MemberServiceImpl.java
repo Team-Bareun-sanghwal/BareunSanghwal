@@ -358,7 +358,7 @@ public class MemberServiceImpl implements MemberService {
         // 내림차순 정렬된 데이터, 각 MemberPracticedHabitDto의 value는 비율
         // 데이터가 없는 경우 공백 리스트([])
         List<MemberTopHabitDto> topHabits = processTopHabits(
-            habitTrackerRepository.findTopHabits(memberId),
+            habitTrackerRepository.findAllTopHabit(memberId),
             memberId
         );
 
@@ -529,7 +529,7 @@ public class MemberServiceImpl implements MemberService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Long longMemberHabitId = Long.parseLong(memberHabitId);
 
-        List<Integer> yearList = habitTrackerRepository.findAllCreatedYearByMemberHabitId(
+        List<Integer> yearList = habitTrackerRepository.findAllSucceededYearByMemberHabitId(
             memberId,
             longMemberHabitId
         );
