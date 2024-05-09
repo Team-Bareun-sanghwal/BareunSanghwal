@@ -1,19 +1,27 @@
 'use client';
 
+import dynamic from 'next/dynamic';
+
 import { useFunnel } from '@/hooks/use-funnel';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Question } from './Question';
-import { Recommend } from './Recommend';
-import { Nickname } from './Nickname';
-import { DayOrPeriod } from './DayOrPeriod';
-import { Complete } from './Complete';
+// import { Question } from './Question';
+// import { Recommend } from './Recommend';
+// import { Nickname } from './Nickname';
+// import { DayOrPeriod } from './DayOrPeriod';
+// import { Complete } from './Complete';
 import {
   IHabitListData,
   IRegisteredHabitData,
   ISimpleHabitListData,
 } from '../../_types';
 import { IUserAmountData } from '../../_types';
+
+const Question = dynamic(() => import('./Question'));
+const Recommend = dynamic(() => import('./Recommend'));
+const Nickname = dynamic(() => import('./Nickname'));
+const DayOrPeriod = dynamic(() => import('./DayOrPeriod'));
+const Complete = dynamic(() => import('./Complete'));
 
 export const HabitRegisterFunnel = ({
   popularCategoryListData,
