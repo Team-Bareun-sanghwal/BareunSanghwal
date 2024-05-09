@@ -81,7 +81,7 @@ export const Streak = ({
                 mode="NEGATIVE"
                 onClose={close}
                 open={isOpen}
-                title={'스트릭 복구권이 없어요...'}
+                title={'스트릭 복구 실패!'}
               />
             ));
           }

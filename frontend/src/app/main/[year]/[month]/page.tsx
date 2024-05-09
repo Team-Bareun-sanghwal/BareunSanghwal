@@ -62,7 +62,7 @@ export default async function Page(props: {
         total={habitList.length}
         succeed={habitsToday.data.memberHabitList.length}
       />
-      <HabitBtnList mode="TODAY" />
+      <HabitBtnList />
       <div className="flex w-full justify-around">
         <HabitChecker
           achieveCount={habitsToday.data.memberHabitList.length}
