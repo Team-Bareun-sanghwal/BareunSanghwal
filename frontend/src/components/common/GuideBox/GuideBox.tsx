@@ -10,7 +10,7 @@ export const GuideBox = ({ guideText, ...props }: IGuideBoxProps) => {
   return (
     <section
       className={
-        'w-[34rem] h-[6rem] p-[1rem] flex gap-[1rem] items-center justify-start rounded-[1rem] bg-custom-light-gray'
+        'w-full h-[6rem] p-[1rem] flex gap-[1rem] items-center justify-start rounded-[1rem] bg-custom-light-gray'
       }
       {...props}
     >
