@@ -3,6 +3,7 @@ import Item from '@/components/point/Item/Item';
 import { MyPoint } from '@/components/point/MyPoint/MyPoint';
 import { $Fetch } from '@/apis';
 import Tree from '@/components/tree/Tree';
+import { RouteHome } from '@/components/tree/Button/RouteHome/RouteHome';
 interface IItem {
   key: string;
   name: string;
@@ -32,12 +33,8 @@ export default async function Page() {
   return (
     <div>
       <div className="w-full h-screen overflow-hidden relative">
-        <button
-          // onClick={exit}
-          className="absolute z-10 m-4 text-lg"
-        >
-          {'<'} 뒤로가기
-        </button>
+        <RouteHome />
+
         <Tree color="red" />
         <div className="absolute bottom-0 w-full gap-3 p-3">
           <div className="flex flex-col justify-center gap-4">

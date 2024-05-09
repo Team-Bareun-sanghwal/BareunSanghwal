@@ -4,6 +4,9 @@ import Image from 'next/image';
 import Point from '../Point/Point';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { useOverlay } from '@/hooks/use-overlay';
+import { $Fetch } from '@/apis';
+import ColoredText from '../ColoredText/ColoredText';
+import Pallete from '../Pallete/Pallete';
 interface IItemProps {
   keyname: string;
   name: string;
@@ -40,6 +43,23 @@ interface IPurchase {
   price: number;
   mode: 'PURCHASE_STREAK' | 'PURCHASE_TREE' | 'PURCHASE_RECOVERY';
 }
+const Purchase = async (key: string) => {
+  const path =
+    key == 'gotcha_streak'
+      ? 'color/streak'
+      : key == 'gotcha_tree'
+        ? 'color/tree'
+        : 'recovery';
+  const response = await $Fetch({
+    method: 'PATCH',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/${path}`,
+    cache: 'no-cache',
+  });
+  console.log(path);
+  console.log(response);
+  return response;
+};
+
 const Item = ({
   keyname,
   name,
@@ -61,23 +81,84 @@ const Item = ({
         description={description}
         mode={mode}
         onClose={close}
-        onConfirm={() => succeed('구매 완료', '야호!')}
+        onConfirm={() => result(keyname)}
         open={isOpen}
         title={introduction}
       />
     ));
   };
-  const succeed = (key: string, desription: string) => {
-    overlay.open(({ isOpen, close }) => (
-      <BottomSheet
-        description="구매 완료"
-        mode="RECOVERY"
-        onClose={close}
-        onConfirm={close}
-        open={isOpen}
-        title="야호!"
-      />
-    ));
+  const result = (key: string) => {
+    const mode =
+      key === 'gotcha_streak'
+        ? 'PURCHASE_STREAK'
+        : key === 'gotcha_tree'
+          ? 'PURCHASE_TREE'
+          : 'PURCHASE_RECOVERY';
+    Purchase(key)
+      .then((response) => {
+        // console.log(response);
+        //구매 성공
+        if (response.status === 200) {
+          console.log(response.data.streakColorName);
+          overlay.open(({ isOpen, close }) => (
+            <BottomSheet
+              description=""
+              mode="NONE"
+              onClose={close}
+              onConfirm={close}
+              open={isOpen}
+              title="구매 완료!"
+            >
+              {key == 'gotcha_streak' && (
+                <>
+                  <Pallete color={response.data.streakColorName} />
+                  <ColoredText color={response.data.streakColorName} />
+                </>
+              )}
+              {key == 'gotcha_tree' && (
+                <>
+                  <ColoredText color={response.data.treeColorName} />
+                </>
+              )}
+              {key == 'recovery' && (
+                <>
+                  <div className="flex justify-center text-3xl ">
+                    <span className="text-2xl">스트릭 개수가 </span>
+                    <span className="text-2xl text-custom-matcha mx-2">
+                      {response.data.paidRecoveryCount}
+                    </span>
+                    <span className="text-2xl"> 개가 되었어요! </span>
+                  </div>
+                </>
+              )}
+            </BottomSheet>
+          ));
+          // 잔액 부족
+        } else if (response.status === 422) {
+          overlay.open(({ isOpen, close }) => (
+            <BottomSheet
+              description="잔액이 부족합니다."
+              mode="NEGATIVE"
+              onClose={close}
+              open={isOpen}
+              title="앗!"
+            />
+          ));
+        } else {
+          overlay.open(({ isOpen, close }) => (
+            <BottomSheet
+              description="알 수 없는 이유로 구매에 실패했어요"
+              mode="NEGATIVE"
+              onClose={close}
+              open={isOpen}
+              title="ERROR"
+            />
+          ));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const { path, mode } = getAttributes(keyname);
   return (
