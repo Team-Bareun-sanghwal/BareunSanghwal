@@ -5,11 +5,6 @@ import dynamic from 'next/dynamic';
 import { useFunnel } from '@/hooks/use-funnel';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-// import { Question } from './Question';
-// import { Recommend } from './Recommend';
-// import { Nickname } from './Nickname';
-// import { DayOrPeriod } from './DayOrPeriod';
-// import { Complete } from './Complete';
 import {
   IHabitListData,
   IRegisteredHabitData,
