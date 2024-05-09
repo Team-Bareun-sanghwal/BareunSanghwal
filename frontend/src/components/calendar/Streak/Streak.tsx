@@ -49,40 +49,69 @@ export const Streak = ({
   };
 
   const Recovoery = () => {
-    // const MM = month ? parseInt(convertMonthFormat(month)) : 0;
-    // if (MM !== 0) {
-    //   const response = $Fetch({
-    //     method: 'POST',
-    //     url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${year}}-${MM}}-${day}`,
-    //     cache: 'no-cache',
-    //   });
-    //   console.log(response);
-    // }
-    // Sample
-    const myRecovoeryCount = 0;
-    if (myRecovoeryCount > 0) {
-      overlay.open(({ isOpen, close }) => (
-        // 구매 성공 응답 시
-        <BottomSheet
-          description={`${dayNumber}일의 스트릭이 복구되었어요!`}
-          mode="POSITIVE"
-          onClose={close}
-          open={isOpen}
-          title={'스트릭 복구 성공!'}
-        />
-      ));
-    } else {
-      // 실패 시
-      overlay.open(({ isOpen, close }) => (
-        <BottomSheet
-          description="스트릭 복구권은 매월 한달 무료로 제공되요! 더 필요하면 상점을 이용해주세요!"
-          mode="NEGATIVE"
-          onClose={close}
-          open={isOpen}
-          title={'스트릭 복구권이 없어요...'}
-        />
-      ));
+    const MM = month ? parseInt(convertMonthFormat(month)) : 0;
+    if (MM !== 0) {
+      const response = $Fetch({
+        method: 'PATCH',
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${year}}-${MM}}-${dayNumber}`,
+        cache: 'no-cache',
+      });
+      response
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // if (response.status == 200) {
+      //   overlay.open(({ isOpen, close }) => (
+      //     // 구매 성공 응답 시
+      //     <BottomSheet
+      //       description={`${dayNumber}일의 스트릭이 복구되었어요!`}
+      //       mode="POSITIVE"
+      //       onClose={close}
+      //       open={isOpen}
+      //       title={'스트릭 복구 성공!'}
+      //     />
+      //   ));
+      // } else {
+      //   overlay.open(({ isOpen, close }) => (
+      //     <BottomSheet
+      //       description="스트릭 복구권은 매월 한달 무료로 제공되요! 더 필요하면 상점을 이용해주세요!"
+      //       mode="NEGATIVE"
+      //       onClose={close}
+      //       open={isOpen}
+      //       title={'스트릭 복구권이 없어요...'}
+      //     />
+      //   ));
+      // }
     }
+
+    // Sample
+    // const myRecovoeryCount = 0;
+    // if (myRecovoeryCount > 0) {
+    //   overlay.open(({ isOpen, close }) => (
+    //     // 구매 성공 응답 시
+    //     <BottomSheet
+    //       description={`${dayNumber}일의 스트릭이 복구되었어요!`}
+    //       mode="POSITIVE"
+    //       onClose={close}
+    //       open={isOpen}
+    //       title={'스트릭 복구 성공!'}
+    //     />
+    //   ));
+    // } else {
+    //   // 실패 시
+    //   overlay.open(({ isOpen, close }) => (
+    //     <BottomSheet
+    //       description="스트릭 복구권은 매월 한달 무료로 제공되요! 더 필요하면 상점을 이용해주세요!"
+    //       mode="NEGATIVE"
+    //       onClose={close}
+    //       open={isOpen}
+    //       title={'스트릭 복구권이 없어요...'}
+    //     />
+    //   ));
+    // }
   };
   const streakOpacity = [10, 40, 55, 60, 70, 80, 90, 100];
 
