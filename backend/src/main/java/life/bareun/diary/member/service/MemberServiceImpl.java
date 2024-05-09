@@ -517,7 +517,6 @@ public class MemberServiceImpl implements MemberService {
         int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
 
         member.addPoint(point);
-        System.out.println("point: " + member.getPoint());
         memberRepository.save(member);
 
         return new MemberTreePointResDto(point);
