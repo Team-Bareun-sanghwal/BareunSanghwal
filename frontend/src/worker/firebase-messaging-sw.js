@@ -62,5 +62,10 @@ export const checkPermission = () => {
     popPermission();
   } else {
     console.log('1. 알림 기본 값 존재 : ', Notification.permission);
+    if (Notification.permission === 'granted') {
+      // 푸시 승인됐을 때 처리할 내용
+      console.log('2. 푸시 승인됨 : ', Notification.permission);
+      setToken();
+    }
   }
 };

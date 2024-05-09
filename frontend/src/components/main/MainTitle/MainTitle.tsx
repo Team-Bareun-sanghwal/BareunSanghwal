@@ -1,5 +1,4 @@
 import { BellButton } from '@/components/notification/BellButton/BellButton';
-import { PermissionButton } from '@/components/notification/PermissionButton/PermissionButton';
 import Image from 'next/image';
 export const MainTitle = ({
   total,
@@ -33,7 +32,6 @@ export const MainTitle = ({
         <p className="text-3xl font-bold mx-2">오늘의 해빗</p>
         <p className="text-md justify-end">{TitleMsg}</p>
       </div>
-      <PermissionButton />
       <BellButton />
     </div>
   );
