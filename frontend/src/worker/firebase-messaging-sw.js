@@ -48,7 +48,7 @@ export const setTokenHandler = async () => {
         if ((await result.status) === 201) {
           console.log('토큰 등록 완');
           // window.location.href = 'http://localhost:3000/main';
-          // window.location.href = 'https://bareun.life/main';
+          window.location.href = 'https://bareun.life/main';
         }
       }
     })
