@@ -98,35 +98,20 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public List<MemberTopHabitDto> findTopHabits(Long memberId) {
-        Double countAll = queryFactory
-            .select(habitTracker.id.count().doubleValue())
-            .from(habitTracker)
-            .where(habitTracker.member.id.longValue().eq(memberId))
-            .fetchOne();
-
+    public List<MemberTopHabitDto> findAllTopHabit(Long memberId) {
         return queryFactory
             .select(
                 Projections.constructor(
                     MemberTopHabitDto.class,
                     habitTracker.memberHabit.alias.as("habit"),
-                    habitTracker.id.count()
-                        .multiply(100)
-                        .divide(countAll)
-                        .round()
-                        .intValue()
-                        .as("value")
-                    // Expressions.numberTemplate(
-                    //     Double.class,
-                    //     "ROUND({0}*100.0, 2)",
-                    //     habitTracker.id.count()
-                    //         .divide(countAll)
-                    // ).as("value")
-                    // habitTracker.id.count().intValue().as("value")
+                    habitTracker.memberHabit.count().intValue().as("value")
                 )
             )
             .from(habitTracker)
-            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
+            .where(
+                habitTracker.memberHabit.member.id.longValue().eq(memberId)
+                    .and(habitTracker.succeededTime.isNotNull())
+            )
             .groupBy(habitTracker.memberHabit.id)
             .orderBy(habitTracker.id.count().desc())
             .limit(5)
@@ -140,9 +125,13 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 habitTracker.count()
             )
             .from(habitTracker)
-            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
+            .where(
+                habitTracker.memberHabit.member.id.longValue().eq(memberId)
+                    .and(habitTracker.succeededTime.isNotNull())
+            )
             .fetchOne();
     }
+
 
     @Override
     public List<HabitPracticeCountPerDayOfWeekDto> countPracticedHabitsPerDayOfWeek(Long memberId) {
@@ -151,11 +140,14 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 Projections.constructor(
                     HabitPracticeCountPerDayOfWeekDto.class,
                     habitTracker.day.intValue().as("day"),
-                    habitTracker.day.count().intValue().as("value")
+                    habitTracker.count().intValue().as("value")
                 )
             )
             .from(habitTracker)
-            .where(habitTracker.member.id.eq(memberId))
+            .where(
+                habitTracker.member.id.eq(memberId)
+                    .and(habitTracker.succeededTime.isNotNull())
+            )
             .groupBy(habitTracker.day)
             .orderBy(habitTracker.day.asc())
             .fetch();
@@ -178,31 +170,62 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 )
             )
             .from(habitTracker)
-            .where(habitTracker.member.id.eq(memberId))
+            .where(
+                habitTracker.member.id.eq(memberId)
+                    .and(habitTracker.succeededTime.isNotNull())
+            )
             .groupBy(hour)
             .orderBy(hour.asc())
             .fetch();
     }
 
     @Override
-    public List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId) {
+    public List<Integer> findAllSucceededYearByMemberHabitId(Long memberId, Long memberHabitId) {
+        NumberTemplate<Integer> succeededYear = Expressions.numberTemplate(
+            Integer.class,
+            "YEAR({0})",
+            habitTracker.succeededTime
+        );
+
         return queryFactory
-            .selectDistinct(habitTracker.createdYear.intValue())
+            .selectDistinct(succeededYear)
             .from(habitTracker)
             .where(
-                habitTracker.memberHabit.id.eq(memberHabitId)
-                    .and(habitTracker.memberHabit.member.id.eq(memberId))
+                habitTracker.succeededTime.isNotNull() // 실제로 수행했고
+                    .and(
+                        // 주어진 사용자 및 사용자 해빗 정보와 일치해야 한다.
+                        habitTracker.memberHabit.id.eq(memberHabitId)
+                            .and(habitTracker.memberHabit.member.id.eq(memberId))
+                    )
             )
-            .orderBy(habitTracker.createdYear.desc())
+            .orderBy(succeededYear.desc())
             .fetch();
     }
 
     @Override
-    public MemberHabitTrackerDto findAllHabitTrackerByYearAndMemberHabitId(
+    public MemberHabitTrackerDto findAllHabitTrackerBySuceededYearAndMemberHabitOrderByCreatedDate(
         Integer year,
         Long memberId,
         Long memberHabitId
     ) {
+        NumberTemplate<Integer> succeededYear = Expressions.numberTemplate(
+            Integer.class,
+            "YEAR({0})",
+            habitTracker.succeededTime
+        );
+
+        NumberTemplate<Integer> succeededMonth = Expressions.numberTemplate(
+            Integer.class,
+            "MONTH({0})",
+            habitTracker.succeededTime
+        );
+
+        NumberTemplate<Integer> succeededDay = Expressions.numberTemplate(
+            Integer.class,
+            "DAY({0})",
+            habitTracker.succeededTime
+        );
+
         List<HabitTrackerDto> habitTrackerList = queryFactory
             .select(
                 Projections.constructor(
@@ -211,15 +234,27 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                     habitTracker.succeededTime,
                     habitTracker.content,
                     habitTracker.image,
-                    habitTracker.createdMonth,
-                    habitTracker.createdDay
+                    succeededMonth.intValue(),
+                    succeededDay.intValue()
                 )
             )
             .from(habitTracker)
             .where(
                 habitTracker.memberHabit.id.eq(memberHabitId)
+                    .and(habitTracker.succeededTime.isNotNull())
                     .and(habitTracker.memberHabit.member.id.eq(memberId))
-                    .and(habitTracker.createdYear.eq(year))
+                    .and(succeededYear.eq(year))
+                // .and(
+                //     habitTracker.createdMonth.lt(month) // 월이 작거나
+                //         .or(
+                //             habitTracker.createdMonth.eq(month) //월이 같고 일이 작거나 같음
+                //                 .and(habitTracker.createdDay.loe(day))
+                //         )
+                //     )
+            )
+            .orderBy(
+                succeededMonth.desc(),
+                succeededDay.desc()
             )
             .fetch();
 

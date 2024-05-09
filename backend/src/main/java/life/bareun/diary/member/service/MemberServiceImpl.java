@@ -77,6 +77,8 @@ public class MemberServiceImpl implements MemberService {
     private static final String DEFAULT_STREAK_COLOR_NAME = "bareun_sanghwal";
     private static final String DEFAULT_TREE_COLOR_NAME = "green";
 
+    private static final int TOP_HABIT_SIZE = 5;
+    private static final double EXP = 2.0;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -358,7 +360,7 @@ public class MemberServiceImpl implements MemberService {
         // 내림차순 정렬된 데이터, 각 MemberPracticedHabitDto의 value는 비율
         // 데이터가 없는 경우 공백 리스트([])
         List<MemberTopHabitDto> topHabits = processTopHabits(
-            habitTrackerRepository.findTopHabits(memberId),
+            habitTrackerRepository.findAllTopHabit(memberId),
             memberId
         );
 
@@ -414,15 +416,21 @@ public class MemberServiceImpl implements MemberService {
         List<MemberTopHabitDto> topHabits,
         Long memberId
     ) {
+        // 기록한 해빗 트래커 갯수
         int count = habitTrackerRepository.countByMemberId(memberId).intValue();
 
-        // 전체 갯수가 topHabits 갯수보다 많다면
-        if (count > topHabits.size()) {
-            // 100에서 topHabits의 합을 뺀 값이 기타가 된다.
-            int sum = topHabits.stream()
+        double doubleTotalCount = habitTrackerRepository.countByMemberId(memberId).doubleValue();
+        double round = Math.pow(10.0, EXP);
+
+        //member habit 별 habit tracker 갯수가 5개 초과라면
+        if (count > TOP_HABIT_SIZE) {
+            // topHabits에서 각 원소의 value는 해빗 트래커 갯수(수행 횟수)
+            // totalDoubleSum에서 topHabits의 value의 합을 뺀 값이 기타 객체의 value가 된다.
+
+            double topCount = topHabits.stream()
                 .mapToInt(MemberTopHabitDto::value)
                 .sum();
-            int etcValue = 100 - sum;
+            int etcValue = (int) (doubleTotalCount - topCount);
 
             topHabits.add(
                 new MemberTopHabitDto(
@@ -431,6 +439,17 @@ public class MemberServiceImpl implements MemberService {
                 )
             );
         }
+
+        topHabits = topHabits.stream()
+            .map(
+                memberTopHabitDto -> new MemberTopHabitDto(
+                    memberTopHabitDto.habit(),
+                    (int) Math.round(
+                        (((double) memberTopHabitDto.value()) / doubleTotalCount) * round
+                    )
+                )
+            )
+            .toList();
 
         return topHabits;
     }
@@ -517,7 +536,6 @@ public class MemberServiceImpl implements MemberService {
         int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
 
         member.addPoint(point);
-        System.out.println("point: " + member.getPoint());
         memberRepository.save(member);
 
         return new MemberTreePointResDto(point);
@@ -530,14 +548,14 @@ public class MemberServiceImpl implements MemberService {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Long longMemberHabitId = Long.parseLong(memberHabitId);
 
-        List<Integer> yearList = habitTrackerRepository.findAllCreatedYearByMemberHabitId(
+        List<Integer> yearList = habitTrackerRepository.findAllSucceededYearByMemberHabitId(
             memberId,
             longMemberHabitId
         );
         List<MemberHabitTrackerDto> habitTrackerGroupList = new ArrayList<>();
         for (Integer year : yearList) {
             habitTrackerGroupList.add(
-                habitTrackerRepository.findAllHabitTrackerByYearAndMemberHabitId(
+                habitTrackerRepository.findAllHabitTrackerBySuceededYearAndMemberHabitOrderByCreatedDate(
                     year,
                     memberId,
                     longMemberHabitId
