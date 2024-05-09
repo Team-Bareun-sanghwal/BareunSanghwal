@@ -102,6 +102,15 @@ public class MemberStreakServiceImpl implements MemberStreakService {
                 .currentStreak(currentStreakToday.get())
                 .build()
         );
+
+        if (achieveTypeToday.get().equals(AchieveType.NOT_ACHIEVE)) {
+            memberTotalStreakRepository.findByMember(member)
+                .ifPresent(memberTotalStreak -> {
+                    memberTotalStreak.modifyTotalStreakCount(memberTotalStreak.getTotalTrackerCount() + 1);
+                    memberTotalStreak.modifyTotalTrackerCount(
+                        memberTotalStreak.getTotalTrackerCount() + totalTrackerCount);
+                });
+        }
     }
 
     @Override
