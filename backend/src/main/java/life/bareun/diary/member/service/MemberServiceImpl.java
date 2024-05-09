@@ -137,12 +137,8 @@ public class MemberServiceImpl implements MemberService {
                     );
 
                     // 신규 사용자의 오늘의 문구 데이터 생성
-                    int dailyPhraseCount = (int) dailyPhraseRepository.count();
-                    long dailyPhraseId = RANDOM.nextInt(dailyPhraseCount) + 1;
-                    DailyPhrase initDailyPhrase = dailyPhraseRepository.findById(dailyPhraseId)
-                        .orElseThrow(
-                            () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
-                        );
+
+                    DailyPhrase initDailyPhrase = getRandomDailyPhrase();
                     memberDailyPhraseRepository.save(
                         MemberDailyPhrase.create(newMember, initDailyPhrase)
                     );
@@ -154,7 +150,7 @@ public class MemberServiceImpl implements MemberService {
                 }
             );
 
-        // orElseGet()이 호출되지 않음 -> findBySub로 찾아짐
+        // orElseGet()이 호출되지 않음 -> findBySub로 찾아짐 -> 일단 회원 정보는 있음
         // 해당 회원의 정보가 입력되었는지 검증한다.
         memberStatus.set(
             isNullMember(member) ? MemberStatus.NUL : MemberStatus.OLD
@@ -168,6 +164,15 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+    private DailyPhrase getRandomDailyPhrase() {
+        int dailyPhraseCount = (int) dailyPhraseRepository.count();
+        long dailyPhraseId = RANDOM.nextInt(dailyPhraseCount) + 1;
+
+        return dailyPhraseRepository.findById(dailyPhraseId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+            );
+    }
 
     private boolean isNullMember(Member member) {
         boolean isNickNameNull = (member.getNickname() == null);
@@ -585,8 +590,49 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void renewDailyPhrase() {
+    @Transactional
+    public void updateMemberDailyPhraseForAllMembersDaily() {
+        List<Member> memberList = memberRepository.findAll();
+        for (Member member : memberList) {
+            memberDailyPhraseRepository.findByMember(member)
+                .ifPresentOrElse(
+                    (foundMemberDailyPhrase) -> {
+                        //Member에 해당하는 MemberDailyPhrase가 있으면 업데이트한다.
+                        String phrase = foundMemberDailyPhrase.getDailyPhrase().getPhrase();
+                        DailyPhrase newDailyPhrase = getNewDailyPhrase(phrase);
+                        foundMemberDailyPhrase.updateDailyPhrase(newDailyPhrase);
+                    },
+                    // 없으면 새로 저장한다.
+                    () -> memberDailyPhraseRepository.save(
+                        MemberDailyPhrase.create(
+                            member,
+                            getRandomDailyPhrase()
+                        )
+                    )
+                );
+        }
+    }
 
+    // 현재 문장과 중복되지 않도록
+    @Transactional(readOnly = true)
+    protected DailyPhrase getNewDailyPhrase(String currentPhrase) {
+        int count = (int) dailyPhraseRepository.count();
+
+        DailyPhrase currentDailyPhrase = dailyPhraseRepository.findByPhrase(currentPhrase)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+            );
+
+        Long currentDailyPhraseId = currentDailyPhrase.getId();
+        Long newDailyPhraseId = null;
+
+        // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
+        while((newDailyPhraseId = RANDOM.nextLong(count) + 1L).equals(currentDailyPhraseId));
+
+        return dailyPhraseRepository.findById(newDailyPhraseId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+            );
     }
 
 }
