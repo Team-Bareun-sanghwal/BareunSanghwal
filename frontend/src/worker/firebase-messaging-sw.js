@@ -13,6 +13,19 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+export const clickPushHandler = () => {
+  Notification.requestPermission().then((permission) => {
+    if (permission !== 'granted') {
+      // 푸시 거부됐을 때 처리할 내용
+      console.log('푸시 거부됨');
+    } else {
+      // 푸시 승인됐을 때 처리할 내용
+      console.log('푸시 승인됨');
+      setTokenHandler();
+    }
+  });
+};
+
 export const setTokenHandler = async () => {
   const messaging = getMessaging(app);
 
@@ -32,8 +45,10 @@ export const setTokenHandler = async () => {
             notificationToken: currentToken,
           },
         });
-        if ((await result.status) === 200) {
-          window.location.href = 'https://bareun.life/main';
+        if ((await result.status) === 201) {
+          console.log('토큰 등록 완');
+          // window.location.href = 'http://localhost:3000/main';
+          // window.location.href = 'https://bareun.life/main';
         }
       }
     })
