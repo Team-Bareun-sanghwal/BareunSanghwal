@@ -592,6 +592,26 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void updateMemberDailyPhraseForAllMembersDaily() {
+        List<Member> memberList = memberRepository.findAll();
+        for (Member member : memberList) {
+            memberDailyPhraseRepository.findByMember(member)
+                .ifPresentOrElse(
+                    (foundMemberDailyPhrase) -> {
+                        //Member에 해당하는 MemberDailyPhrase가 있으면 업데이트한다.
+                        String phrase = foundMemberDailyPhrase.getDailyPhrase().getPhrase();
+                        DailyPhrase newDailyPhrase = getNewDailyPhrase(phrase);
+                        foundMemberDailyPhrase.updateDailyPhrase(newDailyPhrase);
+                    },
+                    // 없으면 새로 저장한다.
+                    () -> memberDailyPhraseRepository.save(
+                        MemberDailyPhrase.create(
+                            member,
+                            getRandomDailyPhrase()
+                        )
+                    )
+                );
+        }
+    }
 
     }
 
