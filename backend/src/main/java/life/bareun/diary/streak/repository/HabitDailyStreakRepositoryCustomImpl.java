@@ -1,13 +1,11 @@
 package life.bareun.diary.streak.repository;
 
 import static life.bareun.diary.habit.entity.QMemberHabit.memberHabit;
-import static life.bareun.diary.member.entity.QMember.member;
 import static life.bareun.diary.streak.entity.QHabitDailyStreak.habitDailyStreak;
 
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,35 +31,23 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
                 Projections.constructor(
                     MonthStreakInfoDto.class,
                     habitDailyStreak.createdDate.dayOfMonth(),
-                    ExpressionUtils.as(
-                        JPAExpressions.select(subHabitDailyStreak.id.count().castToNum(Integer.class))
-                            .from(subHabitDailyStreak)
-                            .where(subHabitDailyStreak.createdDate.eq(habitDailyStreak.createdDate)
-                                .and(subHabitDailyStreak.achieveType.eq(AchieveType.ACHIEVE))
-                                .and(subHabitDailyStreak.memberHabit.id.eq(memberHabitId))
-                            ),
-                        "achieveCount"
-                    ),
-                    ExpressionUtils.as(
-                        JPAExpressions.select(subHabitDailyStreak.id.count().castToNum(Integer.class))
-                            .from(subHabitDailyStreak)
-                            .where(subHabitDailyStreak.createdDate.eq(habitDailyStreak.createdDate)
-                                .and(
-                                    subHabitDailyStreak.achieveType.eq(AchieveType.ACHIEVE)
-                                        .or(subHabitDailyStreak.achieveType.eq(AchieveType.NOT_ACHIEVE))
-                                ).and(subHabitDailyStreak.memberHabit.id.eq(memberHabitId))
-                            ),
-                        "totalCount"
-                    )
+                    habitDailyStreak.achieveType,
+                    new CaseBuilder()
+                        .when(habitDailyStreak.achieveType.eq(AchieveType.ACHIEVE))
+                        .then(1)
+                        .otherwise(0).as("achieveCount"),
+                    new CaseBuilder()
+                        .when(habitDailyStreak.achieveType.eq(AchieveType.NOT_EXISTED))
+                        .then(0)
+                        .otherwise(1).as("totalCount")
                 )
             ).from(habitDailyStreak)
             .join(habitDailyStreak.memberHabit, memberHabit)
-            .join(memberHabit.member, member)
             .where(
                 habitDailyStreak.memberHabit.id.eq(memberHabitId),
                 isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
             )
-            .groupBy(habitDailyStreak.createdDate)
+            .orderBy(habitDailyStreak.createdDate.asc())
             .fetch();
     }
 
