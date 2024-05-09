@@ -142,7 +142,10 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
                 habitTracker.count()
             )
             .from(habitTracker)
-            .where(habitTracker.memberHabit.member.id.longValue().eq(memberId))
+            .where(
+                habitTracker.memberHabit.member.id.longValue().eq(memberId)
+                    .and(habitTracker.succeededTime.isNotNull())
+            )
             .fetchOne();
     }
 
