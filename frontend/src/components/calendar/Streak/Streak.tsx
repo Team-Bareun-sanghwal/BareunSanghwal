@@ -36,16 +36,18 @@ export const Streak = ({
 
   const overlay = useOverlay();
   const onClickStreakRecovery = () => {
-    overlay.open(({ isOpen, close }) => (
-      <BottomSheet
-        description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
-        mode="RECOVERY"
-        onClose={close}
-        onConfirm={() => Recovoery()}
-        open={isOpen}
-        title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
-      />
-    ));
+    if (dayNumber) {
+      overlay.open(({ isOpen, close }) => (
+        <BottomSheet
+          description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
+          mode="RECOVERY"
+          onClose={close}
+          onConfirm={() => Recovoery()}
+          open={isOpen}
+          title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
+        />
+      ));
+    }
   };
 
   const Recovoery = () => {

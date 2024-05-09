@@ -44,7 +44,7 @@ export const Calender = ({
   return (
     <>
       <MonthLabel month={month + ''} year={year + ''} />
-      <HabitBtnList habitId={habitId} />
+      <HabitBtnList habitId={habitId} mode="ALL" />
       <Achievement proportion={proportion} themeColor={themeColor} />
       <DayLabel />
       <div className="grid grid-cols-7 gap-4 p-1 m-2.5">
