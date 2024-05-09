@@ -100,12 +100,15 @@ public class ElasticServiceImpl implements ElasticService {
                 // 히트의 소스를 JsonNode로 파싱
                 JsonNode jsonNode = objectMapper.readTree(hit.getSourceAsString());
 
-                if(jsonNode.path("habit_id") == null) {
+                if(jsonNode.path("habit_id").asText().equals("null")) {
                     continue;
                 }
 
-                // 필요한 필드 추출
-                Long habitId = Long.parseLong(jsonNode.path("habit_id").asText());
+                // 필요한 필드 추출\
+                long habitId = Long.parseLong(jsonNode.path("habit_id").asText());
+                if(habitId < 1 || habitId > 313) {
+                    continue;
+                }
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 ZonedDateTime zonedDateTime = ZonedDateTime.parse(jsonNode.path("@timestamp").asText(), formatter.withZone(ZoneOffset.UTC));
@@ -113,11 +116,13 @@ public class ElasticServiceImpl implements ElasticService {
                 // ZonedDateTime을 LocalDateTime으로 변환
                 LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
                 // 추출한 값 로깅
+                log.info(habitId + " " + localDateTime);
                 logList.add(new ElasticDto(habitId, localDateTime));
             }
             catch (Exception e) {
                 log.error("FAIL_REFINE_ELASTIC_LOG", e);
-                throw new ElasticException(ElasticErrorCode.FAIL_REFINE_ELASTIC_LOG);
+//                throw new ElasticException(ElasticErrorCode.FAIL_REFINE_ELASTIC_LOG);
+                return;
             }
         }
     }
