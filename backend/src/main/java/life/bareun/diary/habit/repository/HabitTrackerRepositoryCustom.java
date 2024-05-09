@@ -38,6 +38,6 @@ public interface HabitTrackerRepositoryCustom {
 
     List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId);
 
-    MemberHabitTrackerDto findAllHabitTrackerByYearAndMemberHabitId(Integer year, Long memberId, Long memberHabitId);
+    MemberHabitTrackerDto findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(Integer year, Long memberId, Long memberHabitId);
     
 }

@@ -200,7 +200,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     }
 
     @Override
-    public MemberHabitTrackerDto findAllHabitTrackerByYearAndMemberHabitId(
+    public MemberHabitTrackerDto findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(
         Integer year,
         Long memberId,
         Long memberHabitId
