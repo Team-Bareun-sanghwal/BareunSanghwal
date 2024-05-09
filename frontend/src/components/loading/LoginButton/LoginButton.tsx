@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { clickPushHandler } from '@/worker/firebase-messaging-sw';
 
 interface ILoginButtonProps {
   platform: string;
@@ -18,15 +17,6 @@ export const LoginButton = ({ platform }: ILoginButtonProps) => {
         : process.env.NEXT_PUBLIC_OAUTH_GOOGLE_URL!;
     router.push(url);
   };
-
-  // const signIn = () => {
-  //   if (platform === 'kakao') {
-  //     const url = process.env.NEXT_PUBLIC_OAUTH_KAKAO_URL!;
-  //     router.push(url);
-  //   } else {
-  //     clickPushHandler();
-  //   }
-  // };
 
   const bgColor = platform === 'kakao' ? 'bg-custom-kakao' : 'bg-custom-google';
 
