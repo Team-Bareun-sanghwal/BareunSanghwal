@@ -23,6 +23,7 @@ import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,9 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     private final MemberHabitRepository memberHabitRepository;
 
     private final StreakService streakService;
+
+    @Value("${cloud.aws.default}")
+    private String IMAGE_BASIC;
 
     @Override
     // 요일 기준으로 해빗 트래커 생성
@@ -104,7 +108,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
             throw new HabitException(HabitErrorCode.INVALID_PARAMETER_HABIT_TRACKER);
         }
 
-        String imageUrl = null;
+        String imageUrl = IMAGE_BASIC;
         if (image != null && !image.isEmpty()) {
             imageUrl = imageConfig.uploadImage(image);
         }
