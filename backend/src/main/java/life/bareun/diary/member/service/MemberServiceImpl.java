@@ -137,12 +137,8 @@ public class MemberServiceImpl implements MemberService {
                     );
 
                     // 신규 사용자의 오늘의 문구 데이터 생성
-                    int dailyPhraseCount = (int) dailyPhraseRepository.count();
-                    long dailyPhraseId = RANDOM.nextInt(dailyPhraseCount) + 1;
-                    DailyPhrase initDailyPhrase = dailyPhraseRepository.findById(dailyPhraseId)
-                        .orElseThrow(
-                            () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
-                        );
+
+                    DailyPhrase initDailyPhrase = getRandomDailyPhrase();
                     memberDailyPhraseRepository.save(
                         MemberDailyPhrase.create(newMember, initDailyPhrase)
                     );
@@ -154,7 +150,7 @@ public class MemberServiceImpl implements MemberService {
                 }
             );
 
-        // orElseGet()이 호출되지 않음 -> findBySub로 찾아짐
+        // orElseGet()이 호출되지 않음 -> findBySub로 찾아짐 -> 일단 회원 정보는 있음
         // 해당 회원의 정보가 입력되었는지 검증한다.
         memberStatus.set(
             isNullMember(member) ? MemberStatus.NUL : MemberStatus.OLD
@@ -168,6 +164,15 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+    private DailyPhrase getRandomDailyPhrase() {
+        int dailyPhraseCount = (int) dailyPhraseRepository.count();
+        long dailyPhraseId = RANDOM.nextInt(dailyPhraseCount) + 1;
+
+        return dailyPhraseRepository.findById(dailyPhraseId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
+            );
+    }
 
     private boolean isNullMember(Member member) {
         boolean isNickNameNull = (member.getNickname() == null);
