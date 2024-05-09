@@ -101,10 +101,8 @@ public class RecapServiceImpl implements RecapService {
     public void createRecap() {
         // 두 번 이상 완료한 사용자 해빗을 하나라도 가지고 있는 사용자 리스트
         // 자정에 시작하기 때문에 전 달에 달성한 목록을 가져와야 함
-        
-        // 실제 서비스 시 변경
-        // LocalDate nowMonth = LocalDate.now().minusMonths(1L);
-        LocalDate nowMonth = LocalDate.now();
+
+         LocalDate nowMonth = LocalDate.now().minusMonths(1L);
         List<RecapMemberDto> recapMemberList = recapRepository.findAllAppropriateMember(
             RecapMonthDto.builder().year(nowMonth.getYear()).month(nowMonth.getMonth().getValue())
                 .build());
