@@ -10,12 +10,12 @@ interface INicknameStep {
   habitId: number | null;
 }
 
-export const Nickname = ({
+export default function Nickname({
   onPrev,
   onNext,
   isCategorySet,
   habitId,
-}: INicknameStep) => {
+}: INicknameStep) {
   const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
     habitId,
   );
@@ -82,4 +82,4 @@ export const Nickname = ({
       />
     </div>
   );
-};
+}

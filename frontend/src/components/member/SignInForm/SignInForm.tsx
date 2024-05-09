@@ -7,9 +7,9 @@ import { ScrollDatePicker } from '@/components/common/ScrollDatePicker/ScrollDat
 import { Button } from '@/components/common/Button/Button';
 import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 import { useOverlay } from '@/hooks/use-overlay';
-import { $Fetch } from '@/apis';
 import { useRouter } from 'next/navigation';
 import { convertBirthday } from '@/components/common/Picker/utils';
+import { postMemberInfo } from '@/app/(member)/mypage/_apis/postMemberInfo';
 
 export const SignInForm = () => {
   const overlay = useOverlay();
@@ -50,17 +50,13 @@ export const SignInForm = () => {
       ));
       setTimeout(() => overlay.close(), 2000);
     } else {
-      const result = await $Fetch({
-        method: 'PATCH',
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/members`,
-        cache: 'default',
-        data: {
-          nickname: nickname,
-          birthDate: convertBirthday(birthDay),
-          gender: gender,
-          job: job,
-        },
-      });
+      const data = {
+        nickname: nickname,
+        birthDate: convertBirthday(birthDay),
+        gender: gender,
+        job: job,
+      };
+      const result = await postMemberInfo({ data });
       if ((await result.status) === 200) {
         router.push('/main');
       }

@@ -15,9 +15,11 @@ import { writeHabit } from '../../_apis/writeHabit';
 export const Write = ({
   onPrev,
   onNext,
+  habitTrackerId,
 }: {
   onPrev: () => void;
   onNext: () => void;
+  habitTrackerId: number;
 }) => {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
@@ -31,7 +33,10 @@ export const Write = ({
         mode="POSITIVE"
         onClose={close}
         onConfirm={async () => {
-          await writeHabit(image, { habitTrackerId: 35, content: text });
+          const result = await writeHabit(image, {
+            habitTrackerId: habitTrackerId,
+            content: text,
+          });
           onNext();
           close();
         }}

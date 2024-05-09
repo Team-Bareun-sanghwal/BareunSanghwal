@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 type Request = {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   url: string;
-  data?: object;
+  data?: object | FormData;
   cache:
     | 'no-cache'
     | 'no-store'
@@ -16,8 +16,8 @@ type Request = {
 };
 export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
-  const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
-  // const authorization = cookieStore.get('Authorization')?.value;
+  // const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const authorization = cookieStore.get('Authorization')?.value;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   try {

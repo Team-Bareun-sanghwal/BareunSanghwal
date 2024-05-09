@@ -29,18 +29,15 @@ interface IDayOrPeriodStepComponent {
   data: IRegisteredHabitData;
 }
 
-export const DayOrPeriod = ({
+export default function DayOrPeriod({
   onPrev,
   onNext,
   userAmountData,
   simpleHabitListData,
   data,
-}: IDayOrPeriodStepComponent) => {
+}: IDayOrPeriodStepComponent) {
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
   const [period, setPeriod] = useState<number | null>(null);
-
-  console.log(dayOfWeek);
-  console.log(period);
 
   const overlay = useOverlay();
 
@@ -69,7 +66,7 @@ export const DayOrPeriod = ({
                             ? '토'
                             : '일';
               })}
-            iconSrc="/images/icon-clock.png"
+            iconSrc={data?.icon || ''}
             mode="REGISTER"
             name={data?.habitName}
           />
@@ -186,4 +183,4 @@ export const DayOrPeriod = ({
       />
     </div>
   );
-};
+}

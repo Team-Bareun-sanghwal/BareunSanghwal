@@ -5,7 +5,11 @@ import { useRouter } from 'next/navigation';
 import { Write } from './Write';
 import { Complete } from './Complete';
 
-export const HabitWriteFunnel = () => {
+export const HabitWriteFunnel = ({
+  habitTrackerId,
+}: {
+  habitTrackerId: number;
+}) => {
   const { Funnel, setStep } = useFunnel('WRITE_STEP');
 
   const router = useRouter();
@@ -18,6 +22,7 @@ export const HabitWriteFunnel = () => {
           onNext={() => {
             setStep('COMPLETE_STEP');
           }}
+          habitTrackerId={habitTrackerId}
         />
       </Funnel.Step>
 
