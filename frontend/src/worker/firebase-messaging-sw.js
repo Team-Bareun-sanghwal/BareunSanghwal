@@ -13,20 +13,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const clickPushHandler = () => {
-  Notification.requestPermission().then((permission) => {
-    if (permission !== 'granted') {
-      // 푸시 거부됐을 때 처리할 내용
-      console.log('푸시 거부됨');
-    } else {
-      // 푸시 승인됐을 때 처리할 내용
-      console.log('푸시 승인됨');
-      setTokenHandler();
-    }
-  });
-};
-
-export const setTokenHandler = async () => {
+export const setToken = async () => {
   const messaging = getMessaging(app);
 
   await getToken(messaging, {
@@ -34,9 +21,9 @@ export const setTokenHandler = async () => {
   })
     .then(async (currentToken) => {
       if (!currentToken) {
-        console.log('토큰이 안 나와잉....');
+        console.log('3. 토큰이 안 나와잉....');
       } else {
-        console.log('토큰 발급 완');
+        console.log('3. 토큰 발급 완료');
         const result = await $Fetch({
           method: 'POST',
           url: `${process.env.NEXT_PUBLIC_BASE_URL}/notifications`,
@@ -46,38 +33,34 @@ export const setTokenHandler = async () => {
           },
         });
         if ((await result.status) === 201) {
-          console.log('토큰 등록 완');
-          // window.location.href = 'http://localhost:3000/main';
-          window.location.href = 'https://bareun.life/main';
+          console.log('4. 토큰 등록 완료!!');
+          // window.location.href = 'https://bareun.life/main';
         }
       }
     })
     .catch((error) => {
       console.error(error);
     });
+};
 
-  // // Your web app's Firebase configuration
-  // if ('Notification' in window) {
-  //   // Notification API가 지원되는 경우
-  //   if (Notification.permission === 'default') {
-  //     // 권한이 설정되지 않은 경우, 사용자에게 권한 요청
-  //     Notification.requestPermission().then((permission) => {
-  //       if (permission === 'granted') {
-  //         console.log('Notification permission granted.');
-  //       } else {
-  //         console.log('Notification permission denied.');
-  //         return;
-  //       }
-  //     });
-  //   } else if (Notification.permission === 'granted') {
-  //     console.log('Notification permission already granted.');
-  //   } else {
-  //     console.log('Notification permission denied.');
-  //     return;
-  //   }
-  // } else {
-  //   // Notification API가 지원되지 않는 경우
-  //   console.log('This browser does not support notifications.');
-  //   return;
-  // }
+export const popPermission = () => {
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      // 푸시 승인됐을 때 처리할 내용
+      console.log('2. 푸시 승인됨 : ', Notification.permission);
+      setToken();
+    } else {
+      // 푸시 거부됐을 때 처리할 내용
+      console.log('2. 푸시 거부됨 : ', Notification.permission);
+    }
+  });
+};
+
+export const checkPermission = () => {
+  if (Notification.permission === 'default') {
+    console.log('1. 알림 기본 값 없음');
+    popPermission();
+  } else {
+    console.log('1. 알림 기본 값 존재 : ', Notification.permission);
+  }
 };

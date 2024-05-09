@@ -1,6 +1,5 @@
 'use client';
 
-import { setTokenHandler } from '@/worker/firebase-messaging-sw';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Page() {
@@ -10,7 +9,6 @@ export default function Page() {
 
   if (code === '200') {
     router.push('/main');
-    // setTokenHandler();
   } else {
     router.push('/signin');
   }
