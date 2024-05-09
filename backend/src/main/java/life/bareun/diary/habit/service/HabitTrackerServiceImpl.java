@@ -2,8 +2,8 @@ package life.bareun.diary.habit.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import life.bareun.diary.global.config.ImageConfig;
 import life.bareun.diary.global.auth.util.AuthUtil;
+import life.bareun.diary.global.config.ImageConfig;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerDeleteDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
@@ -96,6 +96,14 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     // 해빗 트래커 완료
     public void modifyHabitTracker(MultipartFile image,
         HabitTrackerModifyReqDto habitTrackerModifyReqDto) {
+        HabitTracker habitTracker = habitTrackerRepository.findById(
+                habitTrackerModifyReqDto.habitTrackerId())
+            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
+
+        if(habitTracker.getSucceededTime() != null) {
+            throw new HabitException(HabitErrorCode.INVALID_PARAMETER_HABIT_TRACKER);
+        }
+
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
             imageUrl = imageConfig.uploadImage(image);
@@ -103,9 +111,6 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
-
-        HabitTracker habitTracker = habitTrackerRepository.findById(habitTrackerModifyReqDto.habitTrackerId())
-            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
 
         streakService.achieveStreak(habitTracker.getMemberHabit());
     }
@@ -116,7 +121,8 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
         LocalDate localDate = LocalDate.now();
         return HabitTrackerTodayResDto.builder()
             .habitTrackerTodayDtoList(habitTrackerRepository.findAllTodayHabitTracker(
-                HabitTrackerTodayFactorDto.builder().memberId(AuthUtil.getMemberIdFromAuthentication())
+                HabitTrackerTodayFactorDto.builder()
+                    .memberId(AuthUtil.getMemberIdFromAuthentication())
                     .createdYear(localDate.getYear())
                     .createdMonth(localDate.getMonthValue())
                     .createdDay(localDate.getDayOfMonth()).build())).build();
