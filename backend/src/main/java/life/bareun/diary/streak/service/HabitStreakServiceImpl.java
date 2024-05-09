@@ -11,8 +11,8 @@ import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
-import life.bareun.diary.streak.dto.StreakInfoByDayDto;
-import life.bareun.diary.streak.dto.response.HabitStreakResDto;
+import life.bareun.diary.streak.dto.MonthStreakInfoDto;
+import life.bareun.diary.streak.dto.response.MonthStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.entity.HabitTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
@@ -154,45 +154,25 @@ public class HabitStreakServiceImpl implements HabitStreakService {
     }
 
     @Override
-    public HabitStreakResDto getHabitStreakResDtoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+    public MonthStreakResDto getHabitDailyStreakResDtoByMemberHabitId(Long memberHabitId,
+        LocalDate firstDayOfMonth,
         LocalDate lastDayOfMonth) {
-        List<StreakInfoByDayDto> streakDayInfoList = habitDailyStreakRepository
+        List<MonthStreakInfoDto> streakDayInfoList = habitDailyStreakRepository
             .findStreakDayInfoByMemberHabitId(memberHabitId, firstDayOfMonth, lastDayOfMonth);
 
         int achieveCount = 0;
         int totalCount = 0;
-        for (StreakInfoByDayDto dto : streakDayInfoList) {
+        for (MonthStreakInfoDto dto : streakDayInfoList) {
             achieveCount += dto.achieveCount();
             totalCount += dto.totalCount();
         }
 
-        return HabitStreakResDto.builder()
+        return MonthStreakResDto.builder()
             .achieveProportion(getProportion(achieveCount, totalCount))
             .dayOfWeekFirst(firstDayOfMonth.getDayOfWeek().getValue() - 1)
             .dayInfo(habitDailyStreakRepository.findStreakDayInfoByMemberHabitId(memberHabitId, firstDayOfMonth,
                 lastDayOfMonth))
             .build();
-    }
-
-    @Override
-    public HabitStreakResDto getHabitStreakResDtoByMemberId(Long memberId, LocalDate firstDayOfMonth,
-        LocalDate lastDayOfMonth) {
-        List<StreakInfoByDayDto> streakDayInfoList = habitDailyStreakRepository
-            .findStreakDayInfoByMemberId(memberId, firstDayOfMonth, lastDayOfMonth);
-
-        int achieveCount = 0;
-        int totalCount = 0;
-        for (StreakInfoByDayDto dto : streakDayInfoList) {
-            achieveCount += dto.achieveCount();
-            totalCount += dto.totalCount();
-        }
-
-        return HabitStreakResDto.builder()
-            .achieveProportion(getProportion(achieveCount, totalCount))
-            .dayOfWeekFirst(firstDayOfMonth.getDayOfWeek().getValue() - 1)
-            .dayInfo(habitDailyStreakRepository.findStreakDayInfoByMemberId(memberId, firstDayOfMonth, lastDayOfMonth))
-            .build();
-
     }
 
     private Member getCurrentMember() {

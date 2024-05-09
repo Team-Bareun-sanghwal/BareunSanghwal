@@ -11,9 +11,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
-import life.bareun.diary.habit.entity.MemberHabit;
-import life.bareun.diary.streak.dto.StreakInfoByDayDto;
-import life.bareun.diary.streak.entity.HabitDailyStreak;
+import life.bareun.diary.streak.dto.MonthStreakInfoDto;
 import life.bareun.diary.streak.entity.QHabitDailyStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +24,17 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<StreakInfoByDayDto> findStreakDayInfoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+    public List<MonthStreakInfoDto> findStreakDayInfoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
         LocalDate lastDayOfMonth) {
+
         QHabitDailyStreak subHabitDailyStreak = new QHabitDailyStreak("sub");
 
         return jpaQueryFactory.select(
                 Projections.constructor(
-                    StreakInfoByDayDto.class,
+                    MonthStreakInfoDto.class,
                     habitDailyStreak.createdDate.dayOfMonth(),
                     ExpressionUtils.as(
-                        JPAExpressions.select(subHabitDailyStreak.id.count())
+                        JPAExpressions.select(subHabitDailyStreak.id.count().castToNum(Integer.class))
                             .from(subHabitDailyStreak)
                             .where(subHabitDailyStreak.createdDate.eq(habitDailyStreak.createdDate)
                                 .and(subHabitDailyStreak.achieveType.eq(AchieveType.ACHIEVE))
@@ -44,7 +43,7 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
                         "achieveCount"
                     ),
                     ExpressionUtils.as(
-                        JPAExpressions.select(subHabitDailyStreak.id.count())
+                        JPAExpressions.select(subHabitDailyStreak.id.count().castToNum(Integer.class))
                             .from(subHabitDailyStreak)
                             .where(subHabitDailyStreak.createdDate.eq(habitDailyStreak.createdDate)
                                 .and(
@@ -63,60 +62,6 @@ public class HabitDailyStreakRepositoryCustomImpl implements HabitDailyStreakRep
                 isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
             )
             .groupBy(habitDailyStreak.createdDate)
-            .fetch();
-    }
-
-    @Override
-    public List<StreakInfoByDayDto> findStreakDayInfoByMemberId(Long memberId, LocalDate firstDayOfMonth,
-        LocalDate lastDayOfMonth) {
-        QHabitDailyStreak subHabitDailyStreak = new QHabitDailyStreak("sub");
-
-        return jpaQueryFactory.select(
-                Projections.constructor(
-                    StreakInfoByDayDto.class,
-                    habitDailyStreak.createdDate.dayOfMonth(),
-                    ExpressionUtils.as(
-                        JPAExpressions.select(subHabitDailyStreak.id.count())
-                            .from(subHabitDailyStreak)
-                            .where(subHabitDailyStreak.createdDate.eq(habitDailyStreak.createdDate)
-                                .and(subHabitDailyStreak.achieveType.eq(AchieveType.ACHIEVE))),
-                        "achieveCount"
-                    ),
-                    ExpressionUtils.as(
-                        JPAExpressions.select(subHabitDailyStreak.id.count())
-                            .from(subHabitDailyStreak)
-                            .where(subHabitDailyStreak.createdDate.eq(habitDailyStreak.createdDate)
-                                .and(
-                                    subHabitDailyStreak.achieveType.eq(AchieveType.ACHIEVE)
-                                        .or(subHabitDailyStreak.achieveType.eq(AchieveType.NOT_ACHIEVE))
-                                )
-                            ),
-                        "totalCount"
-                    )
-                )
-            ).from(habitDailyStreak)
-            .join(habitDailyStreak.memberHabit, memberHabit)
-            .join(memberHabit.member, member)
-            .where(
-                member.id.eq(memberId),
-                isCreatedDateInRange(firstDayOfMonth, lastDayOfMonth)
-            )
-            .groupBy(habitDailyStreak.createdDate)
-            .fetch();
-    }
-
-    @Override
-    public List<HabitDailyStreak> findAllHabitDailyStreakByMemberHabitIdBetweenStartDateAndEndDate(
-        MemberHabit memberHabit, LocalDate startDate, LocalDate endDate) {
-        return jpaQueryFactory.select(
-                Projections.constructor(
-                    HabitDailyStreak.class
-                )
-            )
-            .from(habitDailyStreak)
-            .where(
-                habitDailyStreak.memberHabit.eq(memberHabit)
-                    .and(isCreatedDateInRange(startDate, endDate)))
             .fetch();
     }
 

@@ -15,14 +15,16 @@ import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
-import life.bareun.diary.member.service.MemberService;
+import life.bareun.diary.streak.dto.MonthStreakInfoDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
+import life.bareun.diary.streak.dto.response.MonthStreakResDto;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
 import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.MemberTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
+import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemberStreakServiceImpl implements MemberStreakService {
+
+    private final HabitDailyStreakRepository habitDailyStreakRepository;
 
     private final MemberTotalStreakRepository memberTotalStreakRepository;
     private final MemberDailyStreakRepository memberDailyStreakRepository;
@@ -234,11 +238,35 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             });
     }
 
+    @Override
+    public MonthStreakResDto getMemberDailyStreakResDtoByMemberId(Long memberId, LocalDate firstDayOfMonth,
+        LocalDate lastDayOfMonth) {
+        List<MonthStreakInfoDto> monthStreakInfoDtoList = memberDailyStreakRepository
+            .findStreakDayInfoByMemberId(memberId, firstDayOfMonth, lastDayOfMonth);
+
+        int achieveCount = 0;
+        int totalCount = 0;
+        for (MonthStreakInfoDto dto : monthStreakInfoDtoList) {
+            achieveCount += dto.achieveCount();
+            totalCount += dto.totalCount();
+        }
+
+        return MonthStreakResDto.builder()
+            .achieveProportion(getProportion(achieveCount, totalCount))
+            .dayOfWeekFirst(firstDayOfMonth.getDayOfWeek().getValue() - 1)
+            .dayInfo(monthStreakInfoDtoList)
+            .build();
+    }
+
     /**
      * 멤버 엔티티 반환.
      */
     private Member getCurrentMember() {
         return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
             .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
+    }
+
+    private double getProportion(int achieveCount, int totalCount) {
+        return Math.round((double) achieveCount / (double) totalCount * 100.0);
     }
 }

@@ -2,7 +2,7 @@ package life.bareun.diary.streak.service;
 
 import java.time.LocalDate;
 import life.bareun.diary.habit.entity.MemberHabit;
-import life.bareun.diary.streak.dto.response.HabitStreakResDto;
+import life.bareun.diary.streak.dto.response.MonthStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 
 public interface HabitStreakService {
@@ -17,9 +17,7 @@ public interface HabitStreakService {
 
     void deleteHabitDailyStreak(MemberHabit memberHabit);
 
-    HabitStreakResDto getHabitStreakResDtoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
+    MonthStreakResDto getHabitDailyStreakResDtoByMemberHabitId(Long memberHabitId, LocalDate firstDayOfMonth,
         LocalDate lastDayOfMonth);
 
-    HabitStreakResDto getHabitStreakResDtoByMemberId(Long memberId, LocalDate firstDayOfMonth,
-        LocalDate lastDayOfMonth);
 }

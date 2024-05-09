@@ -3,9 +3,10 @@ package life.bareun.diary.streak.dto;
 import lombok.Builder;
 
 @Builder
-public record StreakInfoByDayDto(
+public record MonthStreakInfoDto(
     Integer dayNumber,
-    Long achieveCount,
-    Long totalCount) {
+    Integer achieveCount,
+    Integer totalCount
+) {
 
 }

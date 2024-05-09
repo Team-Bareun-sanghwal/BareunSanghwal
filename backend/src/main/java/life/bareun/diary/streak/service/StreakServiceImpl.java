@@ -11,11 +11,10 @@ import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
-import life.bareun.diary.streak.dto.response.HabitStreakResDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
+import life.bareun.diary.streak.dto.response.MonthStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
-import life.bareun.diary.streak.exception.StreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +46,7 @@ public class StreakServiceImpl implements StreakService {
      * 파라메터와 동일한 MemberHabitId를 가지는 해빗 일일 스트릭들을 조회.
      */
     @Override
-    public HabitStreakResDto getHabitStreakResDtoByMemberHabitId(String dateString, Long memberHabitId) {
+    public MonthStreakResDto getHabitStreakResDtoByMemberHabitId(String dateString, Long memberHabitId) {
         String[] splitDateString = dateString.split("-");
 
         int year = Integer.parseInt(splitDateString[0]);
@@ -56,14 +55,15 @@ public class StreakServiceImpl implements StreakService {
         LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
         LocalDate lastDayOfMonth = firstDayOfMonth.plusMonths(1).minusDays(1);
 
-        return habitStreakService.getHabitStreakResDtoByMemberHabitId(memberHabitId, firstDayOfMonth, lastDayOfMonth);
+        return habitStreakService.getHabitDailyStreakResDtoByMemberHabitId(memberHabitId, firstDayOfMonth,
+            lastDayOfMonth);
     }
 
     /**
      * 피라메터와 동일한 MemberId를 가지는 해빗 일일 스트릭드을 조회.
      */
     @Override
-    public HabitStreakResDto getHabitStreakResDtoByMember(String dateString) {
+    public MonthStreakResDto getHabitStreakResDtoByMember(String dateString) {
         String[] splitDateString = dateString.split("-");
 
         int year = Integer.parseInt(splitDateString[0]);
@@ -74,7 +74,8 @@ public class StreakServiceImpl implements StreakService {
 
         Member member = getCurrentMember();
 
-        return habitStreakService.getHabitStreakResDtoByMemberId(member.getId(), firstDayOfMonth, lastDayOfMonth);
+        return memberStreakService.getMemberDailyStreakResDtoByMemberId(
+            member.getId(), firstDayOfMonth, lastDayOfMonth);
     }
 
     @Override
@@ -124,7 +125,7 @@ public class StreakServiceImpl implements StreakService {
 
         Member member = getCurrentMember();
         LocalDate firstDate = LocalDate.of(date.getYear(), date.getMonthValue(), 1).minusDays(1);
-        memberStreakService.recoveryMemberDailyStreak(member, date); //clear
+        memberStreakService.recoveryMemberDailyStreak(member, date); // clear
 
         int longestStreak = memberStreakService
             .recoveryMemberDailyStreakCount(member, firstDate, today);
@@ -154,7 +155,6 @@ public class StreakServiceImpl implements StreakService {
             throw new MemberException(MemberErrorCode.STREAK_RECOVERY_UNAVAILABLE);
         }
     }
-
 
 
     /**
