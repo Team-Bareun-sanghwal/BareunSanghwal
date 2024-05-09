@@ -20,10 +20,12 @@ public interface HabitTrackerRepositoryCustom {
 
     void modifyHabitTracker(HabitTrackerModifyDto habitTrackerModifyDto);
 
-    List<HabitTrackerTodayDto> findAllTodayHabitTracker(HabitTrackerTodayFactorDto habitTrackerTodayFactorDto);
+    List<HabitTrackerTodayDto> findAllTodayHabitTracker(
+        HabitTrackerTodayFactorDto habitTrackerTodayFactorDto
+    );
 
     HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto);
-    
+
     Long getHabitTrackerCountByMemberAndDate(HabitTrackerCountDto habitTrackerCountDto);
 
     Long getHabitTrackerCountByMemberHabitAndDate(HabitTrackerScheduleDto habitTrackerScheduleDto);
@@ -38,6 +40,8 @@ public interface HabitTrackerRepositoryCustom {
 
     List<Integer> findAllCreatedYearByMemberHabitId(Long memberId, Long memberHabitId);
 
-    MemberHabitTrackerDto findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(Integer year, Long memberId, Long memberHabitId);
-    
+    MemberHabitTrackerDto findAllHabitTrackerByCreatedYearAndMemberHabitOrderByCreatedDate(
+        Integer year, Long memberId, Long memberHabitId
+    );
+
 }
