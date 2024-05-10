@@ -322,7 +322,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberPointResDto point() {
-        return new MemberPointResDto(getCurrentMember().getPoint());
+        Member currentMember = getCurrentMember();
+        LocalDate lastHarvestedDate = currentMember.getLastHarvestedDate();
+        LocalDate today = LocalDate.now();
+
+        return new MemberPointResDto(
+            currentMember.getPoint(),
+            today.isAfter(lastHarvestedDate) || today.equals(lastHarvestedDate)
+        );
     }
 
     @Override

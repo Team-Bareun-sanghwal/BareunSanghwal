@@ -11,9 +11,9 @@ import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
-import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
-import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.entity.Member;
 
@@ -29,9 +29,9 @@ public interface MemberService {
 
     MemberInfoResDto info();
 
-    MemberStreakColorResDto streakColor();
+    MemberStreakInfoResDto streakInfo();
 
-    MemberTreeColorResDto treeColor();
+    MemberTreeInfoResDto treeInfo();
 
     List<Member> findAllMember();
 
