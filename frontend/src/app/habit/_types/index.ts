@@ -7,6 +7,7 @@ export interface IActivatedHabit {
   habitTrackerId: number;
   currentStreak: number;
   dayList: number[];
+  isSucceeded: boolean;
 }
 
 export interface ICompletedHabit {

@@ -42,14 +42,14 @@ export const HabitContentBox = ({
                     <motion.div
                       key={habit.habitTrackerId}
                       layoutId={`${habit.habitTrackerId}`}
-                      className="cursor-pointer grayscale h-[11rem]"
+                      className="cursor-pointer grayscale h-[11rem] relative"
                       onClick={() => {
                         setHabitId(habit.habitTrackerId);
                         setHabitYear(habitYearData.year);
                         setHabitContent(habit);
                       }}
                     >
-                      <motion.p className="absolute bottom-[0.5rem] right-[0.5rem] custom-semibold-text text-custom-black">
+                      <motion.p className="px-[0.5rem] absolute bottom-0 right-0 custom-semibold-text bg-custom-black-with-opacity text-custom-white">
                         {habit.period}
                       </motion.p>
 
@@ -58,7 +58,7 @@ export const HabitContentBox = ({
                         width={100}
                         height={100}
                         alt={'해빗 이미지'}
-                        className="size-full object-cover"
+                        className="size-full object-fill"
                       ></Image>
                     </motion.div>
                   );

@@ -15,5 +15,6 @@ export const Main: Story = {
   args: {
     selectedHabitId: 1,
     setSelectedHabitId: () => {},
+    setSelectedHabitName: () => {},
   },
 };
