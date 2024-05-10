@@ -1,5 +1,6 @@
 package life.bareun.diary.member.service;
 
+import jakarta.validation.constraints.Null;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -532,16 +533,19 @@ public class MemberServiceImpl implements MemberService {
     public MemberTreePointResDto treePoint() {
         Member member = getCurrentMember();
 
-        // 오늘 받았다면
-        if (member.getLastHarvestedDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
+        // 시각이 없는 날짜 데이터이므로 equals로 비교해도 된다.
+        // lastHarvestedDate는 null일 수 있으므로 now.equals(lastHarvestedDate)로 비교한다.
+        LocalDate lastHarvestedDate = member.getLastHarvestedDate();
+        LocalDate now = LocalDate.now();
+        if (now.equals(lastHarvestedDate)) {
+            // 오늘 받았다면 예외 발생
             throw new MemberException(MemberErrorCode.ALREADY_HARVESTED);
         }
 
         Tree tree = member.getTree();
         int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
 
-        member.addPoint(point);
-        memberRepository.save(member);
+        member.harvest(point);
 
         return new MemberTreePointResDto(point);
     }
@@ -624,10 +628,10 @@ public class MemberServiceImpl implements MemberService {
             );
 
         Long currentDailyPhraseId = currentDailyPhrase.getId();
-        Long newDailyPhraseId = null;
+        long newDailyPhraseId;
 
         // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
-        while((newDailyPhraseId = RANDOM.nextLong(count) + 1L).equals(currentDailyPhraseId));
+        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextLong(count) + 1L));
 
         return dailyPhraseRepository.findById(newDailyPhraseId)
             .orElseThrow(

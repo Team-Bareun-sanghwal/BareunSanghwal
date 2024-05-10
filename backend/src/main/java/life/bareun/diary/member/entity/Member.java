@@ -171,6 +171,10 @@ public class Member {
         this.currentTreeColorId = treeColorId;
     }
 
+    public void harvest(int point) {
+        addPoint(point);
+        this.lastHarvestedDate = LocalDate.now();
+    }
     public void addPoint(Integer amount) {
         this.point += amount;
     }
