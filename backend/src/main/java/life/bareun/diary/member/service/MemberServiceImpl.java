@@ -631,7 +631,7 @@ public class MemberServiceImpl implements MemberService {
         long newDailyPhraseId;
 
         // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
-        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextLong(count) + 1L));
+        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextInt(count) + 1));
 
         return dailyPhraseRepository.findById(newDailyPhraseId)
             .orElseThrow(
