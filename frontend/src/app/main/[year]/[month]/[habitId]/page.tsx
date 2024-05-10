@@ -17,7 +17,7 @@ export default async function Page(props: {
   });
   const colorData = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/color/streak`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak`,
     cache: 'no-cache',
   });
 
@@ -53,10 +53,10 @@ export default async function Page(props: {
   console.log(dailyPhrase.data);
   return (
     <div className="min-h-screen">
-      <MainTitle
+      {/* <MainTitle
         total={habitList.length}
         succeed={habitsToday.data.memberHabitList.length}
-      />
+      /> */}
       <HabitBtnList habitId={habitId} />
       <div className="flex w-full justify-around">
         <HabitChecker

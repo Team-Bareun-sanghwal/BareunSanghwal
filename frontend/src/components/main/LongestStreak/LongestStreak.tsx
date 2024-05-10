@@ -1,11 +1,12 @@
 import { $Fetch } from '@/apis';
 
 export const LongestStreak = async () => {
-  const longestStreak = await $Fetch({
+  const { data } = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/longest-streak`,
     cache: 'no-cache',
   });
+  const longestStreak = data.longestStreak;
   return (
     <>
       <div className="flex flex-col w-4/12 bg-custom-sky-pastel justify-center rounded-xl max-w-48 min-h-20">

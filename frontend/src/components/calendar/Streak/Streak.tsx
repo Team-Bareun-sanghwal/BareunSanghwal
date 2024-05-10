@@ -9,6 +9,7 @@ interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
+  achieveType: 'NOT_EXISTED' | 'ACHEIVE' | 'NOT_ACHIEVE' | 'RECOVERY';
   dayNumber?: number;
   month?: number;
   year?: number;
@@ -20,6 +21,7 @@ interface StreakProps {
 export const Streak = ({
   themeColor,
   achieveCount,
+  achieveType,
   dayNumber,
   month,
   year,
