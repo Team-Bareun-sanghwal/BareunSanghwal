@@ -23,15 +23,15 @@ export const LoginButton = ({ platform }: ILoginButtonProps) => {
   return (
     <button
       onClick={signIn}
-      className={`w-[34rem] h-[3rem] ${bgColor} rounded-[0.8rem] flex items-center justify-center`}
+      className={`w-[90%] h-[5rem] ${bgColor} rounded-[0.8rem] flex items-center justify-center`}
     >
       <Image
         src={`/images/icon-login-${platform}.png`}
-        width={10}
-        height={10}
+        width={20}
+        height={20}
         alt={`${platform}-logo`}
       />
-      <p className={`custom-login-text pl-2`}>
+      <p className={`custom-semibold-text  pl-[1rem]`}>
         {platform === 'kakao' ? '카카오' : '구글'}로 함께하기
       </p>
     </button>
