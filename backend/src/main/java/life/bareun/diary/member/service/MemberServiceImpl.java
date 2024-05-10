@@ -543,7 +543,9 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Tree tree = member.getTree();
-        int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
+        Integer a = tree.getRangeFrom();
+        Integer b = tree.getRangeTo();
+        int point = RANDOM.nextInt(b - a + 1) + a;
 
         member.harvest(point);
 
