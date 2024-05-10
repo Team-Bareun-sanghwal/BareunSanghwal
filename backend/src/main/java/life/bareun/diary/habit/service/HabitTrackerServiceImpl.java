@@ -183,9 +183,9 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
     // 날짜 문자열 만들기
     private String loadCreatedDate(int year, int month, int day) {
         String createdDate = year + "-";
-        createdDate += month > 10 ? month : "0" + month;
+        createdDate += month >= 10 ? month : "0" + month;
         createdDate += "-";
-        createdDate += day > 10 ? day : "0" + day;
+        createdDate += day >= 10 ? day : "0" + day;
         return createdDate;
     }
 }
