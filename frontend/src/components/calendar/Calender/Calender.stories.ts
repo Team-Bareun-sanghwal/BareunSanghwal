@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calender } from './Calender';
-import { StreakResponse } from '@/app/mock';
+// import { StreakResponse } from '@/app/mock';
 
 const meta = {
   title: 'calender/Calender',
@@ -21,8 +21,8 @@ type Story = StoryObj<typeof meta>;
 export const Activated: Story = {
   args: {
     dayOfWeekFirst: 0,
-    memberHabitList: StreakResponse.memberHabitList,
-    dayInfo: StreakResponse.dayInfo,
+    memberHabitList: [],
+    dayInfo: [],
     themeColor: 'rose',
     proportion: 88,
     longestStreak: 3,

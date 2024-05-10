@@ -9,7 +9,7 @@ interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
-  achieveType: 'NOT_EXISTED' | 'ACHEIVE' | 'NOT_ACHIEVE' | 'RECOVERY';
+  achieveType?: 'NOT_EXISTED' | 'ACHEIVE' | 'NOT_ACHIEVE' | 'RECOVERY';
   dayNumber?: number;
   month?: number;
   year?: number;

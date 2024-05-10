@@ -26,6 +26,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Story1: Story = {
   args: {
+    achieveType: 'NOT_EXISTED',
     themeColor: 'rose',
     isUnique: true,
     achieveCount: 4,
@@ -39,6 +40,7 @@ export const Story1: Story = {
 
 export const Story2: Story = {
   args: {
+    achieveType: 'NOT_EXISTED',
     themeColor: 'black',
     isUnique: false,
     achieveCount: 2,
