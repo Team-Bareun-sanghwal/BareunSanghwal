@@ -44,4 +44,12 @@ public class NotificationController {
                 notificationService.findAllNotification()));
     }
 
+    @GetMapping("/read")
+    public ResponseEntity<BaseResponse<String>> modifyNotificationStatus() {
+        notificationService.modifyNotificationStatus();
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "알림 상태 변경이 완료되었습니다.",
+                null));
+    }
+
 }
