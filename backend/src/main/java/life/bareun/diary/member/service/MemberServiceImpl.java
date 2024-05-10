@@ -629,7 +629,7 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
             );
 
-        Long currentDailyPhraseId = currentDailyPhrase.getId();
+        long currentDailyPhraseId = currentDailyPhrase.getId();
         long newDailyPhraseId;
 
         // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
