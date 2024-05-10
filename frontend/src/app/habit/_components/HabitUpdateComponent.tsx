@@ -106,13 +106,13 @@ export const HabitUpdateComponent = ({
               handleDeleteOverlay(habit.memberHabitId, habit.alias)
             }
             onRegisterClick={() => {
-              if (habit.habitTrackerId === 0) {
+              if (habit.isSucceeded) {
+                handleAlertBox('이미 오늘 기록을 마쳤습니다', 'WARNING');
+              } else if (habit.habitTrackerId === 0) {
                 handleAlertBox(
                   '오늘은 해빗을 기록하는 날이 아닙니다',
                   'WARNING',
                 );
-              } else if (habit.isSucceeded) {
-                handleAlertBox('이미 오늘 기록을 마쳤습니다', 'WARNING');
               } else {
                 router.push(`/habit/write/${habit.habitTrackerId}`);
               }
