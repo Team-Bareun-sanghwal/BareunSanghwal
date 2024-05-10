@@ -42,3 +42,6 @@ application.yaml
 
 ### FireBase SDK ###
 **/src/main/resources/*.json
+
+### log file ###
+application.log.*

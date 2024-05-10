@@ -44,6 +44,19 @@
     </encoder>
   </appender>
 
+  <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>C:/logs/local.log</file>
+    <encoder>
+      <pattern>[%blue(%d{yyyy-MM-dd HH:mm:ss.SSS})] [%clr(%-4p)] %boldMagenta(%-25logger{5})
+        [%cyan(%F)]:%boldYellow(%L) - %m%n</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>application.log.%d{yyyy-MM-dd_HH, ${logback.timezone:-Asia/Seoul}}.txt</fileNamePattern>
+      <maxHistory>31</maxHistory>
+      <totalSizeCap>1GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
   <!--
   <logger> elk 이름의 logger를 정의하여, INFO 레벨 메시지만 처리
   <appender-ref> elk 이름의 logger가 사용할 appender 지정
@@ -56,5 +69,6 @@
   <!-- <root> 모든 logger에 대한 기본 설정을 정의 (INFO 레벨 이상의 메시지만 처리) -->
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
+    <appender-ref ref="file"/>
   </root>
 </configuration>
