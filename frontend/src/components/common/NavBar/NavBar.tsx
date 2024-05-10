@@ -50,7 +50,7 @@ export const NavBar = ({ mode }: INavBarProps) => {
   }, [mode]);
 
   return (
-    <div className="w-[36rem] fixed bottom-0">
+    <div className="w-dvw fixed bottom-0">
       <div className="h-[3rem] backdrop-blur-sm bg-white/10 -mb-[2rem] rounded-t-[1rem]"></div>
 
       <nav

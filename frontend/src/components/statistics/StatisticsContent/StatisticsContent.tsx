@@ -15,16 +15,18 @@ let minDay = '';
 export const StatisticsContent = async () => {
   const data = await getStatisticsData();
 
-  data.practiceCountsPerDayOfWeek.map((day: { day: string; value: number }) => {
-    if (maxDayValue < day.value) {
-      maxDayValue = day.value;
-      maxDay = day.day;
-    }
-    if (day.value < minDayValue) {
-      minDayValue = day.value;
-      minDay = day.day;
-    }
-  });
+  data.practiceCountsPerDayOfWeek.map(
+    (day: { dayOfWeek: string; value: number }) => {
+      if (maxDayValue < day.value) {
+        maxDayValue = day.value;
+        maxDay = day.dayOfWeek;
+      }
+      if (day.value < minDayValue) {
+        minDayValue = day.value;
+        minDay = day.dayOfWeek;
+      }
+    },
+  );
 
   return (
     <div className="py-[2rem] flex flex-col gap-[3rem]">

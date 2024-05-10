@@ -147,30 +147,17 @@
       transform: translateX(0%) translateY(0%) rotate(0deg);
     }
   }
-
-  /* 로딩 블록 애니메이션-white */
-  .loading-block-white {
-    animation: loadingBlockWhite 1.2s ease-in-out forwards;
+  
+  /* 로딩 블록 애니메이션-red */
+  .loading-block-red {
+    animation: loadingBlockRed 2.2s ease-in-out forwards;
   }
-  @keyframes loadingBlockWhite {
+  @keyframes loadingBlockRed {
     0% {
-      top: -23rem;
+      top:-23rem;
     }
     100% {
-      top: 30rem;
-    }
-  }
-
-  /* 로딩 블록 애니메이션-blue */
-  .loading-block-blue {
-    animation: loadingBlockBlue 1.5s ease-in-out forwards;
-  }
-  @keyframes loadingBlockBlue {
-    0% {
-      top: -23rem;
-    }
-    100% {
-      top: 23.7rem;
+      top:0rem;
     }
   }
 
@@ -180,23 +167,36 @@
   }
   @keyframes loadingBlockYellow {
     0% {
-      top: -23rem;
+      top:-23rem;
     }
     100% {
-      top: 19.1rem;
+      top:6.2rem;
     }
   }
 
-  /* 로딩 블록 애니메이션-red */
-  .loading-block-red {
-    animation: loadingBlockRed 2.2s ease-in-out forwards;
+  /* 로딩 블록 애니메이션-blue */
+  .loading-block-blue {
+    animation: loadingBlockBlue 1.5s ease-in-out forwards;
   }
-  @keyframes loadingBlockRed {
+  @keyframes loadingBlockBlue {
     0% {
-      top: -23rem;
+      top:-23rem;
     }
     100% {
-      top: 12.9rem;
+      top:10.8rem;
+    }
+  }
+
+  /* 로딩 블록 애니메이션-white */
+  .loading-block-white {
+    animation: loadingBlockWhite 1.2s ease-in-out forwards;
+  }
+  @keyframes loadingBlockWhite {
+    0% {
+      top:-23rem;
+    }
+    100% {
+      top:17.1rem;
     }
   }
 
