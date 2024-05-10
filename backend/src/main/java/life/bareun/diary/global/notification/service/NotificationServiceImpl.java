@@ -123,16 +123,6 @@ public class NotificationServiceImpl implements NotificationService {
                 .isRead(notification.getIsRead()).createdAt(notification.getCreatedDatetime())
                 .build());
         }
-
-        // 확인한 알림은 모두 읽음 처리
-        for (Notification notification : notificationList) {
-            if (Boolean.TRUE.equals(notification.getIsRead())) {
-                break;
-            }
-            notificationRepository.modifyIsRead(
-                NotificationStatusModifyDto.builder().notificationId(notification.getId())
-                    .status(true).build());
-        }
         return NotificationListResDto.builder().notificationList(notificationDtoList).build();
     }
 
@@ -153,6 +143,24 @@ public class NotificationServiceImpl implements NotificationService {
                 .content(String.format(content, continuousStreak, streakPhrase.getPhrase()))
                 .token(notificationTokenDto.token()).build(),
             notificationCategory);
+    }
+
+    @Override
+    public void modifyNotificationStatus() {
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
+            .orElseThrow(() -> new NotificationException(NotificationErrorCode.NOT_FOUND_MEMBER));
+        List<Notification> notificationList = notificationRepository
+            .findAllByMember_OrderByCreatedDatetimeDescIdDesc(member);
+
+        // 확인한 알림은 모두 읽음 처리
+        for (Notification notification : notificationList) {
+            if (Boolean.TRUE.equals(notification.getIsRead())) {
+                break;
+            }
+            notificationRepository.modifyIsRead(
+                NotificationStatusModifyDto.builder().notificationId(notification.getId())
+                    .status(true).build());
+        }
     }
 
     private Map<Long, NotificationResultTokenDto> verifyCondition(Long notificationCategoryId,

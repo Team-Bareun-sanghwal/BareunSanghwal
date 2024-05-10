@@ -17,4 +17,6 @@ public interface NotificationService {
         NotificationCategory notificationCategory);
 
     void sendContinuousStreakMember(Member member, int continuousStreak);
+
+    void modifyNotificationStatus();
 }
