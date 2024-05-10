@@ -298,7 +298,7 @@ public class NotificationServiceImpl implements NotificationService {
             .putData("url", "https://bareun.life/notification")
             .build();
         try {
-            FirebaseMessaging.getInstance().send(message);
+            FirebaseMessaging.getInstance().sendAsync(message);
             log.info(message.toString());
         } catch (Exception e) {
             log.error("알림 전송에 실패했습니다. {}", e.toString());
