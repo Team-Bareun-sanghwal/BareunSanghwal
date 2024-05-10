@@ -247,17 +247,21 @@ public class NotificationServiceImpl implements NotificationService {
 
     // 만약 알림 전송에 실패하면, 알림 저장까지 롤백되기 때문에 noRollbackFor을 걸어줌
     @Override
-    @Transactional(noRollbackFor = NotificationException.class)
     public void createNotification(NotificationResultTokenDto notificationResultTokenDto,
         NotificationCategory notificationCategory) {
         log.info(notificationResultTokenDto.toString());
         // 알림 만들기
-        notificationRepository.save(
-            Notification.builder().member(notificationResultTokenDto.member())
-                .content(notificationResultTokenDto.content())
-                .notificationCategory(notificationCategory).isRead(false).build());
+        try {
+            notificationRepository.save(
+                Notification.builder().member(notificationResultTokenDto.member())
+                    .content(notificationResultTokenDto.content())
+                    .notificationCategory(notificationCategory).isRead(false).build());
 
-        sendNotificationAsync(notificationResultTokenDto);
+            sendNotificationAsync(notificationResultTokenDto);
+        } catch (Exception e) {
+            log.error("알림 저장에 실패했습니다. {}", e.toString());
+        }
+
     }
 
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
@@ -290,7 +294,6 @@ public class NotificationServiceImpl implements NotificationService {
             log.info(message.toString());
         } catch (Exception e) {
             log.error("알림 전송에 실패했습니다. {}", e.toString());
-            throw new NotificationException(NotificationErrorCode.FAIL_SEND_NOTIFICATION);
         }
     }
 
