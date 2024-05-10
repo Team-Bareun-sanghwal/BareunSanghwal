@@ -8,7 +8,6 @@ export default async function Page({
 }) {
   const cookieStore = cookies();
   const authorization = cookieStore.get('Authorization')?.value;
-  console.log(authorization);
 
   return (
     <HabitWriteFunnel
