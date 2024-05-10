@@ -25,7 +25,7 @@ export const PopOver = ({
       {isOpen && (
         <div className="absolute z-10 w-48 p-2 mt-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg shadow-lg">
           {/* <p>{text}</p> */}
-          <div className="font-bold">Title</div>
+          <div className="font-bold">{title}</div>
           {children}
         </div>
       )}

@@ -6,7 +6,7 @@ export const MyPoint = async () => {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/point`,
     cache: 'no-cache',
   });
-
+  console.log(response);
   return (
     <>
       <Point point={response.data.point} />
