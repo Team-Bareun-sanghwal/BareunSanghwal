@@ -10,9 +10,9 @@ import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
-import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
-import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -108,9 +108,9 @@ public class MemberController {
             );
     }
 
-    @GetMapping("/color/streak")
-    public ResponseEntity<BaseResponse<MemberStreakColorResDto>> streakColor() {
-        MemberStreakColorResDto memberStreakColorResDto = memberService.streakColor();
+    @GetMapping("/streak")
+    public ResponseEntity<BaseResponse<MemberStreakInfoResDto>> streakColor() {
+        MemberStreakInfoResDto memberStreakInfoResDto = memberService.streakInfo();
         return ResponseEntity
             .status(
                 HttpStatus.OK.value()
@@ -119,14 +119,14 @@ public class MemberController {
                 BaseResponse.success(
                     HttpStatus.OK.value(),
                     "사용자의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                    memberStreakColorResDto
+                    memberStreakInfoResDto
                 )
             );
     }
 
-    @GetMapping("/color/tree")
-    public ResponseEntity<BaseResponse<MemberTreeColorResDto>> treeColor() {
-        MemberTreeColorResDto memberTreeColorResDto = memberService.treeColor();
+    @GetMapping("/tree")
+    public ResponseEntity<BaseResponse<MemberTreeInfoResDto>> treeColor() {
+        MemberTreeInfoResDto memberTreeInfoResDto = memberService.treeInfo();
         return ResponseEntity
             .status(
                 HttpStatus.OK.value()
@@ -134,8 +134,8 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "회원의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                    memberTreeColorResDto
+                    "회원의 현재 나무 색상 정보를 읽어왔습니다.",
+                    memberTreeInfoResDto
                 )
             );
     }
