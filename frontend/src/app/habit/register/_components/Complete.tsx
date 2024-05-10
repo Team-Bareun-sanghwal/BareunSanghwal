@@ -2,7 +2,7 @@
 
 import { Button, ProgressBox } from '@/components';
 import dynamic from 'next/dynamic';
-import lottieJson from '@/../public/lotties/lottie-music.json';
+import lottieJson from '@/../public/lotties/lottie-lego.json';
 
 interface ICompleteStepComponent {
   onNext: () => void;
