@@ -274,10 +274,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendNotificationAsync(NotificationResultTokenDto notificationResultTokenDto) {
         Message message = Message.builder().setToken(notificationResultTokenDto.token())
-            .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400")
-                .setNotification(
-                    new WebpushNotification("바른생활", notificationResultTokenDto.content(), "icon-url"))
-                .build())
+            .setWebpushConfig(WebpushConfig.builder().putHeader("ttl", "86400").build())
+            .putData("url", "https://bareun.life/notification")
+            .putData("title", "바른생활")
+            .putData("body", notificationResultTokenDto.content())
+            .build();
+//                .setNotification(
+//                    new WebpushNotification("바른생활", notificationResultTokenDto.content(), "icon-url"))
+//                .build())
 //            .setAndroidConfig(
 //                AndroidConfig.builder()
 //                    .setTtl(86400)
@@ -295,8 +299,8 @@ public class NotificationServiceImpl implements NotificationService {
 //                            .setBody(notificationResultTokenDto.content()).build())
 //                        .setCategory("push_click").build()).build()
 //            )
-            .putData("url", "https://bareun.life/notification")
-            .build();
+//            .putData("url", "https://bareun.life/notification")
+//            .build();
         try {
             FirebaseMessaging.getInstance().sendAsync(message);
             log.info(message.toString());
