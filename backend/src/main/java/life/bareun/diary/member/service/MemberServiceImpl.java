@@ -543,7 +543,9 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Tree tree = member.getTree();
-        int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
+        Integer a = tree.getRangeFrom();
+        Integer b = tree.getRangeTo();
+        int point = RANDOM.nextInt(b - a + 1) + a;
 
         member.harvest(point);
 
@@ -627,11 +629,11 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
             );
 
-        Long currentDailyPhraseId = currentDailyPhrase.getId();
+        long currentDailyPhraseId = currentDailyPhrase.getId();
         long newDailyPhraseId;
 
         // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
-        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextLong(count) + 1L));
+        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextInt(count) + 1));
 
         return dailyPhraseRepository.findById(newDailyPhraseId)
             .orElseThrow(
