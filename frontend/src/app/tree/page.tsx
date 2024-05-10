@@ -27,11 +27,12 @@ export default async function Page() {
     cache: 'no-cache',
   });
 
-  console.log(response.data);
-  // const exit = () => {
-  //   router.back();
-  // };
-
+  const treeColor = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/color/tree`,
+    cache: 'no-cache',
+  });
+  console.log(treeColor);
   return (
     <div>
       <div className="w-full h-screen overflow-hidden relative">

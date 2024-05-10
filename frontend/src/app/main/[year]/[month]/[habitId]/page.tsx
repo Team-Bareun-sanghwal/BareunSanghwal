@@ -63,7 +63,7 @@ export default async function Page(props: {
           achieveCount={habitsToday.data.memberHabitList.length}
           totalCount={habitList.length}
         />
-        <LongestStreak longestStreakCount={longestStreakCount} />
+        <LongestStreak />
       </div>
       <Calender
         dayInfo={dayInfo}
