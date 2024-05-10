@@ -1,3 +1,16 @@
+function getCookie(name: string) {
+  let matches = document.cookie.match(
+    new RegExp(
+      '(?:^|; )' +
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
+        '=([^;]*)',
+    ),
+  );
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+console.log(getCookie('Authorization'));
+
 export async function writeHabit(
   image: File | null,
   HabitTrackerModifyReqDto: {
@@ -18,10 +31,10 @@ export async function writeHabit(
     `${process.env.NEXT_PUBLIC_BASE_URL}/habits/completion`,
     {
       method: 'PATCH',
-      // headers: {
-      //   // Authorization: `${cookieStore.get('Authorization')?.value}`,
-      //   Authorization: `${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-      // },
+      headers: {
+        // Authorization: `${cookieStore.get('Authorization')?.value}`,
+        Authorization: `${getCookie('Authorization')}`,
+      },
       credentials: 'include',
       body: habitFormData,
     },
