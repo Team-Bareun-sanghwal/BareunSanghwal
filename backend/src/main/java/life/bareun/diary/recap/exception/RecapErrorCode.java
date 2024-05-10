@@ -18,7 +18,11 @@ public enum RecapErrorCode {
 
     NOT_CREATE_RECAP_CONTENT(HttpStatus.NO_CONTENT, "리캡 요약이 정상적으로 처리되지 않았습니다"),
 
-    NOT_FOUND_NOTIFICATION_CATEGORY(HttpStatus.NOT_FOUND, "존재하지 않는 알림 카테고리입니다");
+    NOT_FOUND_NOTIFICATION_CATEGORY(HttpStatus.NOT_FOUND, "존재하지 않는 알림 카테고리입니다"),
+
+    NOT_FOUND_ACCOMPLISH_HABIT(HttpStatus.NOT_FOUND, "실천한 해빗이 존재하지 않습니다."),
+
+    NOT_FOUND_HABIT_RATIO(HttpStatus.NOT_FOUND, "해빗 비율이 존재하지 않습니다.");
 
     private final HttpStatus status;
     private final String message;

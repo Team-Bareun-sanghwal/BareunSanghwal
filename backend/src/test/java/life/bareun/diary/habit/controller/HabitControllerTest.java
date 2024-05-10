@@ -91,7 +91,7 @@ class HabitControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    AuthTokenProvider authTokenProvider;
+    private AuthTokenProvider authTokenProvider;
 
     private String accessToken;
 
