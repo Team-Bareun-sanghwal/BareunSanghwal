@@ -5,9 +5,15 @@ import { Picker } from '@/components/common/Picker/Picker';
 
 interface INicknameStep {
   onPrev: () => void;
-  onNext: (alias: string, icon: string, selectedHabitId: number | null) => void;
+  onNext: (
+    alias: string,
+    icon: string,
+    selectedHabitId: number | null,
+    selectedHabitName: string | null,
+  ) => void;
   isCategorySet: boolean;
   habitId: number | null;
+  habitName: string | null;
 }
 
 export default function Nickname({
@@ -15,9 +21,13 @@ export default function Nickname({
   onNext,
   isCategorySet,
   habitId,
+  habitName,
 }: INicknameStep) {
   const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
     habitId,
+  );
+  const [selectedHabitName, setSelectedHabitName] = useState<string | null>(
+    habitName,
   );
   const [alias, setAlias] = useState<string | null>(null);
   const [icon, setIcon] = useState<string | null>(null);
@@ -42,6 +52,7 @@ export default function Nickname({
           <HabitSearchBox
             selectedHabitId={selectedHabitId}
             setSelectedHabitId={setSelectedHabitId}
+            setSelectedHabitName={setSelectedHabitName}
           />
         )}
 
@@ -73,10 +84,10 @@ export default function Nickname({
         onClick={
           isCategorySet
             ? alias && icon
-              ? () => onNext(alias, icon, selectedHabitId)
+              ? () => onNext(alias, icon, selectedHabitId, selectedHabitName)
               : () => {}
-            : selectedHabitId && alias && icon
-              ? () => onNext(alias, icon, selectedHabitId)
+            : selectedHabitId && selectedHabitName && alias && icon
+              ? () => onNext(alias, icon, selectedHabitId, selectedHabitName)
               : () => {}
         }
       />

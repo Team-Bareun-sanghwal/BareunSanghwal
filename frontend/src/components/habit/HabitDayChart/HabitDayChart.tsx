@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { GuideText } from '@/components';
 
 interface IHabitDayData {
   name: string;
@@ -88,8 +89,10 @@ export const HabitDayChart = ({ habitList }: IHabitDayChartProps) => {
   return (
     <section className="w-full flex flex-col gap-[0.5rem]">
       <label className="custom-semibold-text text-custom-black">
-        현재 진행 중인 해빗의 요일
+        현재 진행 중인 해빗의 요일을 확인해요
       </label>
+
+      <GuideText text="내가 등록한 다른 해빗의 요일을 보며 조율해요" />
 
       {habitList?.map((habit, index) => {
         return (
@@ -113,7 +116,7 @@ export const HabitDayChart = ({ habitList }: IHabitDayChartProps) => {
               onClick={() => setSelectedHabitId(habit.habitId)}
             >
               <div
-                className={`${habit.habitId === selectedHabitId ? 'bg-custom-light-green' : 'bg-custom-medium-gray'} w-[0.8rem] h-[0.8rem] rounded-full`}
+                className={`${habit.habitId === selectedHabitId ? 'bg-custom-light-green' : 'bg-custom-medium-gray'} w-[1rem] h-[1rem] rounded-full`}
               ></div>
               <span
                 className={`${habit.habitId === selectedHabitId ? 'text-[1.1rem] font-semibold' : 'text-[1.1rem] font-light'}`}

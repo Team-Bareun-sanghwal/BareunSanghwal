@@ -22,8 +22,8 @@ export const ImageUploadBox = ({
 
   return (
     <section className="w-full flex flex-col gap-[0.5rem]">
-      <span className="custom-semibold-text text-custom-black">
-        해빗에 대한 이미지를 추가해주세요.(선택)
+      <span className="custom-semibold-text text-custom-matcha">
+        해빗에 대한 이미지를 추가해주세요(선택)
       </span>
 
       <GuideText text="해빗 이미지는 추후에 목록이나 리캡에서 확인할 수 있어요!" />
@@ -36,7 +36,7 @@ export const ImageUploadBox = ({
               width={200}
               height={200}
               alt="업로드 이미지"
-              className="bg-contain"
+              className="w-[20rem] h-[20rem] object-fill"
             />
           </div>
         ) : (

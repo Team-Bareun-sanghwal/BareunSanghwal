@@ -33,7 +33,7 @@ export const HabitUpdateComponent = ({
         onConfirm={async () => {
           await deleteActivatedHabit(memberHabitId, false);
           close();
-          handleAlertBox('해빗을 성공적으로 완료했어요.');
+          handleAlertBox('해빗을 성공적으로 완료했어요.', 'SUCCESS');
         }}
         open={isOpen}
         title={`${alias} 해빗을 완료하시겠어요?`}
@@ -50,7 +50,7 @@ export const HabitUpdateComponent = ({
         onConfirm={async () => {
           await deleteActivatedHabit(memberHabitId, true);
           close();
-          handleAlertBox('해빗을 성공적으로 삭제했어요.');
+          handleAlertBox('해빗을 성공적으로 삭제했어요.', 'SUCCESS');
         }}
         open={isOpen}
         title={`${alias} 해빗을 삭제하시겠어요?`}
@@ -58,9 +58,12 @@ export const HabitUpdateComponent = ({
     ));
   };
 
-  const handleAlertBox = (message: string) => {
+  const handleAlertBox = (
+    message: string,
+    mode: 'SUCCESS' | 'WARNING' | 'ERROR',
+  ) => {
     overlay.open(({ isOpen }) => (
-      <AlertBox label={message} mode="SUCCESS" open={isOpen} />
+      <AlertBox label={message} mode={mode} open={isOpen} />
     ));
     setTimeout(() => overlay.close(), 1000);
   };
@@ -96,19 +99,37 @@ export const HabitUpdateComponent = ({
             name={habit.name}
             currentStreak={habit.currentStreak}
             memberHabitId={habit.memberHabitId}
-            habitTrackerId={habit.habitTrackerId}
             onCompleteClick={() =>
               handleCompleteOverlay(habit.memberHabitId, habit.alias)
             }
             onDeleteClick={() =>
               handleDeleteOverlay(habit.memberHabitId, habit.alias)
             }
+            onRegisterClick={() => {
+              if (habit.habitTrackerId === 0) {
+                handleAlertBox(
+                  '오늘은 해빗을 기록하는 날이 아닙니다',
+                  'WARNING',
+                );
+              } else if (habit.isSucceeded) {
+                handleAlertBox('이미 오늘 기록을 마쳤습니다', 'WARNING');
+              } else {
+                router.push(`/habit/write/${habit.habitTrackerId}`);
+              }
+            }}
           />
         );
       })}
 
-      {/* 진행 중인 해빗이 이미 7개일 때 AlertBox 띄우기*/}
-      <PlusButton onClick={() => router.push('/habit/register')} />
+      <PlusButton
+        onClick={() => {
+          if (activatedHabitListData.length >= 7) {
+            handleAlertBox('해빗은 7개까지만 관리할 수 있어요.', 'ERROR');
+          } else {
+            router.push('/habit/register');
+          }
+        }}
+      />
     </div>
   );
 };

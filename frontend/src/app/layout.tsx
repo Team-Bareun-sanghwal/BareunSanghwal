@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import dynamic from 'next/dynamic';
 const Provider = dynamic(() => import('./_components/Provider'), {
@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   icons: {
     icon: '/images/icon-favicon.png',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

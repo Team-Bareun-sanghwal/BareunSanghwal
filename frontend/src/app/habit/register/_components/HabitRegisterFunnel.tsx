@@ -5,11 +5,6 @@ import dynamic from 'next/dynamic';
 import { useFunnel } from '@/hooks/use-funnel';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-// import { Question } from './Question';
-// import { Recommend } from './Recommend';
-// import { Nickname } from './Nickname';
-// import { DayOrPeriod } from './DayOrPeriod';
-// import { Complete } from './Complete';
 import {
   IHabitListData,
   IRegisteredHabitData,
@@ -73,12 +68,19 @@ export const HabitRegisterFunnel = ({
       <Funnel.Step name="NICKNAME_STEP">
         <Nickname
           onPrev={() => setStep('QUESTION_STEP')}
-          onNext={(alias, icon, habitId) => {
+          onNext={(alias, icon, habitId, habitName) => {
             setStep('DAYORPERIOD_STEP');
-            setData({ ...data, alias: alias, icon: icon, habitId: habitId });
+            setData({
+              ...data,
+              alias: alias,
+              icon: icon,
+              habitId: habitId,
+              habitName: habitName,
+            });
           }}
           isCategorySet={data.isCategorySet}
           habitId={data.habitId}
+          habitName={data.habitName}
         />
       </Funnel.Step>
 

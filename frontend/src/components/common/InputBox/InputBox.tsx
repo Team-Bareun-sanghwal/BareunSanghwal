@@ -15,7 +15,7 @@ export const InputBox = ({
   defaultValue,
   setDefaultValue,
 }: IInputBoxProps) => {
-  const label = mode === 'NICKNAME' ? '닉네임' : '해빗 별칭';
+  const label = mode === 'NICKNAME' ? '닉네임' : '해빗 별칭을 지어주세요';
   const placeholder =
     mode === 'NICKNAME'
       ? '2~12자로 입력해주세요.'
