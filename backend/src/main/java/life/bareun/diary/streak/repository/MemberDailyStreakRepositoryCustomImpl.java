@@ -25,6 +25,7 @@ public class MemberDailyStreakRepositoryCustomImpl implements MemberDailyStreakR
                 Projections.constructor(
                     MonthStreakInfoDto.class,
                     memberDailyStreak.createdDate.dayOfMonth(),
+                    memberDailyStreak.achieveType,
                     memberDailyStreak.achieveTrackerCount,
                     memberDailyStreak.totalTrackerCount
                 ))
