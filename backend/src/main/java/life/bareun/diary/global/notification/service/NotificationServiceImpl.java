@@ -279,28 +279,6 @@ public class NotificationServiceImpl implements NotificationService {
             .putData("title", "바른생활")
             .putData("body", notificationResultTokenDto.content())
             .build();
-//                .setNotification(
-//                    new WebpushNotification("바른생활", notificationResultTokenDto.content(), "icon-url"))
-//                .build())
-//            .setAndroidConfig(
-//                AndroidConfig.builder()
-//                    .setTtl(86400)
-//                    .setNotification(AndroidNotification.builder()
-//                        .setTitle("바른생활")
-//                        .setBody(notificationResultTokenDto.content())
-//                        .setClickAction("push_click").build()).build()
-//            )
-//            .setApnsConfig(
-//                ApnsConfig.builder()
-//                    .putHeader("apns-expiration",
-//                        String.valueOf((System.currentTimeMillis() / 1000) + 86400))
-//                    .setAps(Aps.builder()
-//                        .setAlert(ApsAlert.builder().setTitle("바른생활")
-//                            .setBody(notificationResultTokenDto.content()).build())
-//                        .setCategory("push_click").build()).build()
-//            )
-//            .putData("url", "https://bareun.life/notification")
-//            .build();
         try {
             FirebaseMessaging.getInstance().sendAsync(message);
             log.info(message.toString());
