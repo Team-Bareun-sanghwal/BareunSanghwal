@@ -23,37 +23,37 @@ export const Statistics_PieChart: Story = {
   args: {
     data: [
       {
-        day: '일',
+        dayOfWeek: '일',
         value: 45,
         colorIdx: 1,
       },
       {
-        day: '월',
+        dayOfWeek: '월',
         value: 67,
         colorIdx: 2,
       },
       {
-        day: '화',
+        dayOfWeek: '화',
         value: 56,
         colorIdx: 1,
       },
       {
-        day: '수',
+        dayOfWeek: '수',
         value: 53,
         colorIdx: 1,
       },
       {
-        day: '목',
+        dayOfWeek: '목',
         value: 32,
         colorIdx: 1,
       },
       {
-        day: '금',
+        dayOfWeek: '금',
         value: 11,
         colorIdx: 0,
       },
       {
-        day: '토',
+        dayOfWeek: '토',
         value: 12,
         colorIdx: 1,
       },
