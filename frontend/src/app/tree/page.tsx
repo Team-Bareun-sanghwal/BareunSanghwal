@@ -4,6 +4,7 @@ import { MyPoint } from '@/components/point/MyPoint/MyPoint';
 import { $Fetch } from '@/apis';
 import Tree from '@/components/tree/Tree';
 import { RouteHome } from '@/components/tree/Button/RouteHome/RouteHome';
+import { PopOver } from '@/components/common/PopOver/PopOver';
 interface IItem {
   key: string;
   name: string;
@@ -39,6 +40,7 @@ export default async function Page() {
         <div className="absolute bottom-0 w-full gap-3 p-3">
           <div className="flex flex-col justify-center gap-4">
             <MyPoint />
+            <PopOver />
             {response?.data.products.map((item: IItem) => (
               <Item
                 key={item.key}
