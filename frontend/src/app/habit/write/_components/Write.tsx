@@ -16,10 +16,12 @@ export const Write = ({
   onPrev,
   onNext,
   habitTrackerId,
+  authorization,
 }: {
   onPrev: () => void;
   onNext: () => void;
   habitTrackerId: number;
+  authorization?: string;
 }) => {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
@@ -33,10 +35,14 @@ export const Write = ({
         mode="POSITIVE"
         onClose={close}
         onConfirm={async () => {
-          const result = await writeHabit(image, {
-            habitTrackerId: habitTrackerId,
-            content: text,
-          });
+          await writeHabit(
+            image,
+            {
+              habitTrackerId: habitTrackerId,
+              content: text,
+            },
+            authorization,
+          );
           onNext();
           close();
         }}
