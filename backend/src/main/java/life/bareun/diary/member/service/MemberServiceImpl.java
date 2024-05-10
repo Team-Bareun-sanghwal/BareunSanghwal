@@ -37,9 +37,9 @@ import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
-import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
-import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.entity.DailyPhrase;
 import life.bareun.diary.member.entity.Member;
@@ -264,7 +264,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberStreakColorResDto streakColor() {
+    public MemberStreakInfoResDto streakInfo() {
         Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
                 member.getCurrentStreakColorId()
@@ -274,23 +274,27 @@ public class MemberServiceImpl implements MemberService {
             )
             .getName();
 
-        return new MemberStreakColorResDto(streakColorName);
+        return new MemberStreakInfoResDto(streakColorName);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public MemberTreeColorResDto treeColor() {
+    public MemberTreeInfoResDto treeInfo() {
         Member member = getCurrentMember();
 
-        String treeColorName = treeColorRepository.findById(
-                member.getCurrentStreakColorId()
+        int treeLevel = member.getTree().getLevel();
+        String treeColor = treeColorRepository.findById(
+                member.getCurrentTreeColorId()
             )
             .orElseThrow(
-                () -> new ProductException(ProductErrorCode.NO_SUCH_STREAK_COLOR)
+                () -> new ProductException(ProductErrorCode.NO_SUCH_TREE_COLOR)
             )
             .getName();
 
-        return new MemberTreeColorResDto(treeColorName);
+        return new MemberTreeInfoResDto(
+            treeLevel,
+            treeColor
+        );
     }
 
     @Override
