@@ -4,6 +4,8 @@ import { MyPoint } from '@/components/point/MyPoint/MyPoint';
 import { $Fetch } from '@/apis';
 import Tree from '@/components/tree/Tree';
 import { RouteHome } from '@/components/tree/Button/RouteHome/RouteHome';
+import { PopOver } from '@/components/common/PopOver/PopOver';
+import { Harvest } from '@/components/point/Harvest/Harvest';
 interface IItem {
   key: string;
   name: string;
@@ -25,18 +27,21 @@ export default async function Page() {
     cache: 'no-cache',
   });
 
-  console.log(response.data);
-  // const exit = () => {
-  //   router.back();
-  // };
-
+  const treeColor = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/color/tree`,
+    cache: 'no-cache',
+  });
+  console.log(treeColor);
   return (
     <div>
       <div className="w-full h-screen overflow-hidden relative">
         <RouteHome />
-
+        <Harvest isHarvested={false} />
         <Tree color="red" />
         <div className="absolute bottom-0 w-full gap-3 p-3">
+          {/* <PopOver title="나무?" /> */}
+
           <div className="flex flex-col justify-center gap-4">
             <MyPoint />
             {response?.data.products.map((item: IItem) => (

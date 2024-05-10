@@ -56,6 +56,7 @@ export const Calender = ({
               key={index}
               themeColor={themeColor}
               achieveCount={info.achieveCount}
+              achieveType={info.achieveType}
               year={year}
               month={month}
               dayNumber={info.dayNumber}

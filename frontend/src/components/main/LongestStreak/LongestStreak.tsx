@@ -1,15 +1,20 @@
-interface ILogestStreakProps {
-  longestStreakCount: number;
-}
-export const LongestStreak = ({ longestStreakCount }: ILogestStreakProps) => {
+import { $Fetch } from '@/apis';
+
+export const LongestStreak = async () => {
+  const { data } = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/longest-streak`,
+    cache: 'no-cache',
+  });
+  const longestStreak = data.longestStreak;
   return (
     <>
       <div className="flex flex-col w-4/12 bg-custom-sky-pastel justify-center rounded-xl max-w-48 min-h-20">
-        {longestStreakCount !== 0 ? (
+        {longestStreak !== 0 ? (
           <>
             <p className="text-center text-lg ">오늘로</p>
             <p className="text-center text-2xl font-semibold">
-              {longestStreakCount}일째
+              {longestStreak}일째
             </p>
           </>
         ) : (

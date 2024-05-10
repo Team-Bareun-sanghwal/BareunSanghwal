@@ -9,6 +9,7 @@ interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
+  achieveType?: 'NOT_EXISTED' | 'ACHEIVE' | 'NOT_ACHIEVE' | 'RECOVERY';
   dayNumber?: number;
   month?: number;
   year?: number;
@@ -20,6 +21,7 @@ interface StreakProps {
 export const Streak = ({
   themeColor,
   achieveCount,
+  achieveType,
   dayNumber,
   month,
   year,
@@ -36,16 +38,18 @@ export const Streak = ({
 
   const overlay = useOverlay();
   const onClickStreakRecovery = () => {
-    overlay.open(({ isOpen, close }) => (
-      <BottomSheet
-        description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
-        mode="RECOVERY"
-        onClose={close}
-        onConfirm={() => Recovoery()}
-        open={isOpen}
-        title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
-      />
-    ));
+    if (dayNumber && !habitId) {
+      overlay.open(({ isOpen, close }) => (
+        <BottomSheet
+          description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
+          mode="RECOVERY"
+          onClose={close}
+          onConfirm={() => Recovoery()}
+          open={isOpen}
+          title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
+        />
+      ));
+    }
   };
 
   const Recovoery = () => {
@@ -79,7 +83,7 @@ export const Streak = ({
                 mode="NEGATIVE"
                 onClose={close}
                 open={isOpen}
-                title={'스트릭 복구권이 없어요...'}
+                title={'스트릭 복구 실패!'}
               />
             ));
           }

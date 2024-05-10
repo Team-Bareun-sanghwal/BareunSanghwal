@@ -26,7 +26,7 @@ export default async function Page(props: {
   });
   const colorData = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/color/streak`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak`,
     cache: 'no-cache',
   });
 
@@ -44,37 +44,36 @@ export default async function Page(props: {
 
   const habitsToday = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/non-active`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/today`,
     cache: 'no-cache',
   });
 
   const { achieveProportion, dayInfo, dayOfWeekFirst } = streakData.data;
-  const { streakName } = colorData.data;
+
   const { habitList } =
     habitListData.data === null ? { habitList: [] } : habitListData.data;
   const longestStreakCount =
     longestStreak.data == null ? 0 : longestStreak.data.longestStreak;
 
-  console.log(streakName);
+  console.log();
   return (
     <div className="min-h-screen">
       <MainTitle
-        total={habitList.length}
-        succeed={habitsToday.data.memberHabitList.length}
+        habitTrackerTodayDtoList={habitsToday.data.habitTrackerTodayDtoList}
       />
       <HabitBtnList />
       <div className="flex w-full justify-around">
         <HabitChecker
-          achieveCount={habitsToday.data.memberHabitList.length}
+          achieveCount={habitsToday.data.habitTrackerTodayDtoList.length}
           totalCount={habitList.length}
         />
-        <LongestStreak longestStreakCount={longestStreakCount} />
+        <LongestStreak />
       </div>
       <Calender
         dayInfo={dayInfo}
         memberHabitList={habitList}
         dayOfWeekFirst={dayOfWeekFirst}
-        themeColor={streakName}
+        themeColor={colorData.data.streakName}
         proportion={achieveProportion}
         longestStreak={longestStreakCount}
         year={year}

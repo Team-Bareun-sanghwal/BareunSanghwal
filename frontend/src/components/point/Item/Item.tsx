@@ -7,6 +7,7 @@ import { useOverlay } from '@/hooks/use-overlay';
 import { $Fetch } from '@/apis';
 import ColoredText from '../ColoredText/ColoredText';
 import Pallete from '../Pallete/Pallete';
+import { useRouter } from 'next/navigation';
 interface IItemProps {
   keyname: string;
   name: string;
@@ -67,7 +68,12 @@ const Item = ({
   description,
   price,
 }: IItemProps) => {
+  const router = useRouter();
   const overlay = useOverlay();
+  const Close = (event: void) => {
+    router.refresh();
+    event;
+  };
   const purchase = ({
     keyname,
     name,
@@ -105,7 +111,10 @@ const Item = ({
               description=""
               mode="NONE"
               onClose={close}
-              onConfirm={close}
+              onConfirm={() => {
+                close();
+                router.refresh();
+              }}
               open={isOpen}
               title="구매 완료!"
             >
