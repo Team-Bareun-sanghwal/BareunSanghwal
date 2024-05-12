@@ -1,14 +1,14 @@
-import { Head } from "@/components/main/Head/Head";
-  
+import { Head } from '@/components/main/Head/Head';
+
 export default async function MainLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
-  }){
-    return(
+  children: React.ReactNode;
+}) {
+  return (
     <div>
-        <Head/>
-        {children}
+      <Head />
+      {children}
     </div>
-    )
+  );
 }
