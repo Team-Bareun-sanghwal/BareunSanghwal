@@ -1,4 +1,3 @@
-import { NoHabit } from '../HabitChecker/HabitChecker.stories';
 import { HabitBtn } from '@/components/calendar/HabitBtn/HabitBtn';
 interface IHabitList {
   name: string;
