@@ -51,7 +51,7 @@ export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
       });
   };
   return (
-    <div className="absolute z-10 top-2 right-2 text-lg">
+    <div className="absolute z-20 top-2 right-2 text-lg">
       <AnimatePresence>
         <motion.button
           onAnimationComplete={() => {

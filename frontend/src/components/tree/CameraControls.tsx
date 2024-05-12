@@ -15,12 +15,10 @@ const CameraControls = ({ position, target }: CameraControlsProps) => {
 
   useEffect(() => {
     if (orbitControlsRef.current) {
-      // Set the target of the underlying OrbitControls instance
       const controls = orbitControlsRef.current;
       controls.target.set(target.x, target.y, target.z);
-      controls.update(); // Call update to ensure the new target is used
+      controls.update();
 
-      // Animate camera position
       gsap.to(camera.position, {
         duration: 2,
         x: position.x,
@@ -30,7 +28,7 @@ const CameraControls = ({ position, target }: CameraControlsProps) => {
         onComplete: () => controls.update(), // Update controls after animation
       });
     }
-  }, [position, target]);
+  }, [camera.position, position, target]);
 
   return (
     <OrbitControls ref={orbitControlsRef} args={[camera, gl.domElement]} />
