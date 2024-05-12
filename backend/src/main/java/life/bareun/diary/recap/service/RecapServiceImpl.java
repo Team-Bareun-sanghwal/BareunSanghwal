@@ -103,7 +103,7 @@ public class RecapServiceImpl implements RecapService {
     public void createRecap() {
         // 두 번 이상 완료한 사용자 해빗을 하나라도 가지고 있는 사용자 리스트
         // 자정에 시작하기 때문에 전 달에 달성한 목록을 가져와야 함
-         LocalDate nowMonth = LocalDate.now().minusMonths(1L);
+        LocalDate nowMonth = LocalDate.now().minusMonths(1L);
         List<RecapMemberDto> recapMemberList = recapRepository.findAllAppropriateMember(
             RecapMonthDto.builder().year(nowMonth.getYear()).month(nowMonth.getMonth().getValue())
                 .build());
@@ -119,7 +119,6 @@ public class RecapServiceImpl implements RecapService {
         // 커스텀할 content
         NotificationCategory notificationCategory = notificationCategoryRepository.findById(3L)
             .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_NOTIFICATION_CATEGORY));
-
         for (RecapMemberDto recapMemberDto : recapMemberList) {
             Member member = findMember();
             // 처음에 recap을 생성
@@ -189,7 +188,6 @@ public class RecapServiceImpl implements RecapService {
 
             // 키워드 생성
             String keyword = createKeyWord(totalContent.toString()).content();
-            System.out.println(keyword);
             recapRepository.modifyRecap(
                 RecapModifyDto.builder().recap(recap).wholeStreak(wholeStreak)
                     .maxHabitImage(imageUrl).mostFrequencyWord(keyword)
@@ -260,6 +258,11 @@ public class RecapServiceImpl implements RecapService {
             .orElseThrow(() -> new RecapException(RecapErrorCode.NOT_FOUND_RECAP));
         List<RecapHabitAccomplished> recapHabitAccomplishedList = recapHabitAccomplishedRepository.findAllByRecap_OrderByActionCountDesc(
             recap);
+
+        if(recapHabitAccomplishedList == null) {
+            throw new RecapException(RecapErrorCode.NOT_FOUND_ACCOMPLISH_HABIT);
+        }
+
         // ratio 비율 상위 다섯개 및 사용자 해빗 달성률의 평균 구하기
         String mostSucceededMemberHabit = recapHabitAccomplishedRepository.findByRecapAndIsBest(
             recap, true).getMemberHabit().getAlias();
@@ -289,6 +292,11 @@ public class RecapServiceImpl implements RecapService {
         // mostSucceededHabit과 rateByHabitList를 구하기
         List<RecapHabitRatio> recapHabitRatioList = recapHabitRatioRepository.findTop4ByRecap_OrderByRatioDesc(
             recap);
+
+        if(recapHabitRatioList == null) {
+            throw new RecapException(RecapErrorCode.NOT_FOUND_HABIT_RATIO);
+        }
+
         List<RecapHabitRateDto> recapHabitRateDtoList = new ArrayList<>();
         int sum = 0;
         for (RecapHabitRatio recapHabitRatio : recapHabitRatioList) {
