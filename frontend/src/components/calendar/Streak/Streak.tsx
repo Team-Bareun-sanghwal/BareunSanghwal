@@ -38,7 +38,7 @@ export const Streak = ({
 
   const overlay = useOverlay();
   const onClickStreakRecovery = () => {
-    if (dayNumber && !habitId) {
+    if (dayNumber && !habitId && achieveType === 'NOT_ACHIEVE') {
       overlay.open(({ isOpen, close }) => (
         <BottomSheet
           description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
