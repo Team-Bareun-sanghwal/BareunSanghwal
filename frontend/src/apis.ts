@@ -18,7 +18,6 @@ export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
   // const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
   const authorization = cookieStore.get('Authorization')?.value;
-  const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   try {
     const res = await fetch(url, {
@@ -30,6 +29,80 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       },
       body: JSON.stringify(data),
     });
+
+    const json = res.json();
+    switch ((await json).status) {
+      case 200:
+        console.log('정상 처리');
+        return await json;
+
+      case 401:
+        console.log('Access Token 만료');
+        const result = await $GetRefreshToken();
+        if (result === 200) {
+          console.log('Access Token 재발급 성공');
+          await $Fetch({ method, url, data, cache });
+          break;
+        } else {
+          console.log('Access Token 재발급 실패');
+          window.location.href = '/';
+          break;
+        }
+      case 500:
+        console.log('서버 오류 발생');
+        break;
+    }
+  } catch (e) {
+    console.log('Fetch Error : ', e);
+    throw e;
+  }
+}
+
+export async function $GetRefreshToken() {
+  const cookieStore = cookies();
+  // const refreshToken = process.env.NEXT_PUBLIC_REFRESH_TOKEN;
+  const refreshToken = cookieStore.get('RefreshToken')?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/access-token`,
+      {
+        method: 'GET',
+        cache: 'default',
+        headers: {
+          'Content-Type': 'application/json',
+          RefreshToken: refreshToken as string,
+        },
+      },
+    );
+
+    return (await res.json()).status;
+  } catch (e) {
+    console.log('Fetch Error : ', e);
+    throw e;
+  }
+}
+
+export async function $Logout() {
+  const cookieStore = cookies();
+  // const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  // const refreshToken = process.env.NEXT_PUBLIC_REFRESH_TOKEN;
+  const authorization = cookieStore.get('Authorization')?.value;
+  const refreshToken = cookieStore.get('RefreshToken')?.value;
+
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`,
+      {
+        method: 'POST',
+        cache: 'default',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authorization as string,
+          RefreshToken: refreshToken as string,
+        },
+      },
+    );
 
     return await res.json();
   } catch (e) {
