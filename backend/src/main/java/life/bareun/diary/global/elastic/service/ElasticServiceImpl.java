@@ -115,8 +115,6 @@ public class ElasticServiceImpl implements ElasticService {
 
                 // ZonedDateTime을 LocalDateTime으로 변환
                 LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
-                // 추출한 값 로깅
-                log.info(habitId + " " + localDateTime);
                 logList.add(new ElasticDto(habitId, localDateTime));
             }
             catch (Exception e) {
