@@ -25,7 +25,6 @@ import life.bareun.diary.streak.entity.embed.AchieveType;
 import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.MemberTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
-import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import lombok.RequiredArgsConstructor;
@@ -107,7 +106,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         if (achieveTypeToday.get().equals(AchieveType.NOT_ACHIEVE)) {
             memberTotalStreakRepository.findByMember(member)
                 .ifPresent(memberTotalStreak -> {
-                    memberTotalStreak.modifyTotalStreakCount(memberTotalStreak.getTotalTrackerCount() + 1);
+                    memberTotalStreak.modifyTotalStreakCount(memberTotalStreak.getTotalStreakCount() + 1);
                     memberTotalStreak.modifyTotalTrackerCount(
                         memberTotalStreak.getTotalTrackerCount() + totalTrackerCount);
                 });
@@ -115,10 +114,9 @@ public class MemberStreakServiceImpl implements MemberStreakService {
     }
 
     @Override
-    public void achieveMemberStreak(Member member, int currentStreak) {
-        LocalDate today = LocalDate.now();
+    public void achieveMemberStreak(Member member, int currentStreak, LocalDate date) {
         MemberDailyStreak memberDailyStreakToday = memberDailyStreakRepository
-            .findByMemberAndCreatedDate(member, today)
+            .findByMemberAndCreatedDate(member, date)
             .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK));
 
         MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
@@ -178,12 +176,6 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             // 바뀐 나무를 저장한다.
             memberRepository.save(member);
         }
-
-        // 만약 내일의 멤버 데일리 스트릭이 존재하면 currentStreak을 이어준다.
-        memberDailyStreakRepository.findByMemberAndCreatedDate(member, today.plusDays(1))
-            .ifPresent(memberDailyStreakTomorrow -> {
-                memberDailyStreakTomorrow.modifyCurrentStreak(memberDailyStreakToday.getCurrentStreak());
-            });
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface MemberStreakService {
 
     void createMemberDailyStreak(Member member, LocalDate date);
 
-    void achieveMemberStreak(Member member, int currentStreak);
+    void achieveMemberStreak(Member member, int currentStreak, LocalDate date);
 
     MemberStreakResDto getMemberStreakResDto(Member member);
 

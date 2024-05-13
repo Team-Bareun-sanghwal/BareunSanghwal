@@ -104,7 +104,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
                 habitTrackerModifyReqDto.habitTrackerId())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
 
-        if(habitTracker.getSucceededTime() != null || habitTrackerModifyReqDto.content() == null) {
+        if (habitTracker.getSucceededTime() != null || habitTrackerModifyReqDto.content() == null) {
             throw new HabitException(HabitErrorCode.INVALID_PARAMETER_HABIT_TRACKER);
         }
 
@@ -116,7 +116,7 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
             .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
             .content(habitTrackerModifyReqDto.content()).build());
 
-        streakService.achieveStreak(habitTracker.getMemberHabit());
+        streakService.achieveStreak(habitTracker.getMemberHabit(), LocalDate.now());
     }
 
     @Override

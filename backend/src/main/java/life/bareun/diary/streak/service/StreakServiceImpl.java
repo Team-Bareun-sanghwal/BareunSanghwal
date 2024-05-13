@@ -100,9 +100,9 @@ public class StreakServiceImpl implements StreakService {
     }
 
     @Override
-    public void achieveStreak(MemberHabit memberHabit) {
-        HabitDailyStreak habitDailyStreak = habitStreakService.achieveHabitStreak(memberHabit);
-        memberStreakService.achieveMemberStreak(getCurrentMember(), habitDailyStreak.getCurrentStreak());
+    public void achieveStreak(MemberHabit memberHabit, LocalDate date) {
+        HabitDailyStreak habitDailyStreak = habitStreakService.achieveHabitStreak(memberHabit, date);
+        memberStreakService.achieveMemberStreak(memberHabit.getMember(), habitDailyStreak.getCurrentStreak(), date);
     }
 
     @Override
