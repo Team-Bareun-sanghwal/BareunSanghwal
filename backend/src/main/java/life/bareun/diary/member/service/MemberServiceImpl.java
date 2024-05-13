@@ -1,10 +1,10 @@
 package life.bareun.diary.member.service;
 
-import jakarta.validation.constraints.Null;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -475,9 +475,11 @@ public class MemberServiceImpl implements MemberService {
     protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek(
         Long memberId) {
         // colorIdx가 없는 DTO의 리스트를 받는다.
+        // 수행한 적이 없는 요일의 데이터는 없다.
         List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtoList
             = habitTrackerRepository.countPracticedHabitsPerDayOfWeek(memberId);
 
+        // 이럴 일은 없지만 emptyList가 아닌 null이 반환되면 emptyList를 새로 반환한다.
         if (habitPracticeCountPerDayOfWeekDtoList.isEmpty()) {
             return new ArrayList<>();
         }
@@ -492,29 +494,55 @@ public class MemberServiceImpl implements MemberService {
             .min()
             .getAsInt();
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek =
-            habitPracticeCountPerDayOfWeekDtoList.stream()
-                .map(
-                    // map()을 통해 colorIdx를 설정한다.
-                    habitPracticeCountPerDayOfWeekDto -> {
-                        int value = habitPracticeCountPerDayOfWeekDto.value();
+        // 요일, 요일에 해당하는 DTO의 리스트 상 인덱스
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < habitPracticeCountPerDayOfWeekDtoList.size(); ++i) {
+            map.put(habitPracticeCountPerDayOfWeekDtoList.get(i).day(), i);
+        }
+
+        Set<Integer> practiceDayIndicesOfWeek = map.keySet();
+        List<MemberPracticeCountPerDayOfWeekDto> result = Arrays.stream(DayOfWeek.values())
+            .map(
+                dayOfWeek -> {
+                    int dayIndexOfWeek = dayOfWeek.getIndex();
+
+                    // 수행한 적 있는 요일이라면
+                    if (practiceDayIndicesOfWeek.contains(dayIndexOfWeek)) {
+                        // 요일로 리스트 상 인덱스를 얻고
+                        // 그 인덱스로 객체를 가져온다.
+                        HabitPracticeCountPerDayOfWeekDto habitPracticeCountPerDayOfWeekDto =
+                            habitPracticeCountPerDayOfWeekDtoList.get(map.get(dayIndexOfWeek));
 
                         int colorIdx = COLOR_INDEX_DEFAULT;
-                        if (value == minValue) {
-                            colorIdx = COLOR_INDEX_MIN;
-                        } else if (value == maxValue) {
+                        if (habitPracticeCountPerDayOfWeekDto.value() == maxValue) {
                             colorIdx = COLOR_INDEX_MAX;
+                        } else if (habitPracticeCountPerDayOfWeekDto.value() == minValue) {
+                            colorIdx = COLOR_INDEX_MIN;
                         }
 
                         return new MemberPracticeCountPerDayOfWeekDto(
-                            DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
-                            value,
+                            dayOfWeek.getValue(),
+                            habitPracticeCountPerDayOfWeekDto.value(),
+                            colorIdx
+                        );
+                    } else {
+                        int colorIdx = COLOR_INDEX_DEFAULT;
+                        if (maxValue == 0) {
+                            colorIdx = COLOR_INDEX_MAX;
+                        } else if (minValue == 0) {
+                            colorIdx = COLOR_INDEX_MIN;
+                        }
+                        return new MemberPracticeCountPerDayOfWeekDto(
+                            dayOfWeek.getValue(),
+                            0,
                             colorIdx
                         );
                     }
-                ).toList();
+                }
+            )
+            .toList();
 
-        return practiceCountListPerDayOfWeek;
+        return result;
     }
 
 
