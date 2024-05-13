@@ -58,7 +58,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         Long id = authTokenProvider.getMemberIdFromToken(authToken);
 
         // 토큰 값 비교까지 해야 한다.
-        return findById(id).equals(refreshToken);
+        return refreshToken.equals(findById(id));
     }
 
     @Transactional(readOnly = true)
