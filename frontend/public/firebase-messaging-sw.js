@@ -1,20 +1,9 @@
-// self.addEventListener('install', function (e) {
-//   console.log('fcm sw install..');
-//   self.skipWaiting();
-// });
-
-// self.addEventListener('activate', function (e) {
-//   console.log('fcm sw activate..');
-// });
-
 importScripts(
   'https://www.gstatic.com/firebasejs/9.0.2/firebase-app-compat.js',
 );
 importScripts(
   'https://www.gstatic.com/firebasejs/9.0.2/firebase-messaging-compat.js',
 );
-
-// navigator.serviceWorker.register('firebase-messaging-sw');
 
 firebase.initializeApp({
   apiKey: 'AIzaSyAbcSOk4v64N_OtDrAwg6NqCfD4V9ybRVM',
@@ -32,11 +21,12 @@ self.addEventListener('push', function (e) {
   if (!e.data.json()) return;
 
   const resultData = e.data.json();
-  const notificationTitle = resultData.notification.title;
+
+  console.log(resultData);
+
+  const notificationTitle = resultData.data.title;
   const notificationOptions = {
-    body: resultData.notification.body,
-    icon: resultData.notification.image,
-    tag: resultData.notification.tag,
+    body: resultData.data.body,
     data: resultData.data,
     ...resultData,
   };

@@ -1,5 +1,6 @@
 'use client';
 
+import { readNotificationList } from '@/app/notification/_apis/readNotificationList';
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
 
@@ -11,6 +12,7 @@ export const BackToHomeButton = () => {
       className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
       onClick={() => {
         router.push('/main');
+        readNotificationList();
       }}
     />
   );

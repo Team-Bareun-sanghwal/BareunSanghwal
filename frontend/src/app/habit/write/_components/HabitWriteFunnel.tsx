@@ -7,8 +7,10 @@ import { Complete } from './Complete';
 
 export const HabitWriteFunnel = ({
   habitTrackerId,
+  authorization,
 }: {
   habitTrackerId: number;
+  authorization?: string;
 }) => {
   const { Funnel, setStep } = useFunnel('WRITE_STEP');
 
@@ -23,6 +25,7 @@ export const HabitWriteFunnel = ({
             setStep('COMPLETE_STEP');
           }}
           habitTrackerId={habitTrackerId}
+          authorization={authorization}
         />
       </Funnel.Step>
 

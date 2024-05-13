@@ -5,23 +5,32 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 import { OrbitControls, Loader, useGLTF } from '@react-three/drei';
 import { MeshStandardMaterial } from 'three';
 import * as THREE from 'three';
-
+import { treeConfig } from './treeConfig';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader, BackSide } from 'three';
-
-function SkyDome() {
-  const texture = useLoader(TextureLoader, '/assets/sky.jpg');
+import {useFrame} from '@react-three/fiber';
+function SkyDome({time}: {time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
+  const texture = useLoader(TextureLoader, `/assets/background/${time}.png`);
   return (
     <mesh>
-      <sphereGeometry args={[500, 60, 40]} />
+      <sphereGeometry args={[100, 60, 40]} />
       <meshBasicMaterial map={texture} side={BackSide} />
     </mesh>
   );
 }
-function Model({ color }: { color: string }) {
-  const { scene } = useGLTF('/assets/BigTree.glb');
-  scene.position.set(-4.2, 0.2, -3);
-  scene.scale.set(1.6, 1.6, 1.6);
+
+function Island() {
+  const { scene } = useGLTF('/assets/island.glb');
+  const rate = 0.5
+  scene.scale.set(rate, rate, rate)
+  return <primitive object={scene} />;
+}
+function MyTree( {color, level}: {color: string, level: number}) {
+  const {source, scaleValue, position} = treeConfig[level-1];
+  const { scene } = useGLTF(source);
+  scene.scale.set(scaleValue, scaleValue, scaleValue);
+  scene.position.set(position[0], position[1], position[2]);
+
   scene.traverse((child: THREE.Object3D) => {
     if ((child as THREE.Mesh).isMesh) {
       const name = child.name;
@@ -56,48 +65,36 @@ function Model({ color }: { color: string }) {
       }
     }
   });
-  return <primitive object={scene} />;
+  return <primitive object={scene}/>;
 }
-function OutDoor() {
-  const { scene } = useGLTF('/assets/outdoor.glb');
-  return <primitive object={scene} />;
+
+function Group({color, level}: {color : string, level : number}){
+  const groupRef = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.001;
+    }
+  });
+  return (
+    <group ref={groupRef}>
+      <MyTree color={color} level={level} />
+      <Island />
+      <GiftBox/>
+    </group>
+  )
 }
 
 function GiftBox() {
   const { scene } = useGLTF('/assets/giftbox.glb');
-  scene.position.set(-1.2, 1, 4.8);
-  scene.scale.set(0.8, 0.8, 0.8);
+  scene.position.set(-0.8, 0.32, 0.2);
+  scene.scale.set(0.4, 0.4, 0.4);
   return <primitive object={scene} />;
 }
-export default function Tree({ color }: { color: string }) {
-  const [position, setPosition] = useState({ x: 20, y: 16, z: 24 });
+
+
+export default function Tree({ color,level, time}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
+  const [position, setPosition] = useState({ x: 10, y: 1, z: 12 });
   const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
-
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-  const meshRef = useRef();
-  const onClick = (event: any) => {
-    const { clientX, clientY } = event;
-    const { left, top, width, height } = event.target.getBoundingClientRect();
-
-    mouse.x = ((clientX - left) / width) * 2 - 1;
-    mouse.y = -((clientY - top) / height) * 2 + 1;
-
-    // raycaster.setFromCamera(mouse, camera);
-    // const intersects = raycaster.intersectObject(meshRef.current, true);
-
-    // if (intersects.length > 0) {
-    //   console.log('Mesh was clicked!');
-    //   // 여기에 원하는 클릭 이벤트 로직을 추가
-    // }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', onClick);
-    return () => {
-      document.removeEventListener('click', onClick);
-    };
-  }, []);
 
   const handleOnclick1 = () => {
     console.log('hi');
@@ -111,28 +108,18 @@ export default function Tree({ color }: { color: string }) {
   };
   return (
     <>
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-      >
-        <Canvas camera={{ position: [10, 1, 14], fov: 95, near: 1, far: 1000 }}>
+        <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
           <ambientLight intensity={0.6} />
           <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
           <directionalLight position={[-10, 10, 10]} intensity={2} />
           <pointLight position={[-10, -10, -10]} />
           <Suspense fallback={null}>
-            <Model color={color} />
-            <OutDoor />
-            <SkyDome />
+            <Group color={color} level={level} />
+            <SkyDome time ={time}/>
           </Suspense>
           <CameraControls position={position} target={target} />
         </Canvas>
         <Loader />
-      </div>
     </>
   );
 }

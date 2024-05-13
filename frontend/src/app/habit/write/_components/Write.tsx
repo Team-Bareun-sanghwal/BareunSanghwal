@@ -16,10 +16,12 @@ export const Write = ({
   onPrev,
   onNext,
   habitTrackerId,
+  authorization,
 }: {
   onPrev: () => void;
   onNext: () => void;
   habitTrackerId: number;
+  authorization?: string;
 }) => {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
@@ -29,14 +31,18 @@ export const Write = ({
   const handleWriteOverlay = () => {
     overlay.open(({ isOpen, close }) => (
       <BottomSheet
-        description="기록을 완료한다면 오늘 기록해야 할 해빗 중 3개를 완료하고 13일째 스트릭을 유지할 수 있게 됩니다!"
+        description="기록을 완료한다면 오늘 기록해야 할 해빗 중 1개를 완료하고 스트릭을 유지할 수 있게 됩니다!"
         mode="POSITIVE"
         onClose={close}
         onConfirm={async () => {
-          const result = await writeHabit(image, {
-            habitTrackerId: habitTrackerId,
-            content: text,
-          });
+          await writeHabit(
+            image,
+            {
+              habitTrackerId: habitTrackerId,
+              content: text,
+            },
+            authorization,
+          );
           onNext();
           close();
         }}
