@@ -5,12 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.config.WebClientConfig;
@@ -188,22 +185,27 @@ public class RecapServiceImpl implements RecapService {
 
             // 키워드 생성
             String keyword = createKeyWord(totalContent.toString()).content();
+            // 5글자 이상이라면 keyword 정제
+            if(keyword.length() > 5) {
+                keyword = keyword.substring(keyword.length()-5);
+            }
             recapRepository.modifyRecap(
                 RecapModifyDto.builder().recap(recap).wholeStreak(wholeStreak)
                     .maxHabitImage(imageUrl).mostFrequencyWord(keyword)
                     .mostFrequencyTime(occasion).build());
 
-
             if (notificationTokenMap.containsKey(recapMemberDto.member().getId())) {
                 try {
                     notificationService.createNotification(
-                        NotificationResultTokenDto.builder().member(recapMemberDto.member()).content(
+                        NotificationResultTokenDto.builder().member(recapMemberDto.member())
+                            .content(
                                 String.format(notificationCategory.getContent(),
                                     recapMemberDto.member().getNickname(), nowMonth.getYear(),
                                     nowMonth.getMonthValue()))
-                            .token(notificationTokenMap.get(recapMemberDto.member().getId())).build(),
+                            .token(notificationTokenMap.get(recapMemberDto.member().getId()))
+                            .build(),
                         notificationCategory);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     log.error("Member{}에게 리캡 알림을 전송하는 데 실패했습니다.", recapMemberDto.member().getId());
                 }
             }
@@ -215,28 +217,28 @@ public class RecapServiceImpl implements RecapService {
         Member member = findMember();
         List<Recap> recapList = recapRepository.findAllByMember(member);
 
-        Set<Integer> yearSet = new HashSet<>();
-        for (Recap recap : recapList) {
-            yearSet.add(recap.getCreatedDatetime().getYear());
-        }
-        Map<Integer, Object> yearRecapMap = new HashMap<>();
+        Map<Integer, List<RecapSimpleDto>> yearRecapMap = new ConcurrentHashMap<>();
         List<Integer> yearList = new ArrayList<>();
-        for (Integer year : yearSet) {
-            List<RecapSimpleDto> recapSimpleDtoList = new ArrayList<>();
-            yearRecapMap.put(year, recapSimpleDtoList);
-            yearList.add(year);
-        }
+
         for (Recap recap : recapList) {
-            List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) yearRecapMap.get(
-                recap.getCreatedDatetime().minusMonths(1L).getYear());
+            List<RecapSimpleDto> recapSimpleDtoList = yearRecapMap.getOrDefault(
+                recap.getCreatedDatetime().minusMonths(1L).getYear(), null);
+
+            // 만약 저장되지 않은 키라면 새로 생성 및 yearList 추가
+            if(recapSimpleDtoList == null) {
+                recapSimpleDtoList = new ArrayList<>();
+                yearList.add(recap.getCreatedDatetime().minusMonths(1L).getYear());
+            }
+
             recapSimpleDtoList.add(
                 RecapSimpleDto.builder().recapId(recap.getId()).image(recap.getMaxHabitImage())
                     .period(recap.getCreatedDatetime().minusMonths(1L).toLocalDate()).build());
+            yearRecapMap.put(recap.getCreatedDatetime().minusMonths(1L).getYear(), recapSimpleDtoList);
         }
 
         List<RecapDto> recapDtoList = new ArrayList<>();
-        for (Entry<Integer, Object> entry : yearRecapMap.entrySet()) {
-            List<RecapSimpleDto> recapSimpleDtoList = (List<RecapSimpleDto>) entry.getValue();
+        for (Entry<Integer, List<RecapSimpleDto>> entry : yearRecapMap.entrySet()) {
+            List<RecapSimpleDto> recapSimpleDtoList = entry.getValue();
             recapSimpleDtoList.sort((o1, o2) -> o2.period().compareTo(o1.period()));
             recapDtoList.add(
                 RecapDto.builder().year(entry.getKey()).recapList(recapSimpleDtoList).build());
@@ -247,7 +249,6 @@ public class RecapServiceImpl implements RecapService {
         yearList.sort((o1, o2) -> o2 - o1);
 
         return RecapListResDto.builder().recapGroupList(recapDtoList).yearList(yearList).build();
-
     }
 
     @Override
@@ -259,7 +260,7 @@ public class RecapServiceImpl implements RecapService {
         List<RecapHabitAccomplished> recapHabitAccomplishedList = recapHabitAccomplishedRepository.findAllByRecap_OrderByActionCountDesc(
             recap);
 
-        if(recapHabitAccomplishedList == null) {
+        if (recapHabitAccomplishedList == null) {
             throw new RecapException(RecapErrorCode.NOT_FOUND_ACCOMPLISH_HABIT);
         }
 
@@ -285,7 +286,7 @@ public class RecapServiceImpl implements RecapService {
             (o1, o2) -> (o2.actionCount() + o2.missCount()) - (o1.actionCount() + o1.missCount()));
 
         // 첫 5개 요소를 제외한 나머지 요소를 삭제
-        if(recapMemberHabitRateDtoList.size() > 5) {
+        if (recapMemberHabitRateDtoList.size() > 5) {
             recapMemberHabitRateDtoList.subList(5, recapMemberHabitRateDtoList.size()).clear();
         }
 
@@ -293,7 +294,7 @@ public class RecapServiceImpl implements RecapService {
         List<RecapHabitRatio> recapHabitRatioList = recapHabitRatioRepository.findTop4ByRecap_OrderByRatioDesc(
             recap);
 
-        if(recapHabitRatioList == null) {
+        if (recapHabitRatioList == null) {
             throw new RecapException(RecapErrorCode.NOT_FOUND_HABIT_RATIO);
         }
 
