@@ -1,5 +1,6 @@
 package life.bareun.diary.global.auth.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import life.bareun.diary.global.auth.config.SecurityConfig;
@@ -25,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/access-token")
-    public ResponseEntity<BaseResponse<Void>> accessToken(
+    public ResponseEntity<BaseResponse<String>> accessToken(
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
         String refreshToken,
         HttpServletResponse response
@@ -39,6 +40,17 @@ public class AuthController {
             authAccessTokenResDto.expiry()
         );
 
+        Cookie cookie = new Cookie(
+            SecurityConfig.ACCESS_TOKEN_HEADER,
+            authAccessTokenResDto.accessToken()
+        );
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setMaxAge((int) authAccessTokenResDto.expiry());
+        cookie.setDomain("bareun.life");
+        response.addCookie(cookie);
+
         System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
 
         return ResponseEntity
@@ -49,7 +61,7 @@ public class AuthController {
             BaseResponse.success(
                 HttpStatus.OK.value(),
                 "액세스 토큰이 발급되었습니다.",
-                null
+                authAccessTokenResDto.accessToken()
             )
         );
     }
