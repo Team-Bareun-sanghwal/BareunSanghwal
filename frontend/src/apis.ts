@@ -36,6 +36,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
         alert('정상 처리');
         return await json;
 
+      case 400:
       case 401:
         alert('Access Token 만료');
         const result = await $GetRefreshToken();

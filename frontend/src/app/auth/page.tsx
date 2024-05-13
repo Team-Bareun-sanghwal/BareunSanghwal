@@ -7,8 +7,6 @@ export default function Page() {
   const searchParams = useSearchParams();
   const code = searchParams.get('status');
 
-  alert(code);
-
   if (code === '200') {
     router.push(`/main/${getYear()}/${getMonth(true)}`);
   } else {
