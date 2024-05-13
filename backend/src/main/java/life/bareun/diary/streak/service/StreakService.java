@@ -11,7 +11,7 @@ public interface StreakService {
     MemberStreakResDto getMemberStreakResDto();
 
     MonthStreakResDto getHabitStreakResDtoByMemberHabitId(String dateString, Long memberHabitId);
-    
+
     MonthStreakResDto getHabitStreakResDtoByMember(String dateString);
 
     void initialMemberStreak(Member member);
@@ -20,7 +20,7 @@ public interface StreakService {
 
     void createDailyStreak(Member member, LocalDate date);
 
-    void achieveStreak(MemberHabit memberHabit);
+    void achieveStreak(MemberHabit memberHabit, LocalDate date);
 
     void deleteHabitStreak(MemberHabit memberHabit);
 

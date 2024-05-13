@@ -11,7 +11,7 @@ public interface HabitStreakService {
 
     void createHabitDailyStreak(MemberHabit memberHabit, LocalDate date);
 
-    HabitDailyStreak achieveHabitStreak(MemberHabit memberHabit);
+    HabitDailyStreak achieveHabitStreak(MemberHabit memberHabit, LocalDate date);
 
     void deleteHabitTotalStreak(MemberHabit memberHabit);
 

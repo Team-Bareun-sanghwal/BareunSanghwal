@@ -114,10 +114,9 @@ public class MemberStreakServiceImpl implements MemberStreakService {
     }
 
     @Override
-    public void achieveMemberStreak(Member member, int currentStreak) {
-        LocalDate today = LocalDate.now();
+    public void achieveMemberStreak(Member member, int currentStreak, LocalDate date) {
         MemberDailyStreak memberDailyStreakToday = memberDailyStreakRepository
-            .findByMemberAndCreatedDate(member, today)
+            .findByMemberAndCreatedDate(member, date)
             .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK));
 
         MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
@@ -178,7 +177,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         }
 
         // 만약 내일의 멤버 데일리 스트릭이 존재하면 currentStreak을 이어준다.
-        memberDailyStreakRepository.findByMemberAndCreatedDate(member, today.plusDays(1))
+        memberDailyStreakRepository.findByMemberAndCreatedDate(member, date.plusDays(1))
             .ifPresent(memberDailyStreakTomorrow -> {
                 memberDailyStreakTomorrow.modifyCurrentStreak(memberDailyStreakToday.getCurrentStreak());
             });

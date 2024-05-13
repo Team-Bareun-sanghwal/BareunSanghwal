@@ -4,12 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
-import life.bareun.diary.member.entity.Member;
-import life.bareun.diary.member.exception.MemberErrorCode;
-import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.MonthStreakInfoDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
@@ -111,12 +107,9 @@ public class HabitStreakServiceImpl implements HabitStreakService {
     }
 
     @Override
-    public HabitDailyStreak achieveHabitStreak(MemberHabit memberHabit) {
-        // TODO: 전영빈 / 구체적인 날짜의 지정이 필요하다면 파라메터로 바꿔주자.
-        LocalDate today = LocalDate.now();
-
+    public HabitDailyStreak achieveHabitStreak(MemberHabit memberHabit, LocalDate date) {
         HabitDailyStreak habitDailyStreakToday = habitDailyStreakRepository
-            .findByMemberHabitAndCreatedDate(memberHabit, today)
+            .findByMemberHabitAndCreatedDate(memberHabit, date)
             .orElseThrow(() -> new StreakException(HabitDailyStreakErrorCode.NOT_FOUND_HABIT_DAILY_STREAK));
 
         if (habitDailyStreakToday.getAchieveType().equals(AchieveType.NOT_EXISTED)) {
@@ -173,11 +166,6 @@ public class HabitStreakServiceImpl implements HabitStreakService {
             .dayInfo(habitDailyStreakRepository.findStreakDayInfoByMemberHabitId(memberHabitId, firstDayOfMonth,
                 lastDayOfMonth))
             .build();
-    }
-
-    private Member getCurrentMember() {
-        return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
     }
 
     private double getProportion(int achieveCount, int totalCount) {
