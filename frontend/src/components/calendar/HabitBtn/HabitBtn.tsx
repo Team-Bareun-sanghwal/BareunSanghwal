@@ -1,7 +1,7 @@
 'use client';
-
+import { CheckIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
-
+import { PlusIcon } from '@heroicons/react/24/solid';
 export const HabitBtn = ({
   memberHabitId,
   alias,
@@ -9,6 +9,8 @@ export const HabitBtn = ({
   habitId,
   shortcut,
   add,
+  succeededTime,
+  today,
 }: {
   memberHabitId: number;
   alias: string;
@@ -16,6 +18,8 @@ export const HabitBtn = ({
   habitId?: number;
   shortcut?: boolean;
   add?: boolean;
+  succeededTime?: string;
+  today?: boolean;
 }) => {
   const router = useRouter();
 
@@ -42,14 +46,27 @@ export const HabitBtn = ({
           onClick={onClickHabit}
           className={
             shortcut
-              ? 'bg-custom-sky-pastel text-2xl w-24 h-24 rounded-full border-2'
+              ? add
+                ? 'flex  bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full justify-center items-center'
+                : 'relative bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full'
               : memberHabitId == habitId
-                ? 'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full border-2 border-custom-dark-gray'
-                : 'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
+                ? 'relative bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full '
+                : 'relative bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
           }
         >
-          {icon}
+          {add ? <PlusIcon className="w-12 h-12 text-gray-300" /> : icon}
+          {today &&
+            (succeededTime ? (
+              <div className="absolute bottom-0 right-0  text-white bg-green-600   p-2 rounded-full text-xs">
+                <CheckIcon className="w-4 h-4" />
+              </div>
+            ) : (
+              <div className="absolute bottom-0 right-0 bg-gray-600 p-1 rounded-lg text-white text-xs">
+                진행중..
+              </div>
+            ))}
         </button>
+
         <p
           className={
             shortcut

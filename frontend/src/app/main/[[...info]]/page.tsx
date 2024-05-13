@@ -4,7 +4,6 @@ import { convertMonthFormat } from '@/components/calendar/util';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
 export default async function Page(props: { params: { info: number[] } }) {
   const [year, month, habitId] = props.params.info;
-  console.log(year, month, habitId);
   const streakData = await $Fetch({
     method: 'GET',
     url: habitId
@@ -12,7 +11,6 @@ export default async function Page(props: { params: { info: number[] } }) {
       : `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${year}-${convertMonthFormat(month)}`,
     cache: 'no-cache',
   });
-  console.log(streakData);
   const colorData = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak`,

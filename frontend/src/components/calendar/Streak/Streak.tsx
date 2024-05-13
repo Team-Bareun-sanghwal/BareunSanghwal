@@ -1,4 +1,5 @@
 'use client';
+import { ShieldCheckIcon } from '@heroicons/react/24/solid';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { useOverlay } from '@/hooks/use-overlay';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
@@ -13,7 +14,7 @@ interface StreakProps {
   dayNumber?: number;
   month?: number;
   year?: number;
-  habitCnt?: number;
+  totalCount?: number;
   habitId?: number;
   onClick?: () => void;
 }
@@ -26,16 +27,11 @@ export const Streak = ({
   month,
   year,
   isUnique,
-  habitCnt,
+  totalCount,
   habitId,
   ...props
 }: StreakProps) => {
-  // const Recovery = $Fetch({
-  //   method: 'POST',
-  //   url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getDateFormat(false)}`,
-  //   cache: 'no-cache',
-  // });
-
+  console.log(dayNumber, achieveCount, totalCount);
   const overlay = useOverlay();
   const onClickStreakRecovery = () => {
     if (dayNumber && !habitId && achieveType === 'NOT_ACHIEVE') {
@@ -96,11 +92,16 @@ export const Streak = ({
   const basicStreakStyle =
     'text-white text-xl aspect-square rounded-lg relative';
   function getClassName() {
-    if (achieveCount === 0) {
-      return `bg-streak-none ${basicStreakStyle}`;
+    if (achieveType === 'RECOVERY') {
+      return isUnique
+        ? `bg-streak-${themeColor}-7 opacity-${streakOpacity[7]} ${basicStreakStyle}`
+        : `bg-streak-${themeColor} opacity-${streakOpacity[totalCount ? totalCount : 1]} ${basicStreakStyle}`;
     }
     if (habitId === 0) {
       return `bg-streak-${themeColor}-${achieveCount} opacity-${streakOpacity[7]} ${basicStreakStyle}`;
+    }
+    if (achieveCount === 0) {
+      return `bg-streak-none ${basicStreakStyle}`;
     }
     if (isUnique) {
       return `bg-streak-${themeColor}-${achieveCount} opacity-${streakOpacity[achieveCount]} ${basicStreakStyle}`;
@@ -123,8 +124,12 @@ export const Streak = ({
       >
         {dayNumber}
       </a>
-      {habitCnt != 0 && habitCnt == achieveCount && (
-        <StarIcon className="w-4 h-4 absolute right-1 top-1" />
+
+      {totalCount != 0 && totalCount === achieveCount && (
+        <StarIcon className="w-4 h-4 absolute right-1 top-1 z-30" />
+      )}
+      {achieveType === 'RECOVERY' && totalCount && (
+        <ShieldCheckIcon className="w-4 h-4 absolute right-1 top-1 z-30" />
       )}
     </button>
   );

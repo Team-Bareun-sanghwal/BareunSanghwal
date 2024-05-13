@@ -61,7 +61,7 @@ export const Calender = ({
               month={month}
               dayNumber={info.dayNumber}
               isUnique={isUnique}
-              habitCnt={memberHabitList.length}
+              totalCount={info.totalCount}
               habitId={habitId}
             />
           ),
