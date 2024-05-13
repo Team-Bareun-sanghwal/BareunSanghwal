@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
-import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.MonthStreakInfoDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
@@ -17,7 +16,6 @@ import life.bareun.diary.streak.exception.HabitTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
 import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.repository.HabitTotalStreakRepository;
-import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,8 +29,6 @@ public class HabitStreakServiceImpl implements HabitStreakService {
 
     private final HabitTotalStreakRepository habitTotalStreakRepository;
     private final HabitDailyStreakRepository habitDailyStreakRepository;
-    private final MemberTotalStreakRepository memberTotalStreakRepository;
-    private final MemberRepository memberRepository;
     private final HabitTrackerRepository habitTrackerRepository;
 
     @Override

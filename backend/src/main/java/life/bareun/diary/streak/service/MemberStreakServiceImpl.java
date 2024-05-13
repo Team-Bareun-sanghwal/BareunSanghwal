@@ -24,7 +24,6 @@ import life.bareun.diary.streak.entity.embed.AchieveType;
 import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.MemberTotalStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
-import life.bareun.diary.streak.repository.HabitDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberDailyStreakRepository;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemberStreakServiceImpl implements MemberStreakService {
-
-    private final HabitDailyStreakRepository habitDailyStreakRepository;
 
     private final MemberTotalStreakRepository memberTotalStreakRepository;
     private final MemberDailyStreakRepository memberDailyStreakRepository;
@@ -106,7 +103,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         if (achieveTypeToday.get().equals(AchieveType.NOT_ACHIEVE)) {
             memberTotalStreakRepository.findByMember(member)
                 .ifPresent(memberTotalStreak -> {
-                    memberTotalStreak.modifyTotalStreakCount(memberTotalStreak.getTotalTrackerCount() + 1);
+                    memberTotalStreak.modifyTotalStreakCount(memberTotalStreak.getTotalStreakCount() + 1);
                     memberTotalStreak.modifyTotalTrackerCount(
                         memberTotalStreak.getTotalTrackerCount() + totalTrackerCount);
                 });
@@ -175,12 +172,6 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             // 바뀐 나무를 저장한다.
             memberRepository.save(member);
         }
-
-        // 만약 내일의 멤버 데일리 스트릭이 존재하면 currentStreak을 이어준다.
-        memberDailyStreakRepository.findByMemberAndCreatedDate(member, date.plusDays(1))
-            .ifPresent(memberDailyStreakTomorrow -> {
-                memberDailyStreakTomorrow.modifyCurrentStreak(memberDailyStreakToday.getCurrentStreak());
-            });
     }
 
     @Override
