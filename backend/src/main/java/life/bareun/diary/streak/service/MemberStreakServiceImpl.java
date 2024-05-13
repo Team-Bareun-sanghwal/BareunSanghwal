@@ -38,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberStreakServiceImpl implements MemberStreakService {
 
-    private final HabitDailyStreakRepository habitDailyStreakRepository;
     private final NotificationService notificationService;
     private final MemberTotalStreakRepository memberTotalStreakRepository;
     private final MemberDailyStreakRepository memberDailyStreakRepository;
