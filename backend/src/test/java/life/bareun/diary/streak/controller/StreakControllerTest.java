@@ -1,6 +1,7 @@
 package life.bareun.diary.streak.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -8,16 +9,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
+import life.bareun.diary.habit.entity.MemberHabit;
+import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.exception.MemberErrorCode;
 import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.service.MemberService;
+import life.bareun.diary.streak.dto.request.StreakRecoveryReqDto;
 import life.bareun.diary.streak.service.StreakService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,20 +51,27 @@ class StreakControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private StreakService streakService;
+
+    @Autowired
     private MemberService memberService;
 
     @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
-    private StreakService streakService;
-    
+    private MemberHabitRepository memberHabitRepository;
+
     @Autowired
     private AuthTokenProvider authTokenProvider;
 
     private String accessToken;
 
     private Member member;
+
+    private MemberHabit memberHabit1;
+
+    private MemberHabit memberHabit2;
 
     @BeforeEach
     void setup() throws Exception {
@@ -102,8 +114,21 @@ class StreakControllerTest {
                 .header("Authorization", accessToken)
         );
 
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false, member);
+        memberHabit1 = memberHabitList.get(0);
+        memberHabit2 = memberHabitList.get(1);
+
+        // Day 1
         streakService.createDailyStreak(member, LocalDate.now().plusDays(1));
+        streakService.achieveStreak(memberHabit1, LocalDate.now().plusDays(1));
+        streakService.achieveStreak(memberHabit2, LocalDate.now().plusDays(1));
+
+        // Day 2
         streakService.createDailyStreak(member, LocalDate.now().plusDays(2));
+
+        // Day 3
+        streakService.createDailyStreak(member, LocalDate.now().plusDays(3));
+        streakService.achieveStreak(memberHabit2, LocalDate.now().plusDays(3));
     }
 
     @Test
@@ -117,9 +142,9 @@ class StreakControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.totalStreakCount").value(3))
-            .andExpect(jsonPath("$.data.achieveStreakCount").value(0))
-            .andExpect(jsonPath("$.data.starCount").value(0))
-            .andExpect(jsonPath("$.data.longestStreakCount").value(0));
+            .andExpect(jsonPath("$.data.achieveStreakCount").value(2))
+            .andExpect(jsonPath("$.data.starCount").value(1))
+            .andExpect(jsonPath("$.data.longestStreakCount").value(1));
     }
 
     @Test
@@ -130,19 +155,41 @@ class StreakControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", accessToken)
             )
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.achieveProportion").value(60.0))
+            .andExpect(jsonPath("$.data.dayInfo[1].achieveType").value("ACHIEVE"))
+            .andExpect(jsonPath("$.data.dayInfo[1].achieveCount").value(2))
+            .andExpect(jsonPath("$.data.dayInfo[1].totalCount").value(2));
     }
 
     @Test
     @DisplayName("주어진 멤버 해빗에 해당되는 월간 해빗 스트릭 정보 조회 API 테스트")
     void findAllMemberStreakByHabitTest() throws Exception {
-
+        mockMvc.perform(
+                get("/streaks/2024-05/" + memberHabit1.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", accessToken)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.achieveProportion").value(33.0))
+            .andExpect(jsonPath("$.data.dayInfo[1].achieveType").value("ACHIEVE"))
+            .andExpect(jsonPath("$.data.dayInfo[1].achieveCount").value(1))
+            .andExpect(jsonPath("$.data.dayInfo[1].totalCount").value(1));
     }
 
     @Test
     @DisplayName("스트릭 리커버리 API 테스트")
     void recoveryStreakTest() throws Exception {
+        StreakRecoveryReqDto recoveryReqDto = StreakRecoveryReqDto.builder()
+            .date(LocalDate.now().plusDays(2))
+            .build();
 
+        mockMvc.perform(
+            patch("/streaks/recovery")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(recoveryReqDto))
+                .header("Authorization", accessToken)
+        );
     }
 
 }
