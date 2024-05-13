@@ -31,7 +31,6 @@ export async function $Fetch({ method, url, data, cache }: Request) {
     });
 
     const json = await res.json();
-    alert('api 요청 결과' + (await json));
     switch ((await json).status) {
       case 200:
         alert('정상 처리');
@@ -40,7 +39,6 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       case 401:
         alert('Access Token 만료');
         const result = await $GetRefreshToken();
-        alert('result ' + (await result));
         if ((await result) === 200) {
           alert('Access Token 재발급 성공');
           await $Fetch({ method, url, data, cache });
