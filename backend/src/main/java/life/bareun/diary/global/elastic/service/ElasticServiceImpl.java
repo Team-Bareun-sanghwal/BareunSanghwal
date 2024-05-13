@@ -104,7 +104,7 @@ public class ElasticServiceImpl implements ElasticService {
                     continue;
                 }
 
-                // 필요한 필드 추출\
+                // 필요한 필드 추출
                 long habitId = Long.parseLong(jsonNode.path("habit_id").asText());
                 if(habitId < 1 || habitId > 313) {
                     continue;
@@ -115,13 +115,10 @@ public class ElasticServiceImpl implements ElasticService {
 
                 // ZonedDateTime을 LocalDateTime으로 변환
                 LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
-                // 추출한 값 로깅
-                log.info(habitId + " " + localDateTime);
                 logList.add(new ElasticDto(habitId, localDateTime));
             }
             catch (Exception e) {
                 log.error("FAIL_REFINE_ELASTIC_LOG", e);
-//                throw new ElasticException(ElasticErrorCode.FAIL_REFINE_ELASTIC_LOG);
                 return;
             }
         }
