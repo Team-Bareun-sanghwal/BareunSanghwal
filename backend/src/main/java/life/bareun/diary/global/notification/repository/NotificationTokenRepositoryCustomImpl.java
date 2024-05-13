@@ -3,7 +3,6 @@ package life.bareun.diary.global.notification.repository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import life.bareun.diary.global.notification.dto.NotificationTokenDto;
-import life.bareun.diary.member.entity.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.HashOperations;
@@ -16,8 +15,8 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 public class NotificationTokenRepositoryCustomImpl implements NotificationTokenRepositoryCustom {
 
-    private RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, String, Object> hashOperations;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final HashOperations<String, String, Object> hashOperations;
 
     public NotificationTokenRepositoryCustomImpl(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;

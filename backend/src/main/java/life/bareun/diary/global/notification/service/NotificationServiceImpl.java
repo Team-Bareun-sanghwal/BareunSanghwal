@@ -78,7 +78,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 현재 Redis에 존재하는 토큰 목록
         Map<Long, String> notificationTokenMap = findAllExistMessageToken();
-
         // 조건에 부합하는 사용자와 토큰, 내용 목록
         Map<Long, NotificationResultTokenDto> resultTokenDtoMap = verifyCondition(
             notificationCategoryId,
@@ -274,7 +273,7 @@ public class NotificationServiceImpl implements NotificationService {
             .build();
         try {
             FirebaseMessaging.getInstance().sendAsync(message);
-            log.info(message.toString());
+            log.info("알림 전송에 성공하였습니다. {}", notificationResultTokenDto.member().getId());
         } catch (Exception e) {
             log.error("알림 전송에 실패했습니다. {}", e.toString());
         }
