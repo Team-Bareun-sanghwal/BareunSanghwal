@@ -18,7 +18,12 @@ export interface IDayInfo {
 }
 export const Time = () => {
   const hour = new Date().getHours();
-  return hour < 5 ? 'night' : hour < 8 ? 'midnight' : hour < 6 ? 'morning' : hour <7 ? 'lunch' : 'dinner';
+  if(hour < 5 || hour>=20) return 'night';
+  if(hour < 7) return 'midnight';
+  if(hour < 10) return 'morning';
+  if(hour < 17) return 'lunch';
+  else return 'dinner';
+
 }
 const Today = () => {
   return new Date().getDate();

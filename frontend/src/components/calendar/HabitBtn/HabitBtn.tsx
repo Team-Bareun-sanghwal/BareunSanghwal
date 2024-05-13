@@ -57,12 +57,12 @@ export const HabitBtn = ({
           {add ? <PlusIcon className="w-12 h-12 text-gray-300" /> : icon}
           {today &&
             (succeededTime ? (
-              <div className="absolute bottom-0 right-0  text-white bg-green-600   p-2 rounded-full text-xs">
+              <div className="absolute bottom-0 right-0  text-white bg-green-600 p-2 rounded-full text-xs">
                 <CheckIcon className="w-4 h-4" />
               </div>
             ) : (
-              <div className="absolute bottom-0 right-0 bg-gray-600 p-1 rounded-lg text-white text-xs">
-                진행중..
+              <div className="absolute bottom-0 right-0 bg-gray-400 p-2 rounded-full text-white text-xs">
+                <CheckIcon className="w-4 h-4" />
               </div>
             ))}
         </button>
