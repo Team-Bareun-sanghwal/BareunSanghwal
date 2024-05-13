@@ -30,7 +30,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       body: JSON.stringify(data),
     });
 
-    const json = res.json();
+    const json = await res.json();
     switch ((await json).status) {
       case 200:
         console.log('정상 처리');
@@ -39,7 +39,8 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       case 401:
         console.log('Access Token 만료');
         const result = await $GetRefreshToken();
-        if (result === 200) {
+        console.log(await result);
+        if ((await result) === 200) {
           console.log('Access Token 재발급 성공');
           await $Fetch({ method, url, data, cache });
           break;
@@ -103,6 +104,11 @@ export async function $Logout() {
         },
       },
     );
+
+    if ((await res.json()).status === 200) {
+      cookieStore.delete('Authorization');
+      cookieStore.delete('RefreshToken');
+    }
 
     return await res.json();
   } catch (e) {
