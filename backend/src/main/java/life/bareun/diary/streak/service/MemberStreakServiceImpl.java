@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import life.bareun.diary.global.auth.util.AuthUtil;
+import life.bareun.diary.global.notification.service.NotificationService;
 import life.bareun.diary.habit.dto.HabitTrackerCountDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.member.entity.Member;
@@ -39,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberStreakServiceImpl implements MemberStreakService {
 
     private final HabitDailyStreakRepository habitDailyStreakRepository;
-
+    private final NotificationService notificationService;
     private final MemberTotalStreakRepository memberTotalStreakRepository;
     private final MemberDailyStreakRepository memberDailyStreakRepository;
     private final HabitTrackerRepository habitTrackerRepository;
@@ -156,7 +157,8 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         // 갱신된 최장 스트릭이 10의 배수면 나무 레벨업
         if (memberTotalStreak.getLongestStreak() % 10 == 0) {
             Tree currentTree = member.getTree();
-
+            // 10의 자리수마다 알림을 보냄
+            notificationService.sendContinuousStreakMember(member, memberTotalStreak.getLongestStreak());
             // 레벨을 기준으로 오름차순 정렬된 나무 리스트를 얻는다.
             List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
 
