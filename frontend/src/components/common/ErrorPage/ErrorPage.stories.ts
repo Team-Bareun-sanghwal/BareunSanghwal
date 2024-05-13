@@ -20,6 +20,7 @@ export const NoContent: Story = {
     errorTitle: '기록한 내역이 없어요.',
     errorDescription: '해빗 기록이 남도록 참여해보세요!',
     buttonText: '기록하러 가기',
+    nextPage: '/',
   },
 };
 
@@ -28,6 +29,7 @@ export const NotFound: Story = {
     errorTitle: '페이지를 찾을 수 없어요.',
     errorDescription: '잘못된 접근입니다. 홈으로 돌아가주세요.',
     buttonText: '홈으로 가기',
+    nextPage: '/',
   },
 };
 
@@ -36,5 +38,6 @@ export const ServerError: Story = {
     errorTitle: '예기치 않은 오류가 발생했어요.',
     errorDescription: '오류가 발생했어요. 다시 시도해주세요.',
     buttonText: '홈으로 가기',
+    nextPage: '/',
   },
 };

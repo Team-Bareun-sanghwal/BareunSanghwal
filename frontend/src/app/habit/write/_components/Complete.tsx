@@ -2,7 +2,7 @@
 
 import { Button } from '@/components';
 import dynamic from 'next/dynamic';
-import lottieJson from '@/../public/lotties/lottie-music.json';
+import lottieJson from '@/../public/lotties/lottie-lego.json';
 
 const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
