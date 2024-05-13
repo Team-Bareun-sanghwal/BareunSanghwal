@@ -5,24 +5,32 @@ interface IHabitCheckerProps {
   achieveCount: number;
   totalCount: number;
 }
-interface IHabitChecker {
-  habitCheckerTitle: string;
-  habitCheckerText: string;
-  habitCheckerSubText: string;
-  iconPath: string;
-  isAchieved: boolean;
-  isHabit: boolean;
+interface IHabitTrackerDto {
+  name: string;
+  alias: string;
+  memberHabitId: number;
+  habitTrackerId: number;
+  icon: string;
+  succeededTime: number;
+  day: number;
+}
+interface IHabitTrackerTodayDtoList {
+  habitTrackerTodayDtoList: IHabitTrackerDto[];
 }
 const getHabitCheckerText = (
-  achieveCount: number,
-  totalCount: number,
-): IHabitChecker => {
+  habitTrackerTodayDtoList: IHabitTrackerDto[],
+) => {
   let habitCheckerTitle = '오늘의 바른 생활';
   let habitCheckerText = '';
   let habitCheckerSubText = '';
   let iconPath = '';
   let isAchieved = false;
   let isHabit = true;
+
+  const totalCount = habitTrackerTodayDtoList?.length||0;
+  const achieveCount = habitTrackerTodayDtoList.filter(
+    (habit:IHabitTrackerDto) => habit.succeededTime != null,
+  ).length;
 
   if (totalCount === 0) {
     habitCheckerText = '오늘 등록한 해빗이 없어요!';
@@ -48,9 +56,8 @@ const getHabitCheckerText = (
   };
 };
 export const HabitChecker = ({
-  achieveCount,
-  totalCount,
-}: IHabitCheckerProps) => {
+  habitTrackerTodayDtoList,
+}: IHabitTrackerTodayDtoList) => {
   const { hoursRemaining, minutesRemaining } = getTimeRemaining();
   const {
     habitCheckerTitle,
@@ -59,7 +66,7 @@ export const HabitChecker = ({
     iconPath,
     isAchieved,
     isHabit,
-  } = getHabitCheckerText(achieveCount, totalCount);
+  } = getHabitCheckerText(habitTrackerTodayDtoList);
   return (
     <>
       {/* Left */}

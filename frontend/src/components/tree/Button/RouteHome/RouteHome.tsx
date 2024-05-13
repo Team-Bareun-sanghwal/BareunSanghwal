@@ -1,5 +1,5 @@
 'use client';
-
+import { ArrowLeftCircleIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
 
 export const RouteHome = () => {
@@ -11,8 +11,8 @@ export const RouteHome = () => {
 
   return (
     <>
-      <button onClick={exit} className="absolute z-10 m-4 text-lg">
-        {'<'} 뒤로가기
+      <button onClick={exit} className="absolute z-20 p-2 text-lg">
+        <ArrowLeftCircleIcon color="white" className="w-[44px] h-[44px]"/>
       </button>
     </>
   );

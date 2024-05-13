@@ -7,36 +7,58 @@ export const HabitBtn = ({
   alias,
   icon,
   habitId,
+  shortcut,
+  add,
 }: {
   memberHabitId: number;
   alias: string;
   icon: string;
   habitId?: number;
+  shortcut?: boolean;
+  add?: boolean;
 }) => {
   const router = useRouter();
 
-  const onClickRouter = () => {
-    if (memberHabitId == habitId) {
-      router.push(`/main/2024/5`);
+  const onClickHabit = () => {
+    if (!add) {
+      if (shortcut) {
+        router.push(`/habit/write/${memberHabitId}`);
+      } else {
+        if (memberHabitId == habitId) {
+          router.push(`/main/2024/5`);
+        } else {
+          router.push(`/main/2024/5/${memberHabitId}`);
+        }
+      }
     } else {
-      router.push(`/main/2024/5/${memberHabitId}`);
+      router.push('/habit/register');
     }
   };
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center overflow-hidden">
+      <div className="flex flex-col items-center justify-center">
         <button
-          onClick={onClickRouter}
+          onClick={onClickHabit}
           className={
-            memberHabitId == habitId
-              ? 'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full border-2 border-custom-dark-gray'
-              : 'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
+            shortcut
+              ? 'bg-custom-sky-pastel text-2xl w-24 h-24 rounded-full border-2'
+              : memberHabitId == habitId
+                ? 'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full border-2 border-custom-dark-gray'
+                : 'bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
           }
         >
           {icon}
         </button>
-        <p className="text-xs text-center w-16 truncate ...">{alias}</p>
+        <p
+          className={
+            shortcut
+              ? 'text-s mt-1 text-center w-24 truncate ...'
+              : 'text-xs text-center w-16 truncate ...'
+          }
+        >
+          {alias}
+        </p>
       </div>
     </>
   );

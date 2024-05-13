@@ -16,7 +16,10 @@ export interface IDayInfo {
   achieveCount: number;
   totalCount: number;
 }
-
+export const Time = () => {
+  const hour = new Date().getHours();
+  return hour < 5 ? 'night' : hour < 8 ? 'midnight' : hour < 6 ? 'morning' : hour <7 ? 'lunch' : 'dinner';
+}
 const Today = () => {
   return new Date().getDate();
 };
