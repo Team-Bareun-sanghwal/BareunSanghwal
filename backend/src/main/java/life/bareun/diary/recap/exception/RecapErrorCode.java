@@ -22,7 +22,9 @@ public enum RecapErrorCode {
 
     NOT_FOUND_ACCOMPLISH_HABIT(HttpStatus.NOT_FOUND, "실천한 해빗이 존재하지 않습니다."),
 
-    NOT_FOUND_HABIT_RATIO(HttpStatus.NOT_FOUND, "해빗 비율이 존재하지 않습니다.");
+    NOT_FOUND_HABIT_RATIO(HttpStatus.NOT_FOUND, "해빗 비율이 존재하지 않습니다."),
+
+    INVALID_CLASS_CAST_RECAP(HttpStatus.INTERNAL_SERVER_ERROR, "리캡 목록 클래스 변환이 실패하였습니다.");
 
     private final HttpStatus status;
     private final String message;
