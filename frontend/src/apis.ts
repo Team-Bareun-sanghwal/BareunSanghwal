@@ -31,28 +31,28 @@ export async function $Fetch({ method, url, data, cache }: Request) {
     });
 
     const json = await res.json();
-    console.log('api 요청 결과', await json);
+    alert('api 요청 결과' + (await json));
     switch ((await json).status) {
       case 200:
-        console.log('정상 처리');
+        alert('정상 처리');
         return await json;
 
       case 401:
-        console.log('Access Token 만료');
+        alert('Access Token 만료');
         const result = await $GetRefreshToken();
-        console.log('result', await result);
+        alert('result ' + (await result));
         if ((await result) === 200) {
-          console.log('Access Token 재발급 성공');
+          alert('Access Token 재발급 성공');
           await $Fetch({ method, url, data, cache });
           break;
         } else {
-          console.log('Access Token 재발급 실패');
+          alert('Access Token 재발급 실패');
           window.location.href = '/';
           break;
         }
 
       case 500:
-        console.log('서버 오류 발생');
+        alert('서버 오류 발생');
         break;
     }
   } catch (e) {
@@ -65,6 +65,7 @@ export async function $GetRefreshToken() {
   const cookieStore = cookies();
   // const refreshToken = process.env.NEXT_PUBLIC_REFRESH_TOKEN;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
+  alert(refreshToken);
 
   try {
     const res = await fetch(
