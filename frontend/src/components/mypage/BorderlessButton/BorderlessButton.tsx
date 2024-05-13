@@ -8,7 +8,7 @@ import {
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { deleteMemberInfo } from '@/app/(member)/mypage/_apis/deleteMemberInfo';
-import { $Fetch } from '@/apis';
+import { $Logout } from '@/apis';
 
 interface IPropType {
   type: string;
@@ -46,12 +46,10 @@ export const BorderlessButton = ({ type }: IPropType) => {
     if (type === 'leave') {
       handleOverlay();
     } else {
-      const result = await $Fetch({
-        method: 'POST',
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`,
-        cache: 'default',
-      });
-      console.log(await result);
+      const result = await $Logout();
+      if ((await result.status) === 200) {
+        router.push('/');
+      }
     }
   };
 
