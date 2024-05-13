@@ -328,7 +328,7 @@ public class MemberServiceImpl implements MemberService {
 
         return new MemberPointResDto(
             currentMember.getPoint(),
-            (lastHarvestedDate != null) && (today.isAfter(lastHarvestedDate) || today.equals(lastHarvestedDate))
+            today.equals(lastHarvestedDate)
         );
     }
 
