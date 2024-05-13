@@ -75,6 +75,8 @@ public class ResponseUtil {
             )
         );
 
+        System.out.println("AccessToken is added");
+
     }
 
     public static void addRefreshTokenCookie(
@@ -103,7 +105,6 @@ public class ResponseUtil {
             .secure(true) // HTTPS만 허용
             .httpOnly(true) // HTTP 패킷으로만 쿠키를 받을 수 있음
             .path("/")
-            .domain("bareun.life")
             .maxAge(maxAgeSeconds)
             .build()
             .toString();

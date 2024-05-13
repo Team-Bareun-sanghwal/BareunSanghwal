@@ -28,17 +28,24 @@ public class AuthController {
     public ResponseEntity<BaseResponse<Void>> accessToken(
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
         String refreshToken,
-        HttpServletRequest request,
         HttpServletResponse response
     ) {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
 
+        System.out.println("Try to add Access token");
         ResponseUtil.addAccessTokenCookie(
             response,
             authAccessTokenResDto.accessToken(),
             authAccessTokenResDto.expiry()
         );
-        return ResponseEntity.ok(
+
+        System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
+
+        return ResponseEntity
+            .status(
+                HttpStatus.OK.value()
+            )
+            .body(
             BaseResponse.success(
                 HttpStatus.OK.value(),
                 "액세스 토큰이 발급되었습니다.",
