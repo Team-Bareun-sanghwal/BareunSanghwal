@@ -46,10 +46,7 @@ export const BorderlessButton = ({ type }: IPropType) => {
     if (type === 'leave') {
       handleOverlay();
     } else {
-      const result = await $Logout();
-      if ((await result.status) === 200) {
-        router.push('/');
-      }
+      await $Logout();
     }
   };
 
