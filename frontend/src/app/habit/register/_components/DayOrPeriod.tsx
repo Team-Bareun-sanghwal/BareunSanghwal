@@ -11,6 +11,7 @@ import {
   GuideBox,
   HabitRegisterBottomSheet,
   HabitListBox,
+  AlertBox,
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
@@ -102,23 +103,34 @@ export default function DayOrPeriod({
             />
           }
           onClose={close}
-          onConfirm={() => {
-            close();
-            onNext();
-
-            if (data.habitId && data.alias && data.icon)
-              registerHabit(
+          onConfirm={async () => {
+            if (data.habitId && data.alias && data.icon) {
+              const response = await registerHabit(
                 data.habitId,
                 data.alias,
                 data.icon,
                 dayOfWeek.length === 0 ? null : dayOfWeek,
                 period,
               );
+
+              if (response.status !== 201) handleAlertBox();
+              else {
+                onNext();
+              }
+              close();
+            }
           }}
           open={isOpen}
         />
       ),
     );
+  };
+
+  const handleAlertBox = () => {
+    overlay.open(({ isOpen }) => (
+      <AlertBox label="해빗 등록에 실패했습니다" mode="ERROR" open={isOpen} />
+    ));
+    setTimeout(() => overlay.close(), 1000);
   };
 
   return (
