@@ -34,11 +34,11 @@ public class AuthController {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
 
         System.out.println("Try to add Access token");
-        ResponseUtil.addAccessTokenCookie(
-            response,
-            authAccessTokenResDto.accessToken(),
-            authAccessTokenResDto.expiry()
-        );
+        // ResponseUtil.addAccessTokenCookie(
+        //     response,
+        //     authAccessTokenResDto.accessToken(),
+        //     authAccessTokenResDto.expiry()
+        // );
 
         Cookie cookie = new Cookie(
             SecurityConfig.ACCESS_TOKEN_HEADER,
