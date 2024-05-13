@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,9 @@ import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
-import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
-import life.bareun.diary.member.dto.response.MemberTreeColorResDto;
+import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
 import life.bareun.diary.member.entity.DailyPhrase;
 import life.bareun.diary.member.entity.Member;
@@ -263,7 +264,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberStreakColorResDto streakColor() {
+    public MemberStreakInfoResDto streakInfo() {
         Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
                 member.getCurrentStreakColorId()
@@ -273,23 +274,27 @@ public class MemberServiceImpl implements MemberService {
             )
             .getName();
 
-        return new MemberStreakColorResDto(streakColorName);
+        return new MemberStreakInfoResDto(streakColorName);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public MemberTreeColorResDto treeColor() {
+    public MemberTreeInfoResDto treeInfo() {
         Member member = getCurrentMember();
 
-        String treeColorName = treeColorRepository.findById(
-                member.getCurrentStreakColorId()
+        int treeLevel = member.getTree().getLevel();
+        String treeColor = treeColorRepository.findById(
+                member.getCurrentTreeColorId()
             )
             .orElseThrow(
-                () -> new ProductException(ProductErrorCode.NO_SUCH_STREAK_COLOR)
+                () -> new ProductException(ProductErrorCode.NO_SUCH_TREE_COLOR)
             )
             .getName();
 
-        return new MemberTreeColorResDto(treeColorName);
+        return new MemberTreeInfoResDto(
+            treeLevel,
+            treeColor
+        );
     }
 
     @Override
@@ -317,7 +322,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberPointResDto point() {
-        return new MemberPointResDto(getCurrentMember().getPoint());
+        Member currentMember = getCurrentMember();
+        LocalDate lastHarvestedDate = currentMember.getLastHarvestedDate();
+        LocalDate today = LocalDate.now();
+
+        return new MemberPointResDto(
+            currentMember.getPoint(),
+            today.equals(lastHarvestedDate)
+        );
     }
 
     @Override
@@ -463,9 +475,11 @@ public class MemberServiceImpl implements MemberService {
     protected List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek(
         Long memberId) {
         // colorIdx가 없는 DTO의 리스트를 받는다.
+        // 수행한 적이 없는 요일의 데이터는 없다.
         List<HabitPracticeCountPerDayOfWeekDto> habitPracticeCountPerDayOfWeekDtoList
             = habitTrackerRepository.countPracticedHabitsPerDayOfWeek(memberId);
 
+        // 이럴 일은 없지만 emptyList가 아닌 null이 반환되면 emptyList를 새로 반환한다.
         if (habitPracticeCountPerDayOfWeekDtoList.isEmpty()) {
             return new ArrayList<>();
         }
@@ -480,29 +494,55 @@ public class MemberServiceImpl implements MemberService {
             .min()
             .getAsInt();
 
-        List<MemberPracticeCountPerDayOfWeekDto> practiceCountListPerDayOfWeek =
-            habitPracticeCountPerDayOfWeekDtoList.stream()
-                .map(
-                    // map()을 통해 colorIdx를 설정한다.
-                    habitPracticeCountPerDayOfWeekDto -> {
-                        int value = habitPracticeCountPerDayOfWeekDto.value();
+        // 요일, 요일에 해당하는 DTO의 리스트 상 인덱스
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0; i < habitPracticeCountPerDayOfWeekDtoList.size(); ++i) {
+            map.put(habitPracticeCountPerDayOfWeekDtoList.get(i).day(), i);
+        }
+
+        Set<Integer> practiceDayIndicesOfWeek = map.keySet();
+        List<MemberPracticeCountPerDayOfWeekDto> result = Arrays.stream(DayOfWeek.values())
+            .map(
+                dayOfWeek -> {
+                    int dayIndexOfWeek = dayOfWeek.getIndex();
+
+                    // 수행한 적 있는 요일이라면
+                    if (practiceDayIndicesOfWeek.contains(dayIndexOfWeek)) {
+                        // 요일로 리스트 상 인덱스를 얻고
+                        // 그 인덱스로 객체를 가져온다.
+                        HabitPracticeCountPerDayOfWeekDto habitPracticeCountPerDayOfWeekDto =
+                            habitPracticeCountPerDayOfWeekDtoList.get(map.get(dayIndexOfWeek));
 
                         int colorIdx = COLOR_INDEX_DEFAULT;
-                        if (value == minValue) {
-                            colorIdx = COLOR_INDEX_MIN;
-                        } else if (value == maxValue) {
+                        if (habitPracticeCountPerDayOfWeekDto.value() == maxValue) {
                             colorIdx = COLOR_INDEX_MAX;
+                        } else if (habitPracticeCountPerDayOfWeekDto.value() == minValue) {
+                            colorIdx = COLOR_INDEX_MIN;
                         }
 
                         return new MemberPracticeCountPerDayOfWeekDto(
-                            DayOfWeek.getValueByIndex(habitPracticeCountPerDayOfWeekDto.day()),
-                            value,
+                            dayOfWeek.getValue(),
+                            habitPracticeCountPerDayOfWeekDto.value(),
+                            colorIdx
+                        );
+                    } else {
+                        int colorIdx = COLOR_INDEX_DEFAULT;
+                        if (maxValue == 0) {
+                            colorIdx = COLOR_INDEX_MAX;
+                        } else if (minValue == 0) {
+                            colorIdx = COLOR_INDEX_MIN;
+                        }
+                        return new MemberPracticeCountPerDayOfWeekDto(
+                            dayOfWeek.getValue(),
+                            0,
                             colorIdx
                         );
                     }
-                ).toList();
+                }
+            )
+            .toList();
 
-        return practiceCountListPerDayOfWeek;
+        return result;
     }
 
 
@@ -532,16 +572,21 @@ public class MemberServiceImpl implements MemberService {
     public MemberTreePointResDto treePoint() {
         Member member = getCurrentMember();
 
-        // 오늘 받았다면
-        if (member.getLastHarvestedDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
+        // 시각이 없는 날짜 데이터이므로 equals로 비교해도 된다.
+        // lastHarvestedDate는 null일 수 있으므로 now.equals(lastHarvestedDate)로 비교한다.
+        LocalDate lastHarvestedDate = member.getLastHarvestedDate();
+        LocalDate now = LocalDate.now();
+        if (now.equals(lastHarvestedDate)) {
+            // 오늘 받았다면 예외 발생
             throw new MemberException(MemberErrorCode.ALREADY_HARVESTED);
         }
 
         Tree tree = member.getTree();
-        int point = RANDOM.nextInt(tree.getRangeFrom(), tree.getRangeTo()) + 1;
+        Integer a = tree.getRangeFrom();
+        Integer b = tree.getRangeTo();
+        int point = RANDOM.nextInt(b - a + 1) + a;
 
-        member.addPoint(point);
-        memberRepository.save(member);
+        member.harvest(point);
 
         return new MemberTreePointResDto(point);
     }
@@ -623,11 +668,11 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberException(MemberErrorCode.NO_SUCH_DAILY_PHRASE)
             );
 
-        Long currentDailyPhraseId = currentDailyPhrase.getId();
-        Long newDailyPhraseId = null;
+        long currentDailyPhraseId = currentDailyPhrase.getId();
+        long newDailyPhraseId;
 
         // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
-        while((newDailyPhraseId = RANDOM.nextLong(count) + 1L).equals(currentDailyPhraseId));
+        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextInt(count) + 1));
 
         return dailyPhraseRepository.findById(newDailyPhraseId)
             .orElseThrow(
