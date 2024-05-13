@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public enum DayOfWeek {
 
     MON("월", 1),
@@ -14,7 +15,6 @@ public enum DayOfWeek {
     SAT("토", 6),
     SUN("일", 7);
 
-    @Getter
     private final String value;
     private final int index;
 
