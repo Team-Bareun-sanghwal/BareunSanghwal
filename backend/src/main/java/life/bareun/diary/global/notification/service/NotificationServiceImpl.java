@@ -247,7 +247,6 @@ public class NotificationServiceImpl implements NotificationService {
         return resultTokenMap;
     }
 
-    // 만약 알림 전송에 실패하면, 알림 저장까지 롤백되기 때문에 noRollbackFor을 걸어줌
     @Override
     public void createNotification(NotificationResultTokenDto notificationResultTokenDto,
         NotificationCategory notificationCategory) {
