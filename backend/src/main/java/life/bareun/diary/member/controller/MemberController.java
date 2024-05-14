@@ -134,7 +134,7 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "회원의 현재 나무 색상 정보를 읽어왔습니다.",
+                    "사용자의 현재 나무 색상 정보를 읽어왔습니다.",
                     memberTreeInfoResDto
                 )
             );
