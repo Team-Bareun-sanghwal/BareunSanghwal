@@ -28,7 +28,7 @@ public class AuthController {
     @GetMapping("/access-token")
     public ResponseEntity<BaseResponse<String>> accessToken(
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
-        String refreshToken
+        String refreshToken,
         // HttpServletResponse response
     ) {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
@@ -58,7 +58,7 @@ public class AuthController {
                 HttpStatus.OK.value()
             )
             .header(
-                SecurityConfig.ACCESS_TOKEN_HEADER,
+                "Set-Cookie",
                 ResponseUtil.createResponseCookieString(
                     SecurityConfig.ACCESS_TOKEN_HEADER,
                     authAccessTokenResDto.accessToken(),
