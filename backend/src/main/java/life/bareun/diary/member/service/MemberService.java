@@ -8,10 +8,10 @@ import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
-import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
-import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
@@ -29,7 +29,7 @@ public interface MemberService {
 
     MemberInfoResDto info();
 
-    MemberStreakInfoResDto streakInfo();
+    MemberStreakColorResDto streakInfo();
 
     MemberTreeInfoResDto treeInfo();
 
@@ -39,7 +39,7 @@ public interface MemberService {
 
     MemberPointResDto point();
 
-    MemberLongestStreakResDto longestStreak();
+    MemberStreakInfoResDto streak();
 
     MemberStreakRecoveryCountResDto streakRecoveryCount();
 

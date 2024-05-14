@@ -16,10 +16,20 @@ import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.repository.TreeRepository;
+import life.bareun.diary.product.entity.StreakColor;
+import life.bareun.diary.product.entity.StreakColorGrade;
+import life.bareun.diary.product.entity.TreeColor;
+import life.bareun.diary.product.repository.StreakColorGradeRepository;
+import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorRepository;
+import life.bareun.diary.streak.entity.MemberTotalStreak;
+import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,31 +58,93 @@ public class MemberControllerTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private MemberTotalStreakRepository memberTotalStreakRepository;
+
+    @Autowired
+    private StreakColorRepository streakColorRepository;
+
+    @Autowired
+    private TreeRepository treeRepository;
+
+    @Autowired
+    private TreeColorRepository treeColorRepository;
+
+    @Autowired
+    private StreakColorGradeRepository streakColorGradeRepository;
+
+
+    @Autowired
     private AuthTokenProvider authTokenProvider;
 
     @Autowired
     private MockMvc mockMvc;
 
     private Member testMember;
+    private Tree testTree;
+    private MemberTotalStreak testMemberTotalStreak;
+
+
+    private StreakColor testStreakColor;
+    private TreeColor testTreeColor;
+
 
     private String accessToken;
 
 
+    /**
+     * @BeforeAll로 설정하면 매 테스트 수행 후 rollback이 안된다.
+     * 즉 일관적인 테스트가 어려울 수 있다.
+     */
     @BeforeEach
     void setUp() {
-        testMember = Member.create(
-            MemberRegisterDto.builder()
-                .sub("testsub")
-                .oAuth2Provider(OAuth2Provider.GOOGLE)
-                .defaultTree(null)
-                .defaultTreeColorId(1)
-                .defaultStreakColorId(1)
-                .build()
+        testTree = treeRepository.findById(1L)
+            .orElseGet(
+                () -> treeRepository.save(new Tree(1, 1, 10, 100) )
+            );
+
+        testTreeColor = treeColorRepository.findById(1)
+            .orElseGet(
+                () -> treeColorRepository.save(new TreeColor(1, "TEST_TREE_COLOR"))
+            );
+
+        testStreakColor = streakColorRepository.findById(1)
+            .orElseGet(
+                () -> streakColorRepository.save(
+                    new StreakColor(
+                        1,
+                        "TEST_STREAK_COLOR",
+                        streakColorGradeRepository.findById(1L)
+                            .orElseGet(
+                                () -> new StreakColorGrade(1L, "TEST_STREAK_GRADE", 1.0F)
+                            )
+                    )
+                )
+            );
+
+        testMember = memberRepository.save(
+            Member.create(
+                MemberRegisterDto.builder()
+                    .sub("testsub")
+                    .oAuth2Provider(OAuth2Provider.GOOGLE)
+                    .defaultTree(testTree)
+                    .defaultTreeColorId(testTreeColor.getId())
+                    .defaultStreakColorId(testStreakColor.getId())
+                    .build()
+            )
         );
-        Member saved = memberRepository.save(testMember);
+
+        testMemberTotalStreak = new MemberTotalStreak(testMember);
+        testMemberTotalStreak.modifyTotalStreakCount(10);
+        testMemberTotalStreak.modifyAchieveStreakCount(10);
+        testMemberTotalStreak.modifyLongestStreak(8);
+        testMemberTotalStreak.modifyStarCount(4);
+        testMemberTotalStreak.modifyTotalTrackerCount(6);
+        testMemberTotalStreak.modifyAchieveTrackerCount(5);
+        testMemberTotalStreak = memberTotalStreakRepository.save(testMemberTotalStreak);
+
         accessToken = authTokenProvider.createAccessToken(
             new Date(),
-            Long.toString(saved.getId()),
+            Long.toString(testMember.getId()),
             Role.ROLE_USER.name()
         );
 
@@ -165,4 +237,139 @@ public class MemberControllerTest {
         Assertions.assertThat(testMember.getGender()).isEqualTo(testGender);
         Assertions.assertThat(testMember.getJob()).isEqualTo(testJob);
     }
+
+    @Test
+    @DisplayName("사용자 포인트 정보 조회 테스트")
+    public void testPoint() throws Exception {
+        // given
+        Integer point = testMember.getPoint();
+
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/point")
+            .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+            .andExpect(jsonPath("$.message").value(String.format("사용자의 현재 보유 포인트 정보를 읽어왔습니다.", point)))
+            .andExpect(jsonPath("$.data.point").value(point))
+            .andExpect(jsonPath("$.data.isHarvestedToday").isBoolean());
+    }
+
+    @Test
+    @DisplayName("사용자 스트릭 색상 조회 테스트")
+    public void testStreakColor() throws Exception {
+        // given
+        // 초기 데이터 설정 확인
+        Assertions.assertThat(testMember.getCurrentStreakColorId()).isEqualTo(testStreakColor.getId());
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/streak/color")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 현재 스트릭 색상 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.streakName")
+                    .value(
+                        testStreakColor.getName()
+                    )
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 나무 정보 조회 테스트")
+    public void testTree() throws Exception {
+        // given
+        // 초기 데이터 설정 확인
+        Assertions.assertThat(testMember.getCurrentTreeColorId()).isEqualTo(testTreeColor.getId());
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/tree")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 현재 나무 색상 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.treeLevel")
+                    .value(
+                        testTree.getLevel()
+                    )
+            )
+            .andExpect(
+                jsonPath("$.data.treeColor")
+                    .value(
+                        testTreeColor.getName()
+                    )
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 스트릭 정보 조회 테스트")
+    public void testStreakInfo() throws Exception {
+        // given
+        Assertions.assertThat(testMemberTotalStreak.getMember()).isEqualTo(testMember);
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/streak")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 현재 스트릭 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.longestStreak")
+                    .value(
+                        testMemberTotalStreak.getLongestStreak()
+                    )
+            )
+            .andExpect(
+                jsonPath("$.data.currentStreak")
+                    .value(
+                      testMemberTotalStreak.getAchieveStreakCount()
+                    )
+            );
+    }
+
 }
+

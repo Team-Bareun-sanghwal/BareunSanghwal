@@ -7,9 +7,9 @@ import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
-import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
+import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
@@ -108,9 +108,9 @@ public class MemberController {
             );
     }
 
-    @GetMapping("/streak")
-    public ResponseEntity<BaseResponse<MemberStreakInfoResDto>> streakColor() {
-        MemberStreakInfoResDto memberStreakInfoResDto = memberService.streakInfo();
+    @GetMapping("/streak/color")
+    public ResponseEntity<BaseResponse<MemberStreakColorResDto>> streakColor() {
+        MemberStreakColorResDto memberStreakColorResDto = memberService.streakInfo();
         return ResponseEntity
             .status(
                 HttpStatus.OK.value()
@@ -119,7 +119,7 @@ public class MemberController {
                 BaseResponse.success(
                     HttpStatus.OK.value(),
                     "사용자의 현재 스트릭 색상 정보를 읽어왔습니다.",
-                    memberStreakInfoResDto
+                    memberStreakColorResDto
                 )
             );
     }
@@ -134,7 +134,7 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "회원의 현재 나무 색상 정보를 읽어왔습니다.",
+                    "사용자의 현재 나무 색상 정보를 읽어왔습니다.",
                     memberTreeInfoResDto
                 )
             );
@@ -156,9 +156,9 @@ public class MemberController {
             );
     }
 
-    @GetMapping("/longest-streak")
-    public ResponseEntity<BaseResponse<MemberLongestStreakResDto>> longestStreak() {
-        MemberLongestStreakResDto memberLongestStreakResDto = memberService.longestStreak();
+    @GetMapping("/streak")
+    public ResponseEntity<BaseResponse<MemberStreakInfoResDto>> streak() {
+        MemberStreakInfoResDto memberStreakInfoResDto = memberService.streak();
         return ResponseEntity
             .status(
                 HttpStatus.OK.value()
@@ -166,8 +166,8 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "사용자의 현재 최장 스트릭 정보를 읽어왔습니다.",
-                    memberLongestStreakResDto
+                    "사용자의 현재 스트릭 정보를 읽어왔습니다.",
+                    memberStreakInfoResDto
                 )
             );
     }
