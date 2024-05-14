@@ -30,7 +30,7 @@
     font-size: 1.4rem;
   }
   .custom-light-text {
-    font-weight: 200;
+    font-weight: 400;
     font-size: 1.2rem;
   }
   .custom-login-text {
@@ -270,6 +270,7 @@
     }
   }
   .flowing-text {
+    overflow: hidden;
     white-space: nowrap;
     will-change: transform;
     animation: flowText 40s linear infinite;
