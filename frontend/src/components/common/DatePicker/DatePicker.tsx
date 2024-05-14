@@ -7,7 +7,7 @@ export const DatePicker = ({ defaultValue, setDefaultValue }: IPropType) => {
   return (
     <div className="text-center">
       <input
-        className="bg-custom-light-gray text-custom-black relative rounded-full mx-auto w-[20rem] py-[2rem] custom-medium-text text-center"
+        className="bg-custom-light-gray text-custom-black relative rounded-full mx-auto min-w-[20rem] px-[2rem] py-[1rem] custom-medium-text text-center"
         type="date"
         defaultValue={defaultValue}
         onChange={(e) => {
