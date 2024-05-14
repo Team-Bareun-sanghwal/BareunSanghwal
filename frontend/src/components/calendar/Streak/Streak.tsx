@@ -151,9 +151,9 @@ export const Streak = ({
       <a
         className={
           getToday(false) === dayNumber + '' &&
-          getMonth(false) === month + '' &&
+          getMonth(true) === month + '' &&
           getYear() === year + ''
-            ? 'flex text-white text-2xl w-full h-full rounded-md border-custom-dark-gray border-2 items-center justify-center'
+            ? 'flex text-white text-2xl w-full h-full rounded-md border-black border-2 items-center justify-center'
             : ''
         }
       >
