@@ -31,7 +31,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       body: JSON.stringify(data),
     });
 
-    return await res.json();
+    return res.json();
   } catch (e) {
     console.log('Fetch Error : ', e);
     throw e;
