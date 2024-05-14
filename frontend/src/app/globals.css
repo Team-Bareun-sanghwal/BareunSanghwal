@@ -147,17 +147,17 @@
       transform: translateX(0%) translateY(0%) rotate(0deg);
     }
   }
-  
+
   /* 로딩 블록 애니메이션-red */
   .loading-block-red {
     animation: loadingBlockRed 2.2s ease-in-out forwards;
   }
   @keyframes loadingBlockRed {
     0% {
-      top:-23rem;
+      top: -23rem;
     }
     100% {
-      top:0rem;
+      top: 0rem;
     }
   }
 
@@ -167,10 +167,10 @@
   }
   @keyframes loadingBlockYellow {
     0% {
-      top:-23rem;
+      top: -23rem;
     }
     100% {
-      top:6.2rem;
+      top: 6.2rem;
     }
   }
 
@@ -180,10 +180,10 @@
   }
   @keyframes loadingBlockBlue {
     0% {
-      top:-23rem;
+      top: -23rem;
     }
     100% {
-      top:10.8rem;
+      top: 10.8rem;
     }
   }
 
@@ -193,10 +193,10 @@
   }
   @keyframes loadingBlockWhite {
     0% {
-      top:-23rem;
+      top: -23rem;
     }
     100% {
-      top:17.1rem;
+      top: 17.1rem;
     }
   }
 
@@ -214,7 +214,7 @@
       opacity: 1;
       text-shadow: 0.2rem 0 0 #141414;
     }
-  }  
+  }
 
   /* 로고 하단 애니메이션 */
   .logo-bareun-life {
@@ -230,7 +230,7 @@
       opacity: 1;
       text-shadow: 0.4rem 0 0 #141414;
     }
-  }  
+  }
 
   /* 로그인 버튼 애니메이션 */
   .loginButtons {
@@ -245,6 +245,5 @@
     100% {
       opacity: 1;
     }
-  }  
-  
+  }
 }

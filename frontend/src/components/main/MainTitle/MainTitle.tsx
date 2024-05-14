@@ -6,7 +6,7 @@ interface IHabitTrackerDto {
   memberHabitId: number;
   habitTrackerId: number;
   icon: string;
-  succeededTime: number;
+  succeededTime: string;
   day: number;
 }
 interface IHabitTrackerTodayDtoList {
@@ -18,9 +18,8 @@ export const MainTitle = ({
   const total = habitTrackerTodayDtoList?.length || 0;
   const succeed =
     habitTrackerTodayDtoList?.filter(
-      (habit: IHabitTrackerDto) => habit.succeededTime > 0,
+      (habit: IHabitTrackerDto) => habit.succeededTime != null,
     ).length || 0;
-
   const TitleMsg =
     total == 0
       ? '아직 해빗이 없어요...'
