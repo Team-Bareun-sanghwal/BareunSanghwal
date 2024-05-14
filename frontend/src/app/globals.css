@@ -246,4 +246,18 @@
       opacity: 1;
     }
   }
+
+  @keyframes flowText {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .flowing-text {
+    white-space: nowrap;
+    will-change: transform;
+    animation: flowText 40s linear infinite;
+  }
 }
