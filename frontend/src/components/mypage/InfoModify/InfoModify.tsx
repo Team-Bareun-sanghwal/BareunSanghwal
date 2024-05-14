@@ -81,7 +81,10 @@ export const InfoModify = ({ title, desc, prevData }: IPropType) => {
         setDefaultValue={setValue}
       />
     ) : (
-      <ScrollDatePicker birthDay={value} setBirthDay={setValue} />
+      // <ScrollDatePicker birthDay={value} setBirthDay={setValue} />
+      <div>
+        <input type="date" />
+      </div>
     );
 
   return (
