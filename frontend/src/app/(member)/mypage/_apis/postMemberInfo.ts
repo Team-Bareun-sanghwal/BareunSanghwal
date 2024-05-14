@@ -1,3 +1,6 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
 import { $Fetch } from '@/apis';
 
 interface IPropType {
@@ -11,5 +14,8 @@ export const postMemberInfo = async ({ data }: { data: IPropType }) => {
     cache: 'default',
     data: data,
   });
+
+  revalidatePath('/mypage', 'page');
+
   return result;
 };
