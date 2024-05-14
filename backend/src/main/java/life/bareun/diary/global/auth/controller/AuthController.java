@@ -10,6 +10,7 @@ import life.bareun.diary.global.auth.util.ResponseUtil;
 import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -53,14 +54,14 @@ public class AuthController {
         // response.addCookie(cookie);
         //
         // System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
-
+        HttpHeaders headers = new HttpHeaders();
         ResponseCookie accessCookie = ResponseCookie.from("Authorization", "ABCD")
             .sameSite("None").httpOnly(true).secure(true).path("/")
             .maxAge(5000L).build();
 
         response.setHeader("Set-Cookie", accessCookie.toString());
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.OK).headers(headers)
             .body(BaseResponse.success(HttpStatus.OK.value(), "토큰이 발급되었습니다.", null));
 
 //        return ResponseEntity
