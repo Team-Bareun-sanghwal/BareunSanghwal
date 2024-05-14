@@ -249,7 +249,8 @@ public class MemberControllerTest {
     @DisplayName("사용자 스트릭 정보 조회 테스트")
     public void testStreak() throws Exception {
         // given
-        Integer currentStreakColorId = testMember.getCurrentStreakColorId();
+        // 초기 데이터 설정 확인
+        Assertions.assertThat(testMember.getCurrentStreakColorId()).isEqualTo(testStreakColor.getId());
 
         // when
         ResultActions when = mockMvc.perform(
@@ -272,9 +273,7 @@ public class MemberControllerTest {
             .andExpect(
                 jsonPath("$.data.streakName")
                     .value(
-                        streakColorRepository.findById(currentStreakColorId)
-                            .orElseThrow(() -> new Exception("스트릭 색상 테스트 에러"))
-                            .getName()
+                        testStreakColor.getName()
                     )
             );
     }
