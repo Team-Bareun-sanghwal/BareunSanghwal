@@ -69,15 +69,16 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         //     )
         // );
 
-        if(oAuth2MemberPrincipal.getOAuth2Provider().equals(OAuth2Provider.GOOGLE)) {
-            response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
-        } else if (oAuth2MemberPrincipal.getOAuth2Provider().equals(OAuth2Provider.KAKAO)) {
-            String redirectUrl = "http://localhost:3000/auth"
-                + "?status=" + statusCode
-                + "&at=" + accessToken
-                + "&rt=" + refreshToken;
-            response.sendRedirect(redirectUrl);
-        }
+        response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
+        // if(oAuth2MemberPrincipal.getOAuth2Provider().equals(OAuth2Provider.GOOGLE)) {
+        //     response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
+        // } else if (oAuth2MemberPrincipal.getOAuth2Provider().equals(OAuth2Provider.KAKAO)) {
+        //     String redirectUrl = "http://localhost:3000/auth"
+        //         + "?status=" + statusCode
+        //         + "&at=" + accessToken
+        //         + "&rt=" + refreshToken;
+        //     response.sendRedirect(redirectUrl);
+        // }
     }
 }
 
