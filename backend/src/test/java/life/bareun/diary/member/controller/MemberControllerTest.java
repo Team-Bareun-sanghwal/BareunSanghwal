@@ -283,8 +283,9 @@ public class MemberControllerTest {
     @DisplayName("사용자 나무 정보 조회 테스트")
     public void testTree() throws Exception {
         // given
-        Integer currentTreeColorId = testMember.getCurrentTreeColorId();
-        // treeRepository.findById(currentTreeColorId);
+        // 초기 데이터 설정 확인
+        Assertions.assertThat(testMember.getCurrentTreeColorId()).isEqualTo(testTreeColor.getId());
+
         // when
         ResultActions when = mockMvc.perform(
             MockMvcRequestBuilders.get("/members/tree")
