@@ -279,5 +279,44 @@ public class MemberControllerTest {
             );
     }
 
+    @Test
+    @DisplayName("사용자 나무 정보 조회 테스트")
+    public void testTree() throws Exception {
+        // given
+        Integer currentTreeColorId = testMember.getCurrentTreeColorId();
+        // treeRepository.findById(currentTreeColorId);
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/tree")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 현재 나무 색상 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.treeLevel")
+                    .value(
+                        testTree.getLevel()
+                    )
+            )
+            .andExpect(
+                jsonPath("$.data.treeColor")
+                    .value(
+                        testTreeColor.getName()
+                    )
+            );
+
+    }
+
 }
 
