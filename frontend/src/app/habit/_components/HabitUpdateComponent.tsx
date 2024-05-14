@@ -33,7 +33,7 @@ export const HabitUpdateComponent = ({
         onConfirm={async () => {
           const response = await deleteActivatedHabit(memberHabitId, false);
           close();
-          if (response.status !== 200)
+          if (response.status === 200)
             handleAlertBox('해빗을 성공적으로 완료했어요', 'SUCCESS');
           else handleAlertBox('해빗 완료에 실패했어요', 'ERROR');
         }}
@@ -52,7 +52,7 @@ export const HabitUpdateComponent = ({
         onConfirm={async () => {
           const response = await deleteActivatedHabit(memberHabitId, true);
           close();
-          if (response.status !== 200)
+          if (response.status === 200)
             handleAlertBox('해빗을 성공적으로 삭제했어요', 'SUCCESS');
           else handleAlertBox('해빗 삭제에 실패했어요', 'ERROR');
         }}
