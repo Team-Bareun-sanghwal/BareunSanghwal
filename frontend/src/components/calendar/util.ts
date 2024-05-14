@@ -1,4 +1,18 @@
-// util functions for calendar
+/**
+ * @fileoverview util functions for calendar
+ * @module calendar/util
+ * @requires none
+ * @exports Time
+ * @exports Today
+ * @exports LastDay
+ * @exports getFirstDay
+ * @exports getYear
+ * @exports getMonth
+ * @exports convertMonthFormat
+ * @exports getToday
+ * @exports getDateFormat
+ * @exports getTimeRemaining
+ */
 
 export interface IStreaksReponse {
   achieveProportion: number;
@@ -18,37 +32,35 @@ export interface IDayInfo {
 }
 export const Time = () => {
   const hour = new Date().getHours();
-  if(hour < 5 || hour>=20) return 'night';
-  if(hour < 7) return 'midnight';
-  if(hour < 10) return 'morning';
-  if(hour < 17) return 'lunch';
+  if (hour < 5 || hour >= 20) return 'night';
+  if (hour < 7) return 'midnight';
+  if (hour < 10) return 'morning';
+  if (hour < 17) return 'lunch';
   else return 'dinner';
+};
 
-}
 const Today = () => {
   return new Date().getDate();
 };
+
 const LastDay = () => {
   const now = new Date();
   const month = now.getMonth();
   const year = now.getFullYear();
   return new Date(year, month + 1, 0).getDate();
 };
-//
+
 export const getFirstDay = () => {
   const today = new Date();
   const day = new Date(today.getFullYear(), today.getMonth(), 1);
   return day.getDay();
 };
-// YYYY
+
 export const getYear = (): string => {
   const today = new Date();
   return today.getFullYear() + '';
 };
 
-// MM
-// format: true -> MM
-// format: false -> M
 export const getMonth = (format: boolean): string => {
   const month = new Date().getMonth() + 1;
   return format ? convertMonthFormat(month) : month + '';
@@ -57,23 +69,17 @@ export const getMonth = (format: boolean): string => {
 export const convertMonthFormat = (month: number): string => {
   return ('0' + month).slice(-2);
 };
-// DD
-// format: true -> DD
-// format: false -> D
+
 export const getToday = (format: boolean): string => {
   const today = new Date().getDate();
   return format ? ('0' + today).slice(-2) : today + '';
 };
 
-// YYYY-MM-DDk
-// month: true -> YYYY-MM
-// month: false -> YYYY-MM-DD
 export const getDateFormat = (month: boolean): string => {
   let format = `${getYear()}-${getMonth(true)}`;
   return month ? format : `${format}-${getToday(true)}`;
 };
 
-// get time remaining until midnight
 export const getTimeRemaining = (): {
   hoursRemaining: number;
   minutesRemaining: number;

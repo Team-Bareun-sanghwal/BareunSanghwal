@@ -5,6 +5,7 @@ import { $Fetch } from '@/apis';
 import { useOverlay } from '@/hooks/use-overlay';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { set } from 'firebase/database';
 export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
   const [harvested, setHarvested] = useState(isHarvested);
   const [isVisible, setIsVisible] = useState(true);
@@ -54,40 +55,41 @@ export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
   return (
     <div className="absolute z-20 top-2 right-2 text-lg">
       <AnimatePresence>
-       {isVisible && (
-         <motion.button
-         exit={{ x: 300, opacity: 0, transition: { duration: 0.5 } }}
-         onAnimationComplete={() => {
-           if (harvested) {
-             setMsg('오늘의 포인트를 수확했어요!');
-           }
-         }}
-         onClick={() => handleClick()}
-         initial={{ scale: 1 }}
-         whileTap={{ scale: 0.95 }}
-         animate={{
-           backgroundColor: harvested ? '#f3f4f6' : '#f59e0b',
-           width: harvested ? 'auto' : '4rem',
-           padding: '1rem',
-         }}
-         className={
-           harvested
-             ? 'flex p-4 w-auto h-16 min-w-24 text-2xl items-center bg-white rounded-full'
-             : 'flex p-4 w-16 h-16 text-2xl items-center bg-yellow-500 rounded-full content-center justify-center'
-         }
-       >
-         <div className="">
-           {harvested ? (
-             <CheckCircleIcon className="w-8 h-8 mr-2" />
-           ) : (
-             <GiftIcon color="white" className="w-8 h-8" />
-           )}
-         </div>
-         <motion.span className={harvested ? '' : 'text-white'}>
-           {msg}
-         </motion.span>
-       </motion.button>
-       )}
+        {isVisible && (
+          <motion.button
+            exit={{ x: 300, opacity: 0, transition: { duration: 0.5 } }}
+            onAnimationComplete={() => {
+              if (harvested) {
+                setMsg('오늘의 포인트를 수확했어요!');
+                setTimeout(() => setIsVisible(false), 2000);
+              }
+            }}
+            onClick={() => handleClick()}
+            initial={{ scale: 1 }}
+            whileTap={{ scale: 0.95 }}
+            animate={{
+              backgroundColor: harvested ? '#f3f4f6' : '#f59e0b',
+              width: harvested ? 'auto' : '4rem',
+              padding: '1rem',
+            }}
+            className={
+              harvested
+                ? 'flex p-4 w-auto h-16 min-w-24 text-2xl items-center bg-white rounded-full'
+                : 'flex p-4 w-16 h-16 text-2xl items-center bg-yellow-500 rounded-full content-center justify-center'
+            }
+          >
+            <div className="">
+              {harvested ? (
+                <CheckCircleIcon className="w-8 h-8 mr-2" />
+              ) : (
+                <GiftIcon color="white" className="w-8 h-8" />
+              )}
+            </div>
+            <motion.span className={harvested ? '' : 'text-white'}>
+              {msg}
+            </motion.span>
+          </motion.button>
+        )}
       </AnimatePresence>
     </div>
   );
