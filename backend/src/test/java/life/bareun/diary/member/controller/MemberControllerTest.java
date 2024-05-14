@@ -16,12 +16,19 @@ import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.repository.TreeRepository;
 import life.bareun.diary.member.service.MemberService;
+import life.bareun.diary.product.entity.StreakColor;
+import life.bareun.diary.product.entity.StreakColorGrade;
+import life.bareun.diary.product.entity.TreeColor;
+import life.bareun.diary.product.repository.StreakColorGradeRepository;
 import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +61,14 @@ public class MemberControllerTest {
     private StreakColorRepository streakColorRepository;
 
     @Autowired
-    private MemberService memberService;
+    private TreeRepository treeRepository;
+
+    @Autowired
+    private TreeColorRepository treeColorRepository;
+
+    @Autowired
+    private StreakColorGradeRepository streakColorGradeRepository;
+
 
     @Autowired
     private AuthTokenProvider authTokenProvider;
@@ -63,6 +77,11 @@ public class MemberControllerTest {
     private MockMvc mockMvc;
 
     private Member testMember;
+    private Tree testTree;
+
+    private StreakColor testStreakColor;
+    private TreeColor testTreeColor;
+
 
     private String accessToken;
 
@@ -73,15 +92,39 @@ public class MemberControllerTest {
      */
     @BeforeEach
     void setUp() {
+        testTree = treeRepository.findById(1L)
+            .orElseGet(
+                () -> new Tree(1, 1, 10, 100)
+            );
+
+        testTreeColor = treeColorRepository.findById(1)
+            .orElseGet(
+                () -> new TreeColor(1, "TEST_TREE_COLOR")
+            );
+
+        testStreakColor = streakColorRepository.findById(1)
+            .orElseGet(
+                () -> new StreakColor(
+                    1,
+                    "TEST_STREAK_COLOR",
+                    streakColorGradeRepository.findById(1L)
+                        .orElseGet(
+                            () -> new StreakColorGrade(1L, "TEST_STREAK_GRADE", 1.0F )
+                        )
+                    )
+            );
+
         testMember = Member.create(
             MemberRegisterDto.builder()
                 .sub("testsub")
                 .oAuth2Provider(OAuth2Provider.GOOGLE)
-                .defaultTree(null)
-                .defaultTreeColorId(1)
-                .defaultStreakColorId(1)
+                .defaultTree(testTree)
+                .defaultTreeColorId(testTreeColor.getId())
+                .defaultStreakColorId(testStreakColor.getId())
                 .build()
         );
+
+
         Member saved = memberRepository.save(testMember);
         accessToken = authTokenProvider.createAccessToken(
             new Date(),
