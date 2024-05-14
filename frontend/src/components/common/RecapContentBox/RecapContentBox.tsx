@@ -60,19 +60,18 @@ export const RecapContentBox = ({ recapTotalData }: IRecapContentBoxProps) => {
               {`${recapYearData.year}년`}
             </label>
 
-            <ul className="w-full grid grid-cols-3">
+            <div className="w-full grid grid-cols-3 grid-flow-row-dense">
               {recapYearData.recapList.map((recap, index) => {
                 return (
-                  <li key={index}>
-                    <RecapImageContent
-                      imgSrc="/images/icon-clock.png"
-                      dateText={`${recap.period.split('-')[1]}월`}
-                      recapId={recap.recapId}
-                    />
-                  </li>
+                  <RecapImageContent
+                    key={index}
+                    imgSrc="/images/icon-clock.png"
+                    dateText={`${recap.period.split('-')[1]}월`}
+                    recapId={recap.recapId}
+                  />
                 );
               })}
-            </ul>
+            </div>
           </section>
         );
       })}
