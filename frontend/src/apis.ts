@@ -125,7 +125,7 @@ export async function $Logout() {
       window.location.href = '/';
     }
 
-    return await res.json();
+    return res.json();
   } catch (e) {
     console.log('Fetch Error : ', e);
     throw e;

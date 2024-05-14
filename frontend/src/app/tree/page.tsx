@@ -26,12 +26,18 @@ export default async function Page() {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
     cache: 'no-cache',
   });
+  const pointInfo = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/point`,
+    cache: 'no-cache',
+  });
   const treeInfo = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/tree`,
     cache: 'no-cache',
   });
   const { treeLevel, treeColor } = treeInfo.data;
+  const {point, isHarvestedToday} = pointInfo.data;
   return (
     <div>
       <div className="w-full h-screen overflow-hidden relative">
@@ -46,7 +52,9 @@ export default async function Page() {
             </div>
           </div>
         </div>
-        <Harvest isHarvested={false} />
+        {!isHarvestedToday && (
+          <Harvest isHarvested={false} />
+        )}
         <Tree color={treeColor} level={treeLevel} time={Time()} />
         <div className="absolute bottom-0 w-full gap-3 p-3 ">
           <div className="flex flex-col justify-center gap-4">

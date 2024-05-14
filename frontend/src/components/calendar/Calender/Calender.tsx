@@ -4,13 +4,7 @@ import { Achievement } from '../Acheivement/Achievement';
 import { MonthLabel } from '../MonthLabel/MonthLabel';
 import { HabitBtnList } from '../HabitBtnList/HabitBtnList';
 import { ThemeColor } from '../CalenderConfig';
-import { HabitChecker } from '@/components/main/HabitChecker/HabitChecker';
-import { LongestStreak } from '@/components/main/LongestStreak/LongestStreak';
 import { IMemberHabit, IDayInfo, setDayInfo } from '@/app/mock';
-import { getYear, getMonth, getToday } from '@/components/calendar/util';
-import { GetServerSideProps } from 'next';
-
-import { $Fetch } from '@/apis';
 
 interface ICalenderProps {
   dayOfWeekFirst: number;
@@ -61,7 +55,7 @@ export const Calender = ({
               month={month}
               dayNumber={info.dayNumber}
               isUnique={isUnique}
-              habitCnt={memberHabitList.length}
+              totalCount={info.totalCount}
               habitId={habitId}
             />
           ),

@@ -52,7 +52,6 @@ export const HabitSearchBox = ({
         type="text"
         className="w-full px-[1.5rem] py-[0.7rem] rounded-[3rem] bg-transparent custom-medium-text outline-none border-[0.1rem] border-custom-medium-gray focus:border-custom-matcha"
         onChange={async (event) => {
-          // 아래 경우에 검색 API 사용
           if (
             event.target.value.length !== 0 &&
             event.target.value.replaceAll(' ', '').length !== 0
@@ -61,10 +60,10 @@ export const HabitSearchBox = ({
               setSelectedHabitId(null);
               setSelectedHabitName(null);
               const categoryList = await searchCategoryList(event.target.value);
-              if (categoryList.data.habitList.length !== 0) {
-                setSearchedCategoryList(categoryList.data.habitList);
-              }
+              setSearchedCategoryList(categoryList.data.habitList);
             }
+          } else {
+            setSearchedCategoryList([]);
           }
         }}
       ></input>

@@ -3,6 +3,8 @@
 import { TrophyIcon } from '@heroicons/react/24/solid';
 import { TinyButton } from '@/components/common/TinyButton/TinyButton';
 import { IHabitListData } from '@/app/habit/_types';
+import { getSimilarCategoryList } from '@/app/habit/_apis/getSimilarCategoryList';
+import { useState } from 'react';
 
 interface IHabitCategoryListProps {
   mode: 'POPULAR' | 'SIMILAR';
@@ -21,17 +23,28 @@ export const HabitCategoryList = ({
   setSelectedHabitId,
   setSelectedHabitName,
 }: IHabitCategoryListProps) => {
+  const [habitList, setHabitList] = useState<IHabitListData[]>([
+    ...habitListData,
+  ]);
+
   return (
     <section className="flex flex-col gap-[1rem]">
       <label className="w-full custom-semibold-text text-custom-black flex justify-between">
         <>{label}</>
         {mode === 'SIMILAR' && (
-          <TinyButton mode="RECOMMEND" label="다시 추천" />
+          <TinyButton
+            mode="RECOMMEND"
+            label="다시 추천"
+            onClick={async () => {
+              const similarCategoryList = await getSimilarCategoryList();
+              setHabitList([...similarCategoryList.data.habitList]);
+            }}
+          />
         )}
       </label>
 
       <div className="w-full flex gap-[1rem] flex-wrap">
-        {habitListData.map((data, index) => {
+        {habitList.map((data, index) => {
           const trophyColor =
             index === 0
               ? 'text-[#d5a11e]'

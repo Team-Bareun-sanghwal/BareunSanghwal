@@ -111,7 +111,7 @@ export default function Tree({ color,level, time}: {color : string, level : numb
         <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
           <ambientLight intensity={0.6} />
           <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
-          <directionalLight position={[-10, 10, 10]} intensity={2} />
+          <directionalLight position={[-10, 10, 10]} intensity={time==='night'? 0.6 : 2} />
           <pointLight position={[-10, -10, -10]} />
           <Suspense fallback={null}>
             <Group color={color} level={level} />
