@@ -2,6 +2,7 @@
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { motion, useAnimate } from 'framer-motion';
 export const HabitBtn = ({
   memberHabitId,
   alias,
@@ -22,8 +23,13 @@ export const HabitBtn = ({
   today?: boolean;
 }) => {
   const router = useRouter();
+  const [scope, animate] = useAnimate();
 
   const onClickHabit = () => {
+    animate([
+      ['button', { scale: 1.1 }, { duration: 0.05 }],
+      ['button', { scale: 1 }, { duration: 0.05 }],
+    ]);
     if (!add) {
       if (shortcut) {
         router.push(`/habit/write/${memberHabitId}`);
@@ -41,8 +47,8 @@ export const HabitBtn = ({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center">
-        <button
+      <div className="flex flex-col items-center justify-center" ref={scope}>
+        <motion.button
           onClick={onClickHabit}
           className={
             shortcut
@@ -50,7 +56,7 @@ export const HabitBtn = ({
                 ? 'flex  bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full justify-center items-center'
                 : 'relative bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full'
               : memberHabitId == habitId
-                ? 'relative bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full '
+                ? 'relative bg-gray-300 text-2xl w-16 h-16 rounded-full '
                 : 'relative bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
           }
         >
@@ -65,7 +71,7 @@ export const HabitBtn = ({
                 <CheckIcon className="w-4 h-4" />
               </div>
             ))}
-        </button>
+        </motion.button>
 
         <p
           className={
