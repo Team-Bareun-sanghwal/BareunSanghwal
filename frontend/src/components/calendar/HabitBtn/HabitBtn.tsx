@@ -1,10 +1,13 @@
 'use client';
+
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { motion, useAnimate } from 'framer-motion';
 import { useOverlay } from '@/hooks/use-overlay';
 import { AlertBox } from '@/components/common/AlertBox/AlertBox';
+import { getMonth, getYear } from '@/components/calendar/util';
+
 export const HabitBtn = ({
   memberHabitId,
   alias,
@@ -48,9 +51,9 @@ export const HabitBtn = ({
         }
       } else {
         if (memberHabitId == habitId) {
-          router.push(`/main/2024/5`);
+          router.push(`/main/${getYear()}/${getMonth(false)}`);
         } else {
-          router.push(`/main/2024/5/${memberHabitId}`);
+          router.push(`/main/${getYear()}/${getMonth(false)}/${memberHabitId}`);
         }
       }
     } else {
