@@ -54,8 +54,7 @@ export const SignInForm = () => {
       };
       const result = await postMemberInfo({ data });
       if ((await result.status) === 200) {
-        router.push(`/main/${getYear()}/${getMonth(true)}`);
-        
+        router.push(`/main/${getYear()}/${getMonth(false)}`);
       }
     }
   };

@@ -8,7 +8,7 @@ export default function NotFound() {
         errorTitle="페이지를 찾을 수 없어요"
         errorDescription="잘못된 접근입니다. 메인으로 돌아가주세요."
         buttonText="메인으로 가기"
-        nextPage={`/main/${getYear()}/${getMonth(true)}`}
+        nextPage={`/main/${getYear()}/${getMonth(false)}`}
       />
     </div>
   );
