@@ -6,11 +6,12 @@ import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { ThemeColor } from '../CalenderConfig';
 import { getToday, getMonth, getYear, convertMonthFormat } from '../util';
 import { $Fetch } from '@/apis';
+import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
   achieveCount: number;
-  achieveType?: 'NOT_EXISTED' | 'ACHEIVE' | 'NOT_ACHIEVE' | 'RECOVERY';
+  achieveType?: TAchieveType;
   dayNumber?: number;
   month?: number;
   year?: number;
@@ -18,7 +19,7 @@ interface StreakProps {
   habitId?: number;
   onClick?: () => void;
 }
-
+type TAchieveType = 'NOT_EXISTED' | 'ACHIEVE' | 'NOT_ACHIEVE' | 'RECOVERY';
 export const Streak = ({
   themeColor,
   achieveCount,
@@ -33,8 +34,40 @@ export const Streak = ({
 }: StreakProps) => {
   console.log(dayNumber, achieveCount, totalCount);
   const overlay = useOverlay();
+
+  const Alert = () => {
+    const msg = () => {
+      if (
+        month?.toString() !== getMonth(false) ||
+        year?.toString() !== getYear()
+      )
+        return '이번 달에만 스트릭 리커버리를 사용할 수 있어요!';
+
+      switch (achieveType) {
+        case 'NOT_EXISTED':
+          return '해당 날짜의 스트릭이 없어요!';
+        case 'ACHIEVE':
+          return '해당 날짜의 스트릭을 이미 달성했어요!';
+        case 'RECOVERY':
+          return '해당 날짜는 이미 스트릭을 사용했어요!';
+        default:
+          return '오늘 날짜의 스트릭은 리커버리를 사용할 수 없어요!';
+      }
+    };
+    overlay.open(({ isOpen }) => (
+      <AlertBox label={msg()} mode="WARNING" open={isOpen} />
+    ));
+    setTimeout(() => overlay.close(), 2000);
+  };
   const onClickStreakRecovery = () => {
-    if (dayNumber && !habitId && achieveType === 'NOT_ACHIEVE') {
+    if (
+      dayNumber &&
+      !habitId &&
+      achieveType === 'NOT_ACHIEVE' &&
+      dayNumber.toString() != getToday(false) &&
+      month?.toString() != getMonth(false) &&
+      year?.toString() != getYear()
+    ) {
       overlay.open(({ isOpen, close }) => (
         <BottomSheet
           description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
@@ -45,6 +78,8 @@ export const Streak = ({
           title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
         />
       ));
+    } else {
+      Alert();
     }
   };
 
