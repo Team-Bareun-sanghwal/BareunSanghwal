@@ -66,7 +66,7 @@ export const NavBar = ({ mode }: INavBarProps) => {
           return (
             <Link href={url as string} key={`${keyName}-${index}`}>
               <section
-                className={`flex flex-col gap-[0.5rem] items-center cursor-pointer ${keyName === focusedMenu ? 'text-custom-yellow-green' : 'text-custom-medium-gray'}`}
+                className={`flex flex-col gap-[0.5rem] items-center cursor-pointer ${keyName === focusedMenu ? 'text-custom-matcha' : 'text-custom-medium-gray'}`}
                 onClick={() => setFocusedMenu(keyName)}
               >
                 <>

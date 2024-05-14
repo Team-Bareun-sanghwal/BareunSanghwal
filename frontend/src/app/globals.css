@@ -270,7 +270,6 @@
     }
   }
   .flowing-text {
-    overflow: hidden;
     white-space: nowrap;
     will-change: transform;
     animation: flowText 40s linear infinite;
