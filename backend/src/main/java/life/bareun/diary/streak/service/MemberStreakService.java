@@ -5,6 +5,7 @@ import java.util.Optional;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
+import life.bareun.diary.streak.dto.response.StreakRecoveryInfoResDto;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 
 public interface MemberStreakService {
@@ -24,6 +25,9 @@ public interface MemberStreakService {
     int recoveryMemberDailyStreakCount(Member member, LocalDate startDate, LocalDate endDate);
 
     void recoveryMemberTotalStreak(Member member, int longestStreak);
+
+    StreakRecoveryInfoResDto getStreakRecoveryInfoResDto(Member member, LocalDate date, LocalDate startDate,
+        LocalDate endDate);
 
     MonthStreakResDto getMemberDailyStreakResDtoByMemberId(Long memberId, LocalDate firstDayOfMonth,
         LocalDate lastDayOfMonth);

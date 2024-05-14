@@ -13,6 +13,7 @@ import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
+import life.bareun.diary.streak.dto.response.StreakRecoveryInfoResDto;
 import life.bareun.diary.streak.entity.HabitDailyStreak;
 import life.bareun.diary.streak.exception.MemberDailyStreakErrorCode;
 import life.bareun.diary.streak.exception.StreakException;
@@ -79,6 +80,22 @@ public class StreakServiceImpl implements StreakService {
     }
 
     @Override
+    public StreakRecoveryInfoResDto getStreakRecoveryInfoResDto(LocalDate date) {
+
+        LocalDate today = LocalDate.now();
+        if (!date.isBefore(today)
+            || (date.getYear() != today.getYear() || date.getMonthValue() != today.getMonthValue())) {
+            throw new StreakException(MemberDailyStreakErrorCode.UNAVAILABLE_TIME_ACCESS);
+        }
+
+        LocalDate firstDayOfMonth = LocalDate.of(date.getYear(), date.getMonthValue(), 1);
+        LocalDate lastDayOfMonth = LocalDate.now();
+
+        return memberStreakService.getStreakRecoveryInfoResDto(
+            getCurrentMember(), date, firstDayOfMonth, lastDayOfMonth);
+    }
+
+    @Override
     public void initialMemberStreak(Member member) {
         memberStreakService.createInitialMemberStreak(member);
     }
@@ -127,8 +144,7 @@ public class StreakServiceImpl implements StreakService {
         LocalDate firstDate = LocalDate.of(date.getYear(), date.getMonthValue(), 1).minusDays(1);
         memberStreakService.recoveryMemberDailyStreak(member, date); // clear
 
-        int longestStreak = memberStreakService
-            .recoveryMemberDailyStreakCount(member, firstDate, today);
+        int longestStreak = memberStreakService.recoveryMemberDailyStreakCount(member, firstDate, today);
         memberStreakService.recoveryMemberTotalStreak(member, longestStreak);
 
         useStreakRecovery(member);
