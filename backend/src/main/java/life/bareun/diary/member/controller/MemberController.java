@@ -7,10 +7,10 @@ import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
-import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
@@ -166,7 +166,7 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "사용자의 현재 최장 스트릭 정보를 읽어왔습니다.",
+                    "사용자의 현재 스트릭 정보를 읽어왔습니다.",
                     memberStreakInfoResDto
                 )
             );

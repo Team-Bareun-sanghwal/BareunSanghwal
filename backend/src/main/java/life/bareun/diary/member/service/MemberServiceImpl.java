@@ -335,8 +335,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberStreakInfoResDto streak() {
-        int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
-        return new MemberStreakInfoResDto(longestStreak);
+        MemberStreakResDto memberStreakResDto = streakService.getMemberStreakResDto();
+        int longestStreak = memberStreakResDto.longestStreakCount();
+        int achieveStreak = memberStreakResDto.achieveStreakCount();
+        return new MemberStreakInfoResDto(longestStreak, achieveStreak);
     }
 
     @Override
