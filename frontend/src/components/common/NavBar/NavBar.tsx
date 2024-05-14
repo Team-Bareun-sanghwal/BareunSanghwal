@@ -20,7 +20,7 @@ export const NavBar = ({ mode }: INavBarProps) => {
     HOME: [
       <HomeIcon key={mode} className="w-[3rem] h-[3rem]" />,
       '홈',
-      `/main/${getYear()}/${getMonth(true)}`,
+      `/main/${getYear()}/${getMonth(false)}`,
     ],
     HABIT: [
       <Square3Stack3DIcon key={mode} className="w-[3rem] h-[3rem]" />,
