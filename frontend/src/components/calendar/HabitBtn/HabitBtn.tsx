@@ -3,6 +3,8 @@ import { CheckIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { motion, useAnimate } from 'framer-motion';
+import { useOverlay } from '@/hooks/use-overlay';
+import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 export const HabitBtn = ({
   memberHabitId,
   alias,
@@ -23,16 +25,27 @@ export const HabitBtn = ({
   today?: boolean;
 }) => {
   const router = useRouter();
+  const overlay = useOverlay();
   const [scope, animate] = useAnimate();
 
   const onClickHabit = () => {
     animate([
-      ['button', { scale: 1.1 }, { duration: 0.05 }],
-      ['button', { scale: 1 }, { duration: 0.05 }],
+      ['button', { scale: 1.1 }, { duration: 0.1 }],
+      ['button', { scale: 1 }, { duration: 0.1 }],
     ]);
     if (!add) {
       if (shortcut) {
-        router.push(`/habit/write/${memberHabitId}`);
+        if (succeededTime === null)
+          router.push(`/habit/write/${memberHabitId}`);
+        else {
+          overlay.open(({ isOpen }) => (
+            <AlertBox
+              label="이미 오늘 기록한 습관이에요!"
+              mode="WARNING"
+              open={isOpen}
+            />
+          ));
+        }
       } else {
         if (memberHabitId == habitId) {
           router.push(`/main/2024/5`);

@@ -17,13 +17,12 @@ export const HabitShortcut = ({
   todayHabits,
 }: IHabitShortcutProps) => {
   const sortedHabits = () => {
-    const todayHabitsId = todayHabits.map((habit) => habit.memberHabitId);
-    const todoHabits = allHabits.filter((habit) =>
-      todayHabitsId.includes(habit.memberHabitId),
+    const succeeded = todayHabits.filter(
+      (habit) => habit.succeededTime !== null,
     );
-    return todoHabits;
+    const yet = todayHabits.filter((habit) => habit.succeededTime == null);
+    return { succeeded, yet };
   };
-  console.log(todayHabits);
   return (
     <>
       <div className="flex items-center justify-left gap-4 min-w-full pl-1 ml-6 my-4">
@@ -40,7 +39,7 @@ export const HabitShortcut = ({
           </>
         )}
         <div className="flex overflow-x-auto gap-4 pb-2">
-          {todayHabits.map((habit) => (
+          {sortedHabits().yet.map((habit) => (
             <HabitBtn
               key={habit.memberHabitId}
               memberHabitId={habit.habitTrackerId}
@@ -51,6 +50,18 @@ export const HabitShortcut = ({
               today={true}
             />
           ))}
+          {sortedHabits().succeeded.map((habit) => (
+            <HabitBtn
+              key={habit.memberHabitId}
+              memberHabitId={habit.habitTrackerId}
+              alias={habit.alias}
+              icon={habit.icon}
+              shortcut={true}
+              succeededTime={habit.succeededTime}
+              today={true}
+            />
+          ))}
+
           <div className="flex min-w-8 h-20" />
         </div>
       </div>
