@@ -4,7 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record StreakRecoveryInfoResDto(
-    int streakChange
+    int changedCurrentStreak,
+    int changedLongestStreak
 ) {
 
 }

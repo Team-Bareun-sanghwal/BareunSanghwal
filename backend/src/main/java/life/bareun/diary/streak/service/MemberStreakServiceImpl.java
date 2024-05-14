@@ -261,6 +261,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
          * 이렇게 하면, 스트릭 리커버리가 첫 번째 날에 적용된 경우에도 포함이 가능하다.
          */
         int currentStreak = memberDailyStreakList.get(0).getCurrentStreak();
+        int longestStreak = currentStreak;
 
         for (int i = 1; i < memberDailyStreakList.size(); i++) {
             MemberDailyStreak memberDailyStreak = memberDailyStreakList.get(i);
@@ -281,10 +282,19 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             } else if (memberDailyStreak.getAchieveType().equals(AchieveType.ACHIEVE)) {
                 currentStreak += 1;
             }
+            longestStreak = Math.max(longestStreak, currentStreak);
+        }
+
+        MemberTotalStreak memberTotalStreak = memberTotalStreakRepository.findByMember(member)
+            .orElseThrow(() -> new StreakException(MemberTotalStreakErrorCode.NOT_FOUND_MEMBER_TOTAL_STREAK));
+
+        if (longestStreak <= memberTotalStreak.getLongestStreak()) {
+            longestStreak = -1;
         }
 
         return StreakRecoveryInfoResDto.builder()
-            .streakChange(currentStreak)
+            .changedCurrentStreak(currentStreak)
+            .changedLongestStreak(longestStreak)
             .build();
     }
 
