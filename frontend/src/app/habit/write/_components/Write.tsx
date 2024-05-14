@@ -54,7 +54,7 @@ export default function Write({
 
           close();
 
-          if (response.status !== 200) onNext();
+          if (response.status === 200) onNext();
           else handleAlertBox();
         }}
         open={isOpen}
