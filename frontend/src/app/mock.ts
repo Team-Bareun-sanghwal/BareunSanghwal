@@ -13,7 +13,7 @@ export interface IMemberHabit {
   habit?: number;
 }
 export interface IDayInfo {
-  achieveType: 'NOT_EXISTED' | 'ACHEIVE' | 'NOT_ACHIEVE' | 'RECOVERY';
+  achieveType: 'NOT_EXISTED' | 'ACHIEVE' | 'NOT_ACHIEVE' | 'RECOVERY';
   dayNumber: number;
   achieveCount: number;
   totalCount: number;
@@ -46,7 +46,6 @@ export const setDayInfo = (
   for (let i = 1; i <= today; i++) {
     const existingDayInfo = dayInfo.find((info) => info.dayNumber === i);
     if (existingDayInfo) {
-      console.log(existingDayInfo);
       dayInfoList.push(existingDayInfo);
     } else {
       dayInfoList.push({

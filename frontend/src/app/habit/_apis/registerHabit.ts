@@ -1,3 +1,6 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
 import { $Fetch } from '@/apis';
 
 export async function registerHabit(
@@ -14,6 +17,11 @@ export async function registerHabit(
     data: { habitId, alias, icon, dayOfWeek, period },
   });
 
-  if (response.status !== 201) throw new Error('해빗을 등록하는데 실패');
+  // if (response.status !== 201) {
+  //   throw new Error('해빗을 등록하는데 실패');
+  // }
+
+  revalidatePath('/habit', 'page');
+
   return response;
 }

@@ -7,6 +7,7 @@ import {
   ImageUploadBox,
   Button,
   BottomSheet,
+  AlertBox,
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
@@ -28,6 +29,13 @@ export const Write = ({
 
   const overlay = useOverlay();
 
+  const handleAlertBox = () => {
+    overlay.open(({ isOpen }) => (
+      <AlertBox label="해빗 기록에 실패했습니다" mode="ERROR" open={isOpen} />
+    ));
+    setTimeout(() => overlay.close(), 1000);
+  };
+
   const handleWriteOverlay = () => {
     overlay.open(({ isOpen, close }) => (
       <BottomSheet
@@ -35,7 +43,7 @@ export const Write = ({
         mode="POSITIVE"
         onClose={close}
         onConfirm={async () => {
-          await writeHabit(
+          const response = await writeHabit(
             image,
             {
               habitTrackerId: habitTrackerId,
@@ -43,8 +51,11 @@ export const Write = ({
             },
             authorization,
           );
-          onNext();
+
           close();
+
+          if (response.status !== 200) onNext();
+          else handleAlertBox();
         }}
         open={isOpen}
         title="기록을 완료하시겠어요?"
