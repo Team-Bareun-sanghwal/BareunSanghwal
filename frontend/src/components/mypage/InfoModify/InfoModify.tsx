@@ -1,7 +1,8 @@
 'use client';
 
 import { postMemberInfo } from '@/app/(member)/mypage/_apis/postMemberInfo';
-import { InputBox, ScrollDatePicker, SelectBox } from '@/components';
+import { InputBox, SelectBox } from '@/components';
+import { DatePicker } from '@/components/common/DatePicker/DatePicker';
 import { TinyButton } from '@/components/common/TinyButton/TinyButton';
 import { useState } from 'react';
 import { convertBirthday } from '@/components/common/Picker/utils';
@@ -81,10 +82,7 @@ export const InfoModify = ({ title, desc, prevData }: IPropType) => {
         setDefaultValue={setValue}
       />
     ) : (
-      // <ScrollDatePicker birthDay={value} setBirthDay={setValue} />
-      <div>
-        <input type="date" />
-      </div>
+      <DatePicker defaultValue={value} setDefaultValue={setValue} />
     );
 
   return (

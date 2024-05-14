@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { InputBox } from '@/components/common/InputBox/InputBox';
 import { SelectBox } from '@/components/common/SelectBox/SelectBox';
-import { ScrollDatePicker } from '@/components/common/ScrollDatePicker/ScrollDatePicker';
+import { DatePicker } from '@/components/common/DatePicker/DatePicker';
 import { Button } from '@/components/common/Button/Button';
 import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 import { useOverlay } from '@/hooks/use-overlay';
@@ -19,11 +19,6 @@ export const SignInForm = () => {
   const [gender, setGender] = useState('');
   const [job, setJob] = useState('');
   const [birthDay, setBirthday] = useState('2024-01-01');
-  const [isShowPicker, setIsShowPicker] = useState(false);
-
-  const toggleIsShowPicker = () => {
-    setIsShowPicker((prev) => !prev);
-  };
 
   const genderOptions = [
     { key: 'M', value: '남자' },
@@ -84,14 +79,11 @@ export const SignInForm = () => {
           defaultValue={job}
           setDefaultValue={setJob}
         />
-        <div onClick={toggleIsShowPicker}>
-          <div className="flex justify-between items-center">
+        <div>
+          <div className="flex justify-between items-center mb-[1rem]">
             <p className="custom-semibold-text text-custom-matcha">생일</p>
-            <p className="custom-light-text">{birthDay}</p>
           </div>
-          {isShowPicker ? (
-            <ScrollDatePicker birthDay={birthDay} setBirthDay={setBirthday} />
-          ) : null}
+          <DatePicker defaultValue={birthDay} setDefaultValue={setBirthday} />
         </div>
       </div>
 

@@ -11,7 +11,6 @@ import { InputBox } from './common/InputBox/InputBox';
 import { NavBar } from './common/NavBar/NavBar';
 import { ProgressBox } from './common/ProgressBox/ProgressBox';
 import { RecapContentBox } from './common/RecapContentBox/RecapContentBox';
-import { ScrollDatePicker } from './common/ScrollDatePicker/ScrollDatePicker';
 import { SelectBox } from './common/SelectBox/SelectBox';
 import { TabBox } from './common/TabBox/TabBox';
 import { TextAreaBox } from './common/TextAreaBox/TextAreaBox';
@@ -67,7 +66,6 @@ export {
   NavBar,
   ProgressBox,
   RecapContentBox,
-  ScrollDatePicker,
   SelectBox,
   TabBox,
   TextAreaBox,
