@@ -22,13 +22,14 @@ import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
-import life.bareun.diary.member.service.MemberService;
 import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
 import life.bareun.diary.product.entity.TreeColor;
 import life.bareun.diary.product.repository.StreakColorGradeRepository;
 import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
+import life.bareun.diary.streak.entity.MemberTotalStreak;
+import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +45,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +56,9 @@ public class MemberControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberTotalStreakRepository memberTotalStreakRepository;
 
     @Autowired
     private StreakColorRepository streakColorRepository;
@@ -78,6 +81,8 @@ public class MemberControllerTest {
 
     private Member testMember;
     private Tree testTree;
+    private MemberTotalStreak testMemberTotalStreak;
+
 
     private StreakColor testStreakColor;
     private TreeColor testTreeColor;
@@ -94,41 +99,52 @@ public class MemberControllerTest {
     void setUp() {
         testTree = treeRepository.findById(1L)
             .orElseGet(
-                () -> new Tree(1, 1, 10, 100)
+                () -> treeRepository.save(new Tree(1, 1, 10, 100) )
             );
 
         testTreeColor = treeColorRepository.findById(1)
             .orElseGet(
-                () -> new TreeColor(1, "TEST_TREE_COLOR")
+                () -> treeColorRepository.save(new TreeColor(1, "TEST_TREE_COLOR"))
             );
 
         testStreakColor = streakColorRepository.findById(1)
             .orElseGet(
-                () -> new StreakColor(
-                    1,
-                    "TEST_STREAK_COLOR",
-                    streakColorGradeRepository.findById(1L)
-                        .orElseGet(
-                            () -> new StreakColorGrade(1L, "TEST_STREAK_GRADE", 1.0F )
-                        )
+                () -> streakColorRepository.save(
+                    new StreakColor(
+                        1,
+                        "TEST_STREAK_COLOR",
+                        streakColorGradeRepository.findById(1L)
+                            .orElseGet(
+                                () -> new StreakColorGrade(1L, "TEST_STREAK_GRADE", 1.0F)
+                            )
                     )
+                )
             );
 
-        testMember = Member.create(
-            MemberRegisterDto.builder()
-                .sub("testsub")
-                .oAuth2Provider(OAuth2Provider.GOOGLE)
-                .defaultTree(testTree)
-                .defaultTreeColorId(testTreeColor.getId())
-                .defaultStreakColorId(testStreakColor.getId())
-                .build()
+        testMember = memberRepository.save(
+            Member.create(
+                MemberRegisterDto.builder()
+                    .sub("testsub")
+                    .oAuth2Provider(OAuth2Provider.GOOGLE)
+                    .defaultTree(testTree)
+                    .defaultTreeColorId(testTreeColor.getId())
+                    .defaultStreakColorId(testStreakColor.getId())
+                    .build()
+            )
         );
 
+        testMemberTotalStreak = new MemberTotalStreak(testMember);
+        testMemberTotalStreak.modifyTotalStreakCount(10);
+        testMemberTotalStreak.modifyAchieveStreakCount(10);
+        testMemberTotalStreak.modifyLongestStreak(8);
+        testMemberTotalStreak.modifyStarCount(4);
+        testMemberTotalStreak.modifyTotalTrackerCount(6);
+        testMemberTotalStreak.modifyAchieveTrackerCount(5);
+        testMemberTotalStreak = memberTotalStreakRepository.save(testMemberTotalStreak);
 
-        Member saved = memberRepository.save(testMember);
         accessToken = authTokenProvider.createAccessToken(
             new Date(),
-            Long.toString(saved.getId()),
+            Long.toString(testMember.getId()),
             Role.ROLE_USER.name()
         );
 
@@ -246,8 +262,8 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 스트릭 정보 조회 테스트")
-    public void testStreak() throws Exception {
+    @DisplayName("사용자 스트릭 색상 조회 테스트")
+    public void testStreakColor() throws Exception {
         // given
         // 초기 데이터 설정 확인
         Assertions.assertThat(testMember.getCurrentStreakColorId()).isEqualTo(testStreakColor.getId());
@@ -315,7 +331,44 @@ public class MemberControllerTest {
                         testTreeColor.getName()
                     )
             );
+    }
 
+    @Test
+    @DisplayName("사용자 스트릭 정보 조회 테스트")
+    public void testStreakInfo() throws Exception {
+        // given
+        Assertions.assertThat(testMemberTotalStreak.getMember()).isEqualTo(testMember);
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/streak")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 현재 스트릭 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.longestStreak")
+                    .value(
+                        testMemberTotalStreak.getLongestStreak()
+                    )
+            )
+            .andExpect(
+                jsonPath("$.data.currentStreak")
+                    .value(
+                      testMemberTotalStreak.getAchieveStreakCount()
+                    )
+            );
     }
 
 }
