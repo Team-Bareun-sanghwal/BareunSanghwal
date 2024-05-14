@@ -208,7 +208,6 @@ public class MemberControllerTest {
         // given
         Integer currentStreakColorId = testMember.getCurrentStreakColorId();
 
-
         // when
         ResultActions when = mockMvc.perform(
             MockMvcRequestBuilders.get("/members/streak")
@@ -225,15 +224,15 @@ public class MemberControllerTest {
             )
             .andExpect(
                 jsonPath("$.message")
-                .value("사용자의 현재 스트릭 색상 정보를 읽어왔습니다.")
+                    .value("사용자의 현재 스트릭 색상 정보를 읽어왔습니다.")
             )
             .andExpect(
                 jsonPath("$.data.streakName")
-                .value(
-                    streakColorRepository.findById(currentStreakColorId)
-                        .orElseThrow(() -> new Exception("스트릭 색상 테스트 에러"))
-                        .getName()
-                )
+                    .value(
+                        streakColorRepository.findById(currentStreakColorId)
+                            .orElseThrow(() -> new Exception("스트릭 색상 테스트 에러"))
+                            .getName()
+                    )
             );
     }
 
