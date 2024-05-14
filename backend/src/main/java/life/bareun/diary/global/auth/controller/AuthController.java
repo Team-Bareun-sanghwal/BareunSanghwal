@@ -11,6 +11,7 @@ import life.bareun.diary.global.common.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,8 +29,8 @@ public class AuthController {
     @GetMapping("/access-token")
     public ResponseEntity<BaseResponse<String>> accessToken(
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
-        String refreshToken
-        // HttpServletResponse response
+        String refreshToken,
+        HttpServletResponse response
     ) {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
 
@@ -53,24 +54,33 @@ public class AuthController {
         //
         // System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
 
-        return ResponseEntity
-            .status(
-                HttpStatus.OK.value()
-            )
-            .header(
-                "Set-Cookie",
-                ResponseUtil.createResponseCookieString(
-                    SecurityConfig.ACCESS_TOKEN_HEADER,
-                    authAccessTokenResDto.accessToken(),
-                    authAccessTokenResDto.expiry()
-                )
-            )
-            .body(
-                BaseResponse.success(
-                    HttpStatus.OK.value(),
-                    "액세스 토큰이 발급되었습니다.",
-                    authAccessTokenResDto.accessToken()
-                )
-            );
+        ResponseCookie accessCookie = ResponseCookie.from("Authorization", "ABCD")
+            .sameSite("None").httpOnly(true).secure(true).path("/")
+            .maxAge(5000L).build();
+
+        response.setHeader("Set-Cookie", accessCookie.toString());
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "토큰이 발급되었습니다.", null));
+
+//        return ResponseEntity
+//            .status(
+//                HttpStatus.OK.value()
+//            )
+//            .header(
+//                "Set-Cookie",
+//                ResponseUtil.createResponseCookieString(
+//                    SecurityConfig.ACCESS_TOKEN_HEADER,
+//                    authAccessTokenResDto.accessToken(),
+//                    authAccessTokenResDto.expiry()
+//                )
+//            )
+//            .body(
+//                BaseResponse.success(
+//                    HttpStatus.OK.value(),
+//                    "액세스 토큰이 발급되었습니다.",
+//                    authAccessTokenResDto.accessToken()
+//                )
+//            );
     }
 }
