@@ -254,7 +254,7 @@ public class MemberControllerTest {
 
         // when
         ResultActions when = mockMvc.perform(
-            MockMvcRequestBuilders.get("/members/streak")
+            MockMvcRequestBuilders.get("/members/streak/color")
                 .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
         );

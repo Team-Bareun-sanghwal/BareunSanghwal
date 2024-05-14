@@ -108,7 +108,7 @@ public class MemberController {
             );
     }
 
-    @GetMapping("/streak")
+    @GetMapping("/streak/color")
     public ResponseEntity<BaseResponse<MemberStreakInfoResDto>> streakColor() {
         MemberStreakInfoResDto memberStreakInfoResDto = memberService.streakInfo();
         return ResponseEntity
