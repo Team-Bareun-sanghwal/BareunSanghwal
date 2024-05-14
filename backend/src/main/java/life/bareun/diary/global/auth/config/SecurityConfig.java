@@ -89,44 +89,33 @@ public class SecurityConfig {
     // 개발 완료 시점에 허용해야 함
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//
-//        corsConfiguration.setExposedHeaders(
-//            Arrays.asList(
-//                "Content-Type",
-//                "Set-Cookie",
-//                ACCESS_TOKEN_HEADER,
-//                REFRESH_TOKEN_HEADER
-//            )
-//        );
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+
+        corsConfiguration.setExposedHeaders(
+            Arrays.asList(
+                "Content-Type",
+                "Set-Cookie",
+                ACCESS_TOKEN_HEADER,
+                REFRESH_TOKEN_HEADER
+            )
+        );
+
 //        // corsConfiguration.addAllowedOrigin("http://localhost:3000");
 //        // corsConfiguration.addAllowedOrigin("https://localhost:3000");
-//        corsConfiguration.addAllowedOriginPattern("https://bareun.life");
-//        corsConfiguration.setAllowedHeaders(List.of("*"));
-//        corsConfiguration.setAllowCredentials(Boolean.TRUE);
-//        corsConfiguration.addAllowedMethod("*");
-//        corsConfiguration.setMaxAge(3600L); // 1h
-//        corsConfiguration.setAllowedHeaders(
-//            Arrays.asList(
-//                "Origin",
-//                "X-Requested-With",
-//                "Content-Type",
-//                "Accept",
-//                "Authorization"
-//            )
-//        );
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", corsConfiguration);
-
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOriginPattern("https://bareun.life"); // 특정 도메인 허용
-        corsConfiguration.addAllowedOriginPattern("http://localhost:3000"); // 로컬 개발 도메인 허용
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 HTTP 메서드 명시
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization")); // 허용할 헤더 명시
-        corsConfiguration.setExposedHeaders(List.of("Set-Cookie")); // 브라우저에 노출할 헤더 명시
-        corsConfiguration.setAllowCredentials(true); // 쿠키 포함 허용
-        corsConfiguration.setMaxAge(3600L); // pre-flight 요청의 최대 캐시 시간 (1시간)
-
+        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(Boolean.TRUE);
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.setMaxAge(3600L); // 1h
+        corsConfiguration.setAllowedHeaders(
+            Arrays.asList(
+                "Origin",
+                "X-Requested-With",
+                "Content-Type",
+                "Accept",
+                "Authorization"
+            )
+        );
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 
