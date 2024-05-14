@@ -17,9 +17,7 @@ interface IHabitTrackerDto {
 interface IHabitTrackerTodayDtoList {
   habitTrackerTodayDtoList: IHabitTrackerDto[];
 }
-const getHabitCheckerText = (
-  habitTrackerTodayDtoList: IHabitTrackerDto[],
-) => {
+const getHabitCheckerText = (habitTrackerTodayDtoList: IHabitTrackerDto[]) => {
   let habitCheckerTitle = '오늘의 바른 생활';
   let habitCheckerText = '';
   let habitCheckerSubText = '';
@@ -27,9 +25,9 @@ const getHabitCheckerText = (
   let isAchieved = false;
   let isHabit = true;
 
-  const totalCount = habitTrackerTodayDtoList?.length||0;
+  const totalCount = habitTrackerTodayDtoList?.length || 0;
   const achieveCount = habitTrackerTodayDtoList.filter(
-    (habit:IHabitTrackerDto) => habit.succeededTime != null,
+    (habit: IHabitTrackerDto) => habit.succeededTime != null,
   ).length;
 
   if (totalCount === 0) {

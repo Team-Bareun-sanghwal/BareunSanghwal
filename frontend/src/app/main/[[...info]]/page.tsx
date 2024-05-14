@@ -1,4 +1,4 @@
-import { Calender, NavBar } from '@/components';
+import { Calender } from '@/components';
 import { $Fetch } from '@/apis';
 import { convertMonthFormat } from '@/components/calendar/util';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
@@ -49,7 +49,6 @@ export default async function Page(props: { params: { info: number[] } }) {
       <MyStreakRecovery />
       <DailyPhrase />
       <div className="flex h-[8rem]"></div>
-      <NavBar mode="HOME" />
     </div>
   );
 }

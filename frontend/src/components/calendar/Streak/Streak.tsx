@@ -32,20 +32,21 @@ export const Streak = ({
   habitId,
   ...props
 }: StreakProps) => {
-  console.log(dayNumber, achieveCount, totalCount);
   const overlay = useOverlay();
-
   const Alert = () => {
     const msg = () => {
+      if (dayNumber && dayNumber > parseInt(getToday(true))) {
+        return '이전 날짜에만 리커버리를 사용할 수 있어요!';
+      }
       if (
         month?.toString() !== getMonth(false) ||
         year?.toString() !== getYear()
-      )
+      ) {
         return '이번 달에만 스트릭 리커버리를 사용할 수 있어요!';
-
+      }
       switch (achieveType) {
         case 'NOT_EXISTED':
-          return '해당 날짜의 스트릭이 없어요!';
+          return '해당 날짜의 해빗이 없어요!';
         case 'ACHIEVE':
           return '해당 날짜의 스트릭을 이미 달성했어요!';
         case 'RECOVERY':
@@ -60,13 +61,12 @@ export const Streak = ({
     setTimeout(() => overlay.close(), 2000);
   };
   const onClickStreakRecovery = () => {
+    if (habitId === 0) return;
     if (
       dayNumber &&
       !habitId &&
       achieveType === 'NOT_ACHIEVE' &&
-      dayNumber.toString() != getToday(false) &&
-      month?.toString() != getMonth(false) &&
-      year?.toString() != getYear()
+      (month?.toString() != getMonth(false) || year?.toString() != getYear())
     ) {
       overlay.open(({ isOpen, close }) => (
         <BottomSheet
@@ -151,9 +151,9 @@ export const Streak = ({
       <a
         className={
           getToday(false) === dayNumber + '' &&
-          getMonth(false) === month + '' &&
+          getMonth(true) === month + '' &&
           getYear() === year + ''
-            ? 'flex text-white text-2xl w-full h-full rounded-md border-custom-dark-gray border-2 items-center justify-center'
+            ? 'flex text-white text-2xl w-full h-full rounded-md border-black border-2 items-center justify-center'
             : ''
         }
       >

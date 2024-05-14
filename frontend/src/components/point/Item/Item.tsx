@@ -110,7 +110,7 @@ const Item = ({
             <BottomSheet
               description=""
               mode="NONE"
-              onClose={close}
+              // onClose={close}
               onConfirm={() => {
                 close();
                 router.refresh();
@@ -173,9 +173,9 @@ const Item = ({
   return (
     <>
       <div className="flex w-full border-solid rounded-lg shadow-md bg-custom-white">
-        <div className="flex p-6 w-full">
+        <div className="flex p-4 w-full">
           <div className="content-center">
-            <Image src={path} alt="" width={36} height={36} />
+            <Image src={path} alt="" width={48} height={48} />
           </div>
           <div className="flex flex-col gap-2 ml-4">
             <div className="flex">
@@ -189,7 +189,7 @@ const Item = ({
           onClick={() =>
             purchase({ keyname, name, introduction, description, price, mode })
           }
-          className="ml-auto px-4 border-l-2 border-dotted"
+          className="ml-auto px-8 border-l-2 border-dotted"
         >
           <ShoppingBagIcon width={16} height={16} />
         </button>

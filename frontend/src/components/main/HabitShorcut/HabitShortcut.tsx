@@ -3,6 +3,7 @@ interface IHabitList {
   name: string;
   alias: string;
   memberHabitId: number;
+  habitTrackerId: number;
   icon: string;
   succeededTime: string;
 }
@@ -17,12 +18,12 @@ export const HabitShortcut = ({
 }: IHabitShortcutProps) => {
   const sortedHabits = () => {
     const todayHabitsId = todayHabits.map((habit) => habit.memberHabitId);
-    const remainingHabits = allHabits.filter(
-      (habit) => !todayHabitsId.includes(habit.memberHabitId),
+    const todoHabits = allHabits.filter((habit) =>
+      todayHabitsId.includes(habit.memberHabitId),
     );
-    return remainingHabits;
+    return todoHabits;
   };
-
+  console.log(todayHabits);
   return (
     <>
       <div className="flex items-center justify-left gap-4 min-w-full pl-1 ml-6 my-4">
@@ -42,22 +43,12 @@ export const HabitShortcut = ({
           {todayHabits.map((habit) => (
             <HabitBtn
               key={habit.memberHabitId}
-              memberHabitId={habit.memberHabitId}
+              memberHabitId={habit.habitTrackerId}
               alias={habit.alias}
               icon={habit.icon}
               shortcut={true}
               succeededTime={habit.succeededTime}
               today={true}
-            />
-          ))}
-          {sortedHabits().map((habit) => (
-            <HabitBtn
-              key={habit.memberHabitId}
-              memberHabitId={habit.memberHabitId}
-              alias={habit.alias}
-              icon={habit.icon}
-              shortcut={true}
-              today={false}
             />
           ))}
           <div className="flex min-w-8 h-20" />
