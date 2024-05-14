@@ -231,11 +231,11 @@ public class MemberControllerTest {
                 jsonPath("$.data.streakName")
                 .value(
                     streakColorRepository.findById(currentStreakColorId)
-                        .orElseGet(null)
+                        .orElseThrow(() -> new Exception("스트릭 색상 테스트 에러"))
                         .getName()
                 )
             );
     }
-    
+
 }
 
