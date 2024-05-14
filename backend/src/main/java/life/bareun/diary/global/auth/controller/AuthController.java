@@ -28,8 +28,8 @@ public class AuthController {
     @GetMapping("/access-token")
     public ResponseEntity<BaseResponse<String>> accessToken(
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
-        String refreshToken,
-        HttpServletResponse response
+        String refreshToken
+        // HttpServletResponse response
     ) {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
 
@@ -39,30 +39,38 @@ public class AuthController {
         //     authAccessTokenResDto.accessToken(),
         //     authAccessTokenResDto.expiry()
         // );
-
-        Cookie cookie = new Cookie(
-            SecurityConfig.ACCESS_TOKEN_HEADER,
-            authAccessTokenResDto.accessToken()
-        );
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setSecure(true);
-        cookie.setMaxAge((int) authAccessTokenResDto.expiry());
-        cookie.setDomain("bareun.life");
-        response.addCookie(cookie);
-
-        System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
+        //
+        // Cookie cookie = new Cookie(
+        //     SecurityConfig.ACCESS_TOKEN_HEADER,
+        //     authAccessTokenResDto.accessToken()
+        // );
+        // cookie.setHttpOnly(true);
+        // cookie.setPath("/");
+        // cookie.setSecure(true);
+        // cookie.setMaxAge((int) authAccessTokenResDto.expiry());
+        // cookie.setDomain("bareun.life");
+        // response.addCookie(cookie);
+        //
+        // System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
 
         return ResponseEntity
             .status(
                 HttpStatus.OK.value()
             )
-            .body(
-            BaseResponse.success(
-                HttpStatus.OK.value(),
-                "액세스 토큰이 발급되었습니다.",
-                authAccessTokenResDto.accessToken()
+            .header(
+                SecurityConfig.ACCESS_TOKEN_HEADER,
+                ResponseUtil.createResponseCookieString(
+                    SecurityConfig.ACCESS_TOKEN_HEADER,
+                    authAccessTokenResDto.accessToken(),
+                    authAccessTokenResDto.expiry()
+                )
             )
-        );
+            .body(
+                BaseResponse.success(
+                    HttpStatus.OK.value(),
+                    "액세스 토큰이 발급되었습니다.",
+                    authAccessTokenResDto.accessToken()
+                )
+            );
     }
 }

@@ -94,7 +94,7 @@ public class ResponseUtil {
         );
     }
 
-    private static String createResponseCookieString(
+    public static String createResponseCookieString(
         String name,
         String value,
         long maxAgeSeconds
