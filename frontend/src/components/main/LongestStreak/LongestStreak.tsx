@@ -3,18 +3,18 @@ import { $Fetch } from '@/apis';
 export const LongestStreak = async () => {
   const { data } = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/longest-streak`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak`,
     cache: 'no-cache',
   });
-  const longestStreak = data.longestStreak;
+  const currentStreak = data.currentStreak;
   return (
     <>
       <div className="flex flex-col w-4/12 bg-custom-sky-pastel justify-center rounded-xl max-w-48 min-h-20">
-        {longestStreak !== 0 ? (
+        {currentStreak !== 0 ? (
           <>
             <p className="text-center text-lg ">오늘로</p>
             <p className="text-center text-2xl font-semibold">
-              {longestStreak}일째
+              {currentStreak}일째
             </p>
           </>
         ) : (
