@@ -8,6 +8,7 @@ import {
   ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { deleteMemberInfo } from '@/app/(member)/mypage/_apis/deleteMemberInfo';
+import { $Logout } from '@/apis';
 
 interface IPropType {
   type: string;
@@ -45,7 +46,7 @@ export const BorderlessButton = ({ type }: IPropType) => {
     if (type === 'leave') {
       handleOverlay();
     } else {
-      console.log('logout');
+      await $Logout();
     }
   };
 
