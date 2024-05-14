@@ -1,9 +1,11 @@
 package life.bareun.diary.streak.controller;
 
+import java.time.LocalDate;
 import life.bareun.diary.global.common.response.BaseResponse;
 import life.bareun.diary.streak.dto.request.StreakRecoveryReqDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
+import life.bareun.diary.streak.dto.response.StreakRecoveryInfoResDto;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,12 +56,21 @@ public class StreakController {
     }
 
     @PatchMapping("/recovery")
-    public ResponseEntity<BaseResponse<?>> recoveryStreak(
+    public ResponseEntity<BaseResponse<String>> recoveryStreak(
         @RequestBody StreakRecoveryReqDto streakRecoveryReqDto) {
 
         streakService.recoveryStreak(streakRecoveryReqDto.date());
 
         return ResponseEntity.status(HttpStatus.OK.value())
             .body(BaseResponse.success(HttpStatus.OK.value(), "성공적으로 리커버리가 적용되었습니다.", null));
+    }
+
+    @GetMapping("/recovery/{date}")
+    public ResponseEntity<BaseResponse<StreakRecoveryInfoResDto>> asdf(@PathVariable("date") LocalDate date) {
+
+        return ResponseEntity.status(HttpStatus.OK.value())
+            .body(BaseResponse.success(HttpStatus.OK.value(),
+                "리커버리 사용 시 변동될 스트릭 정보 조회에 성공했습니다.",
+                streakService.getStreakRecoveryInfoResDto(date)));
     }
 }

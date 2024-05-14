@@ -6,19 +6,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.notification.service.NotificationService;
 import life.bareun.diary.habit.dto.HabitTrackerCountDto;
 import life.bareun.diary.habit.repository.HabitTrackerRepository;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.member.entity.Tree;
-import life.bareun.diary.member.exception.MemberErrorCode;
-import life.bareun.diary.member.exception.MemberException;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
 import life.bareun.diary.streak.dto.MonthStreakInfoDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
+import life.bareun.diary.streak.dto.response.StreakRecoveryInfoResDto;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.entity.embed.AchieveType;
@@ -241,6 +239,56 @@ public class MemberStreakServiceImpl implements MemberStreakService {
     }
 
     @Override
+    public StreakRecoveryInfoResDto getStreakRecoveryInfoResDto(Member member, LocalDate date, LocalDate startDate,
+        LocalDate endDate) {
+
+        MemberDailyStreak memberDailyStreakByDate = memberDailyStreakRepository.findByMemberAndCreatedDate(member, date)
+            .orElseThrow(() -> new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_MEMBER_DAILY_STREAK));
+
+        if (!memberDailyStreakByDate.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+            throw new StreakException(MemberDailyStreakErrorCode.UNRECOVERABLE_ACHIEVE_TYPE);
+        }
+
+        List<MemberDailyStreak> memberDailyStreakList = memberDailyStreakRepository
+            .findByMemberAndCreatedDateBetweenOrderByCreatedDate(member, startDate, endDate);
+        if (memberDailyStreakList.isEmpty()) {
+            throw new StreakException(MemberDailyStreakErrorCode.NOT_FOUND_WHOLE_MEMBER_DAILY_STREAK);
+        }
+
+        /*
+         * 스트릭 리버커리는 현재 달 내에만 사용할 수 있으므로 이전 달의 스트릭은 변동되지 않는다.
+         * 따라서, 스트릭의 시작점을 해당 달의 첫 번째 날짜의 스트릭으로 잡는다.
+         * 이렇게 하면, 스트릭 리커버리가 첫 번째 날에 적용된 경우에도 포함이 가능하다.
+         */
+        int currentStreak = memberDailyStreakList.get(0).getCurrentStreak();
+
+        for (int i = 1; i < memberDailyStreakList.size(); i++) {
+            MemberDailyStreak memberDailyStreak = memberDailyStreakList.get(i);
+            /*
+             * 스트릭 리커버리를 사용할 날짜라면 세지 않고 스킵.
+             */
+            if (memberDailyStreak.getCreatedDate().equals(date)) {
+                continue;
+            }
+
+            if (memberDailyStreak.getCreatedDate().equals(LocalDate.now())
+                && memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+                continue;
+            }
+
+            if (memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+                currentStreak = 0;
+            } else if (memberDailyStreak.getAchieveType().equals(AchieveType.ACHIEVE)) {
+                currentStreak += 1;
+            }
+        }
+
+        return StreakRecoveryInfoResDto.builder()
+            .streakChange(currentStreak)
+            .build();
+    }
+
+    @Override
     public MonthStreakResDto getMemberDailyStreakResDtoByMemberId(Long memberId, LocalDate firstDayOfMonth,
         LocalDate lastDayOfMonth) {
         List<MonthStreakInfoDto> monthStreakInfoDtoList = memberDailyStreakRepository
@@ -258,14 +306,6 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             .dayOfWeekFirst(firstDayOfMonth.getDayOfWeek().getValue() - 1)
             .dayInfo(monthStreakInfoDtoList)
             .build();
-    }
-
-    /**
-     * 멤버 엔티티 반환.
-     */
-    private Member getCurrentMember() {
-        return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
-            .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
     }
 
     private double getProportion(int achieveCount, int totalCount) {

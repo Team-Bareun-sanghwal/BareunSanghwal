@@ -5,6 +5,7 @@ import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
+import life.bareun.diary.streak.dto.response.StreakRecoveryInfoResDto;
 
 public interface StreakService {
 
@@ -13,6 +14,8 @@ public interface StreakService {
     MonthStreakResDto getHabitStreakResDtoByMemberHabitId(String dateString, Long memberHabitId);
 
     MonthStreakResDto getHabitStreakResDtoByMember(String dateString);
+
+    StreakRecoveryInfoResDto getStreakRecoveryInfoResDto(LocalDate date);
 
     void initialMemberStreak(Member member);
 
