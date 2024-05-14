@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { HomeIcon } from '@heroicons/react/24/solid';
-import { getYear, getMonth } from '@/components/calendar/util';
 import {
   ChartPieIcon,
   Square3Stack3DIcon,
@@ -20,7 +19,7 @@ export const NavBar = ({ mode }: INavBarProps) => {
     HOME: [
       <HomeIcon key={mode} className="w-[3rem] h-[3rem]" />,
       '홈',
-      `/main/${getYear()}/${getMonth(true)}`,
+      '/main',
     ],
     HABIT: [
       <Square3Stack3DIcon key={mode} className="w-[3rem] h-[3rem]" />,
