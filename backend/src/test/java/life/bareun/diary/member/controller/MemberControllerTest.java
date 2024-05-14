@@ -58,6 +58,10 @@ public class MemberControllerTest {
     private String accessToken;
 
 
+    /**
+     * @BeforeAll로 설정하면 매 테스트 수행 후 rollback이 안된다.
+     * 즉 일관적인 테스트가 어려울 수 있다.
+     */
     @BeforeEach
     void setUp() {
         testMember = Member.create(
