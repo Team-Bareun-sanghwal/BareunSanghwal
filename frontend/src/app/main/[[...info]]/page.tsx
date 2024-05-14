@@ -2,6 +2,7 @@ import { Calender, NavBar } from '@/components';
 import { $Fetch } from '@/apis';
 import { convertMonthFormat } from '@/components/calendar/util';
 import { DailyPhrase } from '@/components/main/DailyPhrase/DailyPhrase';
+import { MyStreakRecovery } from '@/components/main/MyStreakRecovery/MyStreakRecovery';
 export default async function Page(props: { params: { info: number[] } }) {
   const [year, month, habitId] = props.params.info;
   const streakData = await $Fetch({
@@ -45,6 +46,7 @@ export default async function Page(props: { params: { info: number[] } }) {
         month={month}
         habitId={habitId}
       />
+      <MyStreakRecovery />
       <DailyPhrase />
       <div className="flex h-[8rem]"></div>
       <NavBar mode="HOME" />
