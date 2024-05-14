@@ -20,7 +20,13 @@ export default async function Page({
         </nav>
       </Link>
 
-      <HabitContentBox habitTotalData={habitWriteListData} />
+      {habitWriteListData.length === 0 ? (
+        <span className="mx-auto custom-semibold-text text-custom-medium-gray">
+          기록된 내용이 없습니다
+        </span>
+      ) : (
+        <HabitContentBox habitTotalData={habitWriteListData} />
+      )}
     </div>
   );
 }
