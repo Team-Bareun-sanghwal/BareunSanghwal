@@ -28,7 +28,7 @@ public class AuthController {
     @GetMapping("/access-token")
     public ResponseEntity<BaseResponse<String>> accessToken(
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
-        String refreshToken,
+        String refreshToken
         // HttpServletResponse response
     ) {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
