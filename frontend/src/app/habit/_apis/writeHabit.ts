@@ -1,3 +1,7 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
+
 export async function writeHabit(
   image: File | null,
   HabitTrackerModifyReqDto: {
@@ -28,6 +32,9 @@ export async function writeHabit(
     },
   );
 
-  if (!response.ok) throw new Error('해빗을 기록하는데 실패');
+  // if (!response.ok) throw new Error('해빗을 기록하는데 실패');
+
+  revalidatePath('/habit/list/[memberHabitId]', 'page');
+
   return response.json();
 }
