@@ -21,6 +21,7 @@ import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.service.MemberService;
+import life.bareun.diary.product.repository.StreakColorRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +49,9 @@ public class MemberControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private StreakColorRepository streakColorRepository;
 
     @Autowired
     private MemberService memberService;
@@ -176,7 +180,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 포인트 조회 테스트")
+    @DisplayName("사용자 포인트 정보 조회 테스트")
     public void testPoint() throws Exception {
         // given
         Integer point = testMember.getPoint();
@@ -197,4 +201,41 @@ public class MemberControllerTest {
             .andExpect(jsonPath("$.data.point").value(point))
             .andExpect(jsonPath("$.data.isHarvestedToday").isBoolean());
     }
+
+    @Test
+    @DisplayName("사용자 스트릭 정보 조회 테스트")
+    public void testStreak() throws Exception {
+        // given
+        Integer currentStreakColorId = testMember.getCurrentStreakColorId();
+
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/streak")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                .value("사용자의 현재 스트릭 색상 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.streakName")
+                .value(
+                    streakColorRepository.findById(currentStreakColorId)
+                        .orElseGet(null)
+                        .getName()
+                )
+            );
+    }
+    
 }
+
