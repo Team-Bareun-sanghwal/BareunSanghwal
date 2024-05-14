@@ -7,6 +7,7 @@ export async function getSimilarCategoryList() {
     cache: 'no-store',
   });
 
-  if (!response.ok) throw new Error('추천 습관 10가지를 불러오는데 실패');
+  if (response.status !== 200)
+    throw new Error('추천 습관 10가지를 불러오는데 실패');
   return response;
 }
