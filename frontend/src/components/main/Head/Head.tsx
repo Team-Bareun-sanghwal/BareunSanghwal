@@ -2,6 +2,7 @@ import { MainTitle } from '../MainTitle/MainTitle';
 import { HabitBtnList, HabitChecker, LongestStreak } from '@/components';
 import { $Fetch } from '@/apis';
 import { HabitShortcut } from '../HabitShorcut/HabitShortcut';
+import Notify from '@/components/common/Notify/Notify';
 
 export const Head = async () => {
   const habitsToday = await $Fetch({
@@ -23,6 +24,7 @@ export const Head = async () => {
       <MainTitle
         habitTrackerTodayDtoList={habitsTodayData.habitTrackerTodayDtoList}
       />
+      <Notify text="바른생활 제작진입니다! 서비스를 활용해주셔서 감사합니다." />
       <HabitShortcut
         allHabits={habitListData.habitList}
         todayHabits={habitsTodayData.habitTrackerTodayDtoList}
