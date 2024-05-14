@@ -34,10 +34,10 @@ import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
-import life.bareun.diary.member.dto.response.MemberLongestStreakResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
-import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
+import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
@@ -264,7 +264,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberStreakInfoResDto streakInfo() {
+    public MemberStreakColorResDto streakInfo() {
         Member member = getCurrentMember();
         String streakColorName = streakColorRepository.findById(
                 member.getCurrentStreakColorId()
@@ -274,7 +274,7 @@ public class MemberServiceImpl implements MemberService {
             )
             .getName();
 
-        return new MemberStreakInfoResDto(streakColorName);
+        return new MemberStreakColorResDto(streakColorName);
     }
 
     @Override
@@ -334,9 +334,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberLongestStreakResDto longestStreak() {
+    public MemberStreakInfoResDto streak() {
         int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
-        return new MemberLongestStreakResDto(longestStreak);
+        return new MemberStreakInfoResDto(longestStreak);
     }
 
     @Override
