@@ -20,6 +20,7 @@ import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
 import life.bareun.diary.member.repository.MemberRepository;
+import life.bareun.diary.member.service.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,9 @@ public class MemberControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberService memberService;
 
     @Autowired
     private AuthTokenProvider authTokenProvider;
@@ -168,5 +173,28 @@ public class MemberControllerTest {
         Assertions.assertThat(testMember.getBirth()).isEqualTo(testBirthDate);
         Assertions.assertThat(testMember.getGender()).isEqualTo(testGender);
         Assertions.assertThat(testMember.getJob()).isEqualTo(testJob);
+    }
+
+    @Test
+    @DisplayName("사용자 포인트 조회 테스트")
+    public void testPoint() throws Exception {
+        // given
+        Integer point = testMember.getPoint();
+
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/point")
+            .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+            .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+            .andExpect(jsonPath("$.message").value(String.format("사용자의 현재 보유 포인트 정보를 읽어왔습니다.", point)))
+            .andExpect(jsonPath("$.data.point").value(point))
+            .andExpect(jsonPath("$.data.isHarvestedToday").isBoolean());
     }
 }
