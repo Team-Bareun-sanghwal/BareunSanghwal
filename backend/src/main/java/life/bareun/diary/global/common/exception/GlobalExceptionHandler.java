@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<?> customSecurityExceptionHandler(AuthException e) {
+    public ResponseEntity<?> authExceptionHandler(AuthException e) {
         e.printStackTrace();
         return ResponseEntity.status(e.getErrorCode().getStatus())
             .body(BaseResponse.error(e.getErrorCode().getStatus().value(), e.getMessage()));
