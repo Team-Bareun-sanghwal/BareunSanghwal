@@ -129,6 +129,21 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.status").value(201))
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
+
+        habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
+            .dayOfWeek(null).icon("tempIcon").period(3).build();
+
+        habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
+
+        mockMvc.perform(post("/habits")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(habitBody)
+                .header("Authorization", accessToken))
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.status").value(201))
+            .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
+            .andExpect(jsonPath("$.data").isEmpty());
     }
 
     @Test
@@ -173,7 +188,7 @@ class HabitControllerTest {
     @DisplayName("해빗 트래커 완료")
     void modifyHabitTracker() throws Exception {
         HabitCreateReqDto habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
-            .dayOfWeek(null).icon("tempIcon").period(1).build();
+            .dayOfWeek(null).icon("tempIcon").period(2).build();
 
         String habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
 
@@ -239,7 +254,7 @@ class HabitControllerTest {
     @DisplayName("오늘 해빗 트래커 리스트 조회")
     void findAllTodayHabitTracker() throws Exception {
         HabitCreateReqDto habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
-            .dayOfWeek(null).icon("tempIcon").period(1).build();
+            .dayOfWeek(null).icon("tempIcon").period(2).build();
 
         String habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
 
@@ -286,7 +301,7 @@ class HabitControllerTest {
     @DisplayName("해빗 트래커 상세 조회")
     void findDetailHabitTracker() throws Exception {
         HabitCreateReqDto habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
-            .dayOfWeek(null).icon("tempIcon").period(1).build();
+            .dayOfWeek(null).icon("tempIcon").period(2).build();
 
         String habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
 
@@ -346,7 +361,7 @@ class HabitControllerTest {
     @DisplayName("이번 달에 한 번이라도 유지한 적이 있는 사용자 해빗 리스트 조회")
     void findAllMonthMemberHabit() throws Exception {
         HabitCreateReqDto habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
-            .dayOfWeek(null).icon("tempIcon").period(1).build();
+            .dayOfWeek(null).icon("tempIcon").period(2).build();
 
         String habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
 
@@ -426,7 +441,7 @@ class HabitControllerTest {
     @DisplayName("모든 활성화된 사용자 해빗 리스트 조회")
     void findAllActiveMemberHabit() throws Exception {
         HabitCreateReqDto habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
-            .dayOfWeek(null).icon("tempIcon").period(1).build();
+            .dayOfWeek(null).icon("tempIcon").period(2).build();
 
         String habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
 
@@ -467,7 +482,7 @@ class HabitControllerTest {
     @DisplayName("모든 활성화된 사용자 해빗 간단 리스트 조회")
     void findAllActiveSimpleMemberHabit() throws Exception {
         HabitCreateReqDto habitCreateReqDto = HabitCreateReqDto.builder().habitId(1L).alias("임시")
-            .dayOfWeek(null).icon("tempIcon").period(1).build();
+            .dayOfWeek(null).icon("tempIcon").period(2).build();
 
         String habitBody = objectMapper.writeValueAsString(habitCreateReqDto);
 
