@@ -30,6 +30,7 @@ import life.bareun.diary.product.entity.TreeColor;
 import life.bareun.diary.product.repository.StreakColorGradeRepository;
 import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
+import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
 import life.bareun.diary.streak.service.MemberStreakService;
@@ -76,6 +77,8 @@ public class MemberControllerTest {
 
     @Autowired
     private StreakService streakService;
+    @Autowired
+    private MemberStreakService memberStreakService;
 
     @Autowired
     private MemberTotalStreakRepository memberTotalStreakRepository;
@@ -98,6 +101,7 @@ public class MemberControllerTest {
 
     private MemberTotalStreak testMemberTotalStreak;
     private MemberRecovery testMemberRecovery;
+    private MemberDailyStreak testMemberDailyStreak;
 
     private String accessToken;
 
@@ -158,11 +162,20 @@ public class MemberControllerTest {
         streakService.initialMemberStreak(testMember);
         testMemberTotalStreak = memberTotalStreakRepository.findByMember(testMember)
             .orElseThrow(
-                () -> new AssertionError("초기 세팅 실패")
+                () -> new AssertionError("초기 스트릭 세팅 실패")
             );
 
         // 초기 사용자 리커버리 데이터 생성
         testMemberRecovery = memberRecoveryRepository.save(MemberRecovery.create(testMember));
+
+        // 사용자 스트릭 현황 데이터 생성
+        testMemberDailyStreak = memberStreakService.findMemberDailyStreak(
+                testMember,
+                LocalDate.now()
+            )
+            .orElseThrow(
+                () -> new AssertionError("초기 스트릭 현황 세팅 실패")
+            );
 
         // 테스트용 인증 토큰 생성
         accessToken = authTokenProvider.createAccessToken(
@@ -361,7 +374,8 @@ public class MemberControllerTest {
     @DisplayName("사용자 스트릭 정보 조회 테스트")
     public void testStreakInfo() throws Exception {
         // given
-        Assertions.assertThat(testMemberTotalStreak.getMember()).isEqualTo(testMember);
+        int longestStreak = testMemberTotalStreak.getLongestStreak();
+        int currentStreak = testMemberDailyStreak.getCurrentStreak();
 
         // when
         ResultActions when = mockMvc.perform(
@@ -383,15 +397,11 @@ public class MemberControllerTest {
             )
             .andExpect(
                 jsonPath("$.data.longestStreak")
-                    .value(
-                        testMemberTotalStreak.getLongestStreak()
-                    )
+                    .value(longestStreak)
             )
             .andExpect(
                 jsonPath("$.data.currentStreak")
-                    .value(
-                        testMemberTotalStreak.getAchieveStreakCount()
-                    )
+                    .value(currentStreak)
             );
     }
 
