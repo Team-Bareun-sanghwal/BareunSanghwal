@@ -28,8 +28,10 @@ const RecapImageContent = ({
   recapId: number;
 }) => {
   return (
-    <Link href={`/recap/${recapId}`} className="relative">
-      <div className="size-full bg-custom-black-with-opacity absolute"></div>
+    <Link
+      href={`/recap/${recapId}`}
+      className="cursor-pointer h-[11rem] relative"
+    >
       <p className="px-[0.5rem] absolute bottom-0 right-0 custom-semibold-text bg-custom-black-with-opacity text-custom-white">
         {dateText}
       </p>
@@ -58,19 +60,18 @@ export const RecapContentBox = ({ recapTotalData }: IRecapContentBoxProps) => {
               {`${recapYearData.year}년`}
             </label>
 
-            <ul className="w-full grid grid-cols-3">
+            <div className="w-full grid grid-cols-3 grid-flow-row-dense">
               {recapYearData.recapList.map((recap, index) => {
                 return (
-                  <li key={index}>
-                    <RecapImageContent
-                      imgSrc="/images/icon-clock.png"
-                      dateText={`${recap.period.split('-')[1]}월`}
-                      recapId={recap.recapId}
-                    />
-                  </li>
+                  <RecapImageContent
+                    key={index}
+                    imgSrc="/images/icon-clock.png"
+                    dateText={`${recap.period.split('-')[1]}월`}
+                    recapId={recap.recapId}
+                  />
                 );
               })}
-            </ul>
+            </div>
           </section>
         );
       })}

@@ -6,7 +6,7 @@ import lottieJson from '@/../public/lotties/lottie-lego.json';
 
 const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
-export const Complete = ({ onNext }: { onNext: () => void }) => {
+export default function Complete({ onNext }: { onNext: () => void }) {
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
       <div className="w-full flex flex-col gap-[3rem]">
@@ -35,4 +35,4 @@ export const Complete = ({ onNext }: { onNext: () => void }) => {
       <Button isActivated={true} label="확인" onClick={() => onNext()} />
     </div>
   );
-};
+}

@@ -5,7 +5,7 @@ import { ColoredSentence } from './common/ColoredSentence/ColoredSentence';
 import { ErrorPage } from './common/ErrorPage/ErrorPage';
 import { GuideBox } from './common/GuideBox/GuideBox';
 import { GuideText } from './common/GuideText/GuideText';
-import { HabitContentBox } from './common/HabitContentBox/HabitContentBox';
+import HabitContentBox from './common/HabitContentBox/HabitContentBox';
 import { ImageUploadBox } from './common/ImageUploadBox/ImageUploadBox';
 import { InputBox } from './common/InputBox/InputBox';
 import { NavBar } from './common/NavBar/NavBar';

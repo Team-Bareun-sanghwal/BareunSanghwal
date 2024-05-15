@@ -1,9 +1,11 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useFunnel } from '@/hooks/use-funnel';
 import { useRouter } from 'next/navigation';
-import { Write } from './Write';
-import { Complete } from './Complete';
+
+const Write = dynamic(() => import('./Write'));
+const Complete = dynamic(() => import('./Complete'));
 
 export const HabitWriteFunnel = ({
   habitTrackerId,

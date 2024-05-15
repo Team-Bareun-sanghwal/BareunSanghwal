@@ -11,11 +11,11 @@ const OverlayVariants = {
   exit: { backgroundColor: 'rgba(0, 0, 0, 0)' },
 };
 
-export const HabitContentBox = ({
+export default function HabitContentBox({
   habitTotalData,
 }: {
   habitTotalData: IWriteListData[];
-}) => {
+}) {
   const [habitId, setHabitId] = useState<number | null>(null);
   const [habitYear, setHabitYear] = useState<number>(0);
   const [habitContent, setHabitContent] = useState<IHabitTrackerData>({
@@ -103,4 +103,4 @@ export const HabitContentBox = ({
       </AnimatePresence>
     </motion.div>
   );
-};
+}

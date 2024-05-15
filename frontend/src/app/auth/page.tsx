@@ -13,7 +13,7 @@ export default function Page() {
 
   if (code === '200') {
     // $SetCookie({ at: at!, rt: rt! });
-    router.push(`/main/${getYear()}/${getMonth(true)}`);
+    router.push(`/main/${getYear()}/${getMonth(false)}`);
   } else {
     router.push('/signin');
   }

@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
 import { writeHabit } from '../../_apis/writeHabit';
 
-export const Write = ({
+export default function Write({
   onPrev,
   onNext,
   habitTrackerId,
@@ -23,7 +23,7 @@ export const Write = ({
   onNext: () => void;
   habitTrackerId: number;
   authorization?: string;
-}) => {
+}) {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
 
@@ -54,7 +54,7 @@ export const Write = ({
 
           close();
 
-          if (response.status !== 200) onNext();
+          if (response.status === 200) onNext();
           else handleAlertBox();
         }}
         open={isOpen}
@@ -95,4 +95,4 @@ export const Write = ({
       />
     </div>
   );
-};
+}

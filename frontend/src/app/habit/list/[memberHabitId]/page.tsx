@@ -1,7 +1,12 @@
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
-import { HabitContentBox } from '@/components';
+// import { HabitContentBox } from '@/components';
 import { getHabitWriteList } from '../../_apis/getHabitWriteList';
+
+const HabitContentBox = dynamic(
+  () => import('@/components/common/HabitContentBox/HabitContentBox'),
+);
 
 export default async function Page({
   params,

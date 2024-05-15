@@ -14,7 +14,7 @@ export default async function Page(props: { params: { info: number[] } }) {
   });
   const colorData = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak/color`,
     cache: 'no-cache',
   });
   const habitListData = await $Fetch({

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { HabitContentBox } from './HabitContentBox';
+import HabitContentBox from './HabitContentBox';
 
 const meta = {
   title: 'Common/HabitContentBox',
