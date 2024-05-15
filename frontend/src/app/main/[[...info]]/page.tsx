@@ -47,7 +47,7 @@ export default async function Page(props: { params: { info: number[] } }) {
         month={month}
         habitId={habitId}
       />
-      <MyStreakRecovery />
+      {/* <MyStreakRecovery /> */}
       {/* <DailyPhrase /> */}
       {/* <div className="flex h-[4rem]"></div> */}
     </div>
