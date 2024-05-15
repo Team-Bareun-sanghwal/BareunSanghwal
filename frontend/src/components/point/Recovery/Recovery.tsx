@@ -5,7 +5,7 @@ import { Button } from '../../common/Button/Button';
 import { motion } from 'framer-motion';
 import { $Fetch } from '@/apis';
 import { useEffect, useState } from 'react';
-import { getYear, getMonth } from '@/components/calendar/util';
+import { getYear, getMonth, getToday } from '@/components/calendar/util';
 import { setDayInfo } from '@/app/mock';
 import { RecoveryCalender } from '@/components/calendar/RecoveryCalender/RecoveryCalender';
 import { IDayInfo } from '@/app/mock';
@@ -36,6 +36,20 @@ const getStreakInfo = async (day: number) => {
     cache: 'no-cache',
   });
   return response;
+};
+
+// true : 리커버리 사용 가능
+// false : 리커버리 사용 불가능
+const checkMyStreak = (dayInfo: IDayInfo[]) => {
+  for (const day of dayInfo) {
+    if (
+      day.achieveType === 'NOT_ACHIEVE' &&
+      day.dayNumber != parseInt(getToday(false))
+    ) {
+      return true;
+    }
+  }
+  return false;
 };
 
 // 내 리커버리 정보
@@ -202,6 +216,16 @@ export const Recovery = ({
       cache: 'no-cache',
     }).then((res) => {
       const { dayInfo, dayOfWeekFirst } = res.data;
+      if (!checkMyStreak(dayInfo)) {
+        overlay.open(({ isOpen }) => (
+          <AlertBox
+            label="스트릭 리커버리를 사용할 수 있는 날짜가 없어요!"
+            mode="WARNING"
+            open={isOpen}
+          />
+        ));
+        setTimeout(() => overlay.close(), 1000);
+      }
       setDays(setDayInfo(dayInfo, dayOfWeekFirst));
     });
   }, []);
