@@ -108,11 +108,15 @@ public class HabitServiceImpl implements HabitService {
         LocalDate lastDay = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth())
             .atEndOfMonth();
 
-        MemberHabit memberHabit = null;
+        MemberHabit memberHabit;
 
         // 만약 말일이라면 아무것도 안함
         // 말일이 아니라면 말일까지 증가시키면서 맞는 조건에만 생성
         if (habitCreateReqDto.dayOfWeek() == null) {
+            // 만약 2~6이 아니라면 오류
+            if(habitCreateReqDto.period() > 6 || habitCreateReqDto.period() < 2) {
+                throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
+            }
             memberHabit = memberHabitRepository.save(
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
@@ -127,6 +131,10 @@ public class HabitServiceImpl implements HabitService {
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
                         MaintainWay.DAY).maintainAmount(0).build());
             for (Integer day : habitCreateReqDto.dayOfWeek()) {
+                // 만약 1~7이 아니라면 오류
+                if(day > 7 || day < 1) {
+                    throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
+                }
                 habitDayRepository.save(
                     HabitDay.builder().memberHabit(memberHabit).day(day).build());
                 // 요일 방식으로 트래커 목록 생성
@@ -285,10 +293,7 @@ public class HabitServiceImpl implements HabitService {
                     .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_HABIT_TRACKER));
             }
 
-            boolean isSucceeded = false;
-            if (habitTracker != null && habitTracker.getSucceededTime() != null) {
-                isSucceeded = true;
-            }
+            boolean isSucceeded = habitTracker != null && habitTracker.getSucceededTime() != null;
 
             // 현재 사용자 해빗의 스트릭
             HabitDailyStreak habitDailyStreak = habitDailyStreakRepository
