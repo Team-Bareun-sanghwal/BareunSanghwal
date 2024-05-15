@@ -5,7 +5,6 @@ import { getRecapList } from '../_apis/getRecapList';
 export default async function Page() {
   const result = await getRecapList();
   const recapTotalData = result.recapGroupList;
-  console.log('>>', recapTotalData);
 
   const tabs = [
     {
