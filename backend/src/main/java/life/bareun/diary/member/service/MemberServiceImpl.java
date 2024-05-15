@@ -86,6 +86,7 @@ public class MemberServiceImpl implements MemberService {
     private final AuthTokenProvider authTokenProvider;
     private final AuthTokenService authTokenService;
     private final StreakService streakService;
+    private final MemberStreakService memberStreakService;
 
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
@@ -335,10 +336,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberStreakInfoResDto streak() {
-        MemberStreakResDto memberStreakResDto = streakService.getMemberStreakResDto();
-        int longestStreak = memberStreakResDto.longestStreakCount();
-        int achieveStreak = memberStreakResDto.achieveStreakCount();
-        return new MemberStreakInfoResDto(longestStreak, achieveStreak);
+        LocalDate today = LocalDate.now();
+        Member currentMember = getCurrentMember();
+        int longestStreak = streakService.getMemberStreakResDto().longestStreakCount();
+
+        // 오늘 기준 현재 스트릭 현황 정보를 가져온다.
+        int currentStreak = memberStreakService.findMemberDailyStreak(currentMember, today)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            )
+            .getCurrentStreak();
+
+        return new MemberStreakInfoResDto(longestStreak, currentStreak);
     }
 
     @Override
