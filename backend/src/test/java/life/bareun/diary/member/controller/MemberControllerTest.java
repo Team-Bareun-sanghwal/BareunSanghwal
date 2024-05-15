@@ -395,5 +395,40 @@ public class MemberControllerTest {
             );
     }
 
+    @Test
+    @DisplayName("사용자 리커버리 정보 조회 테스트")
+    public void testRecoveryCount() throws Exception {
+        // given
+        // Assertions.assertThat(testMemberRecovery.getMember()).isEqualTo(testMember);
+        Integer freeRecoveryCount = testMemberRecovery.getFreeRecoveryCount();
+        Integer paidRecoveryCount = testMember.getPaidRecoveryCount();
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/recovery-count")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 리커버리 갯수 보유 정보를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.total")
+                    .value(freeRecoveryCount + paidRecoveryCount)
+            )
+            .andExpect(
+                jsonPath("$.data.free")
+                    .value(freeRecoveryCount)
+            );
+    }
 }
 
