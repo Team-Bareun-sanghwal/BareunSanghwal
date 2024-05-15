@@ -61,6 +61,7 @@ import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
+import life.bareun.diary.streak.service.MemberStreakService;
 import life.bareun.diary.streak.service.StreakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -85,6 +86,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final AuthTokenProvider authTokenProvider;
     private final AuthTokenService authTokenService;
+
     private final StreakService streakService;
     private final MemberStreakService memberStreakService;
 
