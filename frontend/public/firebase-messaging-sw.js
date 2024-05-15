@@ -22,8 +22,6 @@ self.addEventListener('push', function (e) {
 
   const resultData = e.data.json();
 
-  console.log(resultData);
-
   const notificationTitle = resultData.data.title;
   const notificationOptions = {
     body: resultData.data.body,

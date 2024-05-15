@@ -19,7 +19,6 @@ export const BorderlessButton = ({ type }: IPropType) => {
   const router = useRouter();
 
   const handleLeave = async () => {
-    console.log('leave');
     const result = await deleteMemberInfo();
     if ((await result) === 200) {
       router.push('/');
