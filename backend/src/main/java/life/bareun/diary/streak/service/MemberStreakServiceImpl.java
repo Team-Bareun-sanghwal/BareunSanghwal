@@ -152,8 +152,9 @@ public class MemberStreakServiceImpl implements MemberStreakService {
         // 갱신된 최장 스트릭이 10의 배수면 나무 레벨업
         if (memberTotalStreak.getLongestStreak() % 10 == 0) {
             Tree currentTree = member.getTree();
-            // 10의 자리수마다 알림을 보냄
+            // 10의 배수가 될 때마다 알림을 보낸다.
             notificationService.sendContinuousStreakMember(member, memberTotalStreak.getLongestStreak());
+
             // 레벨을 기준으로 오름차순 정렬된 나무 리스트를 얻는다.
             List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
 
