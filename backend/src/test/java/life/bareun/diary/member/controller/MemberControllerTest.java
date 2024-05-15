@@ -60,41 +60,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberControllerTest {
 
     @Autowired
+    private MockMvc mockMvc;
+
+    // 레포지토리
+    @Autowired
     private MemberRepository memberRepository;
-
-
     @Autowired
     private StreakColorRepository streakColorRepository;
-
     @Autowired
     private TreeRepository treeRepository;
-
     @Autowired
     private TreeColorRepository treeColorRepository;
-
     @Autowired
     private StreakColorGradeRepository streakColorGradeRepository;
+    @Autowired
+    private MemberTotalStreakRepository memberTotalStreakRepository;
+    @Autowired
+    private MemberRecoveryRepository memberRecoveryRepository;
 
+    // 토큰
+    @Autowired
+    private AuthTokenProvider authTokenProvider;
+
+    // 서비스
     @Autowired
     private StreakService streakService;
     @Autowired
     private MemberStreakService memberStreakService;
 
-    @Autowired
-    private MemberTotalStreakRepository memberTotalStreakRepository;
-
-    @Autowired
-    private MemberRecoveryRepository memberRecoveryRepository;
-
-    @Autowired
-    private AuthTokenProvider authTokenProvider;
-
-    @Autowired
-    private MockMvc mockMvc;
-
+    // 테스트 용 데이터
     private Member testMember;
     private Tree testTree;
-
 
     private StreakColor testStreakColor;
     private TreeColor testTreeColor;
@@ -107,8 +103,7 @@ public class MemberControllerTest {
 
 
     /**
-     * @BeforeAll로 설정하면 매 테스트 수행 후 rollback이 안된다.
-     * 즉 일관적인 테스트가 어려울 수 있다.
+     * @BeforeAll로 설정하면 매 테스트 수행 후 rollback이 안된다. 즉 일관적인 테스트가 어려울 수 있다.
      */
     @BeforeEach
     void setUp() {
@@ -129,7 +124,7 @@ public class MemberControllerTest {
                 "TEST_TREE_COLOR"
             )
         );
-        
+
         // 테스트용 스트릭 색상 데이터 생성
         testStreakColor = streakColorRepository.save(
             new StreakColor(
@@ -255,11 +250,11 @@ public class MemberControllerTest {
 
         // when
         ResultActions when = mockMvc.perform(
-                MockMvcRequestBuilders.patch("/members")
-                    .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(GsonUtil.toJson(newMember))
-            );
+            MockMvcRequestBuilders.patch("/members")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(GsonUtil.toJson(newMember))
+        );
         // then
         when.andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -280,22 +275,25 @@ public class MemberControllerTest {
     public void testPoint() throws Exception {
         // given
         Integer point = testMember.getPoint();
-
+        Boolean isHarvestedToday = LocalDate.now().equals(testMember.getLastHarvestedDate());
 
         // when
         ResultActions when = mockMvc.perform(
             MockMvcRequestBuilders.get("/members/point")
-            .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
-            .contentType(MediaType.APPLICATION_JSON)
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         when.andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-            .andExpect(jsonPath("$.message").value(String.format("사용자의 현재 보유 포인트 정보를 읽어왔습니다.", point)))
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 현재 보유 포인트 정보를 읽어왔습니다.")
+            )
             .andExpect(jsonPath("$.data.point").value(point))
-            .andExpect(jsonPath("$.data.isHarvestedToday").isBoolean());
+            .andExpect(jsonPath("$.data.isHarvestedToday").value(isHarvestedToday));
     }
 
     @Test
@@ -303,7 +301,9 @@ public class MemberControllerTest {
     public void testStreakColor() throws Exception {
         // given
         // 초기 데이터 설정 확인
-        Assertions.assertThat(testMember.getCurrentStreakColorId()).isEqualTo(testStreakColor.getId());
+        Assertions.assertThat(testMember.getCurrentStreakColorId())
+            .isEqualTo(testStreakColor.getId());
+        String streakColor = testStreakColor.getName();
 
         // when
         ResultActions when = mockMvc.perform(
@@ -325,9 +325,7 @@ public class MemberControllerTest {
             )
             .andExpect(
                 jsonPath("$.data.streakName")
-                    .value(
-                        testStreakColor.getName()
-                    )
+                    .value(streakColor)
             );
     }
 
@@ -336,7 +334,8 @@ public class MemberControllerTest {
     public void testTree() throws Exception {
         // given
         // 초기 데이터 설정 확인
-        Assertions.assertThat(testMember.getCurrentTreeColorId()).isEqualTo(testTreeColor.getId());
+        Integer treeLevel = testTree.getLevel();
+        String treeColor = testTreeColor.getName();
 
         // when
         ResultActions when = mockMvc.perform(
@@ -359,13 +358,13 @@ public class MemberControllerTest {
             .andExpect(
                 jsonPath("$.data.treeLevel")
                     .value(
-                        testTree.getLevel()
+                        treeLevel
                     )
             )
             .andExpect(
                 jsonPath("$.data.treeColor")
                     .value(
-                        testTreeColor.getName()
+                        treeColor
                     )
             );
     }
