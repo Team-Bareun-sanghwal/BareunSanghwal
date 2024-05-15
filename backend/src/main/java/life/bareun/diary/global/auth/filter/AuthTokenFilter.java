@@ -72,12 +72,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityErrorCode.EXPIRED_ACCESS_TOKEN
             );
             ResponseUtil.writeError(response, exception);
+
+            e.printStackTrace();
         } catch (JwtException e) {
             // ExpiredJwtException이 아닌 다른 JWT 예외가 발생한 상태
             // 키가 다르거나, 변조됐거나, ....
             AuthException exception = new AuthException(
                 SecurityErrorCode.INVALID_AUTHENTICATION
             );
+            e.printStackTrace();
             ResponseUtil.writeError(response, exception);
         }
     }
