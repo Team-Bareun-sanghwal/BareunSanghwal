@@ -19,6 +19,11 @@ export const HabitBtnList = async ({ habitId }: IHabitList) => {
     <NoHabits />
   ) : (
     <div className="flex justify-center gap-4 pl-1 my-4 w-full">
+      <HabitBtn
+      memberHabitId ={-1}
+      alias="전체"
+      icon="All"
+      habitId={habitId} />
       {habitList?.map((habit: IMemberHabit) => (
         <HabitBtn
           key={habit.memberHabitId}

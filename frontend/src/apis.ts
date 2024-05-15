@@ -26,7 +26,8 @@ export async function $SetCookie({ at, rt }: { at: string; rt?: string }) {
 
 export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
-  const authorization = cookieStore.get('Authorization')?.value;
+  // const authorization = cookieStore.get('Authorization')?.value;
+  const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   if (authorization !== undefined) {
