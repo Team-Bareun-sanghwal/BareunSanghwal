@@ -100,8 +100,8 @@ public class SecurityConfig {
             )
         );
 
-//        // corsConfiguration.addAllowedOrigin("http://localhost:3000");
-//        // corsConfiguration.addAllowedOrigin("https://localhost:3000");
+        // corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        // corsConfiguration.addAllowedOrigin("https://localhost:3000");
         corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(Boolean.TRUE);
