@@ -380,7 +380,7 @@ public class MemberControllerTest {
             .andExpect(
                 jsonPath("$.data.currentStreak")
                     .value(
-                      testMemberTotalStreak.getAchieveStreakCount()
+                        testMemberTotalStreak.getAchieveStreakCount()
                     )
             );
     }
