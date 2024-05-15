@@ -8,12 +8,14 @@ interface INicknameStep {
   onNext: (
     alias: string,
     icon: string,
-    selectedHabitId: number | null,
-    selectedHabitName: string | null,
+    habitId: number | null,
+    habitName: string | null,
   ) => void;
-  isCategorySet: boolean;
+  isCategorySet: boolean | null;
   habitId: number | null;
   habitName: string | null;
+  alias: string | null;
+  icon: string | null;
 }
 
 export default function Nickname({
@@ -22,6 +24,8 @@ export default function Nickname({
   isCategorySet,
   habitId,
   habitName,
+  alias,
+  icon
 }: INicknameStep) {
   const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
     habitId,
@@ -29,8 +33,8 @@ export default function Nickname({
   const [selectedHabitName, setSelectedHabitName] = useState<string | null>(
     habitName,
   );
-  const [alias, setAlias] = useState<string | null>(null);
-  const [icon, setIcon] = useState<string | null>(null);
+  const [selectedAlias, setSelectedAlias] = useState<string | null>(alias);
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(icon);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
@@ -51,6 +55,7 @@ export default function Nickname({
         {!isCategorySet && (
           <HabitSearchBox
             selectedHabitId={selectedHabitId}
+            selectedHabitName={selectedHabitName}
             setSelectedHabitId={setSelectedHabitId}
             setSelectedHabitName={setSelectedHabitName}
           />
@@ -59,35 +64,35 @@ export default function Nickname({
         <InputBox
           isLabel={true}
           mode="HABITNICKNAME"
-          defaultValue=""
-          setDefaultValue={setAlias}
+          defaultValue={selectedAlias || ''}
+          setDefaultValue={setSelectedAlias}
         />
 
         <Picker
           label="해빗 아이콘을 골라주세요"
-          selectedEmoji={icon}
-          setSelectedEmoji={setIcon}
+          selectedEmoji={selectedIcon || ''}
+          setSelectedEmoji={setSelectedIcon}
         />
       </div>
 
       <Button
         isActivated={
           isCategorySet
-            ? alias && icon
+            ? selectedAlias && selectedIcon
               ? true
               : false
-            : selectedHabitId && alias && icon
+            : selectedHabitId && selectedAlias && selectedIcon
               ? true
               : false
         }
         label="다음"
         onClick={
           isCategorySet
-            ? alias && icon
-              ? () => onNext(alias, icon, selectedHabitId, selectedHabitName)
+            ? selectedAlias && selectedIcon
+              ? () => onNext(selectedAlias, selectedIcon, selectedHabitId, selectedHabitName)
               : () => {}
-            : selectedHabitId && selectedHabitName && alias && icon
-              ? () => onNext(alias, icon, selectedHabitId, selectedHabitName)
+            : selectedHabitId && selectedHabitName && selectedAlias && selectedIcon
+              ? () => onNext(selectedAlias, selectedIcon, selectedHabitId, selectedHabitName)
               : () => {}
         }
       />

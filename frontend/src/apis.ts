@@ -26,7 +26,8 @@ export async function $SetCookie({ at, rt }: { at: string; rt?: string }) {
 
 export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
-  const authorization = cookieStore.get('Authorization')?.value;
+  const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  // const authorization = cookieStore.get('Authorization')?.value;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   if (authorization !== undefined) {
@@ -41,15 +42,16 @@ export async function $Fetch({ method, url, data, cache }: Request) {
         body: JSON.stringify(data),
       });
 
-      const json = await res.json();
-      switch ((await json).status) {
-        case 200:
-          console.log('정상처리');
-        case 500:
-          console.log('서버 오류 발생');
-          break;
-      }
-      return await json;
+      const json = res.json();
+      // switch ((await json).status) {
+      //   case 200:
+      //     console.log('정상처리');
+      //     break;
+      //   case 500:
+      //     console.log('서버 오류 발생');
+      //     break;
+      // }
+      return json;
     } catch (e) {
       console.log('Fetch Error : ', e);
       throw e;

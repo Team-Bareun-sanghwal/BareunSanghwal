@@ -44,7 +44,7 @@ export interface IUserAmountData {
 export interface IRegisteredHabitData {
   habitId: number | null;
   habitName: string | null;
-  isCategorySet: boolean;
+  isCategorySet: boolean | null;
   alias: string | null;
   icon: string | null;
 }

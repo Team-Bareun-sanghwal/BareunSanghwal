@@ -33,13 +33,20 @@ export const HabitRegisterFunnel = ({
   const [data, setData] = useState<IRegisteredHabitData>({
     habitId: null,
     habitName: null,
-    isCategorySet: false,
+    isCategorySet: null,
     alias: null,
     icon: null,
   });
   const router = useRouter();
 
   console.log(data);
+
+  // 분기 처리
+
+  // 추천에서 네 -> (카테고리, 별칭, 아이콘) -> (요일 | 주기, 이 부분은 원래 저장하지 않음)
+  // 추천에서 아니오 -> (카테고리) -> (별칭, 아이콘) -> (요일 | 주기, 이 부분은 원래 저장하지 않음)
+  // 네 아니오 부분도 저장을 해놓되, 이전과 값이 달라지면 뒤에 값도 모두 초기화?
+  //
 
   return (
     <Funnel>
@@ -48,8 +55,17 @@ export const HabitRegisterFunnel = ({
           onPrev={() => router.back()}
           onNext={(nextStep, isCategorySet) => {
             setStep(nextStep);
-            setData({ ...data, isCategorySet: isCategorySet });
+            if (data.isCategorySet !== isCategorySet)
+              setData({
+                habitId: null,
+                habitName: null,
+                isCategorySet: isCategorySet,
+                alias: null,
+                icon: null,
+              });
+            else setData({ ...data, isCategorySet: isCategorySet });
           }}
+          isCategorySet={data.isCategorySet}
         />
       </Funnel.Step>
 
@@ -62,12 +78,17 @@ export const HabitRegisterFunnel = ({
           }}
           popularCategoryListData={popularCategoryListData}
           similarCategoryListData={similarCategoryListData}
+          habitId={data.habitId}
+          habitName={data.habitName}
         />
       </Funnel.Step>
 
       <Funnel.Step name="NICKNAME_STEP">
         <Nickname
-          onPrev={() => setStep('QUESTION_STEP')}
+          onPrev={() => {
+            if (data.isCategorySet) setStep('RECOMMEND_STEP');
+            else setStep('QUESTION_STEP');
+          }}
           onNext={(alias, icon, habitId, habitName) => {
             setStep('DAYORPERIOD_STEP');
             setData({
@@ -81,6 +102,8 @@ export const HabitRegisterFunnel = ({
           isCategorySet={data.isCategorySet}
           habitId={data.habitId}
           habitName={data.habitName}
+          alias={data.alias}
+          icon={data.icon}
         />
       </Funnel.Step>
 

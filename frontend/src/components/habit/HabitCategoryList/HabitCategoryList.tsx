@@ -11,8 +11,8 @@ interface IHabitCategoryListProps {
   label: string;
   habitListData: IHabitListData[];
   selectedHabitId: number | null;
-  setSelectedHabitId: (habitId: number) => void;
-  setSelectedHabitName: (habitName: string) => void;
+  setSelectedHabitId: (habitId: number | null) => void;
+  setSelectedHabitName: (habitName: string | null) => void;
 }
 
 export const HabitCategoryList = ({
@@ -64,8 +64,13 @@ export const HabitCategoryList = ({
               key={`habitList-${index}`}
               className={`${mode === 'POPULAR' && selectedHabitId !== data.habitId && (index === 0 || index === 1 || index === 2) && `outline-dashed ${outlineColor} outline-[0.1rem]`} ${selectedHabitId === data.habitId ? 'bg-custom-matcha text-custom-white' : 'bg-custom-light-gray text-custom-black'} min-w-fit h-[3.4rem] px-[1rem] py-[0.5rem] rounded-[1rem] custom-medium-text flex items-center gap-[0.5rem]`}
               onClick={() => {
-                setSelectedHabitId(data.habitId);
-                setSelectedHabitName(data.name);
+                if (selectedHabitId === data.habitId) {
+                  setSelectedHabitId(null);
+                  setSelectedHabitName(null);
+                } else {
+                  setSelectedHabitId(data.habitId);
+                  setSelectedHabitName(data.name);
+                }
               }}
             >
               <>
