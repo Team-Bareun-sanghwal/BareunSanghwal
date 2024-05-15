@@ -1,14 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import {Button} from '../../common/Button/Button';
+import { Button } from '../../common/Button/Button';
 import { motion } from 'framer-motion';
 import { $Fetch } from '@/apis';
 import { useEffect, useState } from 'react';
 import { getYear, getMonth } from '@/components/calendar/util';
 import { setDayInfo } from '@/app/mock';
-import { Calender } from '@/components/calendar/Calender/Calender';
+import { RecoveryCalender } from '@/components/calendar/RecoveryCalender/RecoveryCalender';
 import { IDayInfo } from '@/app/mock';
+import { useOverlay } from '@/hooks/use-overlay';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { AlertBox } from '@/components/common/AlertBox/AlertBox';
+
 interface IBottomSheetProps {
   title: string;
   description: string;
@@ -22,35 +26,152 @@ const container = {
   show: { y: 0, opacity: 1 },
   hidden: { y: '100%', opacity: 0 },
 };
-const getData = async()=>{
-  const result = await $Fetch({
+
+// 스트릭 미리 확인
+const getStreakInfo = async (day: number) => {
+  const response = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${getYear()}-${getMonth(true)}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getYear()}-${getMonth(true)}-${day}`,
     cache: 'no-cache',
-  })
-  if ( result.status === 200) {
-    return result.data;
+  });
+  return response;
+};
+
+// 내 리커버리 정보
+const getRecoveryInfo = async () => {
+  const response = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
+    cache: 'no-cache',
+  });
+  return response;
+};
+
+// 리커버리 구매
+const patchRecovery = async () => {
+  const response = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/recovery`,
+    cache: 'no-cache',
+  });
+  return response;
+};
+
+const PurchaseRecovery = async (selectedDay: number, overlay: any, onClose?: () => void) => {
+  const purchase = await $Fetch({
+    method: 'PATCH',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery`,
+    cache: 'no-cache',
+    data: {
+      date: `${getYear()}-${getMonth(true)}-${selectedDay}`,
+    },
+  });
+  if (purchase.status === 200) {
+    overlay.open(({ isOpen, close }: { isOpen: boolean, close: () => void }) => (
+      <AlertBox label="리커버리가 성공적으로 완료되었어요!" mode="SUCCESS" open={isOpen} />
+    ));
+    if (onClose) onClose();
+    setTimeout(() => {
+      overlay.close();
+    }, 2000);
+  } else {
+    overlay.open(({ isOpen, close }: { isOpen: boolean, close: () => void }) => (
+      <AlertBox label={purchase.message} mode="ERROR" open={isOpen} />
+    ));
+    if (onClose) onClose();
+    setTimeout(() => {
+      overlay.close();
+    }, 2000);
   }
-}
+};
+
 export const Recovery = ({
   title,
   description,
   open,
   onClose,
   onConfirm,
-  children
+  children,
 }: IBottomSheetProps) => {
-  const [days, setDays] = useState<IDayInfo[] | never[]>([]);
+  const overlay = useOverlay();
+  const [days, setDays] = useState<IDayInfo[]>([]);
+  const [selectedDay, setSelectedDay] = useState<number>(0);
+  const msg = '일의 스트릭을 복구합니다';
 
-  const getDayInfo = async()=>{
-    console.log('hi!')
-    const daysResponse = await getData();
-    console.log(daysResponse.dayInfo)
-    setDays(daysResponse.dayInfo);
-  }
+  const BeforeRecovery = async () => {
+    try {
+      const recoveryInfo = await getRecoveryInfo();
+      const { total, free } = recoveryInfo.data;
+
+      if (total === 0 && free === 0) {
+        const recoveryResponse = await patchRecovery();
+
+        if (recoveryResponse.status !== 200) {
+          throw new Error(recoveryResponse.message || '리커버리 구매에 실패했어요!');
+        }
+      }
+
+      if (selectedDay > 0) {
+        const streakInfo = await getStreakInfo(selectedDay);
+
+        if (streakInfo.status === 200) {
+          const {changedCurrentStreak,changedLongestStreak} = streakInfo.data;
+          overlay.open(({ isOpen, close }) => (
+            <BottomSheet
+              description=""
+              mode="PURCHASE_RECOVERY"
+              onClose={close}
+              onConfirm={() => {
+                PurchaseRecovery(selectedDay, overlay, onClose);
+                close();
+              }}
+              open={isOpen}
+              title={`${selectedDay}일의 스트릭을 복구합니다`}
+            >
+              <div className="flex flex-col w-full ml-4 mt-4">
+                <span className="flex text-2xl ">
+                  현재 스트릭이 <p className="mx-2 text=xl font-bold"> {changedCurrentStreak} </p>일로 갱신되고
+                </span>
+                {changedLongestStreak === -1 ? (
+                  <span className="flex text-2xl ">최장 스트릭은 갱신되지 않아요!.</span>
+                ) : (
+                  <span className="flex text-2xl ">
+                    최장 스트릭이 <p className="mx-2 text=xl font-bold"> {changedLongestStreak} </p>일로 갱신돼요
+                  </span>
+                )}
+              </div>
+            </BottomSheet>
+          ));
+        } else {
+          overlay.open(({ isOpen, close }) => (
+            <AlertBox label={streakInfo.message} mode="WARNING" open={isOpen} />
+          ));
+          setTimeout(() => overlay.close(), 1500);
+        }
+      } else {
+        overlay.open(({ isOpen, close }) => (
+          <AlertBox label="리커버리를 사용할 날짜를 선택해야 해요!" mode="WARNING" open={isOpen} />
+        ));
+        setTimeout(() => overlay.close(), 1000);
+      }
+    } catch (error: any) {
+      overlay.open(({ isOpen, close }) => (
+        <AlertBox label={error.message} mode="ERROR" open={isOpen} />
+      ));
+      setTimeout(() => overlay.close(), 2000);
+    }
+  };
+
   useEffect(() => {
-    getDayInfo();
-  },[])
+    $Fetch({
+      method: 'GET',
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${getYear()}-${getMonth(true)}`,
+      cache: 'no-cache',
+    }).then((res) => {
+      const { dayInfo, dayOfWeekFirst } = res.data;
+      setDays(setDayInfo(dayInfo, dayOfWeekFirst));
+    });
+  }, []);
 
   return (
     <>
@@ -68,38 +189,34 @@ export const Recovery = ({
           damping: 40,
           stiffness: 400,
         }}
-        className="fixed bottom-0 left-0 w-full min-w-[32rem] min-h-[48rem] p-[1rem] rounded-t-[1rem] bg-custom-white overflow-hidden flex flex-col"
+        className="fixed bottom-0 left-0 w-full min-w-[32rem] min-h-[40rem] p-[1rem] rounded-t-[1rem] bg-custom-white overflow-hidden flex flex-col"
       >
-        <div className="grow relative">
-          <div className="w-2/3 pl-[1rem] py-[1rem] flex flex-col gap-[1rem]">
+        <div className="grow relative items-center">
+          <div className="w-full pl-[1rem] py-[1rem] flex flex-col gap-[1rem] content-center">
             <span className="custom-semibold-text text-pretty">{title}</span>
-            {days? days.length ?<Calender
-              dayInfo={setDayInfo(days)}
-              memberHabitList={[]}
-              dayOfWeekFirst={0}
-              themeColor="dippindots"
-              proportion={0}
-              longestStreak={0}
-              year={parseInt(getYear())}
-              month={parseInt(getMonth(false))}
-              recovery={true}
-            />: <div>데이터가 없습니다.</div>:<div>로딩중...</div>}
-            <span className="custom-medium-text text-pretty">
-              {description}
-            </span>
+            <div className="flex w-full justify-center">
+              {days ? (
+                days.length ? (
+                  <RecoveryCalender days={days} selected={selectedDay} setSelected={setSelectedDay} />
+                ) : (
+                  <div>데이터가 없습니다.</div>
+                )
+              ) : (
+                <div>로딩중...</div>
+              )}
+            </div>
+            {selectedDay > 0 && (
+              <span className="w-full text-center text-2xl text-pretty">
+                {selectedDay}
+                {msg}
+              </span>
+            )}
           </div>
-          <span className="flex flex-col w-full content-center custom-regular-text text-pretty">
-            {children}
-          </span>
         </div>
 
         <div className="flex gap-[1rem] mt-[1rem]">
-          {onClose && (
-            <Button isActivated={false} label="취소" onClick={onClose} />
-          )}
-          {onConfirm && (
-            <Button isActivated={true} label="확인" onClick={onConfirm} />
-          )}
+          {onClose && <Button isActivated={false} label="취소" onClick={onClose} />}
+          {onConfirm && <Button isActivated={selectedDay > 0} label="확인" onClick={BeforeRecovery} />}
         </div>
       </motion.section>
     </>

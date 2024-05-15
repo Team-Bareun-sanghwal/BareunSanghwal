@@ -95,7 +95,7 @@ export const BottomSheet = ({
             <Button isActivated={false} label="취소" onClick={onClose} />
           )}
           {onConfirm && (
-            <Button isActivated={true} label="확인" onClick={onConfirm} />
+            <Button isActivated={true} label={mode=='PURCHASE_RECOVERY'||'PURCHASE_STREAK' || 'PURCHASE_TREE'?'구매':'확인'} onClick={onConfirm} />
           )}
         </div>
       </motion.section>

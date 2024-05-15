@@ -45,6 +45,7 @@ interface IPurchase {
   price: number;
   mode: 'PURCHASE_STREAK' | 'PURCHASE_TREE' | 'PURCHASE_RECOVERY';
 }
+// 구매
 const Purchase = async (key: string) => {
   const path =
     key == 'gotcha_streak'
@@ -62,6 +63,17 @@ const Purchase = async (key: string) => {
   return response;
 };
 
+const getRecoveryInfo = async () => {
+  const response = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
+    cache: 'no-cache',
+  });
+  console.log(response);
+  return response;
+};
+
+
 const Item = ({
   keyname,
   name,
@@ -77,13 +89,15 @@ const Item = ({
   };
   const SelectRecovery = ()=>{
     overlay.open(({ isOpen, close }) => (
+      <>
       <Recovery
         title="스트릭 복구"
         description="스트릭을 복구하시겠습니까?"
         open={isOpen}
         onClose={close}
-        onConfirm={Close}
+        onConfirm={()=>result('recovery')}
       />
+      </>
     ));
   }
   const purchase = ({
@@ -112,8 +126,6 @@ const Item = ({
   const result = (key: string) => {
     Purchase(key)
       .then((response) => {
-        // console.log(response);
-        //구매 성공
         if (response.status === 200) {
           console.log(response.data.streakColorName);
           overlay.open(({ isOpen, close }) => (
