@@ -439,5 +439,49 @@ public class MemberControllerTest {
                     .value(freeRecoveryCount)
             );
     }
+
+    @Test
+    @DisplayName("사용자 나무 포인트 수령 테스트")
+    public void testTreePoint() throws Exception {
+        // given
+        // 이 범위에 있는 포인트가 반환되어야 한다.
+        Integer rangeFrom = testTree.getRangeFrom();
+        Integer rangeTo = testTree.getRangeTo();
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/tree/point")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        // ResponseEntity는 역직렬화가 안된다..
+        String res = when.andReturn().getResponse().getContentAsString();
+        Integer point = Integer.parseInt(
+            res.substring(
+                res.lastIndexOf(':') + 1,
+                res.indexOf('}')
+            )
+        );
+
+        // 포인트 범위 체크(닫힌 구간)
+        Assertions.assertThat(point).isBetween(rangeFrom, rangeTo);
+
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value(String.format("%d 포인트를 획득했습니다.", point))
+            )
+            .andExpect( // 셀프 역직렬화가 잘 됐는지 체크
+                jsonPath("$.data.point")
+                    .value(point)
+            );
+    }
 }
 
