@@ -72,6 +72,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> unexpectedExceptionHandler(Exception e) {
+        e.printStackTrace();
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(
                 BaseResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "예상 못한 오류가 발생했습니다. " + e.getMessage()));
