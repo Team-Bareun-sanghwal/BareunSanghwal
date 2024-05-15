@@ -107,6 +107,7 @@ public class MemberControllerTest {
      */
     @BeforeEach
     void setUp() {
+        // 테스트용 나무 데이터 생성
         testTree = treeRepository.save(
             new Tree(
                 1,
@@ -116,13 +117,15 @@ public class MemberControllerTest {
             )
         );
 
+        // 테스트용 나무 색상 데이터 생성
         testTreeColor = treeColorRepository.save(
             new TreeColor(
                 1,
                 "TEST_TREE_COLOR"
             )
         );
-
+        
+        // 테스트용 스트릭 색상 데이터 생성
         testStreakColor = streakColorRepository.save(
             new StreakColor(
                 1,
@@ -137,6 +140,7 @@ public class MemberControllerTest {
             )
         );
 
+        // 테스트용 사용자 생성
         testMember = memberRepository.save(
             Member.create(
                 MemberRegisterDto.builder()
@@ -149,19 +153,21 @@ public class MemberControllerTest {
             )
         );
 
-
+        // 초기 스트릭 데이터 생성
         streakService.initialMemberStreak(testMember);
         testMemberTotalStreak = memberTotalStreakRepository.findByMember(testMember)
             .orElseThrow(
                 () -> new AssertionError("초기 세팅 실패")
             );
 
+        // 테스트용 인증 토큰 생성
         accessToken = authTokenProvider.createAccessToken(
             new Date(),
             Long.toString(testMember.getId()),
             Role.ROLE_USER.name()
         );
 
+        // SecurityContext에 테스트용 Authentication 등록
         AuthToken authToken = authTokenProvider.tokenToAuthToken(accessToken);
         Authentication authentication = authTokenProvider.getAuthentication(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
