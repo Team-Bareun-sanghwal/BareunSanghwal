@@ -44,7 +44,7 @@ public class MemberDailyPhrase {
         return new MemberDailyPhrase(member, dailyPhrase);
     }
 
-    public void updateDailyPhrase (DailyPhrase dailyPhrase) {
+    public void updateDailyPhrase(DailyPhrase dailyPhrase) {
         this.dailyPhrase = dailyPhrase;
     }
 }

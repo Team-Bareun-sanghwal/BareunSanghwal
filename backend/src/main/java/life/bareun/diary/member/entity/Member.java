@@ -167,6 +167,7 @@ public class Member {
     public void changeStreakColor(Integer streakColorId) {
         this.currentStreakColorId = streakColorId;
     }
+
     public void changeTreeColor(Integer treeColorId) {
         this.currentTreeColorId = treeColorId;
     }
@@ -175,6 +176,7 @@ public class Member {
         addPoint(point);
         this.lastHarvestedDate = LocalDate.now();
     }
+
     public void addPoint(Integer amount) {
         this.point += amount;
     }

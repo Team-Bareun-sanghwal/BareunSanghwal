@@ -34,10 +34,10 @@ import life.bareun.diary.member.dto.response.MemberDailyPhraseResDto;
 import life.bareun.diary.member.dto.response.MemberHabitListResDto;
 import life.bareun.diary.member.dto.response.MemberHabitTrackersResDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
-import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberPointResDto;
 import life.bareun.diary.member.dto.response.MemberStatisticResDto;
 import life.bareun.diary.member.dto.response.MemberStreakColorResDto;
+import life.bareun.diary.member.dto.response.MemberStreakInfoResDto;
 import life.bareun.diary.member.dto.response.MemberStreakRecoveryCountResDto;
 import life.bareun.diary.member.dto.response.MemberTreeInfoResDto;
 import life.bareun.diary.member.dto.response.MemberTreePointResDto;
@@ -441,7 +441,7 @@ public class MemberServiceImpl implements MemberService {
         double doubleTotalCount = habitTrackerRepository.countByMemberId(memberId).doubleValue();
         double round = Math.pow(10.0, EXP);
 
-        //member habit 별 habit tracker 갯수가 5개 초과라면
+        // member habit 별 habit tracker 갯수가 5개 초과라면
         if (count > TOP_HABIT_SIZE) {
             // topHabits에서 각 원소의 value는 해빗 트래커 갯수(수행 횟수)
             // totalDoubleSum에서 topHabits의 value의 합을 뺀 값이 기타 객체의 value가 된다.
@@ -498,7 +498,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 요일, 요일에 해당하는 DTO의 리스트 상 인덱스
         Map<Integer, Integer> map = new HashMap<>();
-        for(int i = 0; i < habitPracticeCountPerDayOfWeekDtoList.size(); ++i) {
+        for (int i = 0; i < habitPracticeCountPerDayOfWeekDtoList.size(); ++i) {
             map.put(habitPracticeCountPerDayOfWeekDtoList.get(i).day(), i);
         }
 
@@ -644,7 +644,7 @@ public class MemberServiceImpl implements MemberService {
             memberDailyPhraseRepository.findByMember(member)
                 .ifPresentOrElse(
                     (foundMemberDailyPhrase) -> {
-                        //Member에 해당하는 MemberDailyPhrase가 있으면 업데이트한다.
+                        // Member에 해당하는 MemberDailyPhrase가 있으면 업데이트한다.
                         String phrase = foundMemberDailyPhrase.getDailyPhrase().getPhrase();
                         DailyPhrase newDailyPhrase = getNewDailyPhrase(phrase);
                         foundMemberDailyPhrase.updateDailyPhrase(newDailyPhrase);
@@ -674,7 +674,7 @@ public class MemberServiceImpl implements MemberService {
         long newDailyPhraseId;
 
         // 현재 오늘의 문구와 다른 게 나올 때까지 랜덤 값을 얻는다.
-        while(currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextInt(count) + 1));
+        while (currentDailyPhraseId == (newDailyPhraseId = RANDOM.nextInt(count) + 1));
 
         return dailyPhraseRepository.findById(newDailyPhraseId)
             .orElseThrow(
