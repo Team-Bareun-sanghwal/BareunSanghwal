@@ -8,6 +8,7 @@ import { $Fetch } from '@/apis';
 import ColoredText from '../ColoredText/ColoredText';
 import Pallete from '../Pallete/Pallete';
 import { useRouter } from 'next/navigation';
+import { Recovery } from '../Recovery/Recovery';
 interface IItemProps {
   keyname: string;
   name: string;
@@ -74,6 +75,17 @@ const Item = ({
     router.refresh();
     event;
   };
+  const SelectRecovery = ()=>{
+    overlay.open(({ isOpen, close }) => (
+      <Recovery
+        title="스트릭 복구"
+        description="스트릭을 복구하시겠습니까?"
+        open={isOpen}
+        onClose={close}
+        onConfirm={Close}
+      />
+    ));
+  }
   const purchase = ({
     keyname,
     name,
@@ -82,24 +94,22 @@ const Item = ({
     price,
     mode,
   }: IPurchase) => {
-    overlay.open(({ isOpen, close }) => (
-      <BottomSheet
-        description={description}
-        mode={mode}
-        onClose={close}
-        onConfirm={() => result(keyname)}
-        open={isOpen}
-        title={introduction}
-      />
-    ));
+    if(keyname === 'recovery'){
+      SelectRecovery()
+    }else{
+      overlay.open(({ isOpen, close }) => (
+        <BottomSheet
+          description={description}
+          mode={mode}
+          onClose={close}
+          onConfirm={() => result(keyname)}
+          open={isOpen}
+          title={introduction}
+        />
+      ));
+    }
   };
   const result = (key: string) => {
-    const mode =
-      key === 'gotcha_streak'
-        ? 'PURCHASE_STREAK'
-        : key === 'gotcha_tree'
-          ? 'PURCHASE_TREE'
-          : 'PURCHASE_RECOVERY';
     Purchase(key)
       .then((response) => {
         // console.log(response);

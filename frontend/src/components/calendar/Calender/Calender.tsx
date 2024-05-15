@@ -1,3 +1,4 @@
+'use client'
 import { Streak } from '../Streak/Streak';
 import { DayLabel } from '../DayLabel/DayLabel';
 import { Achievement } from '../Acheivement/Achievement';
@@ -16,6 +17,7 @@ interface ICalenderProps {
   year: number;
   month: number;
   habitId?: number;
+  recovery?: boolean;
 }
 
 export const Calender = ({
