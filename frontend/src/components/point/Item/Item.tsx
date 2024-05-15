@@ -9,6 +9,12 @@ import ColoredText from '../ColoredText/ColoredText';
 import Pallete from '../Pallete/Pallete';
 import { useRouter } from 'next/navigation';
 import { Recovery } from '../Recovery/Recovery';
+import { CreateOverlayElement } from '@/hooks/use-overlay/types';
+interface IOverlay {
+  open: (overlayElement: CreateOverlayElement) => void;
+  close: () => void;
+  exit: () => void;
+}
 interface IItemProps {
   keyname: string;
   name: string;
@@ -16,6 +22,7 @@ interface IItemProps {
   description: string;
   price: number;
 }
+
 interface IReturn {
   path: string;
   mode: 'PURCHASE_STREAK' | 'PURCHASE_TREE' | 'PURCHASE_RECOVERY';
@@ -73,7 +80,6 @@ const getRecoveryInfo = async () => {
   return response;
 };
 
-
 const Item = ({
   keyname,
   name,
@@ -87,19 +93,19 @@ const Item = ({
     router.refresh();
     event;
   };
-  const SelectRecovery = ()=>{
-    overlay.open(({ isOpen, close }) => (
+  const SelectRecovery = () => {
+    overlay?.open(({ isOpen, close }) => (
       <>
-      <Recovery
-        title="스트릭 복구"
-        description="스트릭을 복구하시겠습니까?"
-        open={isOpen}
-        onClose={close}
-        onConfirm={()=>result('recovery')}
-      />
+        <Recovery
+          title="스트릭 복구"
+          description="스트릭을 복구하시겠습니까?"
+          open={isOpen}
+          onClose={close}
+          onConfirm={() => result('recovery')}
+        />
       </>
     ));
-  }
+  };
   const purchase = ({
     keyname,
     name,
@@ -108,10 +114,10 @@ const Item = ({
     price,
     mode,
   }: IPurchase) => {
-    if(keyname === 'recovery'){
-      SelectRecovery()
-    }else{
-      overlay.open(({ isOpen, close }) => (
+    if (keyname === 'recovery') {
+      SelectRecovery();
+    } else {
+      overlay?.open(({ isOpen, close }) => (
         <BottomSheet
           description={description}
           mode={mode}
@@ -128,7 +134,7 @@ const Item = ({
       .then((response) => {
         if (response.status === 200) {
           console.log(response.data.streakColorName);
-          overlay.open(({ isOpen, close }) => (
+          overlay?.open(({ isOpen, close }) => (
             <BottomSheet
               description=""
               mode="NONE"
@@ -166,7 +172,7 @@ const Item = ({
           ));
           // 잔액 부족
         } else if (response.status === 422) {
-          overlay.open(({ isOpen, close }) => (
+          overlay?.open(({ isOpen, close }) => (
             <BottomSheet
               description="잔액이 부족합니다."
               mode="NEGATIVE"
@@ -176,7 +182,7 @@ const Item = ({
             />
           ));
         } else {
-          overlay.open(({ isOpen, close }) => (
+          overlay?.open(({ isOpen, close }) => (
             <BottomSheet
               description="알 수 없는 이유로 구매에 실패했어요"
               mode="NEGATIVE"

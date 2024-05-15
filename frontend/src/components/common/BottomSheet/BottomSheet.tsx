@@ -53,7 +53,7 @@ export const BottomSheet = ({
   return (
     <>
       {open && (
-        <div className="absolute top-0 left-0 w-full h-[200vh] bg-custom-black-with-opacity"></div>
+        <div className="z-40 absolute top-0 left-0 w-full h-[200vh] bg-custom-black-with-opacity"></div>
       )}
 
       <motion.section
@@ -66,7 +66,7 @@ export const BottomSheet = ({
           damping: 40,
           stiffness: 400,
         }}
-        className="fixed bottom-0 left-0 w-full min-w-[32rem] min-h-[24rem] p-[1rem] rounded-t-[1rem] bg-custom-white overflow-hidden flex flex-col"
+        className="z-50 fixed bottom-0 left-0 w-full min-w-[32rem] min-h-[24rem] p-[1rem] rounded-t-[1rem] bg-custom-white overflow-hidden flex flex-col"
       >
         <div className="grow relative">
           <div className="w-2/3 pl-[1rem] py-[1rem] flex flex-col gap-[1rem]">
@@ -95,7 +95,17 @@ export const BottomSheet = ({
             <Button isActivated={false} label="취소" onClick={onClose} />
           )}
           {onConfirm && (
-            <Button isActivated={true} label={mode=='PURCHASE_RECOVERY'||'PURCHASE_STREAK' || 'PURCHASE_TREE'?'구매':'확인'} onClick={onConfirm} />
+            <Button
+              isActivated={true}
+              label={
+                mode == 'PURCHASE_RECOVERY' ||
+                'PURCHASE_STREAK' ||
+                'PURCHASE_TREE'
+                  ? '구매'
+                  : '확인'
+              }
+              onClick={onConfirm}
+            />
           )}
         </div>
       </motion.section>
