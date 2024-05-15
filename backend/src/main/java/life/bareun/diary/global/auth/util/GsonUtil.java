@@ -24,13 +24,17 @@ public class GsonUtil {
     private static Gson instance;
 
     public static String toJson(Object src) {
-        if (instance == null) { setGsonInstance(); }
+        if (instance == null) {
+            setGsonInstance();
+        }
 
         return instance.toJson(src);
     }
 
     public static byte[] toJsonBytesUtf8(Object src) {
-        if (instance == null) { setGsonInstance(); }
+        if (instance == null) {
+            setGsonInstance();
+        }
 
         return toJson(src).getBytes(StandardCharsets.UTF_8);
     }

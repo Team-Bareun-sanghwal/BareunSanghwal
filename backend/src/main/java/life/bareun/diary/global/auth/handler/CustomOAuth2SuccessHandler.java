@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
