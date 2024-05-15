@@ -20,6 +20,7 @@ import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
+import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
 import life.bareun.diary.product.entity.StreakColor;
@@ -30,6 +31,8 @@ import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
 import life.bareun.diary.streak.repository.MemberTotalStreakRepository;
+import life.bareun.diary.streak.service.MemberStreakService;
+import life.bareun.diary.streak.service.StreakService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,8 +60,6 @@ public class MemberControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private MemberTotalStreakRepository memberTotalStreakRepository;
 
     @Autowired
     private StreakColorRepository streakColorRepository;
@@ -72,6 +73,14 @@ public class MemberControllerTest {
     @Autowired
     private StreakColorGradeRepository streakColorGradeRepository;
 
+    @Autowired
+    private StreakService streakService;
+
+    @Autowired
+    private MemberTotalStreakRepository memberTotalStreakRepository;
+
+    @Autowired
+    private MemberRecoveryRepository memberRecoveryRepository;
 
     @Autowired
     private AuthTokenProvider authTokenProvider;
@@ -81,11 +90,12 @@ public class MemberControllerTest {
 
     private Member testMember;
     private Tree testTree;
-    private MemberTotalStreak testMemberTotalStreak;
 
 
     private StreakColor testStreakColor;
     private TreeColor testTreeColor;
+
+    private MemberTotalStreak testMemberTotalStreak;
 
 
     private String accessToken;
@@ -97,29 +107,35 @@ public class MemberControllerTest {
      */
     @BeforeEach
     void setUp() {
-        testTree = treeRepository.findById(1L)
-            .orElseGet(
-                () -> treeRepository.save(new Tree(1, 1, 10, 100) )
-            );
+        testTree = treeRepository.save(
+            new Tree(
+                1,
+                1,
+                10,
+                100
+            )
+        );
 
-        testTreeColor = treeColorRepository.findById(1)
-            .orElseGet(
-                () -> treeColorRepository.save(new TreeColor(1, "TEST_TREE_COLOR"))
-            );
+        testTreeColor = treeColorRepository.save(
+            new TreeColor(
+                1,
+                "TEST_TREE_COLOR"
+            )
+        );
 
-        testStreakColor = streakColorRepository.findById(1)
-            .orElseGet(
-                () -> streakColorRepository.save(
-                    new StreakColor(
-                        1,
-                        "TEST_STREAK_COLOR",
-                        streakColorGradeRepository.findById(1L)
-                            .orElseGet(
-                                () -> new StreakColorGrade(1L, "TEST_STREAK_GRADE", 1.0F)
-                            )
+        testStreakColor = streakColorRepository.save(
+            new StreakColor(
+                1,
+                "TEST_STREAK_COLOR",
+                streakColorGradeRepository.save(
+                    new StreakColorGrade(
+                        1L,
+                        "TEST_STREAK_GRADE",
+                        1.0F
                     )
                 )
-            );
+            )
+        );
 
         testMember = memberRepository.save(
             Member.create(
@@ -133,14 +149,12 @@ public class MemberControllerTest {
             )
         );
 
-        testMemberTotalStreak = new MemberTotalStreak(testMember);
-        testMemberTotalStreak.modifyTotalStreakCount(10);
-        testMemberTotalStreak.modifyAchieveStreakCount(10);
-        testMemberTotalStreak.modifyLongestStreak(8);
-        testMemberTotalStreak.modifyStarCount(4);
-        testMemberTotalStreak.modifyTotalTrackerCount(6);
-        testMemberTotalStreak.modifyAchieveTrackerCount(5);
-        testMemberTotalStreak = memberTotalStreakRepository.save(testMemberTotalStreak);
+
+        streakService.initialMemberStreak(testMember);
+        testMemberTotalStreak = memberTotalStreakRepository.findByMember(testMember)
+            .orElseThrow(
+                () -> new AssertionError("초기 세팅 실패")
+            );
 
         accessToken = authTokenProvider.createAccessToken(
             new Date(),
