@@ -16,6 +16,7 @@ import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
@@ -96,7 +97,7 @@ public class MemberControllerTest {
     private TreeColor testTreeColor;
 
     private MemberTotalStreak testMemberTotalStreak;
-
+    private MemberRecovery testMemberRecovery;
 
     private String accessToken;
 
@@ -159,6 +160,9 @@ public class MemberControllerTest {
             .orElseThrow(
                 () -> new AssertionError("초기 세팅 실패")
             );
+
+        // 초기 사용자 리커버리 데이터 생성
+        testMemberRecovery = memberRecoveryRepository.save(MemberRecovery.create(testMember));
 
         // 테스트용 인증 토큰 생성
         accessToken = authTokenProvider.createAccessToken(
