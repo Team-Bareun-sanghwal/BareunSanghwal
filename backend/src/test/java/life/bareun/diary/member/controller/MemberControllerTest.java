@@ -600,8 +600,38 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 해빗 리스트 테스트 코드")
-    public void testHabits() throws Exception {
+    @DisplayName("사용자 해빗이 없는 경우의 해빗 리스트 테스트 코드")
+    public void testHabitsWithoutHabits() throws Exception {
+        // given
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/habits")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 해빗 목록을 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.habitList")
+                    .isEmpty()
+            );
+
+    }
+
+    @Test
+    @DisplayName("사용자 해빗이 있는 경우의 해빗 리스트 테스트 코드")
+    public void testHabitsWithHabits() throws Exception {
         // given
         Habit habit1 = habitRepository.save(Habit.builder().name("TEST_HABIT_01").build());
         String testAlias1 = "TEST_ALIAS_01";
