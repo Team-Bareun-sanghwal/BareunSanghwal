@@ -17,13 +17,6 @@ export const HabitBtnList = ({
     <NoHabits />
   ) : (
     <div className="flex justify-center gap-4 pl-1 my-4 w-full">
-      <CalenderHabitButton
-        memberHabitId={-1}
-        alias="전체"
-        icon="All"
-        habitId={habitId}
-        setHabitId={setHabitId}
-      />
       {memberHabitDtoList?.map((habit: IMemberHabit) => (
         <CalenderHabitButton
           key={habit.memberHabitId}

@@ -1,4 +1,4 @@
-import { getMonth, getYear } from '@/components/calendar/util';
+import Image from 'next/image';
 export const CalenderHabitButton = ({
   memberHabitId,
   alias,
@@ -19,7 +19,7 @@ export const CalenderHabitButton = ({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center ">
         <button
           onClick={onClickHabit}
           className={
@@ -28,7 +28,18 @@ export const CalenderHabitButton = ({
               : 'relative bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
           }
         >
-          {icon}
+          {icon === 'All' ? (
+            <div className="flex items-center justify-center">
+              <Image
+                src="/images/icon-block1.png"
+                width={40}
+                height={40}
+                alt=""
+              />
+            </div>
+          ) : (
+            icon
+          )}
         </button>
 
         <p className={'text-xs text-center w-16 truncate ...'}>{alias}</p>
