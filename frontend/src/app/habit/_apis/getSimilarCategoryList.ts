@@ -4,7 +4,7 @@ export async function getSimilarCategoryList() {
   const response = await $Fetch({
     method: 'GET',
     url: `https://bareun.life/recommendation/habits`,
-    cache: 'no-store',
+    cache: 'default',
   });
 
   // if (response.status !== 200)

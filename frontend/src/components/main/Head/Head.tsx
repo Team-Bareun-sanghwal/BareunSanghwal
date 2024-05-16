@@ -23,7 +23,7 @@ export const Head = async () => {
       <MainTitle
         habitTrackerTodayDtoList={habitsTodayData.habitTrackerTodayDtoList}
       />
-      <Notify/>
+      <Notify />
       <HabitShortcut
         allHabits={habitListData.habitList}
         todayHabits={habitsTodayData.habitTrackerTodayDtoList}
