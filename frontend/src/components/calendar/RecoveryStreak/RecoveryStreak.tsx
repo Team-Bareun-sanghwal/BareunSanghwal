@@ -50,7 +50,7 @@ export const RecoveryStreak = ({
                 ? dayNumber !== parseInt(getToday(false))
                   ? '#15481b'
                   : '#acd4be'
-                : '#c9c9c9'
+                : '#acd4be'
               : '#c9c9c9',
           scale: selected ? 1.05 : 1,
         }}
