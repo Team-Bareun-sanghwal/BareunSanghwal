@@ -8,6 +8,8 @@ interface IRecommendStep {
   onNext: (selectedHabitId: number, selectedHabitName: string) => void;
   popularCategoryListData: IHabitListData[];
   similarCategoryListData: IHabitListData[];
+  habitId: number | null;
+  habitName: string | null;
 }
 
 export default function Recommend({
@@ -15,10 +17,14 @@ export default function Recommend({
   onNext,
   popularCategoryListData,
   similarCategoryListData,
+  habitId,
+  habitName,
 }: IRecommendStep) {
-  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(null);
+  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
+    habitId,
+  );
   const [selectedHabitName, setSelectedHabitName] = useState<string | null>(
-    null,
+    habitName,
   );
 
   return (
@@ -38,6 +44,24 @@ export default function Recommend({
         ></ProgressBox>
 
         <GuideBox guideText="가장 인기 있는 해빗이나 나와 비슷한 사람들이 하는 해빗 중 흥미로운 해빗 하나를 골라주세요." />
+
+        {selectedHabitId && selectedHabitName && (
+          <div className="flex flex-col gap-[0.5rem]">
+            <label className="w-full custom-semibold-text text-custom-black flex justify-between">
+              내가 고른 해빗
+            </label>
+
+            <button
+              onClick={() => {
+                setSelectedHabitId(null);
+                setSelectedHabitName(null);
+              }}
+              className="w-fit bg-custom-matcha text-custom-white custom-medium-text px-[1rem] py-[0.5rem] rounded-[1rem]"
+            >
+              {selectedHabitName}
+            </button>
+          </div>
+        )}
 
         <HabitCategoryList
           habitListData={popularCategoryListData}

@@ -26,12 +26,27 @@ const HabitNameButton = ({
 
 interface IHabitSearchBox {
   selectedHabitId: number | null;
+  selectedHabitName: string | null;
   setSelectedHabitId: (selectedHabitId: number | null) => void;
   setSelectedHabitName: (selectedHabitName: string | null) => void;
 }
 
+function isIncludeName(array: IHabitListDataV2[], name: string) {
+  let isIncluded = false;
+
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].habitName === name) {
+      isIncluded = true;
+      break;
+    }
+  }
+
+  return isIncluded;
+}
+
 export const HabitSearchBox = ({
   selectedHabitId,
+  selectedHabitName,
   setSelectedHabitId,
   setSelectedHabitName,
 }: IHabitSearchBox) => {
@@ -57,8 +72,6 @@ export const HabitSearchBox = ({
             event.target.value.replaceAll(' ', '').length !== 0
           ) {
             if (regExp.test(event.target.value)) {
-              setSelectedHabitId(null);
-              setSelectedHabitName(null);
               const categoryList = await searchCategoryList(event.target.value);
               setSearchedCategoryList(categoryList.data.habitList);
             }
@@ -69,6 +82,19 @@ export const HabitSearchBox = ({
       ></input>
 
       <div className="flex gap-[1rem] flex-wrap">
+        {selectedHabitId &&
+          selectedHabitName &&
+          !isIncludeName(searchedCategoryList, selectedHabitName) && (
+            <HabitNameButton
+              name={selectedHabitName}
+              isSelected={true}
+              onClick={() => {
+                setSelectedHabitId(null);
+                setSelectedHabitName(null);
+              }}
+            />
+          )}
+
         {searchedCategoryList?.map((searchedHabit) => {
           return (
             <HabitNameButton
