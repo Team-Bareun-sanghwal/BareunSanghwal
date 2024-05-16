@@ -18,7 +18,8 @@ type Request = {
 
 export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
-  const authorization = cookieStore.get('Authorization')?.value;
+  const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  // const authorization = cookieStore.get('Authorization')?.value;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   if (authorization !== undefined) {
