@@ -32,6 +32,8 @@ export const HabitBtn = ({
   const [scope, animate] = useAnimate();
 
   const onClickHabit = () => {
+    console.log('yee')
+    console.log(add, shortcut, memberHabitId, habitId, succeededTime, today)
     animate([
       ['button', { scale: 1.1 }, { duration: 0.1 }],
       ['button', { scale: 1 }, { duration: 0.1 }],
@@ -50,7 +52,11 @@ export const HabitBtn = ({
           ));
         }
       } else {
-        if (memberHabitId == habitId) {
+        if(memberHabitId===-1){
+          console.log("go to main")
+          router.replace(`/main/${getYear()}/${getMonth(false)}`);
+        }
+        else if (memberHabitId == habitId) {
           router.push(`/main/${getYear()}/${getMonth(false)}`);
         } else {
           router.push(`/main/${getYear()}/${getMonth(false)}/${memberHabitId}`);
@@ -78,15 +84,12 @@ export const HabitBtn = ({
         >
           {add ? <PlusIcon className="w-12 h-12 text-gray-300" /> : icon}
           {today &&
-            (succeededTime ? (
+            succeededTime && (
               <div className="absolute bottom-0 right-0  text-white bg-green-600 p-2 rounded-full text-xs">
-                <CheckIcon className="w-4 h-4" />
+                <CheckIcon className="w-5 h-5" />
               </div>
-            ) : (
-              <div className="absolute bottom-0 right-0 bg-gray-400 p-2 rounded-full text-white text-xs">
-                <CheckIcon className="w-4 h-4" />
-              </div>
-            ))}
+            ) 
+          }
         </motion.button>
 
         <p

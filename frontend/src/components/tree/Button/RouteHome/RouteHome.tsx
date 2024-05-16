@@ -8,12 +8,13 @@ export const RouteHome = () => {
   const router = useRouter();
 
   const exit = () => {
+    close();
     router.push(`/main/${getYear()}/${getMonth(false)}`);
   };
 
   return (
     <>
-      <button onClick={exit} className="absolute z-20 p-2 text-lg">
+      <button onClick={exit} className="absolute z-10 p-2 text-lg">
         <ArrowLeftCircleIcon color="white" className="w-[44px] h-[44px]" />
       </button>
     </>

@@ -32,96 +32,6 @@ export const Streak = ({
   habitId,
   ...props
 }: StreakProps) => {
-  const overlay = useOverlay();
-  const Alert = () => {
-    const msg = () => {
-      if (dayNumber && dayNumber > parseInt(getToday(true))) {
-        return '이전 날짜에만 리커버리를 사용할 수 있어요!';
-      }
-      if (
-        month?.toString() !== getMonth(false) ||
-        year?.toString() !== getYear()
-      ) {
-        return '이번 달에만 스트릭 리커버리를 사용할 수 있어요!';
-      }
-      switch (achieveType) {
-        case 'NOT_EXISTED':
-          return '해당 날짜의 해빗이 없어요!';
-        case 'ACHIEVE':
-          return '해당 날짜의 스트릭을 이미 달성했어요!';
-        case 'RECOVERY':
-          return '해당 날짜는 이미 스트릭을 사용했어요!';
-        default:
-          return '오늘 날짜의 스트릭은 리커버리를 사용할 수 없어요!';
-      }
-    };
-    overlay.open(({ isOpen }) => (
-      <AlertBox label={msg()} mode="WARNING" open={isOpen} />
-    ));
-    setTimeout(() => overlay.close(), 2000);
-  };
-  const onClickStreakRecovery = () => {
-    if (habitId === 0) return;
-    if (
-      dayNumber &&
-      !habitId &&
-      achieveType === 'NOT_ACHIEVE' &&
-      (month?.toString() != getMonth(false) || year?.toString() != getYear())
-    ) {
-      overlay.open(({ isOpen, close }) => (
-        <BottomSheet
-          description="전체 스트릭은 복구되지만 해빗 별 스트릭은 복구되지 않아요"
-          mode="RECOVERY"
-          onClose={close}
-          onConfirm={() => Recovoery()}
-          open={isOpen}
-          title={`${dayNumber}일의 스트릭을 복구하시겠어요?`}
-        />
-      ));
-    } else {
-      Alert();
-    }
-  };
-
-  const Recovoery = () => {
-    const MM = month ? convertMonthFormat(month) : 0;
-    const DD = dayNumber ? convertMonthFormat(dayNumber) : 0;
-    if (MM !== 0) {
-      const response = $Fetch({
-        method: 'PATCH',
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery`,
-        cache: 'no-cache',
-        data: {
-          date: `${year}-${MM}-${DD}`,
-        },
-      });
-      response
-        .then((res) => {
-          if (res.status == 200) {
-            overlay.open(({ isOpen, close }) => (
-              <BottomSheet
-                description={`${dayNumber}일의 스트릭이 복구되었어요!`}
-                mode="POSITIVE"
-                onClose={close}
-                open={isOpen}
-                title={'스트릭 복구 성공!'}
-              />
-            ));
-          } else {
-            overlay.open(({ isOpen, close }) => (
-              <BottomSheet
-                description={res.message}
-                mode="NEGATIVE"
-                onClose={close}
-                open={isOpen}
-                title={'스트릭 복구 실패!'}
-              />
-            ));
-          }
-        })
-        .catch((err) => {});
-    }
-  };
   const streakOpacity = [10, 40, 55, 60, 70, 80, 90, 100];
 
   const basicStreakStyle =
@@ -147,7 +57,7 @@ export const Streak = ({
   const customClassName = getClassName();
 
   return (
-    <button onClick={() => onClickStreakRecovery()} className={customClassName}>
+    <button className={customClassName}>
       <a
         className={
           getToday(false) === dayNumber + '' &&
