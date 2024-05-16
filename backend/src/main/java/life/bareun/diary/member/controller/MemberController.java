@@ -254,7 +254,7 @@ public class MemberController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    String.format("%d번 해빗의 해빗 트래커 정보를 읽어왔습니다,", Integer.parseInt(memberHabitId)),
+                    String.format("%d번 해빗의 해빗 트래커 정보를 읽어왔습니다.", Integer.parseInt(memberHabitId)),
                     memberHabitTrackersResDto
                 )
             );
