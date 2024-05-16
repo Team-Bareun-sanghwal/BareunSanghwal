@@ -12,12 +12,14 @@ export const Head = async () => {
   });
   const habitList = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/habits`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/active`,
     cache: 'no-cache',
   });
   const habitsTodayData = habitsToday.data;
   const habitListData =
-    habitList.data === null ? { habitList: [] } : habitList.data;
+    habitList.data.memeberHabitDtoList === null
+      ? { habitList: [] }
+      : habitList.data.memeberHabitDtoList;
   return (
     <div>
       <MainTitle
@@ -25,7 +27,7 @@ export const Head = async () => {
       />
       <Notify />
       <HabitShortcut
-        allHabits={habitListData.habitList}
+        allHabits={habitListData}
         todayHabits={habitsTodayData.habitTrackerTodayDtoList}
       />
 

@@ -16,6 +16,7 @@ export const HabitBtn = ({
   succeededTime,
   today,
   setHabitId,
+  limit,
 }: {
   memberHabitId: number;
   alias: string;
@@ -26,6 +27,7 @@ export const HabitBtn = ({
   succeededTime?: string;
   today?: boolean;
   setHabitId?: React.Dispatch<React.SetStateAction<number>>;
+  limit?: boolean;
 }) => {
   const [scope, animate] = useAnimate();
   const router = useRouter();
@@ -64,7 +66,16 @@ export const HabitBtn = ({
         }
       }
     } else {
-      router.push('/habit/register');
+      if (limit) {
+        overlay.open(({ isOpen }) => (
+          <AlertBox
+            label="더 이상 습관을 추가할 수 없어요!"
+            mode="WARNING"
+            open={isOpen}
+          />
+        ));
+        setTimeout(() => overlay.close(), 1000);
+      } else router.push('/habit/register');
     }
   };
 
