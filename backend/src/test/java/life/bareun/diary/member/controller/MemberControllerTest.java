@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.token.AuthToken;
@@ -19,7 +18,6 @@ import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.habit.entity.embed.MaintainWay;
 import life.bareun.diary.habit.repository.HabitRepository;
 import life.bareun.diary.habit.repository.MemberHabitRepository;
-import life.bareun.diary.member.dto.MemberHabitListElementDto;
 import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
@@ -286,7 +284,7 @@ public class MemberControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
             .andExpect(jsonPath("$.message").value("사용자 정보가 수정되었습니다"))
-            .andExpect(jsonPath("$.data").isEmpty());
+            .andExpect(jsonPath("$.data").doesNotExist());
 
         // targetMember의 정보가 testMember의 것으로 바뀌어 있어야 한다.
 
@@ -537,7 +535,7 @@ public class MemberControllerTest {
                     .value("로그아웃되었습니다.")
             )
             .andExpect(
-                jsonPath("$.data").isEmpty()
+                jsonPath("$.data").doesNotExist()
             );
     }
 
@@ -565,7 +563,7 @@ public class MemberControllerTest {
                     .value("사용자 정보가 삭제되었습니다")
             )
             .andExpect(
-                jsonPath("$.data").isEmpty()
+                jsonPath("$.data").doesNotExist()
             );
     }
 
@@ -621,6 +619,10 @@ public class MemberControllerTest {
             .andExpect(
                 jsonPath("$.message")
                     .value("사용자의 해빗 목록을 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.habitList")
+                    .exists()
             )
             .andExpect(
                 jsonPath("$.data.habitList")
