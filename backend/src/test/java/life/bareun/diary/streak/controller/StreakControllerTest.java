@@ -185,11 +185,24 @@ class StreakControllerTest {
             .build();
 
         mockMvc.perform(
-            patch("/streaks/recovery")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(recoveryReqDto))
-                .header("Authorization", accessToken)
-        );
+                patch("/streaks/recovery")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(recoveryReqDto))
+                    .header("Authorization", accessToken)
+            )
+            .andExpect(status().isForbidden())
+            .andExpect(jsonPath("$.message").value("스트릭에 접근할 수 없는 날짜입니다."));
     }
 
+    @Test
+    @DisplayName("스트릭 리커버리 사용 시 정보 조회 API 테스트")
+    void recoveryStreakInfoTest() throws Exception {
+        mockMvc.perform(
+                get("/streaks/recovery/" + LocalDate.now().plusDays(2).toString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", accessToken)
+            )
+            .andExpect(status().isForbidden())
+            .andExpect(jsonPath("$.message").value("스트릭에 접근할 수 없는 날짜입니다."));
+    }
 }
