@@ -20,12 +20,6 @@ export const MainTitle = ({
     habitTrackerTodayDtoList?.filter(
       (habit: IHabitTrackerDto) => habit.succeededTime != null,
     ).length || 0;
-  const TitleMsg =
-    total == 0
-      ? '아직 해빗이 없어요...'
-      : total === succeed
-        ? '오늘의 해빗을 모두 달성했어요!'
-        : `${total - succeed}개의 해빗이 남았어요!`;
 
   return (
     <div className="flex mx-6 items-center h-16 justify-between">
@@ -43,7 +37,6 @@ export const MainTitle = ({
           )}
         </div>
         <p className="text-3xl font-bold mx-2">오늘의 해빗</p>
-        <p className="text-md justify-end">{TitleMsg}</p>
       </div>
       <BellButton />
     </div>

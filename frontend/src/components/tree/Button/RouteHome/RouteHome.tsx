@@ -9,7 +9,7 @@ export const RouteHome = () => {
 
   const exit = () => {
     close();
-    router.push(`/main/${getYear()}/${getMonth(false)}`);
+    router.push(`/main`);
   };
 
   return (

@@ -17,7 +17,7 @@ export const HabitWriteFunnel = ({
   const { Funnel, setStep } = useFunnel('WRITE_STEP');
 
   const router = useRouter();
-
+  router.push(sessionStorage.getItem('previousUrl')!);
   return (
     <Funnel>
       <Funnel.Step name="WRITE_STEP">

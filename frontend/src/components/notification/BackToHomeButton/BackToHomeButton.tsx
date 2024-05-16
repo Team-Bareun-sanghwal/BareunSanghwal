@@ -12,7 +12,7 @@ export const BackToHomeButton = () => {
     <ChevronLeftIcon
       className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
       onClick={() => {
-        router.push(`/main/${getYear()}/${getMonth(false)}`);
+        router.push(`/main`);
         readNotificationList();
       }}
     />
