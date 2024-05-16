@@ -94,8 +94,9 @@ public class HabitServiceImpl implements HabitService {
     @Override
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
-        if((habitCreateReqDto.dayOfWeek() == null && habitCreateReqDto.period() == null)
-        || habitCreateReqDto.icon() == null || habitCreateReqDto.alias() == null) {
+        if ((habitCreateReqDto.dayOfWeek() == null && habitCreateReqDto.period() == null)
+            || habitCreateReqDto.icon() == null
+            || habitCreateReqDto.alias() == null) {
             throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
         }
 
@@ -114,9 +115,9 @@ public class HabitServiceImpl implements HabitService {
         // 말일이 아니라면 말일까지 증가시키면서 맞는 조건에만 생성
         if (habitCreateReqDto.dayOfWeek() == null) {
             // 만약 2~6이 아니라면 오류
-//            if(habitCreateReqDto.period() > 6 || habitCreateReqDto.period() < 2) {
-//                throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
-//            }
+            if (habitCreateReqDto.period() > 6 || habitCreateReqDto.period() < 2) {
+                throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
+            }
             memberHabit = memberHabitRepository.save(
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
@@ -132,7 +133,7 @@ public class HabitServiceImpl implements HabitService {
                         MaintainWay.DAY).maintainAmount(0).build());
             for (Integer day : habitCreateReqDto.dayOfWeek()) {
                 // 만약 1~7이 아니라면 오류
-                if(day > 7 || day < 1) {
+                if (day > 7 || day < 1) {
                     throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
                 }
                 habitDayRepository.save(
@@ -157,7 +158,7 @@ public class HabitServiceImpl implements HabitService {
     public void deleteMemberHabit(HabitDeleteReqDto habitDeleteReqDto) {
         streakService.deleteHabitStreak(memberHabitRepository.findById(habitDeleteReqDto.memberHabitId())
             .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT)));
-        
+
         // 만약 모두 삭제한다고 하면 이전 기록들까지 전부 삭제
         if (Boolean.TRUE.equals(habitDeleteReqDto.isDeleteAll())) {
             habitTrackerService.deleteAllHabitTracker(habitDeleteReqDto.memberHabitId());
