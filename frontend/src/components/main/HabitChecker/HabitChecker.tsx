@@ -31,12 +31,12 @@ const getHabitCheckerText = (habitTrackerTodayDtoList: IHabitTrackerDto[]) => {
   ).length;
 
   if (totalCount === 0) {
-    habitCheckerText = '오늘 등록한 해빗이 없어요!';
+    habitCheckerText = '오늘 수행 가능한 해빗이 없어요!';
     habitCheckerSubText = '새로운 해빗을 가져보는 건 어때요?';
     iconPath = '/images/icon-check-disabled.png';
     isHabit = false;
   } else if (achieveCount < totalCount) {
-    habitCheckerText = '아직이에요...';
+    habitCheckerText = `${totalCount - achieveCount}개의 해빗이 남았어요!`;
     iconPath = '/images/icon-check-disabled.png';
   } else {
     habitCheckerText = '멋지게 해냈어요!';
