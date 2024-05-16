@@ -15,12 +15,15 @@ import life.bareun.diary.global.auth.util.GsonUtil;
 import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.entity.DailyPhrase;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
+import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
@@ -77,6 +80,8 @@ public class MemberControllerTest {
     private MemberTotalStreakRepository memberTotalStreakRepository;
     @Autowired
     private MemberRecoveryRepository memberRecoveryRepository;
+    @Autowired
+    private MemberDailyPhraseRepository memberDailyPhraseRepository;
 
     // 토큰
     @Autowired
@@ -98,6 +103,7 @@ public class MemberControllerTest {
     private MemberTotalStreak testMemberTotalStreak;
     private MemberRecovery testMemberRecovery;
     private MemberDailyStreak testMemberDailyStreak;
+    private MemberDailyPhrase testMemberDailyPhrase;
 
     private String accessToken;
 
@@ -171,6 +177,14 @@ public class MemberControllerTest {
             .orElseThrow(
                 () -> new AssertionError("초기 스트릭 현황 세팅 실패")
             );
+
+        // 사용자 오늘의 문구 데이터 생성
+        testMemberDailyPhrase = memberDailyPhraseRepository.save(
+            MemberDailyPhrase.create(
+                testMember,
+                new DailyPhrase(1L, "TEST_DAILY_PHRASE")
+            )
+        );
 
         // 테스트용 인증 토큰 생성
         accessToken = authTokenProvider.createAccessToken(
@@ -540,6 +554,36 @@ public class MemberControllerTest {
             )
             .andExpect(
                 jsonPath("$.data").isEmpty()
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 오늘의 문구 조회 테스트 코드")
+    public void testDailyPhrase() throws Exception {
+        // given
+        String phrase = testMemberDailyPhrase.getDailyPhrase().getPhrase();
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/daily-phrase")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("오늘의 문구를 읽어 왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.phrase")
+                    .value(phrase)
             );
     }
 
