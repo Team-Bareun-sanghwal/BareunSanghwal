@@ -118,9 +118,9 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
 
         LocalDateTime succeededTIme = LocalDateTime.of(
             succeedDate,
-            LocalTime.of(12, 0)
+            LocalTime.of((int) (Math.random() * 23), (int) (Math.random() * 59))
         );
-
+        
         String imageUrl = IMAGE_BASIC;
         if (image != null && !image.isEmpty()) {
             imageUrl = imageConfig.uploadImage(image);
