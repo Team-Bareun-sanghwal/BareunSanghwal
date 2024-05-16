@@ -485,7 +485,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 로그아웃 테스트 코드")
+    @DisplayName("사용자 정보 삭제 테스트 코드")
     public void testLogout() throws Exception {
         // given
         String id = testMember.getId().toString();
@@ -514,6 +514,31 @@ public class MemberControllerTest {
                 jsonPath("$.data").isEmpty()
             );
     }
+
+    @Test
+    @DisplayName("사용자 로그아웃 테스트 코드")
+    public void testDelete() throws Exception {
+        // given
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.delete("/members")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자 정보가 삭제되었습니다")
+            )
+            .andExpect(
                 jsonPath("$.data").isEmpty()
             );
     }
