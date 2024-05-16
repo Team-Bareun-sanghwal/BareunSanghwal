@@ -18,7 +18,7 @@ const container = {
   hidden: { y: '100%', opacity: 0 },
 };
 
-export const AlertBox = ({ mode, label, open }: IAlertBoxProps) => {
+export const lertBox = ({ mode, label, open }: IAlertBoxProps) => {
   return (
     <motion.div
       variants={container}

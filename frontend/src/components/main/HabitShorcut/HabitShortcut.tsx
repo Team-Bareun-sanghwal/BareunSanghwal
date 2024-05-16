@@ -1,4 +1,5 @@
 import { HabitBtn } from '@/components/calendar/HabitBtn/HabitBtn';
+import { all } from 'three/examples/jsm/nodes/Nodes.js';
 interface IHabitList {
   name: string;
   alias: string;
@@ -16,6 +17,8 @@ export const HabitShortcut = ({
   allHabits,
   todayHabits,
 }: IHabitShortcutProps) => {
+  console.log('sss');
+  console.log(allHabits);
   const sortedHabits = () => {
     const succeeded = todayHabits.filter(
       (habit) => habit.succeededTime !== null,
@@ -26,18 +29,15 @@ export const HabitShortcut = ({
   return (
     <>
       <div className="flex items-center justify-left gap-[0.5rem] min-w-full pl-1 ml-[0.5rem] py-[1rem]">
-        {allHabits?.length !== 7 && (
-          <>
-            <HabitBtn
-              memberHabitId={0}
-              alias="추가"
-              icon="+"
-              shortcut={true}
-              add={true}
-            />
-            <div className="w-1 h-20 mb-8 bg-gray-200 rounded-full" />
-          </>
-        )}
+        <HabitBtn
+          memberHabitId={0}
+          alias="추가"
+          icon="+"
+          shortcut={true}
+          add={true}
+          limit={true}
+        />
+        <div className="w-1 h-20 mb-8 bg-gray-200 rounded-full" />
         <div className="flex overflow-x-auto">
           {sortedHabits().yet.map((habit) => (
             <HabitBtn
