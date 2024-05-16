@@ -510,7 +510,10 @@ public class MemberControllerTest {
                 jsonPath("$.message")
                     .value("로그아웃되었습니다.")
             )
-            .andExpect( // 셀프 역직렬화가 잘 됐는지 체크
+            .andExpect(
+                jsonPath("$.data").isEmpty()
+            );
+    }
                 jsonPath("$.data").isEmpty()
             );
     }
