@@ -1,5 +1,4 @@
 'use client';
-
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -17,6 +16,7 @@ export const HabitBtn = ({
   add,
   succeededTime,
   today,
+  setHabitId,
 }: {
   memberHabitId: number;
   alias: string;
@@ -26,18 +26,20 @@ export const HabitBtn = ({
   add?: boolean;
   succeededTime?: string;
   today?: boolean;
+  setHabitId?: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+  const [scope, animate] = useAnimate();
   const router = useRouter();
   const overlay = useOverlay();
-  const [scope, animate] = useAnimate();
-
   const onClickHabit = () => {
-    console.log('yee')
-    console.log(add, shortcut, memberHabitId, habitId, succeededTime, today)
     animate([
       ['button', { scale: 1.1 }, { duration: 0.1 }],
       ['button', { scale: 1 }, { duration: 0.1 }],
     ]);
+
+    if (memberHabitId && setHabitId) {
+      setHabitId(memberHabitId);
+    }
     if (!add) {
       if (shortcut) {
         if (succeededTime === null)
@@ -51,16 +53,8 @@ export const HabitBtn = ({
             />
           ));
         }
-      } else {
-        if(memberHabitId===-1){
-          console.log("go to main")
-          router.replace(`/main/${getYear()}/${getMonth(false)}`);
-        }
-        else if (memberHabitId == habitId) {
-          router.push(`/main/${getYear()}/${getMonth(false)}`);
-        } else {
-          router.push(`/main/${getYear()}/${getMonth(false)}/${memberHabitId}`);
-        }
+      } else if (memberHabitId && setHabitId) {
+        setHabitId(memberHabitId);
       }
     } else {
       router.push('/habit/register');
@@ -83,13 +77,11 @@ export const HabitBtn = ({
           }
         >
           {add ? <PlusIcon className="w-12 h-12 text-gray-300" /> : icon}
-          {today &&
-            succeededTime && (
-              <div className="absolute bottom-0 right-0  text-white bg-green-600 p-2 rounded-full text-xs">
-                <CheckIcon className="w-5 h-5" />
-              </div>
-            ) 
-          }
+          {today && succeededTime && (
+            <div className="absolute bottom-0 right-0  text-white bg-green-600 p-2 rounded-full text-xs">
+              <CheckIcon className="w-5 h-5" />
+            </div>
+          )}
         </motion.button>
 
         <p
