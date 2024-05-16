@@ -33,7 +33,7 @@ export default function GlobalError({
               className="w-fit custom-medium-text px-[1rem] py-[0.5rem] text-custom-white bg-custom-matcha rounded-[1rem]"
               onClick={() => window.location.replace('https://bareun.life')}
             >
-              '처음 화면으로 가기'
+              처음 화면으로 가기
             </button>
           </section>
         </div>
