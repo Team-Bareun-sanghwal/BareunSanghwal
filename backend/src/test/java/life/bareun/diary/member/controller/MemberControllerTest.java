@@ -975,10 +975,7 @@ public class MemberControllerTest {
             ).andExpect(
                 jsonPath("$.data.longestStreak")
                     .value(longestStreak)
-            )
-
-        ;
-
+            );
     }
 }
 
