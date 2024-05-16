@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getMonth, getYear } from '@/components/calendar/util';
 // import { $SetCookie } from '@/apis';
 
 export default function Page() {
@@ -13,7 +12,7 @@ export default function Page() {
 
   if (code === '200') {
     // $SetCookie({ at: at!, rt: rt! });
-    router.push(`/main/${getYear()}/${getMonth(false)}`);
+    router.push(`/main`);
   } else {
     router.push('/signin');
   }

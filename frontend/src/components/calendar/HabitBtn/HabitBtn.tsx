@@ -5,7 +5,6 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import { motion, useAnimate } from 'framer-motion';
 import { useOverlay } from '@/hooks/use-overlay';
 import { AlertBox } from '@/components/common/AlertBox/AlertBox';
-import { getMonth, getYear } from '@/components/calendar/util';
 
 export const HabitBtn = ({
   memberHabitId,
@@ -57,11 +56,11 @@ export const HabitBtn = ({
       } else {
         if (memberHabitId === -1) {
           console.log('go to main');
-          router.replace(`/main/${getYear()}/${getMonth(false)}`);
+          router.replace(`/main`);
         } else if (memberHabitId == habitId) {
-          router.push(`/main/${getYear()}/${getMonth(false)}`);
+          router.push(`/main`);
         } else {
-          router.push(`/main/${getYear()}/${getMonth(false)}/${memberHabitId}`);
+          router.push(`/main`);
         }
       }
     } else {

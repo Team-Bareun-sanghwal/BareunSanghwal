@@ -10,8 +10,6 @@ import { useOverlay } from '@/hooks/use-overlay';
 import { useRouter } from 'next/navigation';
 import { convertBirthday } from '@/components/common/Picker/utils';
 import { postMemberInfo } from '@/app/(member)/mypage/_apis/postMemberInfo';
-import { getMonth, getYear } from '@/components/calendar/util';
-
 export const SignInForm = () => {
   const overlay = useOverlay();
   const router = useRouter();
@@ -54,7 +52,7 @@ export const SignInForm = () => {
       };
       const result = await postMemberInfo({ data });
       if ((await result.status) === 200) {
-        router.push(`/main/${getYear()}/${getMonth(false)}`);
+        router.push(`/main`);
       }
     }
   };
