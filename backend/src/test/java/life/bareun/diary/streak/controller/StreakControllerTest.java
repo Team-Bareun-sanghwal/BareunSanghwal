@@ -88,8 +88,8 @@ class StreakControllerTest {
             .habitId(1L)
             .alias("TestHabit1")
             .icon("test1")
-            .dayOfWeek(null)
-            .period(1)
+            .dayOfWeek(List.of(1, 2, 3, 4, 5, 6, 7))
+            .period(null)
             .build();
 
         HabitCreateReqDto habitCreateReqDto2 = HabitCreateReqDto.builder()
