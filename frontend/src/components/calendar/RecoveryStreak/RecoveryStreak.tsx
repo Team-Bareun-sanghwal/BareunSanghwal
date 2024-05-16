@@ -22,7 +22,6 @@ export const RecoveryStreak = ({
     'flex text-white text-2xl w-16 h-16 rounded-md items-center justify-center';
   const DISABLED =
     'flex text-white text-2xl w-16 h-16 rounded-md items-center justify-center';
-  // const selectedClass = 'flex text-white bg-gray-600 text-2xl w-16 h-16 rounded-md items-center justify-center border-2 border-black'
   const buttonClick = () => {
     if (achieveType === 'NOT_ACHIEVE') {
       if (selected) setSelected(0);
@@ -50,7 +49,7 @@ export const RecoveryStreak = ({
                 ? dayNumber !== parseInt(getToday(false))
                   ? '#15481b'
                   : '#acd4be'
-                : '#c9c9c9'
+                : '#acd4be'
               : '#c9c9c9',
           scale: selected ? 1.05 : 1,
         }}

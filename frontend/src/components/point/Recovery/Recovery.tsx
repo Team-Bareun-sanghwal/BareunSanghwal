@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Button } from '../../common/Button/Button';
 import { motion } from 'framer-motion';
 import { $Fetch } from '@/apis';
@@ -228,6 +227,7 @@ export const Recovery = ({
       }
       setDays(setDayInfo(dayInfo, dayOfWeekFirst));
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

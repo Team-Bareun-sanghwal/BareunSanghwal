@@ -1,30 +1,26 @@
-'use client';
-
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-import { useRouter } from 'next/navigation';
 
 import { getMonth } from '../util';
 interface IMonthLabel {
-  year: string;
-  month: string;
+  year: number;
+  month: number;
+  setMonth: React.Dispatch<React.SetStateAction<number>>;
+  setYear: React.Dispatch<React.SetStateAction<number>>;
 }
-export const MonthLabel = ({ year, month }: IMonthLabel) => {
-  const router = useRouter();
-
-  const prevMonth = (year: number, month: number): number[] => {
-    return month === 1 ? [year - 1, 12] : [year, month - 1];
+export const MonthLabel = ({ year, month, setMonth, setYear }: IMonthLabel) => {
+  const prevMonth = (year: number, month: number) => {
+    setMonth(month === 1 ? 12 : month - 1);
+    if (month === 1) setYear(year - 1);
   };
-  const nextMonth = (year: number, month: number): number[] => {
-    return month === 12 ? [year + 1, 1] : [year, month + 1];
-  };
-  const routeMonth = ([year, month]: number[]) => {
-    router.push(`/main/${year}/${month}`);
+  const nextMonth = (year: number, month: number) => {
+    setMonth(month === 12 ? 1 : month + 1);
+    if (month === 12) setYear(year + 1);
   };
   return (
     <>
       <div className="flex w-full space-x-4 justify-around my-4 items-center">
         <ChevronLeftIcon
-          onClick={() => routeMonth(prevMonth(parseInt(year), parseInt(month)))}
+          onClick={() => prevMonth(year, month)}
           className="w-8 h-8"
         />
         <p className="flex font-bold text-3xl text-center items center">
@@ -32,9 +28,7 @@ export const MonthLabel = ({ year, month }: IMonthLabel) => {
         </p>
         {getMonth(false) !== month + '' ? (
           <ChevronRightIcon
-            onClick={() =>
-              routeMonth(nextMonth(parseInt(year), parseInt(month)))
-            }
+            onClick={() => nextMonth(year, month)}
             className="w-8 h-8"
           />
         ) : (
