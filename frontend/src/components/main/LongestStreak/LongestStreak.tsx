@@ -7,6 +7,9 @@ export const LongestStreak = async () => {
     cache: 'no-cache',
   });
   const currentStreak = data.currentStreak;
+  const longestStreak = data.longestStreak;
+  console.log(longestStreak)
+  console.log(currentStreak)
   return (
     <>
       <div className="flex flex-col w-4/12 bg-custom-sky-pastel justify-center rounded-xl max-w-48 min-h-20">

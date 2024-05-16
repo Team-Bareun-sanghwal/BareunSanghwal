@@ -37,7 +37,8 @@ export default async function Page() {
     cache: 'no-cache',
   });
   const { treeLevel, treeColor } = treeInfo.data;
-  const {point, isHarvestedToday} = pointInfo.data;
+  const { point, isHarvestedToday } = pointInfo.data;
+
   return (
     <div>
       <div className="w-full h-screen overflow-hidden relative">
@@ -52,9 +53,7 @@ export default async function Page() {
             </div>
           </div>
         </div>
-        {!isHarvestedToday && (
-          <Harvest isHarvested={false} />
-        )}
+        {!isHarvestedToday && <Harvest isHarvested={false} />}
         <Tree color={treeColor} level={treeLevel} time={Time()} />
         <div className="absolute bottom-0 w-full gap-3 p-3 ">
           <div className="flex flex-col justify-center gap-4">

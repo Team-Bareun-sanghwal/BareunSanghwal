@@ -19,7 +19,8 @@ export default async function Page(props: { params: { info: number[] } }) {
   });
   const habitListData = await $Fetch({
     method: 'GET',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/habits`,
+    // url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/habits`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/month/${year}-${convertMonthFormat(month)}`,
     cache: 'no-cache',
   });
   const longestStreak = await $Fetch({
@@ -46,9 +47,9 @@ export default async function Page(props: { params: { info: number[] } }) {
         month={month}
         habitId={habitId}
       />
-      <MyStreakRecovery />
-      <DailyPhrase />
-      <div className="flex h-[8rem]"></div>
+      {/* <MyStreakRecovery /> */}
+      {/* <DailyPhrase /> */}
+      {/* <div className="flex h-[4rem]"></div> */}
     </div>
   );
 }

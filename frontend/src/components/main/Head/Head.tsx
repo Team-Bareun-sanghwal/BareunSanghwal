@@ -15,7 +15,6 @@ export const Head = async () => {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/habits`,
     cache: 'no-cache',
   });
-
   const habitsTodayData = habitsToday.data;
   const habitListData =
     habitList.data === null ? { habitList: [] } : habitList.data;
@@ -24,7 +23,7 @@ export const Head = async () => {
       <MainTitle
         habitTrackerTodayDtoList={habitsTodayData.habitTrackerTodayDtoList}
       />
-      <Notify text="바른생활 제작진입니다! 서비스를 활용해주셔서 감사합니다." />
+      <Notify/>
       <HabitShortcut
         allHabits={habitListData.habitList}
         todayHabits={habitsTodayData.habitTrackerTodayDtoList}
