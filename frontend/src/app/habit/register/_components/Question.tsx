@@ -16,10 +16,16 @@ const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 interface IQuestionStepComponent {
   onPrev: () => void;
   onNext: (nextStep: string, isCategorySet: boolean) => void;
+  isCategorySet: boolean | null;
 }
 
-export default function Question({ onPrev, onNext }: IQuestionStepComponent) {
-  const [isAlreadySet, setIsAlreadySet] = useState<string | null>(null);
+export default function Question({ onPrev, onNext, isCategorySet }: IQuestionStepComponent) {
+  const [isAlreadySet, setIsAlreadySet] = useState<string | null>(() => {
+    if (isCategorySet === null) return null;
+    else {
+      return !isCategorySet ? 'TRUE' : 'FALSE';
+    }
+  });
 
   const overlay = useOverlay();
 

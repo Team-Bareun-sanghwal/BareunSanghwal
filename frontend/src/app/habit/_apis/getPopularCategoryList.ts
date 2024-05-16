@@ -4,7 +4,7 @@ export async function getPopularCategoryList() {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/rank`,
-    cache: 'no-store',
+    cache: 'default',
   });
 
   if (response.status !== 200)

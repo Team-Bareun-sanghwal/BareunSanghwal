@@ -1,5 +1,5 @@
 'use client';
-import { CheckIcon } from '@heroicons/react/24/outline';
+
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { motion, useAnimate } from 'framer-motion';
@@ -52,9 +52,17 @@ export const HabitBtn = ({
               open={isOpen}
             />
           ));
+          setTimeout(() => overlay.close(), 1000);
         }
-      } else if (memberHabitId && setHabitId) {
-        setHabitId(memberHabitId);
+      } else {
+        if (memberHabitId === -1) {
+          console.log('go to main');
+          router.replace(`/main/${getYear()}/${getMonth(false)}`);
+        } else if (memberHabitId == habitId) {
+          router.push(`/main/${getYear()}/${getMonth(false)}`);
+        } else {
+          router.push(`/main/${getYear()}/${getMonth(false)}/${memberHabitId}`);
+        }
       }
     } else {
       router.push('/habit/register');
@@ -69,19 +77,16 @@ export const HabitBtn = ({
           className={
             shortcut
               ? add
-                ? 'flex  bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full justify-center items-center'
-                : 'relative bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full'
+                ? 'flex bg-gradient-to-l from-custom-pink to-custom-sky text-4xl w-24 h-24 rounded-full justify-center items-center m-[0.5rem]'
+                : today && succeededTime
+                  ? 'relative bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full custom-gradient-border m-[0.5rem]'
+                  : 'relative bg-custom-sky-pastel text-4xl w-24 h-24 rounded-full border-[0.3rem] border-gray-300 m-[0.5rem]'
               : memberHabitId == habitId
                 ? 'relative bg-gray-300 text-2xl w-16 h-16 rounded-full '
                 : 'relative bg-custom-sky-pastel text-2xl w-16 h-16 rounded-full'
           }
         >
-          {add ? <PlusIcon className="w-12 h-12 text-gray-300" /> : icon}
-          {today && succeededTime && (
-            <div className="absolute bottom-0 right-0  text-white bg-green-600 p-2 rounded-full text-xs">
-              <CheckIcon className="w-5 h-5" />
-            </div>
-          )}
+          {add ? <PlusIcon className="w-12 h-12 text-custom-white" /> : icon}
         </motion.button>
 
         <p
