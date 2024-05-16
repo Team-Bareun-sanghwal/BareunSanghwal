@@ -11,6 +11,7 @@ import {
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
+import { useRouter } from 'next/navigation';
 import { writeHabit } from '../../_apis/writeHabit';
 
 export default function Write({
@@ -26,6 +27,8 @@ export default function Write({
 }) {
   const [text, setText] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
+
+  const router = useRouter();
 
   const overlay = useOverlay();
 
@@ -54,8 +57,10 @@ export default function Write({
 
           close();
 
-          if (response.status === 200) onNext();
-          else handleAlertBox();
+          if (response.status === 200) {
+            router.prefetch('/main');
+            onNext();
+          } else handleAlertBox();
         }}
         open={isOpen}
         title="기록을 완료하시겠어요?"
