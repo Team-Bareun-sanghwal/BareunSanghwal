@@ -114,9 +114,9 @@ public class HabitServiceImpl implements HabitService {
         // 말일이 아니라면 말일까지 증가시키면서 맞는 조건에만 생성
         if (habitCreateReqDto.dayOfWeek() == null) {
             // 만약 2~6이 아니라면 오류
-            if(habitCreateReqDto.period() > 6 || habitCreateReqDto.period() < 2) {
-                throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
-            }
+//            if(habitCreateReqDto.period() > 6 || habitCreateReqDto.period() < 2) {
+//                throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
+//            }
             memberHabit = memberHabitRepository.save(
                 MemberHabit.builder().member(member).habit(habit).alias(habitCreateReqDto.alias())
                     .icon(habitCreateReqDto.icon()).isDeleted(false).maintainWay(
