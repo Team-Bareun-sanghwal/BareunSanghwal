@@ -32,6 +32,7 @@ export default async function Page(props: { params: { info: number[] } }) {
   const { streakName } = colorData.data;
   const { habitList } =
     habitListData.data === null ? { habitList: [] } : habitListData.data;
+  console.log(habitList);
   const longestStreakCount =
     longestStreak.data == null ? 0 : longestStreak.data.longestStreak;
   return (
