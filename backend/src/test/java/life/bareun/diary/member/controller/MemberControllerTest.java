@@ -6,12 +6,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.GsonUtil;
+import life.bareun.diary.habit.entity.Habit;
+import life.bareun.diary.habit.entity.MemberHabit;
+import life.bareun.diary.habit.entity.embed.MaintainWay;
+import life.bareun.diary.habit.repository.HabitRepository;
+import life.bareun.diary.habit.repository.MemberHabitRepository;
+import life.bareun.diary.member.dto.MemberHabitListElementDto;
 import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
@@ -82,6 +90,10 @@ public class MemberControllerTest {
     private MemberRecoveryRepository memberRecoveryRepository;
     @Autowired
     private MemberDailyPhraseRepository memberDailyPhraseRepository;
+    @Autowired
+    private MemberHabitRepository memberHabitRepository;
+    @Autowired
+    private HabitRepository habitRepository;
 
     // 토큰
     @Autowired
@@ -587,5 +599,99 @@ public class MemberControllerTest {
             );
     }
 
+    @Test
+    @DisplayName("사용자 해빗 리스트 테스트 코드")
+    public void testHabits() throws Exception {
+        // given
+        Habit habit1 = habitRepository.save(Habit.builder().name("TEST_HABIT_01").build());
+        String testAlias1 = "TEST_ALIAS_01";
+        String testIcon1 = "TEST_ICON_01";
+        MemberHabit memberHabit1 = memberHabitRepository.save(
+            MemberHabit.builder()
+                .habit(habit1)
+                .member(testMember)
+                .alias(testAlias1)
+                .icon(testIcon1)
+                .maintainWay(MaintainWay.PERIOD)
+                .maintainAmount(1)
+                .succeededDatetime(LocalDateTime.now())
+                .isDeleted(false)
+                .build()
+        );
+
+        Thread.sleep(5000);
+
+        Habit habit2 = habitRepository.save(Habit.builder().name("TEST_HABIT_02").build());
+        String testAlias2 = "TEST_ALIAS_02";
+        String testIcon2 = "TEST_ICON_02";
+        MemberHabit memberHabit2 = memberHabitRepository.save(
+            MemberHabit.builder()
+                .habit(habit2)
+                .member(testMember)
+                .alias(testAlias2)
+                .icon(testIcon2)
+                .maintainWay(MaintainWay.PERIOD)
+                .maintainAmount(2)
+                .succeededDatetime(LocalDateTime.now())
+                .isDeleted(false)
+                .build()
+        );
+
+        Thread.sleep(5000);
+
+        Habit habit3 = habitRepository.save(Habit.builder().name("TEST_HABIT_03").build());
+        String testAlias3 = "TEST_ALIAS_03";
+        String testIcon3 = "TEST_ICON_03";
+        MemberHabit memberHabit3 = memberHabitRepository.save(
+            MemberHabit.builder()
+                .habit(habit3)
+                .member(testMember)
+                .alias(testAlias3)
+                .icon(testIcon3)
+                .maintainWay(MaintainWay.PERIOD)
+                .maintainAmount(3)
+                .succeededDatetime(LocalDateTime.now())
+                .isDeleted(false)
+                .build()
+        );
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/habits")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+        System.out.println("habit1: " + memberHabit1);
+        System.out.println("habit2: " + memberHabit2);
+        System.out.println("habit3: " + memberHabit3);
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 해빗 목록을 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.habitList")
+                    .isArray()
+            )
+            .andExpect(
+                jsonPath("$.data.habitList[0].memberHabitId")
+                    .value(memberHabit3.getId())
+            )
+            .andExpect(
+                jsonPath("$.data.habitList[1].memberHabitId")
+                    .value(memberHabit2.getId())
+            )
+            .andExpect(
+                jsonPath("$.data.habitList[2].memberHabitId")
+                    .value(memberHabit1.getId())
+            );
+    }
 }
 
