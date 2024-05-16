@@ -4,7 +4,7 @@ export async function getHabitWriteList(memberHabitId: number) {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/${memberHabitId}/tracker`,
-    cache: 'no-store',
+    cache: 'default',
   });
 
   if (response.status !== 200)
