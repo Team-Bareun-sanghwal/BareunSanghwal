@@ -25,7 +25,7 @@ export const HabitShortcut = ({
   };
   return (
     <>
-      <div className="flex items-center justify-left gap-4 min-w-full pl-1 ml-6 my-4">
+      <div className="flex items-center justify-left gap-[0.5rem] min-w-full pl-1 ml-[0.5rem] py-[1rem]">
         {allHabits?.length !== 7 && (
           <>
             <HabitBtn
@@ -35,10 +35,10 @@ export const HabitShortcut = ({
               shortcut={true}
               add={true}
             />
-            <div className="w-1 h-20 mb-4 conten-center bg-gray-200 rounded-full" />
+            <div className="w-1 h-20 mb-8 bg-gray-200 rounded-full" />
           </>
         )}
-        <div className="flex overflow-x-auto gap-4 pb-2">
+        <div className="flex overflow-x-auto">
           {sortedHabits().yet.map((habit) => (
             <HabitBtn
               key={habit.memberHabitId}
