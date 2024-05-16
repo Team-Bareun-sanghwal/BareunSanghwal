@@ -66,6 +66,16 @@ public class HabitController {
             .body(BaseResponse.success(HttpStatus.OK.value(), "해빗 트래커를 완료하였습니다.", null));
     }
 
+    @PatchMapping("/completion/dummy")
+    public ResponseEntity<BaseResponse<String>> modifyHabitTrackerDummy(
+        @RequestPart(value = "image", required = false) MultipartFile image,
+        @RequestPart(value = "HabitTrackerModifyReqDto") HabitTrackerModifyReqDto
+            habitTrackerModifyReqDto) {
+        habitTrackerService.modifyHabitTracker(image, habitTrackerModifyReqDto);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(BaseResponse.success(HttpStatus.OK.value(), "해빗 트래커를 완료하였습니다.", null));
+    }
+
     @GetMapping("/today")
     public ResponseEntity<BaseResponse<HabitTrackerTodayResDto>> findAllTodayHabitTracker() {
         return ResponseEntity.status(HttpStatus.OK)

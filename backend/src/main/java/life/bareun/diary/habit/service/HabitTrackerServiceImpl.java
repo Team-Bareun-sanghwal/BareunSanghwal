@@ -1,6 +1,8 @@
 package life.bareun.diary.habit.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.config.ImageConfig;
@@ -108,15 +110,29 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
             throw new HabitException(HabitErrorCode.INVALID_PARAMETER_HABIT_TRACKER);
         }
 
+        LocalDate succeedDate = LocalDate.of(
+            habitTracker.getCreatedYear(),
+            habitTracker.getCreatedMonth(),
+            habitTracker.getCreatedDay()
+        );
+
+        LocalDateTime succeededTIme = LocalDateTime.of(
+            succeedDate,
+            LocalTime.of(12, 0)
+        );
+
         String imageUrl = IMAGE_BASIC;
         if (image != null && !image.isEmpty()) {
             imageUrl = imageConfig.uploadImage(image);
         }
         habitTrackerRepository.modifyHabitTracker(HabitTrackerModifyDto.builder()
-            .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId()).image(imageUrl)
-            .content(habitTrackerModifyReqDto.content()).build());
+            .habitTrackerId(habitTrackerModifyReqDto.habitTrackerId())
+            .image(imageUrl)
+            .content(habitTrackerModifyReqDto.content())
+            .succeededTime(succeededTIme)
+            .build());
 
-        streakService.achieveStreak(habitTracker.getMemberHabit(), LocalDate.now());
+        streakService.achieveStreak(habitTracker.getMemberHabit(), succeedDate);
     }
 
     @Override

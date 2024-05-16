@@ -114,7 +114,28 @@ public class HabitStreakServiceImpl implements HabitStreakService {
             throw new StreakException(HabitDailyStreakErrorCode.ALREADY_ACHIEVE_DAILY_STREAM);
         }
 
-        habitDailyStreakToday.modifyCurrentStreak(habitDailyStreakToday.getCurrentStreak() + 1);
+        /*
+         * Dummy 에서 수정되는 부분
+         */
+        // habitDailyStreakToday.modifyCurrentStreak(habitDailyStreakToday.getCurrentStreak() + 1);
+        List<HabitDailyStreak> habitDailyStreakList = habitDailyStreakRepository
+            .findByMemberHabitAndCreatedDateBeforeOrderByCreatedDateDesc(memberHabit, date);
+
+        int changedStreakCount = 0;
+
+        for (HabitDailyStreak habitDailyStreak : habitDailyStreakList) {
+            if (habitDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+                break;
+            }
+
+            if (habitDailyStreak.getAchieveType().equals(AchieveType.ACHIEVE)) {
+                changedStreakCount = habitDailyStreak.getCurrentStreak();
+                break;
+            }
+        }
+
+        habitDailyStreakToday.modifyCurrentStreak(changedStreakCount + 1);
+
         habitDailyStreakToday.modifyAchieveType(AchieveType.ACHIEVE);
 
         // 해빗 토탈 스트릭의 달성 값을 수정하면서 최장 스트릭 변동 가능 시 함께 수정.

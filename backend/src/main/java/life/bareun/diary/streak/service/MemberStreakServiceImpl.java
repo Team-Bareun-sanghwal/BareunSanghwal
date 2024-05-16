@@ -128,9 +128,30 @@ public class MemberStreakServiceImpl implements MemberStreakService {
             throw new StreakException(MemberDailyStreakErrorCode.NO_EXISTED_TRACKER);
         }
 
+        /*
+         * 더미에서만 작동되는 로직.
+         * 기본 스트릭이 0이니까 갱신줘야지..
+         */
+
+        List<MemberDailyStreak> memberDailyStreakList = memberDailyStreakRepository
+            .findByMemberAndCreatedDateBeforeOrderByCreatedDateDesc(member, date);
+
+        int changeStreakCount = 0;
+
+        for (MemberDailyStreak memberDailyStreak : memberDailyStreakList) {
+            if (memberDailyStreak.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
+                break;
+            }
+
+            if (memberDailyStreak.getAchieveType().equals(AchieveType.ACHIEVE)) {
+                changeStreakCount = memberDailyStreak.getCurrentStreak();
+                break;
+            }
+        }
+
         // 아직 오늘 한 번도 완료한 해빗 트래커가 없는 경우
         if (memberDailyStreakToday.getAchieveType().equals(AchieveType.NOT_ACHIEVE)) {
-            memberDailyStreakToday.modifyCurrentStreak(memberDailyStreakToday.getCurrentStreak() + 1);
+            memberDailyStreakToday.modifyCurrentStreak(changeStreakCount + 1);
             memberDailyStreakToday.modifyAchieveType(AchieveType.ACHIEVE);
             memberTotalStreak.modifyAchieveStreakCount(memberTotalStreak.getAchieveStreakCount() + 1);
         }

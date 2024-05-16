@@ -41,6 +41,7 @@ public class HabitTrackerRepositoryCustomImpl implements HabitTrackerRepositoryC
     @Override
     public void modifyHabitTracker(HabitTrackerModifyDto habitTrackerModifyDto) {
         queryFactory.update(habitTracker).set(habitTracker.content, habitTrackerModifyDto.content())
+            .set(habitTracker.succeededTime, habitTrackerModifyDto.succeededTime())
             .set(habitTracker.image, habitTrackerModifyDto.image())
             .where(habitTracker.id.eq(habitTrackerModifyDto.habitTrackerId())).execute();
     }

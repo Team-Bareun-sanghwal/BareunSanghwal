@@ -17,4 +17,6 @@ public interface MemberDailyStreakRepository extends JpaRepository<MemberDailySt
 
     List<MemberDailyStreak> findByMemberAndCreatedDateBetweenOrderByCreatedDate(Member member, LocalDate startDate,
         LocalDate endDate);
+    
+    List<MemberDailyStreak> findByMemberAndCreatedDateBeforeOrderByCreatedDateDesc(Member member, LocalDate date);
 }

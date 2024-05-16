@@ -1,5 +1,6 @@
 package life.bareun.diary.habit.dto;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
@@ -9,6 +10,10 @@ public record HabitTrackerModifyDto(
 
     String content,
 
-    String image
+    String image,
 
-) { }
+    LocalDateTime succeededTime
+
+) {
+
+}
