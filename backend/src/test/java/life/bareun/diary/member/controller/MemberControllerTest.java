@@ -977,5 +977,47 @@ public class MemberControllerTest {
                     .value(longestStreak)
             );
     }
+
+    @Test
+    @DisplayName("데이터가 없는 경우의 특정 해빗의 해빗 트래커 조회 테스트")
+    public void testHabitTrackerOfTheHabitWithoutData() throws Exception {
+        //given
+        Long habitTrackerId = 2L;
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get(String.format("/members/%d/tracker", habitTrackerId))
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value(String.format("%d번 해빗의 해빗 트래커 정보를 읽어왔습니다.", habitTrackerId))
+            )
+            .andExpect(
+                jsonPath("$.data.habitTrackerGroupList")
+                    .isArray()
+            )
+            .andExpect(
+                jsonPath("$.data.habitTrackerGroupList")
+                    .isEmpty()
+            )
+            .andExpect(
+                jsonPath("$.data.yearList")
+                    .isArray()
+            )
+            .andExpect(
+                jsonPath("$.data.yearList")
+                    .isEmpty()
+            );
+    }
 }
 
