@@ -54,14 +54,14 @@ public class AuthController {
             .status(
                 HttpStatus.OK.value()
             )
-            // .header(
-            //     "Set-Cookie",
-            //     ResponseUtil.createResponseCookieString(
-            //         SecurityConfig.ACCESS_TOKEN_HEADER,
-            //         authAccessTokenResDto.accessToken(),
-            //         authAccessTokenResDto.expiry()
-            //     )
-            // )
+            .header(
+                "Set-Cookie",
+                ResponseUtil.createResponseCookieString(
+                    SecurityConfig.ACCESS_TOKEN_HEADER,
+                    authAccessTokenResDto.accessToken(),
+                    authAccessTokenResDto.expiry()
+                )
+            )
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
