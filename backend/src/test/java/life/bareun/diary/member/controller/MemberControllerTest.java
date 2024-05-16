@@ -483,5 +483,37 @@ public class MemberControllerTest {
                     .value(point)
             );
     }
+
+    @Test
+    @DisplayName("사용자 로그아웃 테스트 코드")
+    public void testLogout() throws Exception {
+        // given
+        String id = testMember.getId().toString();
+        String refreshToken = authTokenProvider.createRefreshToken(new Date(), id);
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.post("/members/logout")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .header(SecurityConfig.REFRESH_TOKEN_HEADER, refreshToken) // 로그아웃은 둘 다 있어야 한다.
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("로그아웃되었습니다.")
+            )
+            .andExpect( // 셀프 역직렬화가 잘 됐는지 체크
+                jsonPath("$.data").isEmpty()
+            );
+    }
+
 }
 
