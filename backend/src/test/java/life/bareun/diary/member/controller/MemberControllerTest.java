@@ -6,21 +6,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.GsonUtil;
+import life.bareun.diary.habit.entity.Habit;
+import life.bareun.diary.habit.entity.MemberHabit;
+import life.bareun.diary.habit.entity.embed.MaintainWay;
+import life.bareun.diary.habit.repository.HabitRepository;
+import life.bareun.diary.habit.repository.MemberHabitRepository;
 import life.bareun.diary.member.dto.MemberRegisterDto;
 import life.bareun.diary.member.dto.request.MemberUpdateReqDto;
 import life.bareun.diary.member.dto.response.MemberInfoResDto;
+import life.bareun.diary.member.entity.DailyPhrase;
 import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.entity.MemberDailyPhrase;
 import life.bareun.diary.member.entity.MemberRecovery;
 import life.bareun.diary.member.entity.Tree;
 import life.bareun.diary.member.entity.embed.Gender;
 import life.bareun.diary.member.entity.embed.Job;
 import life.bareun.diary.member.entity.embed.Role;
+import life.bareun.diary.member.repository.MemberDailyPhraseRepository;
 import life.bareun.diary.member.repository.MemberRecoveryRepository;
 import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.member.repository.TreeRepository;
@@ -77,6 +87,12 @@ public class MemberControllerTest {
     private MemberTotalStreakRepository memberTotalStreakRepository;
     @Autowired
     private MemberRecoveryRepository memberRecoveryRepository;
+    @Autowired
+    private MemberDailyPhraseRepository memberDailyPhraseRepository;
+    @Autowired
+    private MemberHabitRepository memberHabitRepository;
+    @Autowired
+    private HabitRepository habitRepository;
 
     // 토큰
     @Autowired
@@ -98,6 +114,7 @@ public class MemberControllerTest {
     private MemberTotalStreak testMemberTotalStreak;
     private MemberRecovery testMemberRecovery;
     private MemberDailyStreak testMemberDailyStreak;
+    private MemberDailyPhrase testMemberDailyPhrase;
 
     private String accessToken;
 
@@ -171,6 +188,14 @@ public class MemberControllerTest {
             .orElseThrow(
                 () -> new AssertionError("초기 스트릭 현황 세팅 실패")
             );
+
+        // 사용자 오늘의 문구 데이터 생성
+        testMemberDailyPhrase = memberDailyPhraseRepository.save(
+            MemberDailyPhrase.create(
+                testMember,
+                new DailyPhrase(1L, "TEST_DAILY_PHRASE")
+            )
+        );
 
         // 테스트용 인증 토큰 생성
         accessToken = authTokenProvider.createAccessToken(
@@ -260,7 +285,7 @@ public class MemberControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
             .andExpect(jsonPath("$.message").value("사용자 정보가 수정되었습니다"))
-            .andExpect(jsonPath("$.data").isEmpty());
+            .andExpect(jsonPath("$.data").doesNotExist());
 
         // targetMember의 정보가 testMember의 것으로 바뀌어 있어야 한다.
 
@@ -481,6 +506,517 @@ public class MemberControllerTest {
             .andExpect( // 셀프 역직렬화가 잘 됐는지 체크
                 jsonPath("$.data.point")
                     .value(point)
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 정보 삭제 테스트 코드")
+    public void testLogout() throws Exception {
+        // given
+        String id = testMember.getId().toString();
+        String refreshToken = authTokenProvider.createRefreshToken(new Date(), id);
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.post("/members/logout")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .header(SecurityConfig.REFRESH_TOKEN_HEADER, refreshToken) // 로그아웃은 둘 다 있어야 한다.
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("로그아웃되었습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data").doesNotExist()
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 로그아웃 테스트 코드")
+    public void testDelete() throws Exception {
+        // given
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.delete("/members")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자 정보가 삭제되었습니다")
+            )
+            .andExpect(
+                jsonPath("$.data").doesNotExist()
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 오늘의 문구 조회 테스트 코드")
+    public void testDailyPhrase() throws Exception {
+        // given
+        String phrase = testMemberDailyPhrase.getDailyPhrase().getPhrase();
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/daily-phrase")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("오늘의 문구를 읽어 왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.phrase")
+                    .value(phrase)
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 해빗이 없는 경우의 해빗 리스트 테스트 코드")
+    public void testHabitsWithoutHabits() throws Exception {
+        // given
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/habits")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 해빗 목록을 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.habitList")
+                    .exists()
+            )
+            .andExpect(
+                jsonPath("$.data.habitList")
+                    .isEmpty()
+            );
+
+    }
+
+    @Test
+    @DisplayName("사용자 해빗이 있는 경우의 해빗 리스트 테스트 코드")
+    public void testHabitsWithHabits() throws Exception {
+        // given
+        Habit habit1 = habitRepository.save(Habit.builder().name("TEST_HABIT_01").build());
+        String testAlias1 = "TEST_ALIAS_01";
+        String testIcon1 = "TEST_ICON_01";
+        MemberHabit memberHabit1 = memberHabitRepository.save(
+            MemberHabit.builder()
+                .habit(habit1)
+                .member(testMember)
+                .alias(testAlias1)
+                .icon(testIcon1)
+                .maintainWay(MaintainWay.PERIOD)
+                .maintainAmount(1)
+                .succeededDatetime(LocalDateTime.now())
+                .isDeleted(false)
+                .build()
+        );
+
+        Thread.sleep(5000);
+
+        Habit habit2 = habitRepository.save(Habit.builder().name("TEST_HABIT_02").build());
+        String testAlias2 = "TEST_ALIAS_02";
+        String testIcon2 = "TEST_ICON_02";
+        MemberHabit memberHabit2 = memberHabitRepository.save(
+            MemberHabit.builder()
+                .habit(habit2)
+                .member(testMember)
+                .alias(testAlias2)
+                .icon(testIcon2)
+                .maintainWay(MaintainWay.PERIOD)
+                .maintainAmount(2)
+                .succeededDatetime(LocalDateTime.now())
+                .isDeleted(false)
+                .build()
+        );
+
+        Thread.sleep(5000);
+
+        Habit habit3 = habitRepository.save(Habit.builder().name("TEST_HABIT_03").build());
+        String testAlias3 = "TEST_ALIAS_03";
+        String testIcon3 = "TEST_ICON_03";
+        MemberHabit memberHabit3 = memberHabitRepository.save(
+            MemberHabit.builder()
+                .habit(habit3)
+                .member(testMember)
+                .alias(testAlias3)
+                .icon(testIcon3)
+                .maintainWay(MaintainWay.PERIOD)
+                .maintainAmount(3)
+                .succeededDatetime(LocalDateTime.now())
+                .isDeleted(false)
+                .build()
+        );
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/habits")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+        System.out.println("habit1: " + memberHabit1);
+        System.out.println("habit2: " + memberHabit2);
+        System.out.println("habit3: " + memberHabit3);
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 해빗 목록을 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.habitList")
+                    .isArray()
+            )
+            .andExpect(
+                jsonPath("$.data.habitList[0].memberHabitId")
+                    .value(memberHabit3.getId())
+            )
+            .andExpect(
+                jsonPath("$.data.habitList[1].memberHabitId")
+                    .value(memberHabit2.getId())
+            )
+            .andExpect(
+                jsonPath("$.data.habitList[2].memberHabitId")
+                    .value(memberHabit1.getId())
+            );
+    }
+
+    @Test
+    @DisplayName("사용자 해빗이 없는 경우의 해빗 리스트 테스트 코드")
+    public void testStatisticWithoutData() throws Exception {
+        // given
+        int totalDays = (int) ChronoUnit.DAYS.between(
+            testMember.getCreatedDateTime(),
+            LocalDateTime.now()
+        );
+        int streakDays = testMemberTotalStreak.getTotalStreakCount();
+        int starredDays = testMemberTotalStreak.getStarCount();
+        int longestStreak = testMemberTotalStreak.getLongestStreak();
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get("/members/statistic")
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value("사용자의 통계 데이터를 읽어왔습니다.")
+            )
+            .andExpect(
+                jsonPath("$.data.practicedHabitsTop")
+                    .isEmpty()
+            )
+            .andExpect(
+                jsonPath("$.data.maxPracticedHabit")
+                    .isEmpty()
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerDayOfWeek")
+                    .isEmpty()
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[0].time")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[0].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[1].time")
+                    .value(1)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[1].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[2].time")
+                    .value(2)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[2].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[3].time")
+                    .value(3)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[3].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[4].time")
+                    .value(4)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[4].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[5].time")
+                    .value(5)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[5].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[6].time")
+                    .value(6)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[6].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[7].time")
+                    .value(7)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[7].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[8].time")
+                    .value(8)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[8].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[9].time")
+                    .value(9)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[9].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[10].time")
+                    .value(10)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[10].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[11].time")
+                    .value(11)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[11].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[12].time")
+                    .value(12)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[12].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[13].time")
+                    .value(13)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[13].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[14].time")
+                    .value(14)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[14].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[15].time")
+                    .value(15)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[15].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[16].time")
+                    .value(16)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[16].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[17].time")
+                    .value(17)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[17].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[18].time")
+                    .value(18)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[18].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[19].time")
+                    .value(19)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[19].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[20].time")
+                    .value(20)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[20].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[21].time")
+                    .value(21)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[21].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[22].time")
+                    .value(22)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[22].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[23].time")
+                    .value(23)
+            )
+            .andExpect(
+                jsonPath("$.data.practiceCountsPerHour[23].value")
+                    .value(0)
+            )
+            .andExpect(
+                jsonPath("$.data.totalDays")
+                    .value(totalDays)
+            )
+            .andExpect(
+                jsonPath("$.data.streakDays")
+                    .value(streakDays)
+            )
+            .andExpect(
+                jsonPath("$.data.starredDays")
+                    .value(starredDays)
+            ).andExpect(
+                jsonPath("$.data.longestStreak")
+                    .value(longestStreak)
+            );
+    }
+
+    @Test
+    @DisplayName("데이터가 없는 경우의 특정 해빗의 해빗 트래커 조회 테스트")
+    public void testHabitTrackerOfTheHabitWithoutData() throws Exception {
+        //given
+        Long habitTrackerId = 2L;
+
+        // when
+        ResultActions when = mockMvc.perform(
+            MockMvcRequestBuilders.get(String.format("/members/%d/tracker", habitTrackerId))
+                .header(SecurityConfig.ACCESS_TOKEN_HEADER, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        when.andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.status")
+                    .value(HttpStatus.OK.value())
+            )
+            .andExpect(
+                jsonPath("$.message")
+                    .value(String.format("%d번 해빗의 해빗 트래커 정보를 읽어왔습니다.", habitTrackerId))
+            )
+            .andExpect(
+                jsonPath("$.data.habitTrackerGroupList")
+                    .isArray()
+            )
+            .andExpect(
+                jsonPath("$.data.habitTrackerGroupList")
+                    .isEmpty()
+            )
+            .andExpect(
+                jsonPath("$.data.yearList")
+                    .isArray()
+            )
+            .andExpect(
+                jsonPath("$.data.yearList")
+                    .isEmpty()
             );
     }
 }
