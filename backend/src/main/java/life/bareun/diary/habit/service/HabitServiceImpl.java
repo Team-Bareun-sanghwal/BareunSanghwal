@@ -261,7 +261,7 @@ public class HabitServiceImpl implements HabitService {
     public MemberHabitActiveResDto findAllActiveMemberHabit() {
         Member member = findMember();
         // 해당 사용자의 삭제되지 않은 사용자 해빗 리스트 조회
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         LocalDate nowMonth = LocalDate.now();
@@ -317,7 +317,7 @@ public class HabitServiceImpl implements HabitService {
     // 모든 비활성화된 사용자 해빗 리스트 조회
     public MemberHabitNonActiveResDto findAllNonActiveMemberHabit() {
         Member member = findMember();
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(true,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(true,
             member);
         List<MemberHabitNonActiveDto> memberHabitNonActiveDtoList = new ArrayList<>();
         for (MemberHabit memberHabit : memberHabitList) {
@@ -347,7 +347,7 @@ public class HabitServiceImpl implements HabitService {
     public MemberHabitActiveSimpleResDto findAllActiveSimpleMemberHabit() {
         Member member = findMember();
         // 해당 사용자의 삭제되지 않은 사용자 해빗 리스트 조회
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         List<MemberHabitActiveSimpleDto> memberHabitActiveSimpleDtoList = new ArrayList<>();
@@ -365,7 +365,7 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     public List<MemberHabit> findAllActiveMemberHabitByMember(Member member) {
-        return memberHabitRepository.findAllByIsDeletedAndMember(false, member);
+        return memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false, member);
     }
 
     @Override
