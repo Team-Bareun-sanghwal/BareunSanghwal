@@ -107,7 +107,7 @@ public class StreakServiceImpl implements StreakService {
 
     @Override
     public void createDailyStreak(Member member, LocalDate date) {
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false, member);
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false, member);
 
         for (MemberHabit memberHabit : memberHabitList) {
             habitStreakService.createHabitDailyStreak(memberHabit, date);
