@@ -1,5 +1,10 @@
-import { RecapContent } from '@/components';
+import dynamic from 'next/dynamic';
+
 import { getRecapDetail } from '../../_apis/getRecapDetail';
+
+const RecapContent = dynamic(
+  () => import('@/components/recap/RecapContent/RecapContent'),
+);
 
 export default async function Page({
   params,

@@ -28,7 +28,7 @@ import { GradientBar } from './recap/GradientBar/GradientBar';
 import { ProgressBar } from './recap/ProgressBar/ProgressBar';
 import { ProgressBlock } from './recap/ProgressBlock/ProgressBlock';
 import { RecapBarChart } from './recap/RecapBarChart/RecapBarChart';
-import { RecapContent } from './recap/RecapContent/RecapContent';
+import RecapContent from './recap/RecapContent/RecapContent';
 import { RecapHeader } from './recap/RecapHeader/RecapHeader';
 import { RecapKeyword } from './recap/RecapKeyword/RecapKeyword';
 import { RecapPieChart } from './recap/RecapPieChart/RecapPieChart';
