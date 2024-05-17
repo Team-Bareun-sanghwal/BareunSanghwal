@@ -9,6 +9,7 @@ export default function BlockStack() {
         width={230}
         height={155}
         className="absolute z-30 loading-block-red"
+        // className="absolute z-30"
       />
       <Image
         src="/images/icon-block2.png"
@@ -16,6 +17,7 @@ export default function BlockStack() {
         width={230}
         height={155}
         className="absolute z-20 loading-block-yellow"
+        // className="absolute z-20"
       />
       <Image
         src="/images/icon-block3.png"
@@ -23,13 +25,16 @@ export default function BlockStack() {
         width={230}
         height={192}
         className="absolute z-10 loading-block-blue"
+        // className="absolute z-10"
       />
       <Image
         src="/images/icon-block4.png"
         alt="block4"
         width={230}
         height={236}
-        className="absolute z-0 loading-block-white"
+        placeholder="blur"
+        // className="absolute z-0 loading-block-white"
+        className="absolute z-0 top-[17.1rem]"
         priority
       />
     </div>

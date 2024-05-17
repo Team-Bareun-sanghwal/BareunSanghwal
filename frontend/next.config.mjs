@@ -15,7 +15,9 @@ const nextConfig = {
         hostname: 'kr.object.ncloudstorage.com',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
+  output: 'standalone',
 };
 
 const exportObject =
