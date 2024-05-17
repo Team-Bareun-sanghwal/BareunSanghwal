@@ -114,7 +114,7 @@ class StreakControllerTest {
                 .header("Authorization", accessToken)
         );
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false, member);
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false, member);
         memberHabit1 = memberHabitList.get(0);
         memberHabit2 = memberHabitList.get(1);
 
