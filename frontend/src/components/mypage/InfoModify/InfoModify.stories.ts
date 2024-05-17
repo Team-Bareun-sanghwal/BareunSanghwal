@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InfoModify } from './InfoModify';
+import InfoModify from './InfoModify';
 
 const meta = {
   title: 'MyPage/InfoModify',

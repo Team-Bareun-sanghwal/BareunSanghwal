@@ -4,7 +4,7 @@ export const MyStreakRecovery = async () => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   console.log(response);
   const { total, free } = response.data;

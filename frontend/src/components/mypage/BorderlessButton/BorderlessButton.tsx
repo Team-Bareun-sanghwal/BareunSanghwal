@@ -14,7 +14,7 @@ interface IPropType {
   type: string;
 }
 
-export const BorderlessButton = ({ type }: IPropType) => {
+export default function BorderlessButton({ type }: IPropType) {
   const overlay = useOverlay();
   const router = useRouter();
 
@@ -72,4 +72,4 @@ export const BorderlessButton = ({ type }: IPropType) => {
       )}
     </button>
   );
-};
+}

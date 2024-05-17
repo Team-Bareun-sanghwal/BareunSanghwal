@@ -13,7 +13,7 @@ interface IPropType {
   prevData: string;
 }
 
-export const InfoModify = ({ title, desc, prevData }: IPropType) => {
+export default function InfoModify({ title, desc, prevData }: IPropType) {
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState(prevData);
 
@@ -106,4 +106,4 @@ export const InfoModify = ({ title, desc, prevData }: IPropType) => {
       {isOpen ? <div className="w-full mt-[3rem]">{modifyContent}</div> : null}
     </div>
   );
-};
+}

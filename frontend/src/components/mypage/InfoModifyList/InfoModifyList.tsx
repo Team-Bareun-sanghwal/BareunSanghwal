@@ -1,4 +1,4 @@
-import { InfoModify } from '../InfoModify/InfoModify';
+import InfoModify from '../InfoModify/InfoModify';
 
 interface IPropType {
   nickname: string;
@@ -6,7 +6,7 @@ interface IPropType {
   gender: string;
   job: string;
 }
-export const InfoModifyList = ({ userData }: { userData: IPropType }) => {
+export default function InfoModifyList({ userData }: { userData: IPropType }) {
   const mypageArr = [
     {
       title: 'nickname',
@@ -44,4 +44,4 @@ export const InfoModifyList = ({ userData }: { userData: IPropType }) => {
       })}
     </div>
   );
-};
+}

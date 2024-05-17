@@ -4,7 +4,7 @@ export const MyPoint = async () => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/point`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   console.log(response);
   return (

@@ -1,3 +1,5 @@
+'use client';
+
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import {
   GuideBox,
@@ -7,7 +9,7 @@ import {
   LoadingBottomSheet,
 } from '@/components';
 import dynamic from 'next/dynamic';
-import lottieJson from '@/../public/lotties/lottie-note.json';
+import lottieJson from '@/../public/lotties/lottie-lego.json';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
 
@@ -19,7 +21,11 @@ interface IQuestionStepComponent {
   isCategorySet: boolean | null;
 }
 
-export default function Question({ onPrev, onNext, isCategorySet }: IQuestionStepComponent) {
+export default function Question({
+  onPrev,
+  onNext,
+  isCategorySet,
+}: IQuestionStepComponent) {
   const [isAlreadySet, setIsAlreadySet] = useState<string | null>(() => {
     if (isCategorySet === null) return null;
     else {

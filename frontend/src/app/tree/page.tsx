@@ -24,17 +24,17 @@ export default async function Page() {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const pointInfo = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/point`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const treeInfo = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/tree`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const { treeLevel, treeColor } = treeInfo.data;
   const { point, isHarvestedToday } = pointInfo.data;

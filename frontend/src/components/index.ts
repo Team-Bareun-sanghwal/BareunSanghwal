@@ -8,7 +8,7 @@ import { GuideText } from './common/GuideText/GuideText';
 import HabitContentBox from './common/HabitContentBox/HabitContentBox';
 import { ImageUploadBox } from './common/ImageUploadBox/ImageUploadBox';
 import { InputBox } from './common/InputBox/InputBox';
-import { NavBar } from './common/NavBar/NavBar';
+import NavBar from './common/NavBar/NavBar';
 import { ProgressBox } from './common/ProgressBox/ProgressBox';
 import { RecapContentBox } from './common/RecapContentBox/RecapContentBox';
 import { SelectBox } from './common/SelectBox/SelectBox';

@@ -17,7 +17,7 @@ export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
     const response = await $Fetch({
       method: 'GET',
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/tree/point`,
-      cache: 'no-cache',
+      cache: 'default',
     });
     return response;
   };

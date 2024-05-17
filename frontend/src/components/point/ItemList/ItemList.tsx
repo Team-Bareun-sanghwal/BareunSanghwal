@@ -7,7 +7,7 @@ export async function getServerSideProps() {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   console.log(response);
   return {

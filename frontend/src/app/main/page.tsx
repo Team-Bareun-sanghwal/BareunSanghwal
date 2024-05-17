@@ -5,7 +5,7 @@ const Page = async () => {
   const colorData = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/streak/color`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const { streakName } = colorData.data;
   return (

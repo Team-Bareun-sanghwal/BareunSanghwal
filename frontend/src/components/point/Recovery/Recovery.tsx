@@ -32,7 +32,7 @@ const getStreakInfo = async (day: number) => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery/${getYear()}-${getMonth(true)}-${day}`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   return response;
 };
@@ -56,7 +56,7 @@ const getRecoveryInfo = async () => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   return response;
 };
@@ -66,7 +66,7 @@ const patchRecovery = async () => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/recovery`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   return response;
 };
@@ -79,7 +79,7 @@ const PurchaseRecovery = async (
   const purchase = await $Fetch({
     method: 'PATCH',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/recovery`,
-    cache: 'no-cache',
+    cache: 'default',
     data: {
       date: `${getYear()}-${getMonth(true)}-${selectedDay}`,
     },
@@ -212,7 +212,7 @@ export const Recovery = ({
     $Fetch({
       method: 'GET',
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${getYear()}-${getMonth(true)}`,
-      cache: 'no-cache',
+      cache: 'default',
     }).then((res) => {
       const { dayInfo, dayOfWeekFirst } = res.data;
       if (!checkMyStreak(dayInfo)) {

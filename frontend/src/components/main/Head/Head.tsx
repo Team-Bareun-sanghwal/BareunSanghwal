@@ -8,12 +8,12 @@ export const Head = async () => {
   const habitsToday = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/today`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const habitList = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/active`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const habitsTodayData = habitsToday.data;
   const habitListData =

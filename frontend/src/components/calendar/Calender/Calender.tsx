@@ -17,7 +17,7 @@ const getStreaks = async (year: number, month: number, habitId: number) => {
       habitId > 0
         ? `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${year}-${convertMonthFormat(month)}/${habitId}`
         : `${process.env.NEXT_PUBLIC_BASE_URL}/streaks/${year}-${convertMonthFormat(month)}`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   return response;
 };
@@ -26,7 +26,7 @@ const getHabits = async (year: number, month: number) => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/habits/month/${year}-${convertMonthFormat(month)}`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   return response;
 };

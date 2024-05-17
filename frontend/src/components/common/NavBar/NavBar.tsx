@@ -14,7 +14,7 @@ interface INavBarProps {
   mode: 'HOME' | 'HABIT' | 'REWARD' | 'REPORT' | 'MY_INFO';
 }
 
-export const NavBar = ({ mode }: INavBarProps) => {
+export default function NavBar({ mode }: INavBarProps) {
   const menus = {
     HOME: [
       <HomeIcon key={mode} className="w-[3rem] h-[3rem]" />,
@@ -79,4 +79,4 @@ export const NavBar = ({ mode }: INavBarProps) => {
       </nav>
     </div>
   );
-};
+}

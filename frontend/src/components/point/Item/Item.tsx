@@ -63,7 +63,7 @@ const Purchase = async (key: string) => {
   const response = await $Fetch({
     method: 'PATCH',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/${path}`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   console.log(path);
   console.log(response);
@@ -74,7 +74,7 @@ const getRecoveryInfo = async () => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   console.log(response);
   return response;

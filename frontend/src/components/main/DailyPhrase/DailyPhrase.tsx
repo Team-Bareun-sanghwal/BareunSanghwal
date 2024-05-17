@@ -4,7 +4,7 @@ export const DailyPhrase = async () => {
   const response = await $Fetch({
     method: 'GET',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/daily-phrase`,
-    cache: 'no-cache',
+    cache: 'default',
   });
   const { phrase } = response.data;
   return (

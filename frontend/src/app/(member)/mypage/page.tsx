@@ -1,6 +1,12 @@
-import { NavBar } from '@/components';
-import { BorderlessButton } from '@/components/mypage/BorderlessButton/BorderlessButton';
-import { InfoModifyList } from '@/components/mypage/InfoModifyList/InfoModifyList';
+import dynamic from 'next/dynamic';
+
+const NavBar = dynamic(() => import('@/components/common/NavBar/NavBar'));
+const BorderlessButton = dynamic(
+  () => import('@/components/mypage/BorderlessButton/BorderlessButton'),
+);
+const InfoModifyList = dynamic(
+  () => import('@/components/mypage/InfoModifyList/InfoModifyList'),
+);
 import { getMemberInfo } from './_apis/getMemberInfo';
 
 export default async function Page() {
