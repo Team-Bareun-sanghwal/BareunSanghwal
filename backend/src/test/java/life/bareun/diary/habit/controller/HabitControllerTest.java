@@ -202,7 +202,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         LocalDate now = LocalDate.now();
@@ -268,7 +268,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         LocalDate now = LocalDate.now();
@@ -315,7 +315,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         LocalDate now = LocalDate.now();
@@ -375,7 +375,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         LocalDate now = LocalDate.now();
@@ -455,7 +455,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         mockMvc.perform(get("/habits/active")
@@ -496,7 +496,7 @@ class HabitControllerTest {
             .andExpect(jsonPath("$.message").value("해빗 생성이 완료되었습니다."))
             .andExpect(jsonPath("$.data").isEmpty());
 
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
             member);
 
         mockMvc.perform(get("/habits/active-day")
