@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export const BlockStack = () => {
+export default function BlockStack() {
   return (
     <div className="relative flex flex-col h-[40rem] min-w-[23rem]">
       <Image
@@ -34,4 +34,4 @@ export const BlockStack = () => {
       />
     </div>
   );
-};
+}

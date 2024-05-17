@@ -23,7 +23,7 @@ import { HabitPeriodSelectBox } from './habit/HabitPeriodSelectBox/HabitPeriodSe
 import { HabitRegisterBottomSheet } from './habit/HabitRegisterBottomSheet/HabitRegisterBottomSheet';
 import { HabitRegisterDayChart } from './habit/HabitRegisterDayChart/HabitRegisterDayChart';
 import { HabitSearchBox } from './habit/HabitSearchBox/HabitSearchBox';
-import { LoginButton } from './loading/LoginButton/LoginButton';
+import LoginButton from './loading/LoginButton/LoginButton';
 import { GradientBar } from './recap/GradientBar/GradientBar';
 import { ProgressBar } from './recap/ProgressBar/ProgressBar';
 import { ProgressBlock } from './recap/ProgressBlock/ProgressBlock';

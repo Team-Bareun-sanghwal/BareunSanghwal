@@ -1,5 +1,11 @@
-import { LoginButton } from '@/components';
-import { BlockStack } from '@/components/loading/BlockStack/BlockStack';
+import dynamic from 'next/dynamic';
+
+const BlockStack = dynamic(
+  () => import('@/components/loading/BlockStack/BlockStack'),
+);
+const LoginButton = dynamic(
+  () => import('@/components/loading/LoginButton/LoginButton'),
+);
 
 export default function Page() {
   return (

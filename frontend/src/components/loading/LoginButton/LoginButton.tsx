@@ -7,7 +7,7 @@ interface ILoginButtonProps {
   platform: string;
 }
 
-export const LoginButton = ({ platform }: ILoginButtonProps) => {
+export default function LoginButton({ platform }: ILoginButtonProps) {
   const router = useRouter();
 
   const signIn = async () => {
@@ -36,4 +36,4 @@ export const LoginButton = ({ platform }: ILoginButtonProps) => {
       </p>
     </button>
   );
-};
+}
