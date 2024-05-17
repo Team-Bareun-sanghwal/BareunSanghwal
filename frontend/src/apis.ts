@@ -59,7 +59,7 @@ export async function $Fetch({ method, url, data, cache }: Request) {
 
 export async function $SetCookie({ at, rt }: { at: string; rt?: string }) {
   const cookieStore = cookies();
-  cookieStore.set('Authorization', at, { maxAge: 7 });
+  cookieStore.set('Authorization', at, { maxAge: 3600 });
   if (rt) {
     cookieStore.set('RefreshToken', rt);
   }
