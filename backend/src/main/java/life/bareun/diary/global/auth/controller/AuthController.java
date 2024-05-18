@@ -30,7 +30,6 @@ public class AuthController {
     ) {
         AuthAccessTokenResDto authAccessTokenResDto = authService.issueAccessToken(refreshToken);
 
-        System.out.println("Try to add Access token");
         // ResponseUtil.addAccessTokenCookie(
         //     response,
         //     authAccessTokenResDto.accessToken(),
@@ -46,6 +45,7 @@ public class AuthController {
         // cookie.setSecure(true);
         // cookie.setMaxAge((int) authAccessTokenResDto.expiry());
         // cookie.setDomain("bareun.life");
+        //
         // response.addCookie(cookie);
         //
         // System.out.println("Set-Cookie: " +  response.getHeader("Set-Cookie"));
@@ -54,14 +54,14 @@ public class AuthController {
             .status(
                 HttpStatus.OK.value()
             )
-            .header(
-                "Set-Cookie",
-                ResponseUtil.createResponseCookieString(
-                    SecurityConfig.ACCESS_TOKEN_HEADER,
-                    authAccessTokenResDto.accessToken(),
-                    authAccessTokenResDto.expiry()
-                )
-            )
+            // .header(
+            //     "Set-Cookie",
+            //     ResponseUtil.createResponseCookieString(
+            //         SecurityConfig.ACCESS_TOKEN_HEADER,
+            //         authAccessTokenResDto.accessToken(),
+            //         authAccessTokenResDto.expiry()
+            //     )
+            // )
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
