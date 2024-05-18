@@ -18,8 +18,8 @@ type Request = {
 
 export async function $Fetch({ method, url, data, cache }: Request) {
   const cookieStore = cookies();
-  // const authorization = cookieStore.get('Authorization')?.value;
-  const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  const authorization = cookieStore.get('Authorization')?.value;
+  // const authorization = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
   const refreshToken = cookieStore.get('RefreshToken')?.value;
 
   if (authorization !== undefined) {
@@ -36,18 +36,18 @@ export async function $Fetch({ method, url, data, cache }: Request) {
       });
 
       const json = await res.json();
-      // switch (json.status) {
-      //   case 200:
-      //     if (url === `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`) {
-      //       cookieStore.delete('Authorization');
-      //       cookieStore.delete('RefreshToken');
-      //       redirect('/');
-      //     }
-      //     break;
-      //   case 500:
-      //     console.log(url, ' 서버 오류 발생');
-      //     break;
-      // }
+      switch (json.status) {
+        case 200:
+          if (url === `${process.env.NEXT_PUBLIC_BASE_URL}/members/logout`) {
+            cookieStore.delete('Authorization');
+            cookieStore.delete('RefreshToken');
+            redirect('/');
+          }
+          break;
+        case 500:
+          console.log(url, ' 서버 오류 발생');
+          break;
+      }
       return json;
     } catch (e) {
       console.log('Fetch Error : ', e);
