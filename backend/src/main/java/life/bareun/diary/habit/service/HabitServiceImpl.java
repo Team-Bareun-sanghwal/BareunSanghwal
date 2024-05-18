@@ -26,6 +26,7 @@ import life.bareun.diary.habit.dto.MemberHabitActiveDto;
 import life.bareun.diary.habit.dto.MemberHabitActiveSimpleDto;
 import life.bareun.diary.habit.dto.MemberHabitDto;
 import life.bareun.diary.habit.dto.MemberHabitModifyDto;
+import life.bareun.diary.habit.dto.MemberHabitMonthDto;
 import life.bareun.diary.habit.dto.MemberHabitNonActiveDto;
 import life.bareun.diary.habit.dto.request.HabitCreateReqDto;
 import life.bareun.diary.habit.dto.request.HabitDeleteReqDto;
@@ -94,8 +95,8 @@ public class HabitServiceImpl implements HabitService {
     @Override
     // 사용자가 해빗을 생성
     public void createMemberHabit(HabitCreateReqDto habitCreateReqDto) {
-        if((habitCreateReqDto.dayOfWeek() == null && habitCreateReqDto.period() == null)
-        || habitCreateReqDto.icon() == null || habitCreateReqDto.alias() == null) {
+        if ((habitCreateReqDto.dayOfWeek() == null && habitCreateReqDto.period() == null)
+            || habitCreateReqDto.icon() == null || habitCreateReqDto.alias() == null) {
             throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
         }
 
@@ -132,7 +133,7 @@ public class HabitServiceImpl implements HabitService {
                         MaintainWay.DAY).maintainAmount(0).build());
             for (Integer day : habitCreateReqDto.dayOfWeek()) {
                 // 만약 1~7이 아니라면 오류
-                if(day > 7 || day < 1) {
+                if (day > 7 || day < 1) {
                     throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
                 }
                 habitDayRepository.save(
@@ -155,9 +156,10 @@ public class HabitServiceImpl implements HabitService {
     @Override
     // 사용자 해빗을 삭제
     public void deleteMemberHabit(HabitDeleteReqDto habitDeleteReqDto) {
-        streakService.deleteHabitStreak(memberHabitRepository.findById(habitDeleteReqDto.memberHabitId())
-            .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT)));
-        
+        streakService.deleteHabitStreak(
+            memberHabitRepository.findById(habitDeleteReqDto.memberHabitId())
+                .orElseThrow(() -> new HabitException(HabitErrorCode.NOT_FOUND_MEMBER_HABIT)));
+
         // 만약 모두 삭제한다고 하면 이전 기록들까지 전부 삭제
         if (Boolean.TRUE.equals(habitDeleteReqDto.isDeleteAll())) {
             habitTrackerService.deleteAllHabitTracker(habitDeleteReqDto.memberHabitId());
@@ -179,17 +181,17 @@ public class HabitServiceImpl implements HabitService {
     // 이번 달에 한 번이라도 유지한 적이 있는 사용자 해빗 가져오기
     public MemberHabitResDto findAllMonthMemberHabit(String monthValue) {
         Member member = findMember();
-        YearMonth yearMonth = YearMonth.of(Integer.parseInt(monthValue.substring(0, 4)),
-            Integer.parseInt(monthValue.substring(5)));
-        LocalDateTime startDateTime = yearMonth.atDay(1).atStartOfDay();
-        LocalDateTime endDateTime = yearMonth.atEndOfMonth().atTime(23, 59, 59);
-        List<MemberHabit> memberHabitList = memberHabitRepository
-            .findAllByMemberAndCreatedDatetimeBetween(member, startDateTime, endDateTime);
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            false, member);
+        int year = Integer.parseInt(monthValue.substring(0, 4));
+        int month = Integer.parseInt(monthValue.substring(5));
 
         List<MemberHabitDto> memberHabitDtoList = new ArrayList<>();
         for (MemberHabit memberHabit : memberHabitList) {
             if (Boolean.TRUE.equals(habitTrackerService
-                .existsByMemberHabitAndSucceededTimeIsNotNull(memberHabit))) {
+                .existsByMemberHabitAndSucceededTimeIsNotNullAndCreatedYearAndCreatedMonth(
+                    MemberHabitMonthDto.builder().memberHabit(memberHabit).year(year).month(month)
+                        .build()))) {
                 memberHabitDtoList.add(
                     MemberHabitDto.builder().memberHabitId(memberHabit.getId())
                         .alias(memberHabit.getAlias()).icon(memberHabit.getIcon()).build());
@@ -261,7 +263,8 @@ public class HabitServiceImpl implements HabitService {
     public MemberHabitActiveResDto findAllActiveMemberHabit() {
         Member member = findMember();
         // 해당 사용자의 삭제되지 않은 사용자 해빗 리스트 조회
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            false,
             member);
 
         LocalDate nowMonth = LocalDate.now();
@@ -317,7 +320,8 @@ public class HabitServiceImpl implements HabitService {
     // 모든 비활성화된 사용자 해빗 리스트 조회
     public MemberHabitNonActiveResDto findAllNonActiveMemberHabit() {
         Member member = findMember();
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(true,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            true,
             member);
         List<MemberHabitNonActiveDto> memberHabitNonActiveDtoList = new ArrayList<>();
         for (MemberHabit memberHabit : memberHabitList) {
@@ -347,7 +351,8 @@ public class HabitServiceImpl implements HabitService {
     public MemberHabitActiveSimpleResDto findAllActiveSimpleMemberHabit() {
         Member member = findMember();
         // 해당 사용자의 삭제되지 않은 사용자 해빗 리스트 조회
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            false,
             member);
 
         List<MemberHabitActiveSimpleDto> memberHabitActiveSimpleDtoList = new ArrayList<>();
@@ -365,7 +370,8 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     public List<MemberHabit> findAllActiveMemberHabitByMember(Member member) {
-        return memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false, member);
+        return memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
+            member);
     }
 
     @Override
