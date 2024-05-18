@@ -28,41 +28,84 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         this.authTokenProvider = authTokenProvider;
     }
 
-    private static String toKey(Long id) {
+    private static String toAccessTokenKey(Long id) {
+        return String.format("accessToken:%d", id);
+    }
+
+    private static String toRefreshTokenKey(Long id) {
         return String.format("refreshToken:%d", id);
     }
 
     @Override
     @Transactional
-    public void revoke(Long id, String refreshToken) {
-        AuthToken authRefreshToken = authTokenProvider.tokenToAuthToken(refreshToken);
-        Duration expiry = authTokenProvider.getExpiry(authRefreshToken);
+    public void revokeAccessToken(Long id, AuthToken accessAuthToken) {
+        // Token에서 삭제되어도 실제로 전달되는 것은 Header 값 자체이므로
+        // 근데 tokenToAuthToken 내부에서 지워줌
+        Duration accessTokenExpiry = authTokenProvider.getExpiry(accessAuthToken);
 
         authRedisTemplate.opsForValue().set(
-            toKey(id),
-            refreshToken,
-            expiry
+            toAccessTokenKey(id),
+            accessAuthToken.toString(),
+            accessTokenExpiry
+        );
+
+    }
+
+    @Override
+    @Transactional
+    public void revokeRefreshToken(Long id, AuthToken refreshAuthToken) {
+        Duration refreshTokenExpiry = authTokenProvider.getExpiry(refreshAuthToken);
+
+        authRedisTemplate.opsForValue().set(
+            toRefreshTokenKey(id),
+            refreshAuthToken.toString(),
+            refreshTokenExpiry
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isRevoked(String refreshToken) {
-        AuthToken authToken = authTokenProvider.tokenToAuthToken(refreshToken);
+    public boolean isRevokedRefreshToken(AuthToken refreshToken) {
+        // AuthToken authToken = authTokenProvider.tokenToAuthToken(refreshToken);
         try {
-            authTokenProvider.validate(authToken);
+            authTokenProvider.validate(refreshToken);
         } catch (JwtException e) {
             throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
 
-        Long id = authTokenProvider.getMemberIdFromToken(authToken);
+        Long id = authTokenProvider.getMemberIdFromToken(refreshToken);
 
         // 토큰 값 비교까지 해야 한다.
-        return refreshToken.equals(findById(id));
+        return refreshToken.toString().equals(findRefreshTokenById(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isRevokedAccessToken(AuthToken accessToken) {
+        // AuthToken authToken = authTokenProvider.tokenToAuthToken(accessToken);
+        try {
+            authTokenProvider.validate(accessToken);
+        } catch (JwtException e) {
+            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
+        }
+
+        Long id = authTokenProvider.getMemberIdFromToken(accessToken);
+
+        // 토큰 값 비교까지 해야 한다.
+        System.out.println("AT in Redis: " + findAccessTokenById(id));
+        System.out.println("AT in request: " + accessToken.toString());
+        return accessToken.toString().equals(findAccessTokenById(id));
     }
 
     @Transactional(readOnly = true)
-    protected String findById(Long id) {
-        return authRedisTemplate.opsForValue().get(toKey(id));
+    protected String findAccessTokenById(Long id) {
+        return authRedisTemplate.opsForValue().get(toAccessTokenKey(id));
     }
+
+    @Transactional(readOnly = true)
+    protected String findRefreshTokenById(Long id) {
+        return authRedisTemplate.opsForValue().get(toRefreshTokenKey(id));
+    }
+
+
 }
