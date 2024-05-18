@@ -1,5 +1,4 @@
-import { IDayInfo } from '@/app/mock';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { getToday } from '../util';
 import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 import { useOverlay } from '@/hooks/use-overlay';

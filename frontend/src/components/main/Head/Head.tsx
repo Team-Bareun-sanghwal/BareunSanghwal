@@ -1,5 +1,5 @@
 import { MainTitle } from '../MainTitle/MainTitle';
-import { HabitBtnList, HabitChecker, LongestStreak } from '@/components';
+import { HabitChecker, LongestStreak } from '@/components';
 import { $Fetch } from '@/apis';
 import { HabitShortcut } from '../HabitShorcut/HabitShortcut';
 import Notify from '@/components/common/Notify/Notify';

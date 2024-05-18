@@ -1,10 +1,8 @@
 // import { useRouter } from 'next/navigation';
 import Item from '@/components/point/Item/Item';
-import { MyPoint } from '@/components/point/MyPoint/MyPoint';
 import { $Fetch } from '@/apis';
 import Tree from '@/components/tree/Tree';
 import { RouteHome } from '@/components/tree/Button/RouteHome/RouteHome';
-import { PopOver } from '@/components/common/PopOver/PopOver';
 import { Harvest } from '@/components/point/Harvest/Harvest';
 import { Time } from '@/components/calendar/util';
 import { treeConfig } from '@/components/tree/treeConfig';
@@ -14,10 +12,6 @@ interface IItem {
   introduction: string;
   description: string;
   price: number;
-}
-
-interface IItemList {
-  products: IItem[];
 }
 
 export default async function Page() {

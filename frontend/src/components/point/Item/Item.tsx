@@ -10,11 +10,6 @@ import Pallete from '../Pallete/Pallete';
 import { useRouter } from 'next/navigation';
 import { Recovery } from '../Recovery/Recovery';
 import { CreateOverlayElement } from '@/hooks/use-overlay/types';
-interface IOverlay {
-  open: (overlayElement: CreateOverlayElement) => void;
-  close: () => void;
-  exit: () => void;
-}
 interface IItemProps {
   keyname: string;
   name: string;

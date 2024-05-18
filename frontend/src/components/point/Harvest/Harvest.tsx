@@ -12,7 +12,6 @@ export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
   const [msg, setMsg] = useState('');
   const overlay = useOverlay();
   const router = useRouter();
-  const buttonText = harvested ? '오늘의 포인트를 이미 수확했어요!' : '';
 
   const getPoint = async () => {
     const response = await $Fetch({
