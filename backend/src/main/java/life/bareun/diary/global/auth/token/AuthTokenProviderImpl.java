@@ -134,7 +134,8 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
 
     @Override
     public AuthToken tokenToAuthToken(String token) {
-        return new AuthToken(token);
+
+        return new AuthToken(removePrefix(token));
     }
 
     @Override
@@ -153,8 +154,8 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     }
 
     @Override
-    public Duration getExpiry(AuthToken refreshAuthToken) {
-        Claims claims = refreshAuthToken.getClaims(key);
+    public Duration getExpiry(AuthToken authToken) {
+        Claims claims = authToken.getClaims(key);
 
         Instant curr = new Date().toInstant();
         Instant exp = claims.getExpiration().toInstant();

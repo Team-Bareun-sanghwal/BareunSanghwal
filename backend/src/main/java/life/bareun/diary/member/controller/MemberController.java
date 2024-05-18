@@ -58,10 +58,12 @@ public class MemberController {
 
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse<Void>> logout(
+        @RequestHeader(SecurityConfig.ACCESS_TOKEN_HEADER)
+        String accessToken,
         @RequestHeader(SecurityConfig.REFRESH_TOKEN_HEADER)
         String refreshToken
     ) {
-        memberService.logout(refreshToken);
+        memberService.logout(accessToken, refreshToken);
 
         return ResponseEntity
             .status(

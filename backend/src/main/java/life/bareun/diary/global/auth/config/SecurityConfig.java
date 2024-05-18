@@ -7,6 +7,7 @@ import life.bareun.diary.global.auth.handler.CustomOAuth2FailureHandler;
 import life.bareun.diary.global.auth.handler.CustomOAuth2SuccessHandler;
 import life.bareun.diary.global.auth.handler.JwtAccessDeniedHandler;
 import life.bareun.diary.global.auth.handler.JwtAuthenticationEntryPoint;
+import life.bareun.diary.global.auth.service.AuthTokenService;
 import life.bareun.diary.global.auth.service.CustomOAuth2MemberService;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.member.service.MemberService;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     public final static String REFRESH_TOKEN_HEADER = "RefreshToken";
 
     private final AuthTokenProvider authTokenProvider;
+    private final AuthTokenService authTokenService;
     private final MemberService memberService;
 
     @Bean
@@ -125,7 +127,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthTokenFilter authTokenFilter() {
-        return new AuthTokenFilter(authTokenProvider);
+        return new AuthTokenFilter(authTokenService, authTokenProvider);
     }
 
     @Bean
