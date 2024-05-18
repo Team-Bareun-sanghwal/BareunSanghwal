@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthToken {
 
-    @Getter(AccessLevel.PACKAGE)
     private final String token;
 
     public Claims getClaims(SecretKey key) throws JwtException {
@@ -29,5 +28,10 @@ public class AuthToken {
         }
 
         return claims;
+    }
+
+    @Override
+    public String toString() {
+        return token;
     }
 }
