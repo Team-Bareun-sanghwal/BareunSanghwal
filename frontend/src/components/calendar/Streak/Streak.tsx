@@ -1,12 +1,8 @@
 'use client';
 import { ShieldCheckIcon } from '@heroicons/react/24/solid';
 import { StarIcon } from '@heroicons/react/24/solid';
-import { useOverlay } from '@/hooks/use-overlay';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { ThemeColor } from '../CalenderConfig';
 import { getToday, getMonth, getYear, convertMonthFormat } from '../util';
-import { $Fetch } from '@/apis';
-import { AlertBox } from '@/components/common/AlertBox/AlertBox';
 interface StreakProps {
   themeColor: ThemeColor;
   isUnique: boolean;
@@ -33,7 +29,6 @@ export const Streak = ({
   ...props
 }: StreakProps) => {
   const streakOpacity = [10, 40, 55, 60, 70, 80, 90, 100];
-
   const basicStreakStyle =
     'text-white text-xl aspect-square rounded-lg relative';
   function getClassName() {
@@ -42,11 +37,14 @@ export const Streak = ({
         ? `bg-streak-${themeColor}-7 opacity-${streakOpacity[7]} ${basicStreakStyle}`
         : `bg-streak-${themeColor} opacity-${streakOpacity[totalCount ? totalCount : 1]} ${basicStreakStyle}`;
     }
+    if(achieveType === 'NOT_EXISTED') {
+      return `bg-gray-200 ${basicStreakStyle}`;
+    }
+    if(achieveType === 'NOT_ACHIEVE') {
+      return `bg-streak-none ${basicStreakStyle}`;
+    }
     if (habitId === 0) {
       return `bg-streak-${themeColor}-${achieveCount} opacity-${streakOpacity[7]} ${basicStreakStyle}`;
-    }
-    if (achieveCount === 0) {
-      return `bg-streak-none ${basicStreakStyle}`;
     }
     if (isUnique) {
       return `bg-streak-${themeColor}-${achieveCount} opacity-${streakOpacity[achieveCount]} ${basicStreakStyle}`;
@@ -61,9 +59,9 @@ export const Streak = ({
       <a
         className={
           getToday(false) === dayNumber + '' &&
-          getMonth(true) === month + '' &&
+          getMonth(false) === month + '' &&
           getYear() === year + ''
-            ? 'flex text-white text-2xl w-full h-full rounded-md border-black border-2 items-center justify-center'
+            ? 'flex text-white text-2xl w-full h-full rounded-md border-gray-500 border-4 items-center justify-center'
             : ''
         }
       >

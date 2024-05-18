@@ -10,6 +10,7 @@ import Pallete from '../Pallete/Pallete';
 import { useRouter } from 'next/navigation';
 import { Recovery } from '../Recovery/Recovery';
 import { CreateOverlayElement } from '@/hooks/use-overlay/types';
+import { useState } from 'react';
 interface IOverlay {
   open: (overlayElement: CreateOverlayElement) => void;
   close: () => void;
@@ -35,8 +36,8 @@ const getAttributes = (key: string) => {
     path = '/images/icon-item-streak-color.png';
     mode = 'PURCHASE_STREAK';
   } else if (key === 'recovery') {
-    mode = 'PURCHASE_RECOVERY';
     path = '/images/icon-item-recovery.png';
+    mode = 'PURCHASE_RECOVERY';
   } else {
     path = '/images/icon-item-tree.png';
     mode = 'PURCHASE_TREE';
@@ -210,7 +211,8 @@ const Item = ({
               <div className="text-2xl mr-4 content-center">{name}</div>
               <Point point={price} />
             </div>
-            <div className="text-sm w-full">{introduction}</div>
+            <div className="text-md w-full">{introduction}</div>
+            {/* <div className="text-sm w-full">{description}</div> */}
           </div>
         </div>
         <button

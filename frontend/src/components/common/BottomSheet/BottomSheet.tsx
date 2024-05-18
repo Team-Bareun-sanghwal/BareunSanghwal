@@ -36,6 +36,7 @@ export const BottomSheet = ({
   onConfirm,
   children,
 }: IBottomSheetProps) => {
+  console.log(mode)
   const imageName =
     mode === 'POSITIVE'
       ? 'check'
@@ -98,9 +99,9 @@ export const BottomSheet = ({
             <Button
               isActivated={true}
               label={
-                mode == 'PURCHASE_RECOVERY' ||
-                'PURCHASE_STREAK' ||
-                'PURCHASE_TREE'
+                mode === 'PURCHASE_RECOVERY' ||
+                mode ==='PURCHASE_STREAK'||
+                mode ==='PURCHASE_TREE'
                   ? '구매'
                   : '확인'
               }

@@ -36,7 +36,8 @@ export default async function Page() {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/tree`,
     cache: 'default',
   });
-  const { treeLevel, treeColor } = treeInfo.data;
+  // const { treeLevel, treeColor } = treeInfo.data;
+  const { treeLevel, treeColor } = { treeLevel: 4, treeColor: 'green' };
   const { point, isHarvestedToday } = pointInfo.data;
 
   return (
@@ -57,7 +58,6 @@ export default async function Page() {
         <Tree color={treeColor} level={treeLevel} time={Time()} />
         <div className="absolute bottom-0 w-full gap-3 p-3 ">
           <div className="flex flex-col justify-center gap-4">
-            <MyPoint />
             {response?.data.products.map((item: IItem) => (
               <Item
                 key={item.key}
