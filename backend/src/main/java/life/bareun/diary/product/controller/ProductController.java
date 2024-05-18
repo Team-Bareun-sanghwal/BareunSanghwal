@@ -42,7 +42,7 @@ public class ProductController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "스트릭 변경권을 구매했습니다.",
+                    "스트릭 색상 변경권을 구매했습니다.",
                     streakColorUpdateRes
                 )
             );
@@ -55,7 +55,7 @@ public class ProductController {
             .body(
                 BaseResponse.success(
                     HttpStatus.OK.value(),
-                    "나무 테마 변경권을 구매했습니다.",
+                    "나무 색상 변경권을 구매했습니다.",
                     treeColorUpdateRes
                 )
             );
