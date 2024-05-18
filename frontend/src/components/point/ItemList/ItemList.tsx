@@ -9,7 +9,6 @@ export async function getServerSideProps() {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products`,
     cache: 'default',
   });
-  console.log(response);
   return {
     props: {
       response,
@@ -30,7 +29,6 @@ interface IItemList {
 }
 
 export const ItemList = ({ response }: { response?: IItemList }) => {
-  console.log(response);
   return (
     <div className="absolute bottom-0 w-full gap-3 p-3">
       <div className="flex flex-col justify-center gap-4">

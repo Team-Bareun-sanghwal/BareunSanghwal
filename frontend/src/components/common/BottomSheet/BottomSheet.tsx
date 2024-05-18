@@ -36,7 +36,6 @@ export const BottomSheet = ({
   onConfirm,
   children,
 }: IBottomSheetProps) => {
-  console.log(mode)
   const imageName =
     mode === 'POSITIVE'
       ? 'check'

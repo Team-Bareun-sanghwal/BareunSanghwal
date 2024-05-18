@@ -60,8 +60,6 @@ const Purchase = async (key: string) => {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/${path}`,
     cache: 'default',
   });
-  console.log(path);
-  console.log(response);
   return response;
 };
 
@@ -123,12 +121,10 @@ const Item = ({
     Purchase(key)
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data.streakColorName);
           overlay?.open(({ isOpen, close }) => (
             <BottomSheet
               description=""
               mode="NONE"
-              // onClose={close}
               onConfirm={() => {
                 close();
                 router.refresh();
@@ -183,8 +179,16 @@ const Item = ({
           ));
         }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        overlay?.open(({ isOpen, close }) => (
+          <BottomSheet
+            description="알 수 없는 이유로 구매에 실패했어요"
+            mode="NEGATIVE"
+            onClose={close}
+            open={isOpen}
+            title="ERROR"
+          />
+        ));
       });
   };
   const { path, mode } = getAttributes(keyname);

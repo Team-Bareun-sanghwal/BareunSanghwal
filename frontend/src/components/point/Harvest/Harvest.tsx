@@ -48,7 +48,6 @@ export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
         }
       })
       .catch((res) => {
-        console.log(res.data.message);
         HandleAlertBox(false, `이미 오늘의 포인트를 수령했어요...`);
         setHarvested(true);
       });

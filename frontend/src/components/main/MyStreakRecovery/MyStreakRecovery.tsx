@@ -6,7 +6,6 @@ export const MyStreakRecovery = async () => {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
     cache: 'default',
   });
-  console.log(response);
   const { total, free } = response.data;
 
   return (

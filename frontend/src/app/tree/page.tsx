@@ -1,4 +1,3 @@
-// import { useRouter } from 'next/navigation';
 import Item from '@/components/point/Item/Item';
 import { $Fetch } from '@/apis';
 import Tree from '@/components/tree/Tree';
@@ -31,7 +30,6 @@ export default async function Page() {
     cache: 'default',
   });
   const { treeLevel, treeColor } = treeInfo.data;
-  // const { treeLevel, treeColor } = { treeLevel: 4, treeColor: 'green' };
   const { point, isHarvestedToday } = pointInfo.data;
 
   return (

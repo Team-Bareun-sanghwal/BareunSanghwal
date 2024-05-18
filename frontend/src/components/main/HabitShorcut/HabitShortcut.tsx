@@ -17,8 +17,6 @@ export const HabitShortcut = ({
   allHabits,
   todayHabits,
 }: IHabitShortcutProps) => {
-  console.log('sss');
-  console.log(allHabits);
   const sortedHabits = () => {
     const succeeded = todayHabits.filter(
       (habit) => habit.succeededTime !== null,
