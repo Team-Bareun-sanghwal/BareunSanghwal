@@ -187,7 +187,10 @@ public class ProductServiceImpl implements ProductService {
                 () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
             .getPrice();
-
+        if (member.getPoint() < amount) {
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
+        }
+        
         // 5. 사용자 나무 색 변경
         Integer treeColorId = treeColorRepository.findById(gotchaTreeColor.getId())
             .orElseThrow(
