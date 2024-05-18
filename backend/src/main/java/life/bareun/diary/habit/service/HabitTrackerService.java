@@ -3,6 +3,7 @@ package life.bareun.diary.habit.service;
 import java.time.LocalDate;
 import life.bareun.diary.habit.dto.HabitTrackerCreateDto;
 import life.bareun.diary.habit.dto.HabitTrackerLastDto;
+import life.bareun.diary.habit.dto.MemberHabitMonthDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
@@ -29,7 +30,7 @@ public interface HabitTrackerService {
 
     HabitTrackerWeekResDto findAllWeekHabitTracker();
 
-    Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit);
+    Boolean existsByMemberHabitAndSucceededTimeIsNotNullAndCreatedYearAndCreatedMonth(MemberHabitMonthDto memberHabitMonthDto);
 
     HabitTracker findLastHabitTracker(HabitTrackerLastDto habitTrackerLastDto);
 
