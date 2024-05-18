@@ -36,8 +36,8 @@ export default async function Page() {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/tree`,
     cache: 'default',
   });
-  // const { treeLevel, treeColor } = treeInfo.data;
-  const { treeLevel, treeColor } = { treeLevel: 4, treeColor: 'green' };
+  const { treeLevel, treeColor } = treeInfo.data;
+  // const { treeLevel, treeColor } = { treeLevel: 4, treeColor: 'green' };
   const { point, isHarvestedToday } = pointInfo.data;
 
   return (

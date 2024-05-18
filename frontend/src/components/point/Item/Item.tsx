@@ -10,7 +10,6 @@ import Pallete from '../Pallete/Pallete';
 import { useRouter } from 'next/navigation';
 import { Recovery } from '../Recovery/Recovery';
 import { CreateOverlayElement } from '@/hooks/use-overlay/types';
-import { useState } from 'react';
 interface IOverlay {
   open: (overlayElement: CreateOverlayElement) => void;
   close: () => void;
@@ -77,7 +76,6 @@ const getRecoveryInfo = async () => {
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/recovery-count`,
     cache: 'default',
   });
-  console.log(response);
   return response;
 };
 
@@ -90,10 +88,6 @@ const Item = ({
 }: IItemProps) => {
   const router = useRouter();
   const overlay = useOverlay();
-  const Close = (event: void) => {
-    router.refresh();
-    event;
-  };
   const SelectRecovery = () => {
     overlay?.open(({ isOpen, close }) => (
       <>

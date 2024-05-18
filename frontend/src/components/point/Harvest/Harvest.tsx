@@ -5,12 +5,13 @@ import { $Fetch } from '@/apis';
 import { useOverlay } from '@/hooks/use-overlay';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { set } from 'firebase/database';
+import { useRouter } from 'next/navigation';
 export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
   const [harvested, setHarvested] = useState(isHarvested);
   const [isVisible, setIsVisible] = useState(true);
   const [msg, setMsg] = useState('');
   const overlay = useOverlay();
+  const router = useRouter();
   const buttonText = harvested ? '오늘의 포인트를 이미 수확했어요!' : '';
 
   const getPoint = async () => {
@@ -42,6 +43,7 @@ export const Harvest = ({ isHarvested }: { isHarvested: boolean }) => {
           const point = res.data.point;
           HandleAlertBox(true, `오늘의 포인트 ${point}점을 수확했어요!`);
           setHarvested(true);
+          setTimeout(() => router.refresh(), 1000);
         } else if (res.status === 403) {
           HandleAlertBox(false, `이미 오늘의 포인트를 수령했어요...`);
         }
