@@ -232,8 +232,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void logout(String refreshToken) {
+    @Transactional(readOnly = true)
+    public void logout(String accessToken, String refreshToken) {
+        AuthToken accessAuthToken = authTokenProvider.tokenToAuthToken(accessToken);
         AuthToken refreshAuthToken = authTokenProvider.tokenToAuthToken(refreshToken);
+
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Long targetId = authTokenProvider.getMemberIdFromToken(refreshAuthToken);
 
@@ -242,7 +245,8 @@ public class MemberServiceImpl implements MemberService {
             throw new AuthException(SecurityErrorCode.UNMATCHED_AUTHENTICATION);
         }
 
-        authTokenService.revoke(id, refreshToken);
+        authTokenService.revokeAccessToken(id, accessAuthToken);
+        authTokenService.revokeRefreshToken(id, refreshAuthToken);
     }
 
     @Override
