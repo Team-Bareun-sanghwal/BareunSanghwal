@@ -133,7 +133,7 @@ public class HabitServiceImpl implements HabitService {
                         MaintainWay.DAY).maintainAmount(0).build());
             for (Integer day : habitCreateReqDto.dayOfWeek()) {
                 // 만약 1~7이 아니라면 오류
-                if(day > 7 || day < 1) {
+                if (day > 7 || day < 1) {
                     throw new HabitException(HabitErrorCode.INVALID_PARAMETER_MEMBER_HABIT);
                 }
                 habitDayRepository.save(
@@ -181,10 +181,12 @@ public class HabitServiceImpl implements HabitService {
     // 이번 달에 한 번이라도 유지한 적이 있는 사용자 해빗 가져오기
     public MemberHabitResDto findAllMonthMemberHabit(String monthValue) {
         Member member = findMember();
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
-            false, member);
         int year = Integer.parseInt(monthValue.substring(0, 4));
         int month = Integer.parseInt(monthValue.substring(5));
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDateTime endDateTime = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByMemberAndCreatedDatetimeBefore(
+            member, endDateTime);
 
         List<MemberHabitDto> memberHabitDtoList = new ArrayList<>();
         for (MemberHabit memberHabit : memberHabitList) {
@@ -263,7 +265,8 @@ public class HabitServiceImpl implements HabitService {
     public MemberHabitActiveResDto findAllActiveMemberHabit() {
         Member member = findMember();
         // 해당 사용자의 삭제되지 않은 사용자 해빗 리스트 조회
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            false,
             member);
 
         LocalDate nowMonth = LocalDate.now();
@@ -319,7 +322,8 @@ public class HabitServiceImpl implements HabitService {
     // 모든 비활성화된 사용자 해빗 리스트 조회
     public MemberHabitNonActiveResDto findAllNonActiveMemberHabit() {
         Member member = findMember();
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(true,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            true,
             member);
         List<MemberHabitNonActiveDto> memberHabitNonActiveDtoList = new ArrayList<>();
         for (MemberHabit memberHabit : memberHabitList) {
@@ -349,7 +353,8 @@ public class HabitServiceImpl implements HabitService {
     public MemberHabitActiveSimpleResDto findAllActiveSimpleMemberHabit() {
         Member member = findMember();
         // 해당 사용자의 삭제되지 않은 사용자 해빗 리스트 조회
-        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
+        List<MemberHabit> memberHabitList = memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(
+            false,
             member);
 
         List<MemberHabitActiveSimpleDto> memberHabitActiveSimpleDtoList = new ArrayList<>();
@@ -367,7 +372,8 @@ public class HabitServiceImpl implements HabitService {
 
     @Override
     public List<MemberHabit> findAllActiveMemberHabitByMember(Member member) {
-        return memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false, member);
+        return memberHabitRepository.findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(false,
+            member);
     }
 
     @Override

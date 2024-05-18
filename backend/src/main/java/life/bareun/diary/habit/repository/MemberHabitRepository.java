@@ -10,8 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MemberHabitRepository extends JpaRepository<MemberHabit, Long>,
     MemberHabitRepositoryCustom {
 
-    List<MemberHabit> findAllByMemberAndCreatedDatetimeBetween(Member member,
-        LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<MemberHabit> findAllByMemberAndCreatedDatetimeBefore(Member member, LocalDateTime endOfMonth);
 
     List<MemberHabit> findAllByIsDeleted(Boolean isDeleted);
 
