@@ -10,6 +10,7 @@ import life.bareun.diary.habit.dto.HabitTrackerLastDto;
 import life.bareun.diary.habit.dto.HabitTrackerModifyDto;
 import life.bareun.diary.habit.dto.HabitTrackerScheduleDto;
 import life.bareun.diary.habit.dto.HabitTrackerTodayFactorDto;
+import life.bareun.diary.habit.dto.MemberHabitMonthDto;
 import life.bareun.diary.habit.dto.request.HabitTrackerModifyReqDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerDetailResDto;
 import life.bareun.diary.habit.dto.response.HabitTrackerTodayResDto;
@@ -160,8 +161,11 @@ public class HabitTrackerServiceImpl implements HabitTrackerService {
 
     @Override
     // 한 번이라도 스트릭 기록한 적이 있는지 확인
-    public Boolean existsByMemberHabitAndSucceededTimeIsNotNull(MemberHabit memberHabit) {
-        return habitTrackerRepository.existsByMemberHabitAndSucceededTimeIsNotNull(memberHabit);
+    public Boolean existsByMemberHabitAndSucceededTimeIsNotNullAndCreatedYearAndCreatedMonth(
+        MemberHabitMonthDto memberHabitMonthDto) {
+        return habitTrackerRepository.existsByMemberHabitAndSucceededTimeIsNotNullAndCreatedYearAndCreatedMonth(
+            memberHabitMonthDto.memberHabit(), memberHabitMonthDto.year(),
+            memberHabitMonthDto.month());
     }
 
     @Override
