@@ -23,6 +23,7 @@ function Island() {
   const { scene } = useGLTF('/assets/island.glb');
   const rate = 0.5
   scene.scale.set(rate, rate, rate)
+  scene.position.set(0, 0.5, 0);
   return <primitive object={scene} />;
 }
 function MyTree( {color, level}: {color: string, level: number}) {
@@ -86,26 +87,15 @@ function Group({color, level}: {color : string, level : number}){
 
 function GiftBox() {
   const { scene } = useGLTF('/assets/giftbox.glb');
-  scene.position.set(-0.8, 0.32, 0.2);
+  scene.position.set(-0.8, 0.82, 0.2);
   scene.scale.set(0.4, 0.4, 0.4);
   return <primitive object={scene} />;
 }
 
 
 export default function Tree({ color,level, time}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
-  const [position, setPosition] = useState({ x: 10, y: 1, z: 12 });
+  const [position, setPosition] = useState({ x: 10, y: 2, z: 12 });
   const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
-
-  const handleOnclick1 = () => {
-    console.log('hi');
-    setPosition({ x: 5, y: 2, z: 0 });
-    setTarget({ x: 10, y: 2, z: 0 });
-  };
-
-  const handleOnclick2 = () => {
-    setPosition({ x: 3, y: 2, z: 0 });
-    setTarget({ x: 5, y: 2, z: 0 });
-  };
   return (
     <>
         <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
