@@ -17,12 +17,14 @@ import life.bareun.diary.product.dto.response.ProductTreeColorUpdateResDto;
 import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
 import life.bareun.diary.product.entity.TreeColor;
+import life.bareun.diary.product.entity.TreeColorGrade;
 import life.bareun.diary.product.exception.ProductErrorCode;
 import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.mapper.ProductMapper;
 import life.bareun.diary.product.repository.ProductRepository;
 import life.bareun.diary.product.repository.StreakColorGradeRepository;
 import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorGradeRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
     private final StreakColorRepository streakColorRepository;
     private final StreakColorGradeRepository streakColorGradeRepository;
     private final TreeColorRepository treeColorRepository;
+    private final TreeColorGradeRepository treeColorGradeRepository;
 
     private final MemberRepository memberRepository;
     private final MemberRecoveryRepository memberRecoveryRepository;
@@ -128,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
         );
 
         // 스트릭 색상 변경권 가격을 얻고 사용자의 현재 보유 포인트와 비교한다.
-        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
+        Integer amount = productRepository.findByProductKey(GOTCHA_STREAK_KEY)
             .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
@@ -146,35 +149,62 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductTreeColorUpdateResDto buyTreeGotcha() {
-        // 1. 나무 색 전체 불러오기
-        List<TreeColor> treeColors = treeColorRepository.findAll();
+        // 1. 나무 색 등급 리스트
+        List<TreeColorGrade> treeColorGrades = treeColorGradeRepository.findAll().stream()
+            .sorted(
+                (o1, o2) -> Float.compare(o1.getWeight(), o2.getWeight())
+            ).toList();
 
-        // 2. 랜덤 뽑기
+        // 2. 등급 랜덤 뽑기
+        // 끝 범위는 전체 색상 가중치의 합
+        float bound = (float) treeColorGrades.stream()
+            .mapToDouble(val -> Double.valueOf(val.getWeight()))
+            .sum();
+
+        // origin 이상 bound 미만의 무작위 실수 값
+        // 구간 [1.0, 101.0)의 수 중 랜덤 값을 추출하고
+        // 열린 구간 (100.0, 101.0) 사이의 수가 추출되면 100.0으로 치환한다.
+        double gotchaGradeWeight = Math.min((RANDOM.nextFloat() * bound) + 1.0, bound);
+
+        // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
+        double weightSum = 0.0;
+        TreeColorGrade gotchaGrade = null;
+        for (TreeColorGrade treeColorGrade: treeColorGrades) {
+            weightSum += treeColorGrade.getWeight();
+            if (gotchaGradeWeight < weightSum) {
+                gotchaGrade = treeColorGrade;
+                break;
+            }
+        }
+
+
+        // 3. 등급 내에서 랜덤 뽑기
+        List<TreeColor> treeColors = treeColorRepository.findAllByTreeColorGrade(gotchaGrade);
         int treeColorCount = treeColors.size();
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
-        // 3. 나무 색 변경권 가격 정보 얻기
-        Integer amount = productRepository.findByKey(GOTCHA_TREE_KEY)
+        // 4. 나무 색 변경권 가격 정보 얻기
+        Integer amount = productRepository.findByProductKey(GOTCHA_TREE_KEY)
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
             .getPrice();
 
-        // 4. 포인트 사용하기
+        // 5. 사용자 나무 색 변경
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
         Member member = memberRepository.findById(memberId)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );
-        member.usePoint(amount);
-
-        // 5. 사용자 나무 색 변경
         Integer treeColorId = treeColorRepository.findById(gotchaTreeColor.getId())
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_TREE_COLOR)
             )
             .getId();
         member.changeTreeColor(treeColorId);
+
+        // 6. 포인트 사용하기
+        member.usePoint(amount);
 
         return new ProductTreeColorUpdateResDto(gotchaTreeColor.getName());
     }
