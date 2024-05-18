@@ -31,9 +31,10 @@ const LastDay = () => {
 export const setDayInfo = (
   dayInfo: IDayInfo[],
   dayOfWeekFirst: number,
+  thisMonth? : boolean
 ): IDayInfo[] => {
   let dayInfoList: IDayInfo[] = [];
-  const today = Today();
+  const today = thisMonth? Today() : LastDay();
 
   for (let i = 0; i < dayOfWeekFirst; i++) {
     dayInfoList.push({

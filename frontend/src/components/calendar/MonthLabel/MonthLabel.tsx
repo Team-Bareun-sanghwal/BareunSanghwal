@@ -1,6 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-
-import { getMonth } from '../util';
+import { getMonth,getYear } from '../util';
 interface IMonthLabel {
   year: number;
   month: number;
@@ -26,7 +25,7 @@ export const MonthLabel = ({ year, month, setMonth, setYear }: IMonthLabel) => {
         <p className="flex font-bold text-3xl text-center items center">
           {month}월
         </p>
-        {getMonth(false) !== month + '' ? (
+        {!(parseInt(getMonth(false))=== month && parseInt(getYear()) === year)? (
           <ChevronRightIcon
             onClick={() => nextMonth(year, month)}
             className="w-8 h-8"

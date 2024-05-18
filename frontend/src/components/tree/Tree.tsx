@@ -98,7 +98,7 @@ export default function Tree({ color,level, time}: {color : string, level : numb
   const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
   return (
     <>
-        <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
+       <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
           <ambientLight intensity={0.6} />
           <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
           <directionalLight position={[-10, 10, 10]} intensity={time==='night'? 0.6 : 2} />

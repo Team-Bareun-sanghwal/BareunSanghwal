@@ -41,12 +41,16 @@ export const Calender = ({ themeColor }: { themeColor: ThemeColor }) => {
   );
 
   useEffect(() => {
+    console.log(parseInt(getYear()) === year && parseInt(getMonth(false)) === month)
     getStreaks(year, month, habitId)
       .then((response) => {
         console.log(response.data);
         const { achieveProportion, dayInfo, dayOfWeekFirst } = response.data;
         setAchieveProportion(achieveProportion);
-        setDays(setDayInfo(dayInfo, dayOfWeekFirst));
+        setDays(setDayInfo(dayInfo, dayOfWeekFirst,(
+          parseInt(getYear()) === year && parseInt(getMonth(false)) === month
+        ))
+        );
       })
       .catch(() => {
         setAchieveProportion(0);

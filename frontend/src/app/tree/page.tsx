@@ -58,7 +58,6 @@ export default async function Page() {
         <Tree color={treeColor} level={treeLevel} time={Time()} />
         <div className="absolute bottom-0 w-full gap-3 p-3 ">
           <div className="flex flex-col justify-center gap-4">
-            <MyPoint />
             {response?.data.products.map((item: IItem) => (
               <Item
                 key={item.key}
