@@ -187,7 +187,8 @@ public class MemberServiceImpl implements MemberService {
         return isNickNameNull || isBirthNull || isGenderNull || isJobNull;
     }
 
-    private Tree getDefaultTree() {
+    @Transactional(readOnly = true)
+    protected Tree getDefaultTree() {
         return treeRepository.findById(DEFAULT_TREE_ID)
             .orElseGet(
                 () -> {
@@ -201,7 +202,8 @@ public class MemberServiceImpl implements MemberService {
             );
     }
 
-    private Integer getDefaultStreakColorId() {
+    @Transactional(readOnly = true)
+    protected Integer getDefaultStreakColorId() {
         return streakColorRepository.findByName(DEFAULT_STREAK_COLOR_NAME)
             .orElseGet(
                 () -> {
@@ -216,7 +218,8 @@ public class MemberServiceImpl implements MemberService {
             .getId();
     }
 
-    private Integer getDefaultTreeColorId() {
+    @Transactional(readOnly = true)
+    protected Integer getDefaultTreeColorId() {
         return treeColorRepository.findByName(DEFAULT_TREE_COLOR_NAME)
             .orElseGet(
                 () -> {
@@ -232,8 +235,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void logout(String refreshToken) {
+    @Transactional(readOnly = true)
+    public void logout(String accessToken, String refreshToken) {
+        AuthToken accessAuthToken = authTokenProvider.tokenToAuthToken(accessToken);
         AuthToken refreshAuthToken = authTokenProvider.tokenToAuthToken(refreshToken);
+
         Long id = AuthUtil.getMemberIdFromAuthentication();
         Long targetId = authTokenProvider.getMemberIdFromToken(refreshAuthToken);
 
@@ -242,7 +248,8 @@ public class MemberServiceImpl implements MemberService {
             throw new AuthException(SecurityErrorCode.UNMATCHED_AUTHENTICATION);
         }
 
-        authTokenService.revoke(id, refreshToken);
+        authTokenService.revokeAccessToken(id, accessAuthToken);
+        authTokenService.revokeRefreshToken(id, refreshAuthToken);
     }
 
     @Override
@@ -250,7 +257,6 @@ public class MemberServiceImpl implements MemberService {
     public void update(MemberUpdateReqDto memberUpdateReqDto) {
         Member member = getCurrentMember();
         member.update(memberUpdateReqDto);
-        // memberRepository.save(member);
     }
 
     @Override
@@ -581,7 +587,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberTreePointResDto treePoint() {
         Member member = getCurrentMember();
 

@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 public class SecurityErrorResponseFactory {
 
-    public static ResponseEntity<?> create(AuthException exception) {
+    public static ResponseEntity<BaseResponse<Void>> create(AuthException exception) {
         return ResponseEntity
             .status(
                 exception.getErrorCode().getStatus()

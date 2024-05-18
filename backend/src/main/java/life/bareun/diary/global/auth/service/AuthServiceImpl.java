@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
         } catch (JwtException e) {
             throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
         }
-        if (authTokenService.isRevoked(refreshToken)) {
+        if (authTokenService.isRevokedRefreshToken(refreshAuthToken)) {
             throw new AuthException(SecurityErrorCode.REVOKED_REFRESH_TOKEN);
         }
 

@@ -24,7 +24,7 @@ public interface AuthTokenProvider {
 
     Long getMemberIdFromToken(AuthToken authToken);
 
-    Duration getExpiry(AuthToken refreshAuthToken);
+    Duration getExpiry(AuthToken authToken);
 
     String addPrefix(String accessToken);
 

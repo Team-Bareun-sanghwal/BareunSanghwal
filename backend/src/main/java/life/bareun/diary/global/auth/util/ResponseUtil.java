@@ -38,12 +38,6 @@ public class ResponseUtil {
         HttpServletResponse response,
         BaseResponse<?> baseResponse
     ) throws IOException {
-        GsonUtil.toJsonBytesUtf8(
-            ResponseEntity
-                .status(baseResponse.getStatus())
-                .body(baseResponse)
-        );
-
         try (
             ServletOutputStream outputStream = response.getOutputStream()
         ) {
