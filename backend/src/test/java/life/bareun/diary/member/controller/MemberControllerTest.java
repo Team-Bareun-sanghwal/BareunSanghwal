@@ -37,8 +37,10 @@ import life.bareun.diary.member.repository.TreeRepository;
 import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
 import life.bareun.diary.product.entity.TreeColor;
+import life.bareun.diary.product.entity.TreeColorGrade;
 import life.bareun.diary.product.repository.StreakColorGradeRepository;
 import life.bareun.diary.product.repository.StreakColorRepository;
+import life.bareun.diary.product.repository.TreeColorGradeRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
 import life.bareun.diary.streak.entity.MemberDailyStreak;
 import life.bareun.diary.streak.entity.MemberTotalStreak;
@@ -81,6 +83,8 @@ public class MemberControllerTest {
     private TreeRepository treeRepository;
     @Autowired
     private TreeColorRepository treeColorRepository;
+    @Autowired
+    private TreeColorGradeRepository treeColorGradeRepository;
     @Autowired
     private StreakColorGradeRepository streakColorGradeRepository;
     @Autowired
@@ -138,7 +142,14 @@ public class MemberControllerTest {
         testTreeColor = treeColorRepository.save(
             new TreeColor(
                 1,
-                "TEST_TREE_COLOR"
+                "TEST_TREE_COLOR",
+                treeColorGradeRepository.save(
+                    new TreeColorGrade(
+                        1,
+                        "TEST_TREE_GRADE",
+                        1.0F
+                    )
+                )
             )
         );
 
