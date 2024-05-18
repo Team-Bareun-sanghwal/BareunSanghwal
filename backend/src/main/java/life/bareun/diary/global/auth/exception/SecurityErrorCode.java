@@ -16,8 +16,8 @@ public enum SecurityErrorCode {
     INVALID_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "인증 정보가 유효하지 않습니다."),
     NO_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "액세스 토큰 발급을 위한 정보가 없습니다"),
     UNMATCHED_AUTHENTICATION(HttpStatus.BAD_REQUEST, "인증 정보가 일치하지 않습니다."),
-    REVOKED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "로그아웃된 사용자입니다.");
-
+    REVOKED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "로그아웃된 사용자의 액세스 토큰입니다."),
+    REVOKED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "로그아웃된 사용자의 리프레시 토큰입니다.");
 
     private HttpStatus status;
     private String message;
