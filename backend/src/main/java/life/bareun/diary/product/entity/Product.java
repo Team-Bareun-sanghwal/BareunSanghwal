@@ -19,7 +19,6 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "product")
-@ToString
 public class Product {
 
     @Id
@@ -32,8 +31,8 @@ public class Product {
     private String name;
 
     @Length(min = 1, max = 30)
-    @Column(name = "key")
-    private String key;
+    @Column(name = "product_key")
+    private String productKey;
 
     @Length(min = 1, max = 150)
     @Column(name = "introduction")

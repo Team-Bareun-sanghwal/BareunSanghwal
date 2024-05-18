@@ -128,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
         );
 
         // 스트릭 색상 변경권 가격을 얻고 사용자의 현재 보유 포인트와 비교한다.
-        Integer amount = productRepository.findByKey(GOTCHA_STREAK_KEY)
+        Integer amount = productRepository.findByProductKey(GOTCHA_STREAK_KEY)
             .orElseThrow(() -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT))
             .getPrice();
         if (member.getPoint() < amount) {
