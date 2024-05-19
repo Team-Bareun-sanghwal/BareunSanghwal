@@ -18,7 +18,7 @@ export const Head = async () => {
   const habitsTodayData = habitsToday.data;
   const habitListData =
     habitList.data.memeberHabitDtoList === null
-      ? { habitList: [] }
+      ? []
       : habitList.data.memeberHabitDtoList;
   return (
     <div>

@@ -1,4 +1,5 @@
 'use client';
+import Item from '@/components/point/Item/Item';
 import { CameraControls } from './CameraControls';
 import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useState, useEffect, useRef } from 'react';
@@ -9,6 +10,14 @@ import { treeConfig } from './treeConfig';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader, BackSide } from 'three';
 import {useFrame} from '@react-three/fiber';
+
+interface IItem {
+  key: 'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none';
+  name: string;
+  introduction: string;
+  description: string;
+  price: number;
+}
 function SkyDome({time}: {time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
   const texture = useLoader(TextureLoader, `/assets/background/${time}.png`);
   return (
@@ -93,9 +102,10 @@ function GiftBox() {
 }
 
 
-export default function Tree({ color,level, time}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
+export default function Tree({ color,level, time, ItemList}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight', ItemList : IItem[]}) {
   const [position, setPosition] = useState({ x: 10, y: 2, z: 12 });
   const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
+  const [selectedItem , setSelectedItem] = useState<'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'>('none');
   return (
     <>
        <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
@@ -110,6 +120,22 @@ export default function Tree({ color,level, time}: {color : string, level : numb
           <CameraControls position={position} target={target} />
         </Canvas>
         <Loader />
+        <div className="absolute bottom-0 w-full gap-3 p-3 ">
+          <div className="flex flex-col justify-center gap-4">
+            {ItemList?.map((item: IItem) => (
+              <Item
+                key={item.key}
+                keyname={item.key}
+                name={item.name}
+                introduction={item.introduction}
+                description={item.description}
+                price={item.price}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+              />
+            ))}
+        </div>
+    </div>
     </>
   );
 }

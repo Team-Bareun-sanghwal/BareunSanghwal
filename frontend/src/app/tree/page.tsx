@@ -1,4 +1,4 @@
-import Item from '@/components/point/Item/Item';
+
 import { $Fetch } from '@/apis';
 import Tree from '@/components/tree/Tree';
 import { RouteHome } from '@/components/tree/Button/RouteHome/RouteHome';
@@ -47,21 +47,7 @@ export default async function Page() {
           </div>
         </div>
         {!isHarvestedToday && <Harvest isHarvested={false} />}
-        <Tree color={treeColor} level={treeLevel} time={Time()} />
-        <div className="absolute bottom-0 w-full gap-3 p-3 ">
-          <div className="flex flex-col justify-center gap-4">
-            {response?.data.products.map((item: IItem) => (
-              <Item
-                key={item.key}
-                keyname={item.key}
-                name={item.name}
-                introduction={item.introduction}
-                description={item.description}
-                price={item.price}
-              />
-            ))}
-          </div>
-        </div>
+        <Tree color={treeColor} level={treeLevel} time={Time()} ItemList={response.data.products} />
       </div>
     </div>
   );
