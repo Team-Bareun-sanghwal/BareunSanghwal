@@ -22,11 +22,11 @@ export const HabitWrite: Story = {
     tabs: [
       {
         title: '텍스트 작성',
-        component: <TextAreaBox />,
+        component: <TextAreaBox text="안녕" setText={() => {}} />,
       },
       {
         title: '이미지 첨부',
-        component: <ImageUploadBox />,
+        component: <ImageUploadBox image={null} setImage={() => {}} />,
       },
     ],
   },

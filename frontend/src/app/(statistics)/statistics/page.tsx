@@ -1,65 +1,31 @@
-import { NavBar, RecapContentBox, TabBox } from '@/components';
+import { GuideBox, NavBar, RecapContentBox, TabBox } from '@/components';
 import { StatisticsContent } from '@/components/statistics/StatisticsContent/StatisticsContent';
+import { getRecapList } from '../_apis/getRecapList';
 
-const recapTotalData = [
-  {
-    year: 2024,
-    recapList: [
-      {
-        recapId: 16,
-        image: 'basic',
-        period: new Date('2024-04-26'),
-      },
-      {
-        recapId: 18,
-        image: 'basic',
-        period: new Date('2024-03-26'),
-      },
-      {
-        recapId: 19,
-        image: 'basic',
-        period: new Date('2024-02-26'),
-      },
-      {
-        recapId: 19,
-        image: 'basic',
-        period: new Date('2024-01-26'),
-      },
-    ],
-  },
-  {
-    year: 2023,
-    recapList: [
-      {
-        recapId: 5,
-        image: 'basic',
-        period: new Date('2023-12-26'),
-      },
-      {
-        recapId: 7,
-        image: 'basic',
-        period: new Date('2023-11-26'),
-      },
-    ],
-  },
-];
+export default async function Page() {
+  const result = await getRecapList();
+  const recapTotalData = result.recapGroupList;
 
-const tabs = [
-  {
-    title: '리포트',
-    component: <StatisticsContent />,
-  },
-  {
-    title: '리캡',
-    component: <RecapContentBox recapTotalData={recapTotalData} />,
-  },
-];
+  const tabs = [
+    {
+      title: '리포트',
+      component: <StatisticsContent />,
+    },
+    {
+      title: '리캡',
+      component:
+        recapTotalData.length === 0 ? (
+          <GuideBox guideText="아직 리캡을 만들 충분한 데이터가 없어요! 해빗을 달성하고 리캡을 확인하실 수 있어요" />
+        ) : (
+          <RecapContentBox recapTotalData={recapTotalData} />
+        ),
+    },
+  ];
 
-export default function Page() {
   return (
     <>
-      <div className="bg-custom-white px-[1rem] pt-[1rem] pb-[11rem] flex flex-col justify-between min-h-full">
-        <p className="text-custom-black custom-bold-text mb-[4rem]">리포트</p>
+      <div className="px-[1rem] pt-[1rem] pb-[11rem] flex flex-col gap-[1rem] min-h-full">
+        <span className="text-custom-black custom-bold-text">리포트</span>
         <TabBox tabs={tabs} />
       </div>
       <NavBar mode="REPORT" />

@@ -22,7 +22,7 @@ registerLicense(
 );
 
 interface IDayType {
-  day: string;
+  dayOfWeek: string;
   value: number;
   colorIdx: number;
 }
@@ -69,7 +69,7 @@ export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
   const yAxisConfig = {
     visible: false,
     minimum: 0,
-    maximum: maxValue + 20,
+    maximum: maxValue * 1.2,
     majorGridLines: { width: 0 },
     majorTickLines: { width: 0 },
     lineStyle: { width: 0 },
@@ -107,7 +107,7 @@ export const StatisticsBarChart = ({ data }: { data: IDayType[] }) => {
       <SeriesCollectionDirective>
         <SeriesDirective
           dataSource={processedData}
-          xName="day"
+          xName="dayOfWeek"
           yName="value"
           type="Column"
           marker={labelSettings}

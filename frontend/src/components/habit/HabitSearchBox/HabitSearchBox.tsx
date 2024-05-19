@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { IHabitListDataV2 } from '@/app/habit/_types';
 import { searchCategoryList } from '@/app/habit/_apis/searchCategoryList';
+import { GuideText } from '@/components/common/GuideText/GuideText';
 
 const HabitNameButton = ({
   name,
@@ -25,12 +26,29 @@ const HabitNameButton = ({
 
 interface IHabitSearchBox {
   selectedHabitId: number | null;
+  selectedHabitName: string | null;
   setSelectedHabitId: (selectedHabitId: number | null) => void;
+  setSelectedHabitName: (selectedHabitName: string | null) => void;
+}
+
+function isIncludeName(array: IHabitListDataV2[], name: string) {
+  let isIncluded = false;
+
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].habitName === name) {
+      isIncluded = true;
+      break;
+    }
+  }
+
+  return isIncluded;
 }
 
 export const HabitSearchBox = ({
   selectedHabitId,
+  selectedHabitName,
   setSelectedHabitId,
+  setSelectedHabitName,
 }: IHabitSearchBox) => {
   const [searchedCategoryList, setSearchedCategoryList] = useState<
     IHabitListDataV2[]
@@ -38,39 +56,60 @@ export const HabitSearchBox = ({
   const regExp = /^[ㄱ-ㅎ가-힣\s]+$/;
 
   return (
-    <section className="w-full flex flex-col gap-[1.5rem]">
-      <label className="custom-semibold-text text-custom-black">
+    <section className="w-full flex flex-col gap-[0.5rem]">
+      <label className="custom-semibold-text text-custom-matcha">
         해빗을 검색해주세요
       </label>
+
+      <GuideText text="미리 정해둔 해빗 키워드를 검색하고 하나를 골라주세요" />
 
       <input
         type="text"
         className="w-full px-[1.5rem] py-[0.7rem] rounded-[3rem] bg-transparent custom-medium-text outline-none border-[0.1rem] border-custom-medium-gray focus:border-custom-matcha"
         onChange={async (event) => {
-          // 아래 경우에 검색 API 사용
           if (
             event.target.value.length !== 0 &&
             event.target.value.replaceAll(' ', '').length !== 0
           ) {
             if (regExp.test(event.target.value)) {
-              setSelectedHabitId(null);
               const categoryList = await searchCategoryList(event.target.value);
-              if (categoryList.data.habitList.length !== 0) {
-                setSearchedCategoryList(categoryList.data.habitList);
-              }
+              setSearchedCategoryList(categoryList.data.habitList);
             }
+          } else {
+            setSearchedCategoryList([]);
           }
         }}
       ></input>
 
-      <div className="flex gap-[1rem] flex-wrap -mt-[0.5rem]">
+      <div className="flex gap-[1rem] flex-wrap">
+        {selectedHabitId &&
+          selectedHabitName &&
+          !isIncludeName(searchedCategoryList, selectedHabitName) && (
+            <HabitNameButton
+              name={selectedHabitName}
+              isSelected={true}
+              onClick={() => {
+                setSelectedHabitId(null);
+                setSelectedHabitName(null);
+              }}
+            />
+          )}
+
         {searchedCategoryList?.map((searchedHabit) => {
           return (
             <HabitNameButton
               key={`habit-${searchedHabit.habitId}`}
               name={searchedHabit.habitName}
               isSelected={selectedHabitId === searchedHabit.habitId}
-              onClick={() => setSelectedHabitId(searchedHabit.habitId)}
+              onClick={() => {
+                if (selectedHabitId === searchedHabit.habitId) {
+                  setSelectedHabitId(null);
+                  setSelectedHabitName(null);
+                } else {
+                  setSelectedHabitId(searchedHabit.habitId);
+                  setSelectedHabitName(searchedHabit.habitName);
+                }
+              }}
             />
           );
         })}

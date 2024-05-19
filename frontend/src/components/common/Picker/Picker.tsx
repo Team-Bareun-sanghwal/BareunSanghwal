@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { EmojiClickData } from 'emoji-picker-react';
+import { GuideText } from '../GuideText/GuideText';
 
 export const Picker = ({
   label,
@@ -26,10 +27,13 @@ export const Picker = ({
 
   return (
     <section className="w-full flex flex-col gap-[0.5rem]">
-      <label className="custom-semibold-text text-custom-black">{label}</label>
+      <label className="custom-semibold-text text-custom-matcha">{label}</label>
+
+      <GuideText text="해빗을 대표하는 이미지를 설정해주세요" />
+
       <div className="flex w-full relative">
         <div
-          className="w-[5rem] h-[5rem] border-2 border-custom-dark-gray bg-custom-white rounded-full flex items-center justify-center text-4xl select-none m-1"
+          className="w-[5rem] h-[5rem] border-[0.1rem] border-custom-medium-gray bg-custom-white rounded-full flex items-center justify-center text-4xl select-none m-1"
           onClick={toggleEmoji}
         >
           {selectedEmoji}

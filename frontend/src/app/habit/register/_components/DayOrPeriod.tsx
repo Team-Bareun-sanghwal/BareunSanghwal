@@ -11,6 +11,7 @@ import {
   GuideBox,
   HabitRegisterBottomSheet,
   HabitListBox,
+  AlertBox,
 } from '@/components';
 import { useState } from 'react';
 import { useOverlay } from '@/hooks/use-overlay';
@@ -29,68 +30,107 @@ interface IDayOrPeriodStepComponent {
   data: IRegisteredHabitData;
 }
 
-export const DayOrPeriod = ({
+export default function DayOrPeriod({
   onPrev,
   onNext,
   userAmountData,
   simpleHabitListData,
   data,
-}: IDayOrPeriodStepComponent) => {
+}: IDayOrPeriodStepComponent) {
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
   const [period, setPeriod] = useState<number | null>(null);
-
-  console.log(dayOfWeek);
-  console.log(period);
 
   const overlay = useOverlay();
 
   const handleRegisterOverlay = () => {
-    overlay.open(({ isOpen, close }) => (
-      <HabitRegisterBottomSheet
-        element={
-          <HabitListBox
-            alias={data?.alias}
-            completedAt={new Date()}
-            createdAt={new Date()}
-            dayList={dayOfWeek
-              .sort((a, b) => a - b)
-              .map((num) => {
-                return num === 1
-                  ? '월'
-                  : num === 2
-                    ? '화'
-                    : num === 3
-                      ? '수'
-                      : num === 4
-                        ? '목'
-                        : num === 5
-                          ? '금'
-                          : num === 6
-                            ? '토'
-                            : '일';
-              })}
-            iconSrc="/images/icon-clock.png"
-            mode="REGISTER"
-            name={data?.habitName}
-          />
-        }
-        onClose={close}
-        onConfirm={() => {
-          close();
-          onNext();
+    overlay.open(({ isOpen, close }) =>
+      !period ? (
+        <HabitRegisterBottomSheet
+          element={
+            <HabitListBox
+              alias={data?.alias}
+              completedAt={new Date()}
+              createdAt={new Date()}
+              dayList={dayOfWeek
+                .sort((a, b) => a - b)
+                .map((num) => {
+                  return num === 1
+                    ? '월'
+                    : num === 2
+                      ? '화'
+                      : num === 3
+                        ? '수'
+                        : num === 4
+                          ? '목'
+                          : num === 5
+                            ? '금'
+                            : num === 6
+                              ? '토'
+                              : '일';
+                })}
+              iconSrc={data?.icon || ''}
+              mode="REGISTER"
+              name={data?.habitName}
+            />
+          }
+          onClose={close}
+          onConfirm={() => {
+            close();
+            onNext();
 
-          if (data.habitId && data.alias && data.icon)
-            registerHabit(
-              data.habitId,
-              data.alias,
-              data.icon,
-              dayOfWeek.length === 0 ? null : dayOfWeek,
-              period,
-            );
-        }}
-        open={isOpen}
-      />
+            if (data.habitId && data.alias && data.icon)
+              registerHabit(
+                data.habitId,
+                data.alias,
+                data.icon,
+                dayOfWeek.length === 0 ? null : dayOfWeek,
+                period,
+              );
+          }}
+          open={isOpen}
+        />
+      ) : (
+        <HabitRegisterBottomSheet
+          element={
+            <HabitListBox
+              alias={data?.alias}
+              completedAt={new Date()}
+              createdAt={new Date()}
+              period={period}
+              iconSrc={data?.icon || ''}
+              mode="REGISTER"
+              name={data?.habitName}
+            />
+          }
+          onClose={close}
+          onConfirm={async () => {
+            if (data.habitId && data.alias && data.icon) {
+              const response = await registerHabit(
+                data.habitId,
+                data.alias,
+                data.icon,
+                dayOfWeek.length === 0 ? null : dayOfWeek,
+                period,
+              );
+
+              if (response.status !== 201) handleAlertBox();
+              else {
+                onNext();
+              }
+              close();
+            }
+          }}
+          open={isOpen}
+        />
+      ),
+    );
+  };
+
+  const handleAlertBox = () => {
+    overlay.open(({ isOpen }) => (
+      <AlertBox label="해빗 등록에 실패했습니다" mode="ERROR" open={isOpen} />
     ));
+    setTimeout(() => overlay.close(), 1000);
   };
 
   return (
@@ -116,7 +156,7 @@ export const DayOrPeriod = ({
             {
               title: '요일',
               component: (
-                <div className="flex flex-col gap-[1rem]">
+                <div className="flex flex-col gap-[3rem]">
                   <HabitRegisterDayChart
                     dayOfWeek={dayOfWeek}
                     setDayOfWeek={setDayOfWeek}
@@ -181,9 +221,11 @@ export const DayOrPeriod = ({
 
       <Button
         isActivated={dayOfWeek.length !== 0 || period ? true : false}
-        label="다음"
-        onClick={handleRegisterOverlay}
+        label="완료"
+        onClick={
+          dayOfWeek.length !== 0 || period ? handleRegisterOverlay : () => {}
+        }
       />
     </div>
   );
-};
+}

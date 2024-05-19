@@ -14,6 +14,8 @@ type Story = StoryObj<typeof meta>;
 export const Main: Story = {
   args: {
     selectedHabitId: 1,
+    selectedHabitName: '안녕',
     setSelectedHabitId: () => {},
+    setSelectedHabitName: () => {},
   },
 };

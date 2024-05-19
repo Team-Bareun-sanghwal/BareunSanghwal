@@ -14,11 +14,14 @@ interface IBottomSheetProps {
     | 'PURCHASE_STREAK'
     | 'PURCHASE_TREE'
     | 'PURCHASE_RECOVERY'
+    | 'RESULT'
     | 'NONE';
   open: boolean;
   onClose?: () => void;
   onConfirm?: () => void;
+  children?: React.ReactNode;
 }
+
 const container = {
   show: { y: 0, opacity: 1 },
   hidden: { y: '100%', opacity: 0 },
@@ -31,6 +34,7 @@ export const BottomSheet = ({
   open,
   onClose,
   onConfirm,
+  children,
 }: IBottomSheetProps) => {
   const imageName =
     mode === 'POSITIVE'
@@ -49,7 +53,7 @@ export const BottomSheet = ({
   return (
     <>
       {open && (
-        <div className="absolute top-0 left-0 size-full bg-custom-black-with-opacity"></div>
+        <div className="z-40 absolute top-0 left-0 w-full h-[200vh] bg-custom-black-with-opacity"></div>
       )}
 
       <motion.section
@@ -62,7 +66,7 @@ export const BottomSheet = ({
           damping: 40,
           stiffness: 400,
         }}
-        className="fixed bottom-0 left-0 w-full min-w-[32rem] min-h-[24rem] p-[1rem] rounded-t-[1rem] bg-custom-white overflow-hidden flex flex-col"
+        className="z-50 fixed bottom-0 left-0 w-full min-w-[32rem] min-h-[24rem] p-[1rem] rounded-t-[1rem] bg-custom-white overflow-hidden flex flex-col"
       >
         <div className="grow relative">
           <div className="w-2/3 pl-[1rem] py-[1rem] flex flex-col gap-[1rem]">
@@ -71,7 +75,9 @@ export const BottomSheet = ({
               {description}
             </span>
           </div>
-
+          <span className="flex flex-col w-full content-center custom-regular-text text-pretty">
+            {children}
+          </span>
           {mode !== 'NONE' && (
             <Image
               priority={true}
@@ -89,7 +95,17 @@ export const BottomSheet = ({
             <Button isActivated={false} label="취소" onClick={onClose} />
           )}
           {onConfirm && (
-            <Button isActivated={true} label="확인" onClick={onConfirm} />
+            <Button
+              isActivated={true}
+              label={
+                mode === 'PURCHASE_RECOVERY' ||
+                mode ==='PURCHASE_STREAK'||
+                mode ==='PURCHASE_TREE'
+                  ? '구매'
+                  : '확인'
+              }
+              onClick={onConfirm}
+            />
           )}
         </div>
       </motion.section>

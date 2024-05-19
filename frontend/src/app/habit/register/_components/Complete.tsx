@@ -2,7 +2,7 @@
 
 import { Button, ProgressBox } from '@/components';
 import dynamic from 'next/dynamic';
-import lottieJson from '@/../public/lotties/lottie-music.json';
+import lottieJson from '@/../public/lotties/lottie-lego.json';
 
 interface ICompleteStepComponent {
   onNext: () => void;
@@ -10,7 +10,7 @@ interface ICompleteStepComponent {
 
 const LottieBox = dynamic(() => import('react-lottie-player'), { ssr: false });
 
-export const Complete = ({ onNext }: ICompleteStepComponent) => {
+export default function Complete({ onNext }: ICompleteStepComponent) {
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
       <div className="w-full flex flex-col gap-[3rem] pb-[2rem]">
@@ -46,4 +46,4 @@ export const Complete = ({ onNext }: ICompleteStepComponent) => {
       <Button isActivated={true} label="확인" onClick={onNext} />
     </div>
   );
-};
+}

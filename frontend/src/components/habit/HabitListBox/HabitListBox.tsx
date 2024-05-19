@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import {
   ChevronRightIcon,
   ArrowPathIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
 
 interface IHabitListBoxProps {
   mode: 'GOING' | 'UPDATE' | 'COMPLETED' | 'REGISTER';
@@ -13,11 +13,42 @@ interface IHabitListBoxProps {
   alias: string | null;
   iconSrc: string;
   dayList?: string[];
+  period?: number;
+  currentStreak?: number;
+  memberHabitId?: number;
   createdAt: Date;
   completedAt?: Date;
   onDeleteClick?: () => void;
   onCompleteClick?: () => void;
+  onRegisterClick?: () => void;
 }
+
+const mapNumberToString = (num: number) => {
+  switch (num) {
+    case 0:
+      return [0, 1, 2, 3, 5, 6, 8, 9, 11, 12, 13, 14];
+    case 1:
+      return [0, 1, 4, 7, 10, 12, 13, 14];
+    case 2:
+      return [0, 1, 2, 5, 6, 7, 8, 9, 12, 13, 14];
+    case 3:
+      return [0, 1, 2, 5, 6, 7, 8, 11, 12, 13, 14];
+    case 4:
+      return [0, 2, 3, 5, 6, 7, 8, 11, 14];
+    case 5:
+      return [0, 1, 2, 3, 6, 7, 8, 11, 12, 13, 14];
+    case 6:
+      return [0, 1, 2, 3, 6, 7, 8, 9, 11, 12, 13, 14];
+    case 7:
+      return [0, 1, 2, 3, 5, 6, 8, 11, 14];
+    case 8:
+      return [0, 1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 13, 14];
+    case 9:
+      return [0, 1, 2, 3, 5, 6, 7, 8, 11, 14];
+  }
+
+  return [0, 1, 2, 3, 5, 6, 8, 9, 11, 12, 13, 14];
+};
 
 export const HabitListBox = ({
   mode,
@@ -25,25 +56,28 @@ export const HabitListBox = ({
   alias,
   iconSrc,
   dayList,
+  period,
+  currentStreak,
+  memberHabitId,
   createdAt,
   completedAt,
   onDeleteClick,
   onCompleteClick,
+  onRegisterClick,
 }: IHabitListBoxProps) => {
+  const router = useRouter();
+
   return (
     <section className="w-full rounded-[1rem] p-[1rem] flex flex-col gap-[1rem] bg-custom-light-gray">
-      <div className="flex items-center justify-between gap-[1rem]">
+      <div
+        className="flex items-center justify-between gap-[1rem]"
+        onClick={() => router.push(`/habit/list/${memberHabitId}`)}
+      >
         <div className="flex gap-[0.5rem] items-center flex-shrink-0">
           <button
             className={`${mode !== 'COMPLETED' ? 'bg-gradient-to-r from-custom-pink to-custom-sky' : 'bg-custom-white'} w-[6rem] h-[6rem] rounded-full flex items-center justify-center`}
           >
-            <Image
-              src={iconSrc}
-              width={35}
-              height={35}
-              alt="해빗 아이콘"
-              className="bg-contain"
-            />
+            <span className="text-[3rem]">{iconSrc}</span>
           </button>
 
           <div className="flex flex-col gap-[0.2rem]">
@@ -51,7 +85,7 @@ export const HabitListBox = ({
             <span className="block w-fit px-[0.8rem] py-[0.1rem] text-[1rem] font-medium rounded-[1rem] bg-custom-medium-gray">
               {name}
             </span>
-            <span className="text-custom-dark-gray text-[0.8rem] font-light">
+            <span className="text-custom-dark-gray text-[1rem] font-light">
               {mode === 'REGISTER' ? (
                 <></>
               ) : mode === 'COMPLETED' ? (
@@ -63,23 +97,43 @@ export const HabitListBox = ({
           </div>
         </div>
 
-        {mode !== 'REGISTER' ? (
-          <div className="grid grid-cols-11 gap-y-[0.1rem] gap-x-[0.2rem]">
-            {Array.from({ length: 55 }, () => 0).map((_, index) => {
-              const selectedPixelIndexes = [
-                0, 1, 2, 13, 24, 23, 22, 33, 44, 45, 46, 4, 5, 6, 17, 28, 27,
-                26, 39, 50, 49, 48, 8, 9, 20, 31, 42, 53, 52, 54,
-              ];
-
-              return (
-                <div
-                  key={`box-${index}`}
-                  className={`${selectedPixelIndexes.includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
-                ></div>
-              );
-            })}
+        {mode !== 'REGISTER' && currentStreak !== undefined ? (
+          <div className="flex gap-[0.7rem]">
+            {Math.floor(currentStreak / 100) !== 0 && (
+              <div className="grid grid-cols-3 gap-y-[0.1rem] gap-x-[0.2rem]">
+                {Array.from({ length: 15 }, () => 0).map((_, index) => {
+                  return (
+                    <div
+                      key={`box1-${index}`}
+                      className={`${mapNumberToString(Math.floor(currentStreak / 100)).includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
+                    ></div>
+                  );
+                })}
+              </div>
+            )}
+            <div className="grid grid-cols-3 gap-y-[0.1rem] gap-x-[0.2rem]">
+              {Math.floor((currentStreak % 100) / 10) !== 0 &&
+                Array.from({ length: 15 }, () => 0).map((_, index) => {
+                  return (
+                    <div
+                      key={`box2-${index}`}
+                      className={`${mapNumberToString(Math.floor((currentStreak % 100) / 10)).includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
+                    ></div>
+                  );
+                })}
+            </div>
+            <div className="grid grid-cols-3 gap-y-[0.1rem] gap-x-[0.2rem]">
+              {Array.from({ length: 15 }, () => 0).map((_, index) => {
+                return (
+                  <div
+                    key={`box3-${index}`}
+                    className={`${mapNumberToString(Math.floor(currentStreak % 10)).includes(index) ? 'bg-custom-green' : 'bg-custom-white opacity-60'} w-[0.7rem] h-[0.8rem] rounded-sm`}
+                  ></div>
+                );
+              })}
+            </div>
           </div>
-        ) : (
+        ) : dayList && !period ? (
           <div className="flex gap-[0.2rem] items-center justify-end flex-wrap">
             {dayList?.map((day, index) => {
               return (
@@ -92,6 +146,10 @@ export const HabitListBox = ({
               );
             })}
           </div>
+        ) : (
+          mode === 'REGISTER' && (
+            <div className="px-[1rem] h-[2rem] flex items-center justify-center bg-custom-matcha text-custom-white custom-light-text rounded-[1rem]">{`${period}일마다`}</div>
+          )
         )}
       </div>
 
@@ -102,10 +160,10 @@ export const HabitListBox = ({
       {mode !== 'COMPLETED' && mode !== 'REGISTER' && (
         <nav className="mx-auto flex items-center cursor-pointer">
           {mode === 'GOING' ? (
-            <>
+            <div className="w-full flex items-center" onClick={onRegisterClick}>
               <span className="text-custom-dark-gray">기록하러 가기</span>
               <ChevronRightIcon className="w-[1.8rem] h-[1.8rem] text-custom-dark-gray" />
-            </>
+            </div>
           ) : (
             <ul className="flex divide-x-[0.1rem] divide-custom-medium-gray">
               <li

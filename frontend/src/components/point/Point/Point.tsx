@@ -1,7 +1,7 @@
 const Point = ({ point }: { point: number }) => {
   return (
-    <div className="flex border-solid border-2 border-custom-matcha bg-white p-1 text-l text-center content-center max-w-24 min-w-16 rounded-full">
-      {point === -1 ? (
+    <div className="flex  border-custom-matcha bg-white p-1 text-l text-center content-center max-w-24 min-w-16 h-10 rounded-full">
+      {point === null ? (
         <div className="w-full font-extrabold text-center">FREE</div>
       ) : (
         <>

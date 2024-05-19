@@ -1,27 +1,46 @@
 'use client';
+import Item from '@/components/point/Item/Item';
 import { CameraControls } from './CameraControls';
 import { Canvas, useThree } from '@react-three/fiber';
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { OrbitControls, Loader, useGLTF } from '@react-three/drei';
 import { MeshStandardMaterial } from 'three';
 import * as THREE from 'three';
-
+import { treeConfig } from './treeConfig';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader, BackSide } from 'three';
+import {useFrame} from '@react-three/fiber';
 
-function SkyDome() {
-  const texture = useLoader(TextureLoader, '/assets/sky.jpg');
+interface IItem {
+  key: 'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none';
+  name: string;
+  introduction: string;
+  description: string;
+  price: number;
+}
+function SkyDome({time}: {time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
+  const texture = useLoader(TextureLoader, `/assets/background/${time}.png`);
   return (
     <mesh>
-      <sphereGeometry args={[500, 60, 40]} />
+      <sphereGeometry args={[100, 60, 40]} />
       <meshBasicMaterial map={texture} side={BackSide} />
     </mesh>
   );
 }
-function Model({ color }: { color: string }) {
-  const { scene } = useGLTF('/assets/orgTree.glb');
-  scene.position.set(-4.2, 0.2, -3);
-  scene.scale.set(1.6, 1.6, 1.6);
+
+function Island() {
+  const { scene } = useGLTF('/assets/island.glb');
+  const rate = 0.5
+  scene.scale.set(rate, rate, rate)
+  scene.position.set(0, 0.5, 0);
+  return <primitive object={scene} />;
+}
+function MyTree( {color, level}: {color: string, level: number}) {
+  const {source, scaleValue, position} = treeConfig[level-1];
+  const { scene } = useGLTF(source);
+  scene.scale.set(scaleValue, scaleValue, scaleValue);
+  scene.position.set(position[0], position[1], position[2]);
+
   scene.traverse((child: THREE.Object3D) => {
     if ((child as THREE.Mesh).isMesh) {
       const name = child.name;
@@ -56,57 +75,83 @@ function Model({ color }: { color: string }) {
       }
     }
   });
-  return <primitive object={scene} />;
+  return <primitive object={scene}/>;
 }
-function OutDoor() {
-  const { scene } = useGLTF('/assets/outdoor.glb');
-  return <primitive object={scene} />;
+
+function Group({color, level}: {color : string, level : number}){
+  const groupRef = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.001;
+    }
+  });
+  return (
+    <group ref={groupRef}>
+      <MyTree color={color} level={level} />
+      <Island />
+      <GiftBox/>
+    </group>
+  )
 }
 
 function GiftBox() {
   const { scene } = useGLTF('/assets/giftbox.glb');
-  scene.position.set(-1.2, 1, 4.8);
-  scene.scale.set(0.8, 0.8, 0.8);
+  scene.position.set(-0.8, 0.82, 0.2);
+  scene.scale.set(0.4, 0.4, 0.4);
   return <primitive object={scene} />;
 }
-export default function Tree({ color }: { color: string }) {
-  const [position, setPosition] = useState({ x: 20, y: 16, z: 24 });
-  const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
 
-  const handleOnclick1 = () => {
-    setPosition({ x: 5, y: 2, z: 0 });
-    setTarget({ x: 10, y: 2, z: 0 });
-  };
 
-  const handleOnclick2 = () => {
-    setPosition({ x: 3, y: 2, z: 0 });
-    setTarget({ x: 5, y: 2, z: 0 });
-  };
+export default function Tree({ color,level, time, ItemList}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight', ItemList : IItem[]}) {
+  const [position, setPosition] = useState({ x: 10, y: 2, z: 12 });
+
+  const [selectedItem , setSelectedItem] = useState<'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'>('none');
+  const [target, setTarget] = useState({ x: 0, y: -2, z: 0 });
+
+  useEffect(() => {
+    if (selectedItem === 'gotcha_tree') {
+      setPosition({ x: 5, y: 2, z: 10 });
+      setTarget({ x: 0, y: -2, z: 0 });
+    } else {
+      setPosition({ x: 10, y: 2, z: 12 });
+      setTarget({ x: 0, y: -2, z: 0 });
+    }
+  }, [selectedItem]);
   return (
     <>
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-      >
-        <Canvas camera={{ position: [10, 1, 14], fov: 95, near: 1, far: 1000 }}>
+       <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
           <ambientLight intensity={0.6} />
           <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
-          <directionalLight position={[-10, 10, 10]} intensity={2} />
+          <directionalLight position={[-10, 10, 10]} intensity={time==='night'? 0.6 : 2} />
           <pointLight position={[-10, -10, -10]} />
           <Suspense fallback={null}>
-            <Model color={color} />
-            <GiftBox />
-            <OutDoor />
-            <SkyDome />
+            <Group color={color} level={level} />
+            <SkyDome time ={time}/>
           </Suspense>
+          <OrbitControls
+            target={[target.x, target.y, target.z]}
+            maxPolarAngle={Math.PI / 2.2}
+            minPolarAngle={Math.PI / 3}
+        />
           <CameraControls position={position} target={target} />
         </Canvas>
         <Loader />
-      </div>
+        <div className="absolute bottom-0 w-full gap-3 p-3 ">
+          <div className="flex flex-col justify-center gap-4">
+            {ItemList?.map((item: IItem) => (
+              <Item
+                key={item.key}
+                keyname={item.key}
+                name={item.name}
+                introduction={item.introduction}
+                description={item.description}
+                price={item.price}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+              />
+            ))}
+        </div>
+    </div>
     </>
   );
 }
