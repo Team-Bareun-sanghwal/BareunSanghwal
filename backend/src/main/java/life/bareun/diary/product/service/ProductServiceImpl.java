@@ -27,12 +27,15 @@ import life.bareun.diary.product.repository.StreakColorRepository;
 import life.bareun.diary.product.repository.TreeColorGradeRepository;
 import life.bareun.diary.product.repository.TreeColorRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
+
     private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
     private static final String GOTCHA_TREE_KEY = "gotcha_tree";
     private static final String STREAK_RECOVERY_KEY = "recovery";
@@ -97,8 +100,8 @@ public class ProductServiceImpl implements ProductService {
             .sum();
 
         // origin 이상 bound 미만의 무작위 실수 값
-        // 구간 [1.0, 101.0)의 수 중 랜덤 값을 추출하고
-        // 열린 구간 (100.0, 101.0) 사이의 수가 추출되면 100.0으로 치환한다.
+        // 구간 [1.0, 111.0)의 수 중 랜덤 값을 추출하고
+        // 열린 구간 (110.0, 111.0) 사이의 수가 추출되면 110.0으로 치환한다.
         double gotchaGradeWeight = Math.min((RANDOM.nextFloat() * bound) + 1.0, bound);
 
         // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
@@ -106,17 +109,18 @@ public class ProductServiceImpl implements ProductService {
         StreakColorGrade gotchaGrade = null;
         for (StreakColorGrade streakColorGrade : streakColorGrades) {
             weightSum += streakColorGrade.getWeight();
-            if (gotchaGradeWeight < weightSum) {
+            if (gotchaGradeWeight <= weightSum) {
                 gotchaGrade = streakColorGrade;
                 break;
             }
         }
 
         // 앞에서 랜덤으로 뽑은 등급에 해당하는 스트릭 색상 리스트 얻기
-        List<StreakColor> streakColors = streakColorRepository.findAllByStreakColorGrade(
-            gotchaGrade);
+        List<StreakColor> streakColors =
+            streakColorRepository.findAllByStreakColorGrade(gotchaGrade);
 
         // 랜덤 스트릭 색상 뽑기
+        // log.info("streakColors.size(): {}", streakColors.size());
         StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
 
         // 현재 사용자 엔티티 얻기
@@ -134,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
         // 변경된 포인트 보유량과 스트릭 색상을 적용한다.
         member.changeStreakColor(gotchaStreakColor.getId());
         member.usePoint(amount);
-
+        log.info(gotchaStreakColor.getName());
         return new ProductStreakColorUpdateResDto(gotchaStreakColor.getName());
     }
 
@@ -172,6 +176,7 @@ public class ProductServiceImpl implements ProductService {
         // 3. 등급 내에서 랜덤 뽑기
         List<TreeColor> treeColors = treeColorRepository.findAllByTreeColorGrade(gotchaGrade);
         int treeColorCount = treeColors.size();
+        // log.info("treeColor bound: {}", treeColorCount);
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 4. 나무 색 변경권 가격 정보 얻기
