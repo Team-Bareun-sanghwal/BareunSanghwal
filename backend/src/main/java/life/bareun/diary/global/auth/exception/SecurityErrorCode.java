@@ -10,6 +10,7 @@ public enum SecurityErrorCode {
     NO_OAUTH_INFO(HttpStatus.BAD_REQUEST, "OAuth2 provider 정보가 존재하지 않습니다."),
     BAD_OAUTH_INFO(HttpStatus.BAD_REQUEST, "잘못된 OAuth2 provider 정보입니다."),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "허용되지 않은 사용자입니다."),
     AUTHENTICATION_FAILURE(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다."),
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료되었습니다."),
     EXPIRED_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "다시 로그인하십시오."),
