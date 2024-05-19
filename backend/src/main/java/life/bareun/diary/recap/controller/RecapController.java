@@ -22,13 +22,6 @@ public class RecapController {
 
     private final RecapService recapService;
 
-    @PostMapping
-    public ResponseEntity<BaseResponse<String>> createRecap() {
-        recapService.createRecap();
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(BaseResponse.success(HttpStatus.CREATED.value(), "리캡 생성을 성공하였습니다.", null));
-    }
-
     @GetMapping
     public ResponseEntity<BaseResponse<RecapListResDto>> findAllRecap() {
         return ResponseEntity.status(HttpStatus.OK).body(
