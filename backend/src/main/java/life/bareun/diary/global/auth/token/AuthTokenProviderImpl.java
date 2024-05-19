@@ -100,8 +100,6 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     @Override
     public void validate(AuthToken authToken) throws JwtException {
         // token의 claim을 얻는 과정에서 예외 발생 ≡ token이 유효하지 않다
-        // 단 ExpiredJwtException 예외는 무시되고, 반환값은 null이 된다.
-        // 즉 예외로 취급되지 않으면서 검증 결과는 false가 된다.
         Claims claims = authToken.getClaims(this.key);
     }
 
