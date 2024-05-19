@@ -8,7 +8,7 @@ const Pallete = ({ color }: { color: ThemeColor }) => {
     color === 'rose' ||
     color === 'sunny_summer';
   return (
-    <div className="flex h-10 gap-2 p-1 m-2.5 height">
+    <div className="grid grid-cols-7 h-20 gap-8 p-1">
       {Array.from({ length: 7 }, (_, i) => (
         <Streak
           themeColor={color}

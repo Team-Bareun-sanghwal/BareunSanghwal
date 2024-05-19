@@ -1,5 +1,12 @@
 import Image from 'next/image';
-export const DailyPhrase = ({ phrase }: { phrase: string }) => {
+import { $Fetch } from '@/apis';
+export const DailyPhrase = async () => {
+  const response = await $Fetch({
+    method: 'GET',
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/members/daily-phrase`,
+    cache: 'default',
+  });
+  const { phrase } = response.data;
   return (
     <>
       <div className="flex justify-between overflow-hidden items-center m-4 h-24 bg-custom-light-gray text-custom-dark-gray text-xl rounded-md ">

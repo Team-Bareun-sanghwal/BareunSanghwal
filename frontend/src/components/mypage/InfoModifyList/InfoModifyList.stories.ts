@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InfoModifyList } from './InfoModifyList';
+import InfoModifyList from './InfoModifyList';
 
 const meta = {
   title: 'MyPage/InfoModifyList',

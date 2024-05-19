@@ -24,22 +24,22 @@ export const Recap: Story = {
           {
             recapId: 16,
             image: 'basic',
-            period: new Date('2024-03-26'),
+            period: '2024-03-26',
           },
           {
             recapId: 18,
             image: 'basic',
-            period: new Date('2024-02-26'),
+            period: '2024-02-26',
           },
           {
             recapId: 19,
             image: 'basic',
-            period: new Date('2024-01-26'),
+            period: '2024-01-26',
           },
           {
             recapId: 19,
             image: 'basic',
-            period: new Date('2024-01-26'),
+            period: '2024-01-26',
           },
         ],
       },
@@ -49,12 +49,12 @@ export const Recap: Story = {
           {
             recapId: 5,
             image: 'basic',
-            period: new Date('2023-12-26'),
+            period: '2023-12-26',
           },
           {
             recapId: 7,
             image: 'basic',
-            period: new Date('2023-11-26'),
+            period: '2023-11-26',
           },
         ],
       },

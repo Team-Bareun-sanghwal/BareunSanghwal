@@ -30,7 +30,7 @@ export const AlertBox = ({ mode, label, open }: IAlertBoxProps) => {
         damping: 40,
         stiffness: 400,
       }}
-      className="fixed w-full bottom-0 flex justify-center items-center"
+      className="z-[100] fixed w-full bottom-0 flex justify-center items-center"
     >
       <div className="px-[1.5rem] py-[1rem] flex items-center gap-[0.8rem] bg-custom-black-with-opacity rounded-[2rem]">
         {mode === 'SUCCESS' ? (

@@ -25,7 +25,7 @@ export const HabitRegisterBottomSheet = ({
   return (
     <>
       {open && (
-        <div className="absolute top-0 left-0 size-full bg-custom-black-with-opacity"></div>
+        <div className="absolute top-0 left-0 w-full h-[150vh] bg-custom-black-with-opacity"></div>
       )}
 
       <motion.section

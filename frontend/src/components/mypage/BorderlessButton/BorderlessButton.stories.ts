@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BorderlessButton } from './BorderlessButton';
+import BorderlessButton from './BorderlessButton';
 
 const meta = {
   title: 'MyPage/BorderlessButton',

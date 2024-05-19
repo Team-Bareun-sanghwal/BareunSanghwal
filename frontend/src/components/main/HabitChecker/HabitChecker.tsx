@@ -1,23 +1,23 @@
 import { getTimeRemaining } from '@/components/calendar/util';
-import { MemberStreakResponse } from '@/app/mock';
-import { LongestStreak } from '../LongestStreak/LongestStreak';
+
 import Image from 'next/image';
 interface IHabitCheckerProps {
   achieveCount: number;
   totalCount: number;
 }
-interface IHabitChecker {
-  habitCheckerTitle: string;
-  habitCheckerText: string;
-  habitCheckerSubText: string;
-  iconPath: string;
-  isAchieved: boolean;
-  isHabit: boolean;
+interface IHabitTrackerDto {
+  name: string;
+  alias: string;
+  memberHabitId: number;
+  habitTrackerId: number;
+  icon: string;
+  succeededTime: number;
+  day: number;
 }
-const getHabitCheckerText = (
-  achieveCount: number,
-  totalCount: number,
-): IHabitChecker => {
+interface IHabitTrackerTodayDtoList {
+  habitTrackerTodayDtoList: IHabitTrackerDto[];
+}
+const getHabitCheckerText = (habitTrackerTodayDtoList: IHabitTrackerDto[]) => {
   let habitCheckerTitle = '오늘의 바른 생활';
   let habitCheckerText = '';
   let habitCheckerSubText = '';
@@ -25,13 +25,18 @@ const getHabitCheckerText = (
   let isAchieved = false;
   let isHabit = true;
 
+  const totalCount = habitTrackerTodayDtoList?.length || 0;
+  const achieveCount = habitTrackerTodayDtoList.filter(
+    (habit: IHabitTrackerDto) => habit.succeededTime != null,
+  ).length;
+
   if (totalCount === 0) {
-    habitCheckerText = '오늘 등록한 해빗이 없어요!';
+    habitCheckerText = '오늘 수행 가능한 해빗이 없어요!';
     habitCheckerSubText = '새로운 해빗을 가져보는 건 어때요?';
     iconPath = '/images/icon-check-disabled.png';
     isHabit = false;
   } else if (achieveCount < totalCount) {
-    habitCheckerText = '아직이에요...';
+    habitCheckerText = `${totalCount - achieveCount}개의 해빗이 남았어요!`;
     iconPath = '/images/icon-check-disabled.png';
   } else {
     habitCheckerText = '멋지게 해냈어요!';
@@ -49,9 +54,8 @@ const getHabitCheckerText = (
   };
 };
 export const HabitChecker = ({
-  achieveCount,
-  totalCount,
-}: IHabitCheckerProps) => {
+  habitTrackerTodayDtoList,
+}: IHabitTrackerTodayDtoList) => {
   const { hoursRemaining, minutesRemaining } = getTimeRemaining();
   const {
     habitCheckerTitle,
@@ -60,7 +64,7 @@ export const HabitChecker = ({
     iconPath,
     isAchieved,
     isHabit,
-  } = getHabitCheckerText(achieveCount, totalCount);
+  } = getHabitCheckerText(habitTrackerTodayDtoList);
   return (
     <>
       {/* Left */}

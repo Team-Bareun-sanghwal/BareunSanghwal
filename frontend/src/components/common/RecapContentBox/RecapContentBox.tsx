@@ -4,7 +4,7 @@ import Link from 'next/link';
 interface IRecapData {
   recapId: number;
   image: string;
-  period: Date;
+  period: string;
 }
 
 interface IRecapDataPerYear {
@@ -28,9 +28,11 @@ const RecapImageContent = ({
   recapId: number;
 }) => {
   return (
-    <Link href={`/recap/${recapId}`} className="relative">
-      <div className="size-full bg-custom-black-with-opacity absolute"></div>
-      <p className="absolute bottom-[0.5rem] right-[0.5rem] custom-semibold-text text-custom-white">
+    <Link
+      href={`/recap/${recapId}`}
+      className="cursor-pointer h-[11rem] relative"
+    >
+      <p className="px-[0.5rem] absolute bottom-0 right-0 custom-semibold-text bg-custom-black-with-opacity text-custom-white">
         {dateText}
       </p>
 
@@ -39,7 +41,7 @@ const RecapImageContent = ({
         width={100}
         height={100}
         alt={'clock'}
-        className="size-full object-cover"
+        className="size-full object-fill"
       ></Image>
     </Link>
   );
@@ -58,19 +60,18 @@ export const RecapContentBox = ({ recapTotalData }: IRecapContentBoxProps) => {
               {`${recapYearData.year}년`}
             </label>
 
-            <ul className="w-full grid grid-cols-3">
+            <div className="w-full grid grid-cols-3 grid-flow-row-dense">
               {recapYearData.recapList.map((recap, index) => {
                 return (
-                  <li key={index}>
-                    <RecapImageContent
-                      imgSrc="/images/icon-clock.png"
-                      dateText={`${recap.period.getMonth() + 1}월`}
-                      recapId={recap.recapId}
-                    />
-                  </li>
+                  <RecapImageContent
+                    key={index}
+                    imgSrc="/images/icon-clock.png"
+                    dateText={`${recap.period.split('-')[1]}월`}
+                    recapId={recap.recapId}
+                  />
                 );
               })}
-            </ul>
+            </div>
           </section>
         );
       })}
