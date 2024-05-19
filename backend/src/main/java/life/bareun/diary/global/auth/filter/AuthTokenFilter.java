@@ -33,9 +33,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
-        log.debug("PathInfo: {}", request.getPathInfo());
-        log.debug("ContextPath: {}", request.getContextPath());
-        log.debug("ServletPath: {}", request.getServletPath());
+        log.info("PathInfo: {}", request.getPathInfo());
+        log.info("ContextPath: {}", request.getContextPath());
+        log.info("ServletPath: {}", request.getServletPath());
 
         String requestPath = request.getServletPath();
 
