@@ -125,10 +125,7 @@ public class ProductServiceImpl implements ProductService {
         StreakColor gotchaStreakColor = streakColors.get(RANDOM.nextInt(streakColors.size()));
 
         // 현재 사용자 엔티티 얻기
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id).orElseThrow(
-            () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-        );
+        Member member = getCurrentMember();
 
         // 스트릭 색상 변경권 가격을 얻고 사용자의 현재 보유 포인트와 비교한다.
         Integer amount = productRepository.findByProductKey(GOTCHA_STREAK_KEY)
@@ -184,18 +181,17 @@ public class ProductServiceImpl implements ProductService {
         TreeColor gotchaTreeColor = treeColors.get(RANDOM.nextInt(treeColorCount));
 
         // 4. 나무 색 변경권 가격 정보 얻기
+        Member member = getCurrentMember();
         Integer amount = productRepository.findByProductKey(GOTCHA_TREE_KEY)
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
             .getPrice();
-
+        if (member.getPoint() < amount) {
+            throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
+        }
+        
         // 5. 사용자 나무 색 변경
-        Long memberId = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
         Integer treeColorId = treeColorRepository.findById(gotchaTreeColor.getId())
             .orElseThrow(
                 () -> new ProductException(ProductErrorCode.NO_SUCH_TREE_COLOR)
@@ -212,11 +208,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductRecoveryPurchaseResDto buyRecovery() {
-        Long id = AuthUtil.getMemberIdFromAuthentication();
-        Member member = memberRepository.findById(id)
-            .orElseThrow(
-                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
-            );
+        Member member = getCurrentMember();
 
         MemberRecovery memberRecovery = memberRecoveryRepository.findByMember(member)
             .orElseThrow(
@@ -241,5 +233,14 @@ public class ProductServiceImpl implements ProductService {
         return ProductRecoveryPurchaseResDto.builder()
             .paidRecoveryCount(updatedMember.getPaidRecoveryCount())
             .build();
+    }
+
+    @Transactional(readOnly = true)
+    protected Member getCurrentMember() {
+        Long memberId = AuthUtil.getMemberIdFromAuthentication();
+        return  memberRepository.findById(memberId)
+            .orElseThrow(
+                () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
+            );
     }
 }
