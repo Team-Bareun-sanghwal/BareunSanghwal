@@ -1,4 +1,4 @@
-package life.bareun.diary.product;
+package life.bareun.diary.product.controller;
 
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.token.AuthToken;
@@ -30,6 +30,8 @@ import life.bareun.diary.product.entity.StreakColor;
 import life.bareun.diary.product.entity.StreakColorGrade;
 import life.bareun.diary.product.entity.TreeColor;
 import life.bareun.diary.product.entity.TreeColorGrade;
+import life.bareun.diary.product.exception.ProductErrorCode;
+import life.bareun.diary.product.exception.ProductException;
 import life.bareun.diary.product.repository.ProductRepository;
 import life.bareun.diary.product.repository.StreakColorGradeRepository;
 import life.bareun.diary.product.repository.StreakColorRepository;
@@ -86,8 +88,6 @@ public class ProductControllerTest {
     @Autowired
     private MemberDailyPhraseRepository memberDailyPhraseRepository;
     @Autowired
-    private MemberHabitRepository memberHabitRepository;
-    @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private MemberTotalStreakRepository memberTotalStreakRepository;
@@ -102,22 +102,23 @@ public class ProductControllerTest {
     private StreakService streakService;
     @Autowired
     private MemberStreakService memberStreakService;
-    @Autowired
-    private ProductService productService;
 
     // 테스트 용 데이터
     private Member testMember;
     private Tree testTree;
     private TreeColorGrade testTreeColorGrade;
     private TreeColor testTreeColor;
+    private List<String> treeColorNameList;
+    private List<String> streakColorNameList;
     private StreakColorGrade testStreakColorGrade;
     private StreakColor testStreakColor;
-
+    private Integer testStreakColorPrice;
+    private Integer testTreeColorPrice;
+    private Integer testRecoveryPrice;
     private MemberTotalStreak testMemberTotalStreak;
     private MemberRecovery testMemberRecovery;
     private MemberDailyStreak testMemberDailyStreak;
     private MemberDailyPhrase testMemberDailyPhrase;
-
     private String accessToken;
 
 
@@ -136,35 +137,56 @@ public class ProductControllerTest {
             )
         );
 
-        // 테스트용 나무 색상 데이터 생성
-        testTreeColor = treeColorRepository.save(
-            new TreeColor(
-                1,
-                "TEST_TREE_COLOR",
-                testTreeColorGrade = treeColorGradeRepository.save(
-                    new TreeColorGrade(
-                        1,
-                        "COMMON",
-                        1.0F
-                    )
-                )
+        // 상품 가격 설정
+        testStreakColorPrice = productRepository.findByProductKey("gotcha_streak")
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
             )
-        );
+            .getPrice();
+        testTreeColorPrice = productRepository.findByProductKey("gotcha_tree")
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
+            )
+            .getPrice();
+        testRecoveryPrice = productRepository.findByProductKey("recovery")
+            .orElseThrow(
+                () -> new ProductException(ProductErrorCode.NO_SUCH_PRODUCT)
+            )
+            .getPrice();
 
-        // 테스트용 스트릭 색상 데이터 생성
-        testStreakColor = streakColorRepository.save(
-            new StreakColor(
-                1,
-                "TEST_STREAK_COLOR",
-                testStreakColorGrade = streakColorGradeRepository.save(
-                    new StreakColorGrade(
-                        1L,
-                        "COMMON",
-                        1.0F
-                    )
-                )
-            )
-        );
+        // 테스트용 나무 색상 데이터 구축
+        treeColorNameList = treeColorRepository.findAll().stream()
+            .sorted(Comparator.comparingInt(TreeColor::getId))
+            .map(TreeColor::getName)
+            .toList();
+
+        testTreeColorGrade = treeColorGradeRepository.findById(1)
+            .orElseThrow(
+                () -> new AssertionError("초기 스트릭 색상 등급 데이터 세팅 실패")
+            );
+
+        // 테스트 멤버 생성용 나무 색상 데이터 생성
+        testTreeColor = treeColorRepository.findById(1)
+            .orElseThrow(
+                () -> new AssertionError("초기 나무 색상 데이터 세팅 실패")
+            );
+
+        // 테스트용 스트릭 색상 데이터 구축
+        streakColorNameList = streakColorRepository.findAll().stream()
+            .sorted(Comparator.comparingInt(StreakColor::getId))
+            .map(StreakColor::getName)
+            .toList();
+
+        // 테스트 멤버 생성용 스트릭 색상 데이터 생성
+        testStreakColorGrade = streakColorGradeRepository.findById(1L)
+            .orElseThrow(
+                () -> new AssertionError("초기 스트릭 색상 등급 데이터 세팅 실패")
+            );
+
+        testStreakColor = streakColorRepository.findById(1)
+            .orElseThrow(
+                () -> new AssertionError("초기 스트릭 색상 데이터 세팅 실패")
+            );
 
         // 테스트용 사용자 생성
         testMember = memberRepository.save(
@@ -379,9 +401,6 @@ public class ProductControllerTest {
         // given
         Integer point = 10000;
         Integer initialGotchaStreakPrice = 80;
-        Set<String> streakColorSet = streakColorRepository.findAll().stream()
-            .map(StreakColor::getName)
-            .collect(Collectors.toSet());
         testMember.addPoint(10000); // 포인트는 충분히 있다고 전제한다.
 
         // when
@@ -392,7 +411,6 @@ public class ProductControllerTest {
         );
 
         // then
-        System.out.println("=============================" + when.andReturn().getResponse().getContentAsString());
         when.andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
@@ -404,7 +422,7 @@ public class ProductControllerTest {
                 jsonPath("$.data").isNotEmpty()
             )
             .andExpect(
-                jsonPath("$.data.streakColorName", Matchers.in(streakColorSet))
+                jsonPath("$.data.streakColorName", Matchers.in(streakColorNameList))
             );
 
         Assertions
@@ -448,9 +466,6 @@ public class ProductControllerTest {
         // given
         Integer point = 10000;
         Integer initialGotchaTreePrice = 80;
-        Set<String> treeColorSet = treeColorRepository.findAll().stream()
-            .map(TreeColor::getName)
-            .collect(Collectors.toSet());
         testMember.addPoint(10000); // 포인트는 충분히 있다고 전제한다.
 
         // when
@@ -472,7 +487,7 @@ public class ProductControllerTest {
                 jsonPath("$.data").isNotEmpty()
             )
             .andExpect(
-                jsonPath("$.data.treeColorName", Matchers.in(treeColorSet))
+                jsonPath("$.data.treeColorName", Matchers.in(treeColorNameList))
             );
         Assertions
             .assertThat(testMember.getPoint())
@@ -544,7 +559,7 @@ public class ProductControllerTest {
             .isEqualTo(currentRecoveryPrice * 2);
         Assertions
             .assertThat(testMember.getPoint())
-            .isEqualTo(point - 150);
+            .isEqualTo(point - initialRecoveryPrice);
     }
 
     @Test
