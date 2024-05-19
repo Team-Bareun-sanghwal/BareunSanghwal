@@ -1,6 +1,8 @@
 package life.bareun.diary.streak.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import life.bareun.diary.habit.entity.MemberHabit;
 import life.bareun.diary.member.entity.Member;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
@@ -22,6 +24,8 @@ public interface StreakService {
     void initialHabitStreak(MemberHabit memberHabit);
 
     void createDailyStreak(Member member, LocalDate date);
+
+    void createDailyStreakDummy(Member member, LocalDate date, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
     void achieveStreak(MemberHabit memberHabit, LocalDate date);
 

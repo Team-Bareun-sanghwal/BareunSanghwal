@@ -1,7 +1,15 @@
 package life.bareun.diary.streak.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.member.entity.Member;
+import life.bareun.diary.member.exception.MemberErrorCode;
+import life.bareun.diary.member.exception.MemberException;
+import life.bareun.diary.member.repository.MemberRepository;
 import life.bareun.diary.streak.dto.request.StreakRecoveryReqDto;
 import life.bareun.diary.streak.dto.response.MemberStreakResDto;
 import life.bareun.diary.streak.dto.response.MonthStreakResDto;
@@ -11,12 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StreakController {
 
     private final StreakService streakService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("")
     public ResponseEntity<BaseResponse<MemberStreakResDto>> findMemberStreakCount() {
@@ -72,5 +76,33 @@ public class StreakController {
             .body(BaseResponse.success(HttpStatus.OK.value(),
                 "리커버리 사용 시 변동될 스트릭 정보 조회에 성공했습니다.",
                 streakService.getStreakRecoveryInfoResDto(date)));
+    }
+
+    @PostMapping("/dummy/daily")
+    public ResponseEntity<BaseResponse<StreakRecoveryInfoResDto>> createDummyDaily() {
+
+
+        Member member = getCurrentMember();
+        LocalDate startDate = LocalDate.of(2023, 8, 2);
+        LocalDate endDate = LocalDate.of(2024, 5, 19);
+
+        while (startDate.isBefore(endDate)) {
+            LocalDateTime dateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0));
+
+            streakService.createDailyStreakDummy(member, startDate, dateTime, dateTime);
+
+            startDate = startDate.plusDays(1);
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK.value())
+                .body(BaseResponse.success(HttpStatus.OK.value(),
+                        "더미 데일리 데이터 생성 완료.",
+                        null));
+    }
+
+    private Member getCurrentMember() {
+        return memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
+                .orElseThrow(() -> new MemberException(MemberErrorCode.NOT_FOUND_MEMBER));
     }
 }

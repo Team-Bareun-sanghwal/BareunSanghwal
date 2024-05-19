@@ -17,4 +17,8 @@ public interface MemberHabitRepository extends JpaRepository<MemberHabit, Long>,
     List<MemberHabit> findAllByIsDeletedAndMember_OrderByCreatedDatetimeDesc(Boolean isDeleted, Member member);
 
     Optional<MemberHabit> findByMember(Member member);
+
+    List<MemberHabit> findAllByMemberAndCreatedDatetimeAfterAndCreatedDatetimeBefore(Member member, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+
 }

@@ -1,6 +1,7 @@
 package life.bareun.diary.streak.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import life.bareun.diary.global.auth.util.AuthUtil;
 import life.bareun.diary.habit.entity.MemberHabit;
@@ -115,6 +116,19 @@ public class StreakServiceImpl implements StreakService {
 
         memberStreakService.createMemberDailyStreak(member, date);
     }
+
+    @Override
+    public void createDailyStreakDummy(Member member, LocalDate date, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<MemberHabit> memberHabitList = memberHabitRepository
+                .findAllByMemberAndCreatedDatetimeAfterAndCreatedDatetimeBefore(member, startDateTime, endDateTime);
+
+        for (MemberHabit memberHabit : memberHabitList) {
+            habitStreakService.createHabitDailyStreak(memberHabit, date);
+        }
+
+        memberStreakService.createMemberDailyStreak(member, date);
+    }
+
 
     @Override
     public void achieveStreak(MemberHabit memberHabit, LocalDate date) {
