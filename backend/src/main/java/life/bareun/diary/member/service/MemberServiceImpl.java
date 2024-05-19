@@ -168,7 +168,8 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-    private DailyPhrase getRandomDailyPhrase() {
+    @Transactional(readOnly = true)
+    protected DailyPhrase getRandomDailyPhrase() {
         int dailyPhraseCount = (int) dailyPhraseRepository.count();
         long dailyPhraseId = RANDOM.nextInt(dailyPhraseCount) + 1;
 
@@ -235,7 +236,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void logout(String accessToken, String refreshToken) {
         AuthToken accessAuthToken = authTokenProvider.tokenToAuthToken(accessToken);
         AuthToken refreshAuthToken = authTokenProvider.tokenToAuthToken(refreshToken);
@@ -307,7 +308,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Member> findAllMember() {
         return memberRepository.findAll();
     }
@@ -453,9 +454,10 @@ public class MemberServiceImpl implements MemberService {
         Long memberId
     ) {
         // 기록한 해빗 트래커 갯수
-        int count = habitTrackerRepository.countByMemberId(memberId).intValue();
+        Long longCount = habitTrackerRepository.countByMemberId(memberId);
+        int count = longCount.intValue();
 
-        double doubleTotalCount = habitTrackerRepository.countByMemberId(memberId).doubleValue();
+        double doubleTotalCount = longCount.doubleValue();
         double round = Math.pow(10.0, EXP);
 
         // member habit 별 habit tracker 갯수가 5개 초과라면
@@ -587,7 +589,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public MemberTreePointResDto treePoint() {
         Member member = getCurrentMember();
 
