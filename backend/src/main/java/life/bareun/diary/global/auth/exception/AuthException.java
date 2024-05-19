@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class AuthException extends RuntimeException {
 
-    private final SecurityErrorCode errorCode;
+    private final AuthErrorCode errorCode;
     private final String message;
 
-    public AuthException(SecurityErrorCode errorCode) {
+    public AuthException(AuthErrorCode errorCode) {
         this.errorCode = errorCode;
         this.message = errorCode.getMessage();
     }

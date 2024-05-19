@@ -8,6 +8,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MemberRecoveryRepository extends JpaRepository<MemberRecovery, Long> {
 
     Optional<MemberRecovery> findByMember(Member member);
-
-    void deleteByMemberId(Long id);
 }

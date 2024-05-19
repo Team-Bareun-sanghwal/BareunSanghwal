@@ -33,11 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
-
-    // private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
-    // private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
-    // private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
-
     private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
     private static final String GOTCHA_TREE_KEY = "gotcha_tree";
     private static final String STREAK_RECOVERY_KEY = "recovery";
@@ -88,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductStreakColorUpdateResDto buyStreakGotcha() {
-        // 1. 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
+        // 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
         List<StreakColorGrade> streakColorGrades = streakColorGradeRepository.findAll()
             .stream()
             .sorted(
@@ -137,8 +132,8 @@ public class ProductServiceImpl implements ProductService {
 
         // 예외가 발생하지 않으면(구매 가능한 상태면)
         // 변경된 포인트 보유량과 스트릭 색상을 적용한다.
-        member.usePoint(amount);
         member.changeStreakColor(gotchaStreakColor.getId());
+        member.usePoint(amount);
 
         return new ProductStreakColorUpdateResDto(gotchaStreakColor.getName());
     }
@@ -166,14 +161,13 @@ public class ProductServiceImpl implements ProductService {
         // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
         double weightSum = 0.0;
         TreeColorGrade gotchaGrade = null;
-        for (TreeColorGrade treeColorGrade: treeColorGrades) {
+        for (TreeColorGrade treeColorGrade : treeColorGrades) {
             weightSum += treeColorGrade.getWeight();
             if (gotchaGradeWeight < weightSum) {
                 gotchaGrade = treeColorGrade;
                 break;
             }
         }
-
 
         // 3. 등급 내에서 랜덤 뽑기
         List<TreeColor> treeColors = treeColorRepository.findAllByTreeColorGrade(gotchaGrade);
@@ -190,7 +184,7 @@ public class ProductServiceImpl implements ProductService {
         if (member.getPoint() < amount) {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
         }
-        
+
         // 5. 사용자 나무 색 변경
         Integer treeColorId = treeColorRepository.findById(gotchaTreeColor.getId())
             .orElseThrow(
@@ -227,7 +221,7 @@ public class ProductServiceImpl implements ProductService {
         Member updatedMember = memberRepository.save(member);
 
         memberRecovery.afterPurchaseRecovery(FACTOR);
-        memberRecoveryRepository.save(memberRecovery);
+        // memberRecoveryRepository.save(memberRecovery);
 
         // 반영된 후의 정보 반환
         return ProductRecoveryPurchaseResDto.builder()
@@ -238,7 +232,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     protected Member getCurrentMember() {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
-        return  memberRepository.findById(memberId)
+        return memberRepository.findById(memberId)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );

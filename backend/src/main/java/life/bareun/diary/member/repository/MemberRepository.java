@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
-    boolean existsBySub(String sub);
-
     Optional<Member> findBySub(String sub);
 
     List<Member> findAllByLastHarvestedDateIsNullOrLastHarvestedDateIsBefore(LocalDate localDate);

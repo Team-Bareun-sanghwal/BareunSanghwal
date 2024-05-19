@@ -5,7 +5,7 @@ import io.jsonwebtoken.JwtException;
 import java.util.Date;
 import life.bareun.diary.global.auth.dto.response.AuthAccessTokenResDto;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.member.repository.MemberRepository;
@@ -23,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthAccessTokenResDto issueAccessToken(String refreshToken) {
         if (refreshToken == null) {
-            throw new AuthException(SecurityErrorCode.UNAUTHENTICATED);
+            throw new AuthException(AuthErrorCode.UNAUTHENTICATED);
         }
 
         AuthToken refreshAuthToken = authTokenProvider.tokenToAuthToken(refreshToken);
@@ -31,18 +31,18 @@ public class AuthServiceImpl implements AuthService {
         try {
             authTokenProvider.validate(refreshAuthToken);
         } catch (ExpiredJwtException e) {
-            throw new AuthException(SecurityErrorCode.EXPIRED_REFRESH_TOKEN);
+            throw new AuthException(AuthErrorCode.EXPIRED_REFRESH_TOKEN);
         } catch (JwtException e) {
-            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
+            throw new AuthException(AuthErrorCode.INVALID_AUTHENTICATION);
         }
         if (authTokenService.isRevokedRefreshToken(refreshAuthToken)) {
-            throw new AuthException(SecurityErrorCode.REVOKED_REFRESH_TOKEN);
+            throw new AuthException(AuthErrorCode.REVOKED_REFRESH_TOKEN);
         }
 
         Long memberId = authTokenProvider.getMemberIdFromToken(refreshAuthToken);
         String role = memberRepository.findById(memberId)
             .orElseThrow(
-                () -> new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION)
+                () -> new AuthException(AuthErrorCode.INVALID_AUTHENTICATION)
             )
             .getRole()
             .name();
