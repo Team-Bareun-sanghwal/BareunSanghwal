@@ -1,5 +1,6 @@
 import { $Fetch } from '@/apis';
 import Point from '../Point/Point';
+import { MyPointA } from './MyPointA';
 export const MyPoint = async () => {
   const response = await $Fetch({
     method: 'GET',
@@ -8,7 +9,7 @@ export const MyPoint = async () => {
   });
   return (
     <>
-      <Point point={response.data.point} />
+      <MyPointA point={response.data.point} />
     </>
   );
 };

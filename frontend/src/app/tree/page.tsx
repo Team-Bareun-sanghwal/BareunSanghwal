@@ -5,6 +5,7 @@ import { RouteHome } from '@/components/tree/Button/RouteHome/RouteHome';
 import { Harvest } from '@/components/point/Harvest/Harvest';
 import { Time } from '@/components/calendar/util';
 import { treeConfig } from '@/components/tree/treeConfig';
+import { MyPoint } from '@/components/point/MyPoint/MyPoint';
 interface IItem {
   key: string;
   name: string;
@@ -32,6 +33,21 @@ export default async function Page() {
   const { treeLevel, treeColor } = treeInfo.data;
   const { point, isHarvestedToday } = pointInfo.data;
 
+  const getTreeColor = (treeColor : string) => {
+    switch (treeColor) {
+      case 'red' : return '#ff0000';
+      case ' green' : return '#008000';
+      case 'blue' : return '#0000ff';
+      case 'yellow' : return '#ffff00';
+      case 'orange' : return '#ffa500';
+      case 'purple' : return '#800080';
+      case 'gold' : return '#ffd700';
+      case 'silver' : return '#c0c0c0';
+      case 'cotton_candy' : return '#aee5ff';
+      case 'cherry_blossom' : return '#ffc0cb';
+      default : return '#008000';
+    }
+  }
   return (
     <div>
       <div className="w-full h-screen overflow-hidden relative">
@@ -46,8 +62,9 @@ export default async function Page() {
             </div>
           </div>
         </div>
-        {!isHarvestedToday && <Harvest isHarvested={false} />}
-        <Tree color={treeColor} level={treeLevel} time={Time()} ItemList={response.data.products} />
+        {!isHarvestedToday ? <Harvest isHarvested={false}/>  : <MyPoint />}
+        
+        <Tree color={getTreeColor(treeColor)} level={treeLevel} time={Time()} ItemList={response.data.products} />
       </div>
     </div>
   );

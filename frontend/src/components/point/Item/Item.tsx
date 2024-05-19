@@ -209,54 +209,57 @@ const Item = ({
   return (
     <>
       <AnimatePresence>
-      <motion.div
-        layout
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: 0.3 } }}
-        exit={{ opacity: 0, height: 0, transition: { duration: 0.3 } }}
-        className="flex w-full border-solid rounded-lg shadow-md bg-custom-white overflow-hidden"
-        onClick={()=>{
-          setTimeout(() => {
-            if(selectedItem === keyname){
-              setSelectedItem('none');
-            }else{
-              setSelectedItem(keyname);
-            }
-          }, 300);
-        }}>
-        <div className="flex p-4 w-full">
-          <div className="content-center">
-            <Image src={path} alt="" width={48} height={48} />
-          </div>
-          <div className="flex flex-col gap-2 ml-4">
-            <div className="flex">
-              <div className="text-2xl mr-4 content-center">{name}</div>
-              <Point point={price} />
-            </div>
-            <div className="text-sm w-full">{introduction}</div>
-            {/* {selectedItem === keyname && (
-              <div className="text-sm w-60">{description}</div>
-            )} */}
-            {displayContent === keyname && (
-            <motion.div
-              layout
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
-              className="text-sm w-60"
-            >
-              {description}
-            </motion.div>)}
-          </div>
-        </div>
-        <button
-          onClick={() =>
-            purchase({ keyname, name, introduction, description, price, mode })
-          }
-          className="ml-auto px-8 border-l-2 border-dotted"
+        <motion.div
+          layout
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
+          exit={{ opacity: 0, height: 0, transition: { duration: 0.3 } }}
+          className="flex w-full border-solid rounded-lg shadow-md bg-custom-white overflow-hidden"
+          
         >
-          <ShoppingBagIcon width={16} height={16} />
-        </button>
-      </motion.div>
+          <div
+          className="flex p-4 w-full"
+          onClick={() => {
+            setTimeout(() => {
+              if (selectedItem === keyname) {
+                setSelectedItem('none');
+              } else {
+                setSelectedItem(keyname);
+              }
+            }, 300);
+          }}>
+            <div className="flex-shrink-0" style={{ width: '48px', height: '48px' }}>
+              <Image src={path} alt="" width={48} height={48} className="block" />
+            </div>
+            <div className="flex flex-col gap-2 ml-4 w-full">
+              <div className="flex justify-between items-center">
+                <div className="text-2xl mr-4">{name}</div>
+                <Point point={price} />
+              </div>
+              <div className="text-sm">{introduction}</div>
+              {displayContent === keyname && keyname === selectedItem && (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
+                  exit={{ opacity: 0, height: 0, transition: { duration: 0.3 } }}
+                  className="text-sm"
+                  style={{ overflow: 'hidden' }}
+                >
+                  {description}
+                </motion.div>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={() =>
+              purchase({ keyname, name, introduction, description, price, mode })
+            }
+            className="ml-auto px-8 border-l-2 border-dotted"
+          >
+            <ShoppingBagIcon width={16} height={16} />
+          </button>
+        </motion.div>
       </AnimatePresence>
     </>
   );

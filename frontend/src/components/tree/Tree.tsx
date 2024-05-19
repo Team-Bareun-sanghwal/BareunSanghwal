@@ -104,8 +104,19 @@ function GiftBox() {
 
 export default function Tree({ color,level, time, ItemList}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight', ItemList : IItem[]}) {
   const [position, setPosition] = useState({ x: 10, y: 2, z: 12 });
-  const [target, setTarget] = useState({ x: 0, y: 0, z: 0 });
+
   const [selectedItem , setSelectedItem] = useState<'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'>('none');
+  const [target, setTarget] = useState({ x: 0, y: -2, z: 0 });
+
+  useEffect(() => {
+    if (selectedItem === 'gotcha_tree') {
+      setPosition({ x: 5, y: 2, z: 10 });
+      setTarget({ x: 0, y: -2, z: 0 });
+    } else {
+      setPosition({ x: 10, y: 2, z: 12 });
+      setTarget({ x: 0, y: -2, z: 0 });
+    }
+  }, [selectedItem]);
   return (
     <>
        <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
@@ -117,6 +128,11 @@ export default function Tree({ color,level, time, ItemList}: {color : string, le
             <Group color={color} level={level} />
             <SkyDome time ={time}/>
           </Suspense>
+          <OrbitControls
+            target={[target.x, target.y, target.z]}
+            maxPolarAngle={Math.PI / 2.2}
+            minPolarAngle={Math.PI / 3}
+        />
           <CameraControls position={position} target={target} />
         </Canvas>
         <Loader />
