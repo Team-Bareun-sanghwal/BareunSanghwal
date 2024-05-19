@@ -392,6 +392,7 @@ public class ProductControllerTest {
         );
 
         // then
+        System.out.println("=============================" + when.andReturn().getResponse().getContentAsString());
         when.andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
