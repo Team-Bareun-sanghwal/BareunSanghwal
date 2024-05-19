@@ -10,6 +10,7 @@ export default function Page() {
   // const at = searchParams.get('at');
   // const rt = searchParams.get('rt');
 
+  console.log(code);
   if (code === '200') {
     // $SetCookie({ at: at!, rt: rt! });
     router.push(`/main`);
