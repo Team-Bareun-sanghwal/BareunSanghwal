@@ -1,4 +1,4 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+/* @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css'); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,7 +6,7 @@
 @layer base {
   html,
   pre {
-    font-family: 'pretendard', sans-serif;
+    font-family: sans-serif;
     font-size: 62.5%;
   }
 }
@@ -30,7 +30,7 @@
     font-size: 1.4rem;
   }
   .custom-light-text {
-    font-weight: 200;
+    font-weight: 400;
     font-size: 1.2rem;
   }
   .custom-login-text {
@@ -40,6 +40,12 @@
   .custom-emphasize-text {
     font-weight: 600;
     font-size: 1.2rem;
+  }
+  .custom-logo-text {
+    font-weight: 800;
+    font-size: 5rem;
+    letter-spacing: 0.5rem;
+    line-height: 5.5rem;
   }
 
   /* 그라데이션 테두리 */
@@ -127,7 +133,6 @@
   }
 
   /* 팔랑이는 애니메이션 */
-
   .flying-div {
     animation: fly-in 2s ease-in-out;
   }
@@ -141,5 +146,132 @@
     100% {
       transform: translateX(0%) translateY(0%) rotate(0deg);
     }
+  }
+
+  /* 로딩 블록 애니메이션-red */
+  .loading-block-red {
+    animation: loadingBlockRed 2.2s ease-in-out forwards;
+  }
+  @keyframes loadingBlockRed {
+    0% {
+      top: -23rem;
+    }
+    100% {
+      top: 0rem;
+    }
+  }
+
+  /* 로딩 블록 애니메이션-yellow */
+  .loading-block-yellow {
+    animation: loadingBlockYellow 2s ease-in-out forwards;
+  }
+  @keyframes loadingBlockYellow {
+    0% {
+      top: -23rem;
+    }
+    100% {
+      top: 6.2rem;
+    }
+  }
+
+  /* 로딩 블록 애니메이션-blue */
+  .loading-block-blue {
+    animation: loadingBlockBlue 1.5s ease-in-out forwards;
+  }
+  @keyframes loadingBlockBlue {
+    0% {
+      top: -23rem;
+    }
+    100% {
+      top: 10.8rem;
+    }
+  }
+
+  /* 로딩 블록 애니메이션-white */
+  .loading-block-white {
+    animation: loadingBlockWhite 1.2s ease-in-out forwards;
+  }
+  @keyframes loadingBlockWhite {
+    0% {
+      top: -23rem;
+    }
+    100% {
+      top: 17.1rem;
+    }
+  }
+
+  /* 로고 상단 애니메이션 */
+  .logo-desc {
+    animation: descAnimation 1.2s ease-in-out forwards;
+    animation-delay: 2s;
+    opacity: 0;
+  }
+  @keyframes descAnimation {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      text-shadow: 0.2rem 0 0 #141414;
+    }
+  }
+
+  /* 로고 하단 애니메이션 */
+  .logo-bareun-life {
+    animation: logoAnimation 1.2s ease-in-out forwards;
+    animation-delay: 2.7s;
+    opacity: 0;
+  }
+  @keyframes logoAnimation {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      text-shadow: 0.4rem 0 0 #141414;
+    }
+  }
+
+  /* 로그인 버튼 애니메이션 */
+  .loginButtons {
+    animation: loginButtonsAnimation 1.2s ease-in-out forwards;
+    animation-delay: 3.4s;
+    opacity: 0;
+  }
+  @keyframes loginButtonsAnimation {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  input[type='date']:focus {
+    outline: none;
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  @keyframes flowText {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .flowing-text {
+    white-space: nowrap;
+    will-change: transform;
+    animation: flowText 40s linear infinite;
   }
 }

@@ -38,7 +38,7 @@ interface IPropType {
   image: string;
 }
 
-export const RecapContent = ({ data }: { data: IPropType }) => {
+export default function RecapContent({ data }: { data: IPropType }) {
   const {
     year,
     month,
@@ -134,4 +134,4 @@ export const RecapContent = ({ data }: { data: IPropType }) => {
       {recapContentArr[pageIdx].content}
     </div>
   );
-};
+}

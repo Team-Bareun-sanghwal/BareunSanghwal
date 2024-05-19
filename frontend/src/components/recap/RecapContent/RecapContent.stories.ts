@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { RecapContent } from './RecapContent';
+import RecapContent from './RecapContent';
 
 const meta = {
   title: 'Recap/RecapContent',

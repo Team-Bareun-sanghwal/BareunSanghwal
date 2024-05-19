@@ -1,15 +1,44 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { Button, ProgressBox, HabitSearchBox, InputBox } from '@/components';
-import { IFunnelComponent } from '../_types';
 import { useState } from 'react';
 import { Picker } from '@/components/common/Picker/Picker';
 
-export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
-  const [isAlreadySet, setIsAlreadySet] = useState<boolean | null>(null);
+interface INicknameStep {
+  onPrev: () => void;
+  onNext: (
+    alias: string,
+    icon: string,
+    habitId: number | null,
+    habitName: string | null,
+  ) => void;
+  isCategorySet: boolean | null;
+  habitId: number | null;
+  habitName: string | null;
+  alias: string | null;
+  icon: string | null;
+}
+
+export default function Nickname({
+  onPrev,
+  onNext,
+  isCategorySet,
+  habitId,
+  habitName,
+  alias,
+  icon
+}: INicknameStep) {
+  const [selectedHabitId, setSelectedHabitId] = useState<number | null>(
+    habitId,
+  );
+  const [selectedHabitName, setSelectedHabitName] = useState<string | null>(
+    habitName,
+  );
+  const [selectedAlias, setSelectedAlias] = useState<string | null>(alias);
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(icon);
 
   return (
     <div className="min-h-screen p-[1rem] flex flex-col justify-between">
-      <div className="w-full flex flex-col gap-[3rem]">
+      <div className="w-full flex flex-col gap-[3rem] pb-[2rem]">
         <nav className="flex self-start gap-[0.5rem] items-center">
           <ChevronLeftIcon
             className="w-[2.4rem] h-[2.4rem] text-custom-medium-gray"
@@ -23,34 +52,50 @@ export const Nickname = ({ onPrev, onNext }: IFunnelComponent) => {
           beforeStageIndex={1}
         ></ProgressBox>
 
-        <HabitSearchBox
-          searchedList={[
-            {
-              habitId: 1,
-              name: '운동하기',
-            },
-            {
-              habitId: 2,
-              name: '생활 운동',
-            },
-          ]}
-        />
+        {!isCategorySet && (
+          <HabitSearchBox
+            selectedHabitId={selectedHabitId}
+            selectedHabitName={selectedHabitName}
+            setSelectedHabitId={setSelectedHabitId}
+            setSelectedHabitName={setSelectedHabitName}
+          />
+        )}
 
         <InputBox
           isLabel={true}
           mode="HABITNICKNAME"
-          defaultValue=""
-          setDefaultValue={() => {}}
+          defaultValue={selectedAlias || ''}
+          setDefaultValue={setSelectedAlias}
         />
 
-        <Picker label="해빗 아이콘을 골라주세요" />
+        <Picker
+          label="해빗 아이콘을 골라주세요"
+          selectedEmoji={selectedIcon || ''}
+          setSelectedEmoji={setSelectedIcon}
+        />
       </div>
 
       <Button
-        isActivated={isAlreadySet === null ? false : true}
+        isActivated={
+          isCategorySet
+            ? selectedAlias && selectedIcon
+              ? true
+              : false
+            : selectedHabitId && selectedAlias && selectedIcon
+              ? true
+              : false
+        }
         label="다음"
-        onClick={onNext}
+        onClick={
+          isCategorySet
+            ? selectedAlias && selectedIcon
+              ? () => onNext(selectedAlias, selectedIcon, selectedHabitId, selectedHabitName)
+              : () => {}
+            : selectedHabitId && selectedHabitName && selectedAlias && selectedIcon
+              ? () => onNext(selectedAlias, selectedIcon, selectedHabitId, selectedHabitName)
+              : () => {}
+        }
       />
     </div>
   );
-};
+}

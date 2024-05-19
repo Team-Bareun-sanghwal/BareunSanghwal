@@ -15,7 +15,7 @@ export const InputBox = ({
   defaultValue,
   setDefaultValue,
 }: IInputBoxProps) => {
-  const label = mode === 'NICKNAME' ? '닉네임' : '해빗 별칭';
+  const label = mode === 'NICKNAME' ? '닉네임' : '해빗 별칭을 지어주세요';
   const placeholder =
     mode === 'NICKNAME'
       ? '2~12자로 입력해주세요.'
@@ -26,7 +26,7 @@ export const InputBox = ({
       : /^[A-Za-z0-9ㄱ-ㅎ가-힣!?@#$%^&*\s]{1,15}$/;
 
   const [lineColor, setLineColor] = useState<string>(
-    defaultValue ? 'border-b-custom-success' : 'border-b-custom-error',
+    defaultValue ? 'border-b-custom-yellow-green' : 'border-b-custom-error',
   );
 
   const [guideText, setGuideText] = useState<string>(() =>
@@ -38,11 +38,11 @@ export const InputBox = ({
   );
 
   const [guideTextColor, setGuideTextColor] = useState<string>(
-    defaultValue ? 'text-custom-success' : 'text-custom-error',
+    defaultValue ? 'text-custom-yellow-green' : 'text-custom-error',
   );
 
   return (
-    <section className="w-[34rem] flex flex-col items-start gap-[0.5rem]">
+    <section className="w-full flex flex-col items-start gap-[0.5rem]">
       {isLabel && (
         <label className="custom-semibold-text text-custom-matcha">
           {label}
@@ -50,7 +50,7 @@ export const InputBox = ({
       )}
 
       <input
-        className={`${lineColor} w-[34rem] bg-transparent custom-medium-text outline-none py-[0.5rem] border-b-[0.2rem]`}
+        className={`${lineColor} w-full bg-transparent custom-medium-text outline-none py-[0.5rem] border-b-[0.2rem] rounded-none`}
         placeholder={placeholder}
         defaultValue={defaultValue}
         onChange={(event) => {
@@ -60,8 +60,8 @@ export const InputBox = ({
           ) {
             if (regExp.test(event.target.value)) {
               setDefaultValue(event.target.value);
-              setLineColor('border-b-custom-success');
-              setGuideTextColor('text-custom-success');
+              setLineColor('border-b-custom-yellow-green');
+              setGuideTextColor('text-custom-yellow-green');
               if (mode === 'NICKNAME') {
                 setGuideText('좋은 닉네임이네요!');
               } else if (mode === 'HABITNICKNAME') {
