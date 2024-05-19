@@ -101,10 +101,8 @@ public class SecurityConfig {
                 REFRESH_TOKEN_HEADER
             )
         );
-
-        // corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        // corsConfiguration.addAllowedOrigin("https://localhost:3000");
-        corsConfiguration.addAllowedOriginPattern("*");
+        
+        corsConfiguration.addAllowedOrigin("https://bareun.life");
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(Boolean.TRUE);
         corsConfiguration.addAllowedMethod("*");
