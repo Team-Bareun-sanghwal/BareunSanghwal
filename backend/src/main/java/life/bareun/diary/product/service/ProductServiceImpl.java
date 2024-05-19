@@ -166,14 +166,13 @@ public class ProductServiceImpl implements ProductService {
         // 가중치를 반영한 랜덤 값을 뽑기 위한 변수
         double weightSum = 0.0;
         TreeColorGrade gotchaGrade = null;
-        for (TreeColorGrade treeColorGrade: treeColorGrades) {
+        for (TreeColorGrade treeColorGrade : treeColorGrades) {
             weightSum += treeColorGrade.getWeight();
             if (gotchaGradeWeight < weightSum) {
                 gotchaGrade = treeColorGrade;
                 break;
             }
         }
-
 
         // 3. 등급 내에서 랜덤 뽑기
         List<TreeColor> treeColors = treeColorRepository.findAllByTreeColorGrade(gotchaGrade);
@@ -190,7 +189,7 @@ public class ProductServiceImpl implements ProductService {
         if (member.getPoint() < amount) {
             throw new ProductException(ProductErrorCode.INSUFFICIENT_BALANCE);
         }
-        
+
         // 5. 사용자 나무 색 변경
         Integer treeColorId = treeColorRepository.findById(gotchaTreeColor.getId())
             .orElseThrow(
@@ -238,7 +237,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     protected Member getCurrentMember() {
         Long memberId = AuthUtil.getMemberIdFromAuthentication();
-        return  memberRepository.findById(memberId)
+        return memberRepository.findById(memberId)
             .orElseThrow(
                 () -> new MemberException(MemberErrorCode.NO_SUCH_MEMBER)
             );

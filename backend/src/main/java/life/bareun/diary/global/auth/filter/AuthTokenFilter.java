@@ -16,7 +16,6 @@ import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNullApi;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
+
     private final AuthTokenService authTokenService;
     private final AuthTokenProvider authTokenProvider;
 
@@ -56,13 +56,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             // 여기서 "Bearer "가 제거된다.
             AuthToken accessAuthToken = authTokenProvider.tokenToAuthToken(accessToken);
             authTokenProvider.validate(accessAuthToken);
-            
+
             // 2. 만료되지 않았으면 로그아웃한 사용자의 토큰인지 확인
             // Redis 등록은 "Bearer "를 포함하지 않는다.
             if (authTokenService.isRevokedAccessToken(accessAuthToken)) {
                 throw new AuthException(SecurityErrorCode.REVOKED_ACCESS_TOKEN);
             }
-            
+
             // 3. 정상 토큰이라면 SecurityContext 등록
             Authentication authentication = authTokenProvider.getAuthentication(accessAuthToken);
             log.info("Registered authentication token: {}", authentication);

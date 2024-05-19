@@ -8,6 +8,7 @@ import life.bareun.diary.global.auth.token.AuthToken;
 public interface AuthTokenService {
 
     void revokeAccessToken(Long id, AuthToken accessAuthToken);
+
     void revokeRefreshToken(Long id, AuthToken refreshToken);
 
     boolean isRevokedAccessToken(AuthToken accessToken);

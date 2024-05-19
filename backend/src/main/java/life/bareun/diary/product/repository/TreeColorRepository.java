@@ -7,6 +7,8 @@ import life.bareun.diary.product.entity.TreeColorGrade;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TreeColorRepository extends JpaRepository<TreeColor, Integer> {
+
     List<TreeColor> findAllByTreeColorGrade(TreeColorGrade gotchaGrade);
+
     Optional<TreeColor> findByName(String name);
 }
