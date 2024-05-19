@@ -25,6 +25,6 @@ const exportObject =
     ? withBundleAnalyzer(nextConfig)
     : withPWA(nextConfig);
 
-// export default exportObject;
+export default exportObject;
 
-export default withPWA(nextConfig);
+// export default withPWA(nextConfig);
