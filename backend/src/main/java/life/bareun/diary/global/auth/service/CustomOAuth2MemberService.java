@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.factory.OAuth2MemberPrincipalFactory;
 import life.bareun.diary.global.auth.principal.MemberPrincipal;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
@@ -46,29 +46,17 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
 
         // 이상한 provider
         if (!OAuth2Provider.validate(provider)) {
-            throw new AuthException(SecurityErrorCode.BAD_OAUTH_INFO);
+            throw new AuthException(AuthErrorCode.BAD_OAUTH_INFO);
         }
 
         OAuth2Provider oAuth2Provider = OAuth2Provider.valueOf(provider);
-
-        System.out.println("Client name: " + provider);
-        System.out.println("Scope: " + userRequest.getClientRegistration().getScopes());
-        System.out.println("======OAuth2User START======");
         Map<String, Object> attrs = oAuth2User.getAttributes();
-        attrs.keySet().forEach(
-            (key) -> System.out.printf(
-                "%s: %s, Type: %s\n",
-                key,
-                attrs.get(key).toString(),
-                attrs.get(key).getClass()
-            )
-        );
-        System.out.println("======OAuth2User END======");
+
 
         // 역할
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
-            Role.ROLE_USER.name());
-        System.out.println(userRequest.getClientRegistration());
+        // List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
+        //     Role.ROLE_USER.name()
+        // );
 
         String sub = switch (oAuth2Provider) {
             case GOOGLE -> (String) attrs.get("sub");

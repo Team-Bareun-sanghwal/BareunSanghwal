@@ -55,12 +55,15 @@ public class GsonUtil {
      */
     static class LocalDateSerializer implements JsonSerializer<LocalDate> {
 
-        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            "yyyy-MM-dd");
+        private static final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         @Override
-        public JsonElement serialize(LocalDate localDate, Type srcType,
-            JsonSerializationContext context) {
+        public JsonElement serialize(
+            LocalDate localDate,
+            Type srcType,
+            JsonSerializationContext context
+        ) {
             return new JsonPrimitive(formatter.format(localDate));
         }
     }
@@ -68,11 +71,16 @@ public class GsonUtil {
     static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
 
         @Override
-        public LocalDate deserialize(JsonElement json, Type typeOfT,
-            JsonDeserializationContext context)
-            throws JsonParseException {
-            return LocalDate.parse(json.getAsString(),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.KOREA));
+        public LocalDate deserialize(
+            JsonElement json, Type typeOfT,
+            JsonDeserializationContext context
+        ) throws JsonParseException {
+            return LocalDate.parse(
+                json.getAsString(),
+                DateTimeFormatter
+                    .ofPattern("yyyy-MM-dd")
+                    .withLocale(Locale.KOREA)
+            );
         }
     }
 
@@ -81,12 +89,15 @@ public class GsonUtil {
      */
     static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
 
-        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            "yyyy-MM-dd HH:mm:ss");
+        private static final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         @Override
-        public JsonElement serialize(LocalDateTime localDateTime, Type srcType,
-            JsonSerializationContext context) {
+        public JsonElement serialize(
+            LocalDateTime localDateTime,
+            Type srcType,
+            JsonSerializationContext context
+        ) {
             return new JsonPrimitive(formatter.format(localDateTime));
         }
     }
@@ -94,11 +105,17 @@ public class GsonUtil {
     static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
 
         @Override
-        public LocalDateTime deserialize(JsonElement json, Type typeOfT,
-            JsonDeserializationContext context)
-            throws JsonParseException {
-            return LocalDateTime.parse(json.getAsString(),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withLocale(Locale.KOREA));
+        public LocalDateTime deserialize(
+            JsonElement json,
+            Type typeOfT,
+            JsonDeserializationContext context
+        ) throws JsonParseException {
+            return LocalDateTime.parse(
+                json.getAsString(),
+                DateTimeFormatter
+                    .ofPattern("yyyy-MM-dd HH:mm:ss")
+                    .withLocale(Locale.KOREA)
+            );
         }
     }
 

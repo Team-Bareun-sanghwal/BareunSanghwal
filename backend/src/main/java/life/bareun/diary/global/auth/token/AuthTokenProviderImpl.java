@@ -12,7 +12,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.factory.OAuth2MemberPrincipalFactory;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.member.entity.embed.Role;
@@ -100,8 +100,6 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
     @Override
     public void validate(AuthToken authToken) throws JwtException {
         // token의 claim을 얻는 과정에서 예외 발생 ≡ token이 유효하지 않다
-        // 단 ExpiredJwtException 예외는 무시되고, 반환값은 null이 된다.
-        // 즉 예외로 취급되지 않으면서 검증 결과는 false가 된다.
         Claims claims = authToken.getClaims(this.key);
     }
 
@@ -149,7 +147,7 @@ public class AuthTokenProviderImpl implements AuthTokenProvider {
             return Long.parseLong(memberId);
         } catch (JwtException | NumberFormatException | NullPointerException e) {
 
-            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
+            throw new AuthException(AuthErrorCode.INVALID_AUTHENTICATION);
         }
     }
 

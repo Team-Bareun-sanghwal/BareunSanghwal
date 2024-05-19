@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import life.bareun.diary.global.auth.embed.MemberStatus;
 import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.principal.MemberPrincipal;
 import life.bareun.diary.global.auth.service.AuthTokenService;
 import life.bareun.diary.global.auth.token.AuthToken;
@@ -246,7 +246,7 @@ public class MemberServiceImpl implements MemberService {
 
         // Access token과 refresh token의 사용자 정보가 다르면 예외 발생
         if (!id.equals(targetId)) {
-            throw new AuthException(SecurityErrorCode.UNMATCHED_AUTHENTICATION);
+            throw new AuthException(AuthErrorCode.UNMATCHED_AUTHENTICATION);
         }
 
         authTokenService.revokeAccessToken(id, accessAuthToken);

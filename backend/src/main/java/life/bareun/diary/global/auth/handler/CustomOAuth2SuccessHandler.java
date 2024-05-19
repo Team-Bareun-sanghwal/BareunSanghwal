@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import life.bareun.diary.global.auth.embed.OAuth2Provider;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import life.bareun.diary.global.auth.util.ResponseUtil;
@@ -36,10 +35,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         log.debug("accessToken: {}", accessToken);
         log.debug("refreshToken: {}", refreshToken);
-        System.out.println("accessToken: " + accessToken);
-        System.out.println("refreshToken: " + refreshToken);
 
-        // 응답
         int statusCode = oAuth2MemberPrincipal.getMemberStatus().getCode();
 
         long accessTokenMaxAge = authTokenProvider.getExpiry(
@@ -63,7 +59,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         /* 배포용 코드 */
         response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
 
-        /* 로컬 테스트를 위한 코드 */
+        /* 프론트엔드 로컬 테스트를 위한 코드 */
         // if(oAuth2MemberPrincipal.getOAuth2Provider().equals(OAuth2Provider.GOOGLE)) {
         //     response.sendRedirect("https://bareun.life/auth?status=" + statusCode);
         // } else if (oAuth2MemberPrincipal.getOAuth2Provider().equals(OAuth2Provider.KAKAO)) {

@@ -1,15 +1,16 @@
 package life.bareun.diary.global.auth.handler;
 
-import com.google.gson.Gson;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import life.bareun.diary.global.common.response.BaseResponse;
+import life.bareun.diary.global.auth.exception.AuthException;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
+import life.bareun.diary.global.auth.factory.SecurityErrorResponseFactory;
+import life.bareun.diary.global.auth.util.GsonUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -27,17 +28,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        ResponseEntity<BaseResponse<String>> responseBody = new ResponseEntity<>(
-            new BaseResponse<>(
-                status.value(),
-                "인증에 실패했습니다.",
-                null
-            ),
-            status
-        );
-
         ServletOutputStream outputStream = response.getOutputStream();
-        outputStream.write(new Gson().toJson(responseBody).getBytes(StandardCharsets.UTF_8));
+        outputStream.write(
+            GsonUtil.toJsonBytesUtf8(
+                SecurityErrorResponseFactory.create(
+                    new AuthException(AuthErrorCode.UNAUTHENTICATED)
+                )
+            )
+        );
 
     }
 
