@@ -120,7 +120,7 @@ public class StreakServiceImpl implements StreakService {
     @Override
     public void createDailyStreakDummy(Member member, LocalDate date, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         List<MemberHabit> memberHabitList = memberHabitRepository
-                .findAllByMemberAndCreatedDatetimeAfterAndCreatedDatetimeBefore(member, startDateTime, endDateTime);
+                .findAllByMemberAndCreatedDatetimeBeforeAndSucceededDatetimeAfter(member, startDateTime, endDateTime);
 
         for (MemberHabit memberHabit : memberHabitList) {
             habitStreakService.createHabitDailyStreak(memberHabit, date);

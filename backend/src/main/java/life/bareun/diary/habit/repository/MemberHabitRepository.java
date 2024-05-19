@@ -18,7 +18,7 @@ public interface MemberHabitRepository extends JpaRepository<MemberHabit, Long>,
 
     Optional<MemberHabit> findByMember(Member member);
 
-    List<MemberHabit> findAllByMemberAndCreatedDatetimeAfterAndCreatedDatetimeBefore(Member member, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<MemberHabit> findAllByMemberAndCreatedDatetimeBeforeAndSucceededDatetimeAfter(Member member, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 
 }
