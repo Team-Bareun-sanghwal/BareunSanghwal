@@ -65,8 +65,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             
             // 3. 정상 토큰이라면 SecurityContext 등록
             Authentication authentication = authTokenProvider.getAuthentication(accessAuthToken);
-            log.debug("Registered authentication token: {}", authentication);
-            System.out.println("Registered authentication token: " + authentication);
+            log.info("Registered authentication token: {}", authentication);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
