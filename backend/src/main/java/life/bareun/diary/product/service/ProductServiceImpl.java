@@ -33,11 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
-
-    // private static final String GOTCHA_STREAK_NAME = "알쏭달쏭 스트릭";
-    // private static final String GOTCHA_TREE_NAME = "알쏭달쏭 나무";
-    // private static final String STREAK_RECOVERY_NAME = "스트릭 리커버리";
-
     private static final String GOTCHA_STREAK_KEY = "gotcha_streak";
     private static final String GOTCHA_TREE_KEY = "gotcha_tree";
     private static final String STREAK_RECOVERY_KEY = "recovery";
@@ -88,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductStreakColorUpdateResDto buyStreakGotcha() {
-        // 1. 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
+        // 스트릭 색상 등급 데이터를 가중치 기준 내림차순으로 정렬한 리스트
         List<StreakColorGrade> streakColorGrades = streakColorGradeRepository.findAll()
             .stream()
             .sorted(

@@ -23,7 +23,7 @@ public class AuthToken {
                 .parseSignedClaims(token)
                 .getPayload();
         } catch (IllegalArgumentException ignored) {
-            log.debug("AuthToken cannot be null");
+            log.info("AuthToken cannot be null");
         }
 
         return claims;

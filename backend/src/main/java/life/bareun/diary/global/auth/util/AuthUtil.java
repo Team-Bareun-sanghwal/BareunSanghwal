@@ -17,8 +17,7 @@ public class AuthUtil {
             throw new AuthException(AuthErrorCode.UNAUTHENTICATED);
         }
 
-        System.out.println("Principal: " + authentication.getPrincipal());
-        log.debug("Hel authentication: {}", authentication.getPrincipal());
+        log.info("Held authentication: {}", authentication.getPrincipal());
         return (OAuth2MemberPrincipal) authentication.getPrincipal();
     }
 
