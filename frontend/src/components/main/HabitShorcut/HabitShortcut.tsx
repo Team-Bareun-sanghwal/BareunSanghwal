@@ -33,7 +33,7 @@ export const HabitShortcut = ({
           icon="+"
           shortcut={true}
           add={true}
-          limit={allHabits.length >= 7}
+          limit={allHabits&& allHabits.length >= 7}
         />
         <div className="w-1 h-20 mb-8 bg-gray-200 rounded-full" />
         <div className="flex overflow-x-auto">

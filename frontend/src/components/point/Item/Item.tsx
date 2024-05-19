@@ -1,4 +1,5 @@
 'use client';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Point from '../Point/Point';
@@ -9,13 +10,16 @@ import ColoredText from '../ColoredText/ColoredText';
 import Pallete from '../Pallete/Pallete';
 import { useRouter } from 'next/navigation';
 import { Recovery } from '../Recovery/Recovery';
+import { useEffect, useState } from 'react';
 import { CreateOverlayElement } from '@/hooks/use-overlay/types';
 interface IItemProps {
-  keyname: string;
+  keyname: 'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none';
   name: string;
   introduction: string;
   description: string;
   price: number;
+  selectedItem: 'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none';
+  setSelectedItem : React.Dispatch<React.SetStateAction<'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'>>;
 }
 
 interface IReturn {
@@ -78,9 +82,19 @@ const Item = ({
   introduction,
   description,
   price,
+  selectedItem,
+  setSelectedItem,
 }: IItemProps) => {
   const router = useRouter();
   const overlay = useOverlay();
+  const [displayContent, setDisplayContent] = useState<'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'>(keyname);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDisplayContent(selectedItem);
+    }, 300); 
+    return () => clearTimeout(timeoutId);
+  }, [selectedItem]);
   const SelectRecovery = () => {
     overlay?.open(({ isOpen, close }) => (
       <>
@@ -194,7 +208,22 @@ const Item = ({
   const { path, mode } = getAttributes(keyname);
   return (
     <>
-      <div className="flex w-full border-solid rounded-lg shadow-md bg-custom-white">
+      <AnimatePresence>
+      <motion.div
+        layout
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.3 } }}
+        exit={{ opacity: 0, height: 0, transition: { duration: 0.3 } }}
+        className="flex w-full border-solid rounded-lg shadow-md bg-custom-white overflow-hidden"
+        onClick={()=>{
+          setTimeout(() => {
+            if(selectedItem === keyname){
+              setSelectedItem('none');
+            }else{
+              setSelectedItem(keyname);
+            }
+          }, 300);
+        }}>
         <div className="flex p-4 w-full">
           <div className="content-center">
             <Image src={path} alt="" width={48} height={48} />
@@ -204,8 +233,19 @@ const Item = ({
               <div className="text-2xl mr-4 content-center">{name}</div>
               <Point point={price} />
             </div>
-            <div className="text-md w-full">{introduction}</div>
-            {/* <div className="text-sm w-full">{description}</div> */}
+            <div className="text-sm w-full">{introduction}</div>
+            {/* {selectedItem === keyname && (
+              <div className="text-sm w-60">{description}</div>
+            )} */}
+            {displayContent === keyname && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto', transition: { duration: 0.3 } }}
+              className="text-sm w-60"
+            >
+              {description}
+            </motion.div>)}
           </div>
         </div>
         <button
@@ -216,7 +256,8 @@ const Item = ({
         >
           <ShoppingBagIcon width={16} height={16} />
         </button>
-      </div>
+      </motion.div>
+      </AnimatePresence>
     </>
   );
 };
