@@ -35,10 +35,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         log.debug("accessToken: {}", accessToken);
         log.debug("refreshToken: {}", refreshToken);
-        System.out.println("accessToken: " + accessToken);
-        System.out.println("refreshToken: " + refreshToken);
 
-        // 응답
         int statusCode = oAuth2MemberPrincipal.getMemberStatus().getCode();
 
         long accessTokenMaxAge = authTokenProvider.getExpiry(
