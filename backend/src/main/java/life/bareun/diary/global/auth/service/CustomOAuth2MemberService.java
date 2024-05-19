@@ -50,25 +50,13 @@ public class CustomOAuth2MemberService extends DefaultOAuth2UserService {
         }
 
         OAuth2Provider oAuth2Provider = OAuth2Provider.valueOf(provider);
-
-        System.out.println("Client name: " + provider);
-        System.out.println("Scope: " + userRequest.getClientRegistration().getScopes());
-        System.out.println("======OAuth2User START======");
         Map<String, Object> attrs = oAuth2User.getAttributes();
-        attrs.keySet().forEach(
-            (key) -> System.out.printf(
-                "%s: %s, Type: %s\n",
-                key,
-                attrs.get(key).toString(),
-                attrs.get(key).getClass()
-            )
-        );
-        System.out.println("======OAuth2User END======");
+
 
         // 역할
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
-            Role.ROLE_USER.name());
-        System.out.println(userRequest.getClientRegistration());
+        // List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(
+        //     Role.ROLE_USER.name()
+        // );
 
         String sub = switch (oAuth2Provider) {
             case GOOGLE -> (String) attrs.get("sub");
