@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum SecurityErrorCode {
+public enum AuthErrorCode {
     NO_OAUTH_INFO(HttpStatus.BAD_REQUEST, "OAuth2 provider 정보가 존재하지 않습니다."),
     BAD_OAUTH_INFO(HttpStatus.BAD_REQUEST, "잘못된 OAuth2 provider 정보입니다."),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),

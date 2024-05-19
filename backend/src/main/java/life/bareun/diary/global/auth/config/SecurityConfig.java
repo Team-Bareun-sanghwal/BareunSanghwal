@@ -101,7 +101,7 @@ public class SecurityConfig {
                 REFRESH_TOKEN_HEADER
             )
         );
-        
+
         corsConfiguration.addAllowedOrigin("https://bareun.life");
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(Boolean.TRUE);

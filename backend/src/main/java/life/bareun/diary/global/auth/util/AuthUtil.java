@@ -1,7 +1,7 @@
 package life.bareun.diary.global.auth.util;
 
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.principal.OAuth2MemberPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -14,7 +14,7 @@ public class AuthUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!authentication.isAuthenticated()) {
-            throw new AuthException(SecurityErrorCode.UNAUTHENTICATED);
+            throw new AuthException(AuthErrorCode.UNAUTHENTICATED);
         }
 
         System.out.println("Principal: " + authentication.getPrincipal());
@@ -26,7 +26,7 @@ public class AuthUtil {
         try {
             return Long.parseLong(getAuthentication().getName());
         } catch (NumberFormatException | NullPointerException e) {
-            throw new AuthException(SecurityErrorCode.UNAUTHENTICATED);
+            throw new AuthException(AuthErrorCode.UNAUTHENTICATED);
         }
     }
 }

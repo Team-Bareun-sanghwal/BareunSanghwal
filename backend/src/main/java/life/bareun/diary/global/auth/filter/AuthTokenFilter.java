@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import life.bareun.diary.global.auth.config.SecurityConfig;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.service.AuthTokenService;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
@@ -60,7 +60,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             // 2. 만료되지 않았으면 로그아웃한 사용자의 토큰인지 확인
             // Redis 등록은 "Bearer "를 포함하지 않는다.
             if (authTokenService.isRevokedAccessToken(accessAuthToken)) {
-                throw new AuthException(SecurityErrorCode.REVOKED_ACCESS_TOKEN);
+                throw new AuthException(AuthErrorCode.REVOKED_ACCESS_TOKEN);
             }
 
             // 3. 정상 토큰이라면 SecurityContext 등록
@@ -72,19 +72,19 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             // 2. accessToken 만료 응답
             AuthException exception = new AuthException(
-                SecurityErrorCode.EXPIRED_ACCESS_TOKEN
+                AuthErrorCode.EXPIRED_ACCESS_TOKEN
             );
             ResponseUtil.writeError(response, exception);
         } catch (JwtException e) {
             // ExpiredJwtException이 아닌 다른 JWT 예외가 발생한 상태
             // 키가 다르거나, 토큰이 변조됐거나, 토큰에 whitespace가 있거나, ...
             AuthException exception = new AuthException(
-                SecurityErrorCode.INVALID_AUTHENTICATION
+                AuthErrorCode.INVALID_AUTHENTICATION
             );
             ResponseUtil.writeError(response, exception);
         } catch (NullPointerException e) {
             AuthException exception = new AuthException(
-                SecurityErrorCode.UNAUTHENTICATED
+                AuthErrorCode.UNAUTHENTICATED
             );
             ResponseUtil.writeError(response, exception);
         } catch (AuthException e) {

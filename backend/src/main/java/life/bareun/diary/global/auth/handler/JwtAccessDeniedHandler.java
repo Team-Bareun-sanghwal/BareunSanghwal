@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.factory.SecurityErrorResponseFactory;
 import life.bareun.diary.global.auth.util.GsonUtil;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         outputStream.write(
             GsonUtil.toJsonBytesUtf8(
                 SecurityErrorResponseFactory.create(
-                    new AuthException(SecurityErrorCode.UNAUTHENTICATED)
+                    new AuthException(AuthErrorCode.UNAUTHENTICATED)
                 )
             )
         );

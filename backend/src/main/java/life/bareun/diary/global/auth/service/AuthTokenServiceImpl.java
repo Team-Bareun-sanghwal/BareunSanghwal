@@ -3,7 +3,7 @@ package life.bareun.diary.global.auth.service;
 import io.jsonwebtoken.JwtException;
 import java.time.Duration;
 import life.bareun.diary.global.auth.exception.AuthException;
-import life.bareun.diary.global.auth.exception.SecurityErrorCode;
+import life.bareun.diary.global.auth.exception.AuthErrorCode;
 import life.bareun.diary.global.auth.token.AuthToken;
 import life.bareun.diary.global.auth.token.AuthTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         try {
             authTokenProvider.validate(refreshToken);
         } catch (JwtException e) {
-            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
+            throw new AuthException(AuthErrorCode.INVALID_AUTHENTICATION);
         }
 
         Long id = authTokenProvider.getMemberIdFromToken(refreshToken);
@@ -86,7 +86,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         try {
             authTokenProvider.validate(accessToken);
         } catch (JwtException e) {
-            throw new AuthException(SecurityErrorCode.INVALID_AUTHENTICATION);
+            throw new AuthException(AuthErrorCode.INVALID_AUTHENTICATION);
         }
 
         Long id = authTokenProvider.getMemberIdFromToken(accessToken);
