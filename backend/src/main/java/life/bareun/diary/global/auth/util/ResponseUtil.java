@@ -34,26 +34,6 @@ public class ResponseUtil {
         }
     }
 
-    public static void writeSuccess(
-        HttpServletResponse response,
-        BaseResponse<?> baseResponse
-    ) throws IOException {
-        try (
-            ServletOutputStream outputStream = response.getOutputStream()
-        ) {
-            response.setStatus(baseResponse.getStatus());
-            response.setContentType(CONTENT_TYPE_JSON);
-            outputStream.write(
-                GsonUtil.toJsonBytesUtf8(
-                    ResponseEntity
-                        .status(baseResponse.getStatus())
-                        .body(baseResponse)
-                )
-            );
-        } catch (IOException e) {
-            throw e;
-        }
-    }
 
     public static void addAccessTokenCookie(
         HttpServletResponse response,
@@ -68,9 +48,6 @@ public class ResponseUtil {
                 maxAgeSeconds
             )
         );
-
-        System.out.println("AccessToken is added");
-
     }
 
     public static void addRefreshTokenCookie(
@@ -97,7 +74,7 @@ public class ResponseUtil {
             .from(name, value)
             .sameSite("None")
             .secure(true) // HTTPS만 허용
-            .httpOnly(true) // HTTP 패킷으로만 쿠키를 받을 수 있음
+            .httpOnly(true) // HTTP 패킷으로만 쿠키를 받을 수 있음(JS로 제어 불가능)
             .path("/")
             .maxAge(maxAgeSeconds)
             .build()
