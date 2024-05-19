@@ -483,6 +483,9 @@ public class MemberControllerTest {
         // 이 범위에 있는 포인트가 반환되어야 한다.
         Integer rangeFrom = testTree.getRangeFrom();
         Integer rangeTo = testTree.getRangeTo();
+        Integer beforePoint = testMember.getPoint();
+
+        System.out.println("Before date: " + testMember.getLastHarvestedDate());
 
         // when
         ResultActions when = mockMvc.perform(
@@ -518,6 +521,12 @@ public class MemberControllerTest {
                 jsonPath("$.data.point")
                     .value(point)
             );
+
+
+
+        // testMember.getLastHarvestedDate().equals(LocalDate.now());
+        Assertions.assertThat(testMember.getLastHarvestedDate()).isEqualTo(LocalDate.now());
+        Assertions.assertThat(testMember.getPoint()).isEqualTo(beforePoint + point);
     }
 
     @Test
