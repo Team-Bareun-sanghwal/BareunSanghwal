@@ -132,8 +132,8 @@ public class ProductServiceImpl implements ProductService {
 
         // 예외가 발생하지 않으면(구매 가능한 상태면)
         // 변경된 포인트 보유량과 스트릭 색상을 적용한다.
-        member.usePoint(amount);
         member.changeStreakColor(gotchaStreakColor.getId());
+        member.usePoint(amount);
 
         return new ProductStreakColorUpdateResDto(gotchaStreakColor.getName());
     }
