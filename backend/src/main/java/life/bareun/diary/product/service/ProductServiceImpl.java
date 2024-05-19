@@ -221,7 +221,7 @@ public class ProductServiceImpl implements ProductService {
         Member updatedMember = memberRepository.save(member);
 
         memberRecovery.afterPurchaseRecovery(FACTOR);
-        memberRecoveryRepository.save(memberRecovery);
+        // memberRecoveryRepository.save(memberRecovery);
 
         // 반영된 후의 정보 반환
         return ProductRecoveryPurchaseResDto.builder()
