@@ -22,7 +22,7 @@ export const ProgressBlock = ({
       if (pageIdx < 9) {
         pageIdxTimer = setInterval(() => {
           increasePageIdx();
-        }, 7000);
+        }, 5000);
       }
 
       return () => {
