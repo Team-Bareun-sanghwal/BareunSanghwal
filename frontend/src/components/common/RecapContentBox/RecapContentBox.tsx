@@ -65,7 +65,7 @@ export const RecapContentBox = ({ recapTotalData }: IRecapContentBoxProps) => {
                 return (
                   <RecapImageContent
                     key={index}
-                    imgSrc="/images/icon-clock.png"
+                    imgSrc={recap.image || '/images/icon-clock.png'}
                     dateText={`${recap.period.split('-')[1]}월`}
                     recapId={recap.recapId}
                   />
