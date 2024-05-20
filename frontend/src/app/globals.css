@@ -87,8 +87,8 @@
     height: 0.5rem;
     background-color: white;
     transform-origin: left;
-    transition: width 10s ease-in-out;
-    animation: progressBlock-grow 10s linear forwards;
+    transition: width 5s ease-in-out;
+    animation: progressBlock-grow 5s linear forwards;
   }
   @keyframes progressBlock-grow {
     0% {
