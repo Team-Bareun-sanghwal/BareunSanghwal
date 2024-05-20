@@ -103,7 +103,6 @@ public class SecurityConfig {
         );
 
         corsConfiguration.addAllowedOrigin("https://bareun.life");
-        corsConfiguration.addAllowedOrigin("http:localhost:3000");
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(Boolean.TRUE);
         corsConfiguration.addAllowedMethod("*");
