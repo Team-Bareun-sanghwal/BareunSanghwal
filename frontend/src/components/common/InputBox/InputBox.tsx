@@ -77,7 +77,7 @@ export const InputBox = ({
                 );
               } else if (mode === 'HABITNICKNAME') {
                 setGuideText(
-                  '15자 이하의 한글, 영문, 숫자, 특수 기호 조합의 닉네임을 정해주세요.',
+                  '15자 이하의 한글, 영문, 숫자, 특수 기호 조합의 해빗 별칭을 정해주세요.',
                 );
               }
             }
