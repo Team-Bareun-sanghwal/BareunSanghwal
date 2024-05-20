@@ -5,6 +5,7 @@ import { Harvest } from '@/components/point/Harvest/Harvest';
 import { Time } from '@/components/calendar/util';
 import { treeConfig } from '@/components/tree/treeConfig';
 import { MyPoint } from '@/components/point/MyPoint/MyPoint';
+import { NavBar } from '@/components';
 interface IItem {
   key: string;
   name: string;
@@ -59,8 +60,8 @@ export default async function Page() {
     }
   };
   return (
-    <div>
-      <div className="w-full h-screen overflow-hidden relative">
+    <>
+      <div className="w-full h-dvh overflow-hidden relative">
         <RouteHome />
         <div className="flex flex-col absolute z-10 top-10 w-full items-center ">
           <div className=" bg-custom-dark-gray p-4 rounded-md">
@@ -81,6 +82,6 @@ export default async function Page() {
           ItemList={response.data.products}
         />
       </div>
-    </div>
+    </>
   );
 }
