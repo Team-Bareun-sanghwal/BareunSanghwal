@@ -1,5 +1,22 @@
 # 🥇 바른생활 
-사람들과 경쟁하고 비교하는 삶에서 벗어나 자신의 습관을 기록하고 유지하며 집중할 수 있도록 도와주는 해빗 트래커 웹 애플리케이션
+### 현대인을 위한 습관 형성 서비스 "바른생활"
+
+타인과 비교하는 삶에서 벗어나, 나의 바른 습관에 집중할 수 있는 환경을 만들어주는 웹 애플리케이션 
+<span style="color: green"><strong>"바른생활"
+</strong></span>
+입니다
+
+#### :heavy_check_mark: 매일 습관 기록을 기록하는 해빗트래커
+
+#### :heavy_check_mark: 습관을 챙기도록 격려하는 푸시 알림
+
+#### :heavy_check_mark: 내 습관 내역을 한눈에 볼 수 있는 통계
+
+#### :heavy_check_mark: 어떤 습관을 만들지 고민하는 사람을 위한 추천
+
+#### :heavy_check_mark: 재미 요소를 더한 포인트와 아이템
+
+이와 같은 다양한 장치를 통해 현대인의 습관 형성을 돕습니다.
 
 ## Stacks
 ### Recommend
@@ -40,6 +57,7 @@
 ![Redis](https://img.shields.io/badge/redis-red?style=for-the-badge&logo=redis&logoColor=white)
 ![apachekafka](https://img.shields.io/badge/apachekafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
 ![NCP](https://img.shields.io/badge/NCP-%23009639?style=for-the-badge&logo=Naver&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-yellow?style=for-the-badge&logo=Firebase&logoColor=white)
 
 ### Infra
 
@@ -151,7 +169,7 @@
 
 ## 아키텍쳐
 
-<img src='./산출물/Images/Architecture.PNG' width='500px' height='300px'>
+<img src='./산출물/Images/Architecture.PNG' width='900px' height='450px'>
 
 </br>
 
@@ -159,7 +177,7 @@
 
 | **Profile**  | <img src='./산출물/Images/Profile/KHJ.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/YHJ.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/JSM.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/JYB.png' width='200px' height='200px'> | <img src='./산출물/Images/Profile/SJW.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/KHW.jpg' width='200px' height='200px'> |
 | :----------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: |
-|   **Name**   |      <a href='https://github.com/HyeongjinKim98'>김형진</a>       |         <a href='https://github.com/YooHyunJi'>유현지</a>         |        <a href=''>장수민</a>         |         <a href='https://github.com/iamyoungbin'>전영빈</a>          |         <a href='https://github.com/beyondthemist'>신종욱</a>          |          <a href='https://github.com/HiWoong'>곽희웅</a>          |
+|   **Name**   |      <a href='https://github.com/HyeongjinKim98'>김형진</a>       |         <a href='https://github.com/YooHyunJi'>유현지</a>         |        <a href='https://github.com/jangsumin'>장수민</a>         |         <a href='https://github.com/iamyoungbin'>전영빈</a>          |         <a href='https://github.com/beyondthemist'>신종욱</a>          |          <a href='https://github.com/HiWoong'>곽희웅</a>          |
 | **Position** |                      Frontend                       |                      Frontend                       |                             Part Leader & Frontend                              |                       Backend & Infra                         |                              Part Leader & Backend                              |                          Team Leader & Backend                        |
 
 ## 업무 분장
