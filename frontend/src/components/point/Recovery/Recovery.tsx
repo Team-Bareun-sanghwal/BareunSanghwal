@@ -64,7 +64,7 @@ const getRecoveryInfo = async () => {
 // 리커버리 구매
 const patchRecovery = async () => {
   const response = await $Fetch({
-    method: 'GET',
+    method: 'PATCH',
     url: `${process.env.NEXT_PUBLIC_BASE_URL}/products/recovery`,
     cache: 'default',
   });
