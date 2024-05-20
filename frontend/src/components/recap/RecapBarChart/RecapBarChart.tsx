@@ -108,7 +108,7 @@ const textRender = (args: {
       color: indexedData.ratio === maxRatio ? '#5bb227' : 'white',
     };
   } else {
-    args.text = `${indexedData.missCount + indexedData.actionCount}일 중`;
+    args.text = ``;
     args.textStyle = {
       fontFamily: 'pretendard, sans-serif',
       fontWeight: '200',
