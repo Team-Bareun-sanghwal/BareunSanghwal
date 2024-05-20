@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { treeConfig } from './treeConfig';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader, BackSide } from 'three';
-import {useFrame} from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 
 interface IItem {
   key: 'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none';
@@ -18,7 +18,11 @@ interface IItem {
   description: string;
   price: number;
 }
-function SkyDome({time}: {time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight'}) {
+function SkyDome({
+  time,
+}: {
+  time: 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight';
+}) {
   const texture = useLoader(TextureLoader, `/assets/background/${time}.png`);
   return (
     <mesh>
@@ -30,13 +34,13 @@ function SkyDome({time}: {time : 'morning' | 'lunch' | 'dinner' | 'night' | 'mid
 
 function Island() {
   const { scene } = useGLTF('/assets/island.glb');
-  const rate = 0.5
-  scene.scale.set(rate, rate, rate)
+  const rate = 0.5;
+  scene.scale.set(rate, rate, rate);
   scene.position.set(0, 0.5, 0);
   return <primitive object={scene} />;
 }
-function MyTree( {color, level}: {color: string, level: number}) {
-  const {source, scaleValue, position} = treeConfig[level-1];
+function MyTree({ color, level }: { color: string; level: number }) {
+  const { source, scaleValue, position } = treeConfig[level - 1];
   const { scene } = useGLTF(source);
   scene.scale.set(scaleValue, scaleValue, scaleValue);
   scene.position.set(position[0], position[1], position[2]);
@@ -75,10 +79,10 @@ function MyTree( {color, level}: {color: string, level: number}) {
       }
     }
   });
-  return <primitive object={scene}/>;
+  return <primitive object={scene} />;
 }
 
-function Group({color, level}: {color : string, level : number}){
+function Group({ color, level }: { color: string; level: number }) {
   const groupRef = useRef<THREE.Group>(null);
   useFrame(() => {
     if (groupRef.current) {
@@ -89,9 +93,9 @@ function Group({color, level}: {color : string, level : number}){
     <group ref={groupRef}>
       <MyTree color={color} level={level} />
       <Island />
-      <GiftBox/>
+      <GiftBox />
     </group>
-  )
+  );
 }
 
 function GiftBox() {
@@ -101,11 +105,22 @@ function GiftBox() {
   return <primitive object={scene} />;
 }
 
-
-export default function Tree({ color,level, time, ItemList}: {color : string, level : number, time : 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight', ItemList : IItem[]}) {
+export default function Tree({
+  color,
+  level,
+  time,
+  ItemList,
+}: {
+  color: string;
+  level: number;
+  time: 'morning' | 'lunch' | 'dinner' | 'night' | 'midnight';
+  ItemList: IItem[];
+}) {
   const [position, setPosition] = useState({ x: 10, y: 2, z: 12 });
 
-  const [selectedItem , setSelectedItem] = useState<'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'>('none');
+  const [selectedItem, setSelectedItem] = useState<
+    'gotcha_streak' | 'gotcha_tree' | 'recovery' | 'none'
+  >('none');
   const [target, setTarget] = useState({ x: 0, y: -2, z: 0 });
 
   useEffect(() => {
@@ -119,39 +134,42 @@ export default function Tree({ color,level, time, ItemList}: {color : string, le
   }, [selectedItem]);
   return (
     <>
-       <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
-          <ambientLight intensity={0.6} />
-          <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
-          <directionalLight position={[-10, 10, 10]} intensity={time==='night'? 0.6 : 2} />
-          <pointLight position={[-10, -10, -10]} />
-          <Suspense fallback={null}>
-            <Group color={color} level={level} />
-            <SkyDome time ={time}/>
-          </Suspense>
-          <OrbitControls
-            target={[target.x, target.y, target.z]}
-            maxPolarAngle={Math.PI / 2.2}
-            minPolarAngle={Math.PI / 3}
+      <Canvas camera={{ position: [15, 0, 20], fov: 95, near: 1, far: 1000 }}>
+        <ambientLight intensity={0.6} />
+        <spotLight position={[10, 10, 10]} angle={0.8} penumbra={1} />
+        <directionalLight
+          position={[-10, 10, 10]}
+          intensity={time === 'night' ? 0.6 : 2}
         />
-          <CameraControls position={position} target={target} />
-        </Canvas>
-        <Loader />
-        <div className="absolute bottom-0 w-full gap-3 p-3 ">
-          <div className="flex flex-col justify-center gap-4">
-            {ItemList?.map((item: IItem) => (
-              <Item
-                key={item.key}
-                keyname={item.key}
-                name={item.name}
-                introduction={item.introduction}
-                description={item.description}
-                price={item.price}
-                selectedItem={selectedItem}
-                setSelectedItem={setSelectedItem}
-              />
-            ))}
+        <pointLight position={[-10, -10, -10]} />
+        <Suspense fallback={null}>
+          <Group color={color} level={level} />
+          <SkyDome time={time} />
+        </Suspense>
+        <OrbitControls
+          target={[target.x, target.y, target.z]}
+          maxPolarAngle={Math.PI / 2.2}
+          minPolarAngle={Math.PI / 3}
+        />
+        <CameraControls position={position} target={target} />
+      </Canvas>
+      <Loader />
+      <div className="absolute bottom-[1rem] w-full gap-3 p-3 ">
+        <div className="flex flex-col justify-center gap-4">
+          {ItemList?.map((item: IItem) => (
+            <Item
+              key={item.key}
+              keyname={item.key}
+              name={item.name}
+              introduction={item.introduction}
+              description={item.description}
+              price={item.price}
+              selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+            />
+          ))}
         </div>
-    </div>
+      </div>
     </>
   );
 }
