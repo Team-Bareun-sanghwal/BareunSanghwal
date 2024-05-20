@@ -39,8 +39,6 @@ export const HabitRegisterFunnel = ({
   });
   const router = useRouter();
 
-  console.log(data);
-
   // 분기 처리
 
   // 추천에서 네 -> (카테고리, 별칭, 아이콘) -> (요일 | 주기, 이 부분은 원래 저장하지 않음)

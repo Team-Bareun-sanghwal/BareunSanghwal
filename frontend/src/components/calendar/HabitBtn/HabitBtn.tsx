@@ -57,7 +57,6 @@ export const HabitBtn = ({
         }
       } else {
         if (memberHabitId === -1) {
-          console.log('go to main');
           router.replace(`/main`);
         } else if (memberHabitId == habitId) {
           router.push(`/main`);
