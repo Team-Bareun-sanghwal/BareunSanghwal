@@ -59,26 +59,28 @@ export default async function Page() {
     }
   };
   return (
-    <div className="w-full min-h-screen overflow-hidden relative">
-      <RouteHome />
-      <div className="flex flex-col absolute z-10 top-10 w-full items-center ">
-        <div className=" bg-custom-dark-gray p-4 rounded-md">
-          <div className="text-gray-300 text-md text-center">
-            LEVEL {treeLevel}
-          </div>
-          <div className="text-custom-white text-xl text-center">
-            {treeConfig[treeLevel - 1].name}
+    <div>
+      <div className="w-full h-screen overflow-hidden relative">
+        <RouteHome />
+        <div className="flex flex-col absolute z-10 top-10 w-full items-center ">
+          <div className=" bg-custom-dark-gray p-4 rounded-md">
+            <div className="text-gray-300 text-md text-center">
+              LEVEL {treeLevel}
+            </div>
+            <div className="text-custom-white text-xl text-center">
+              {treeConfig[treeLevel - 1].name}
+            </div>
           </div>
         </div>
-      </div>
-      {!isHarvestedToday ? <Harvest isHarvested={false} /> : <MyPoint />}
+        {!isHarvestedToday ? <Harvest isHarvested={false} /> : <MyPoint />}
 
-      <Tree
-        color={getTreeColor(treeColor)}
-        level={treeLevel}
-        time={Time()}
-        ItemList={response.data.products}
-      />
+        <Tree
+          color={getTreeColor(treeColor)}
+          level={treeLevel}
+          time={Time()}
+          ItemList={response.data.products}
+        />
+      </div>
     </div>
   );
 }
