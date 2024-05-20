@@ -30,13 +30,6 @@ public class NotificationController {
             .body(BaseResponse.success(HttpStatus.CREATED.value(), "알림 토큰 생성이 완료되었습니다.", null));
     }
 
-    @GetMapping("/send")
-    public ResponseEntity<BaseResponse<String>> sendNotification() {
-        notificationService.sendNotification(1L);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(BaseResponse.success(HttpStatus.OK.value(), "알림 생성이 완료되었습니다.", null));
-    }
-
     @GetMapping
     public ResponseEntity<BaseResponse<NotificationListResDto>> findAllNotification() {
         return ResponseEntity.status(HttpStatus.OK)
