@@ -13,8 +13,8 @@ export default async function Page() {
   const { nickname, gender, job, birthDate } = await getMemberInfo();
 
   return (
-    <div className="h-screen">
-      <div className="bg-custom-white px-[1rem] pt-[1rem] pb-[11rem] flex flex-col justify-between min-h-full">
+    <>
+      <div className="bg-custom-white px-[1rem] pt-[1rem] flex flex-col justify-between min-h-full">
         <div className="pb-[2rem]">
           <p className="text-custom-black custom-bold-text mb-[4rem]">
             내 정보
@@ -28,14 +28,13 @@ export default async function Page() {
             }}
           />
         </div>
-        <div className="flex justify-evenly">
+        <div className="flex justify-evenly py-[3rem]">
           <BorderlessButton type="leave" />
           <span className="bg-custom-medium-gray w-[0.1rem]"></span>
           <BorderlessButton type="logout" />
         </div>
       </div>
-
       <NavBar mode="MY_INFO" />
-    </div>
+    </>
   );
 }
