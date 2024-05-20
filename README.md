@@ -2,12 +2,22 @@
 사람들과 경쟁하고 비교하는 삶에서 벗어나 자신의 습관을 기록하고 유지하며 집중할 수 있도록 도와주는 해빗 트래커 웹 애플리케이션
 
 ## Stacks
+### Recommend
+
+![Python](https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![fastapi](https://img.shields.io/badge/fastapi-black?style=for-the-badge&logo=fastapi&logoColor=#009485)
+![scikitlearn](https://img.shields.io/badge/scikitlearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![elasticsearch](https://img.shields.io/badge/elasticsearch-FEC514?style=for-the-badge&logo=elasticsearch&logoColor=white)
+![logstash](https://img.shields.io/badge/logstash-black?style=for-the-badge&logo=logstash&logoColor=white)
+![kibana](https://img.shields.io/badge/kibana-00BFB3?style=for-the-badge&logo=kibana&logoColor=white)
+
 ### Backend
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-236DB33F?style=for-the-badge&logo=springboot&logoColor=white)
-![kibana](https://img.shields.io/badge/kibana-00BFB3?style=for-the-badge&logo=kibana&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-brown?style=for-the-badge&logo=JSON%20web%20tokens)
-![elasticsearch](https://img.shields.io/badge/elasticsearch-FEC514?style=for-the-badge&logo=elasticsearch&logoColor=white)
+![Querydsl](https://img.shields.io/badge/Querydsl-purple?style=for-the-badge)
+![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white)
 
 
 
@@ -18,17 +28,22 @@
 ![nextdotjs](https://img.shields.io/badge/next.js-%2320232a.svg?style=for-the-badge&logo=nextdotjs&logoColor=%2361DAFB)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![React Dom](https://img.shields.io/badge/React%20Dom-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![Tailwindcss](https://img.shields.io/badge/tailwindcss-0F172A?&logo=tailwindcss)
+![Tailwindcss](https://img.shields.io/badge/tailwindcss-0F172A?&style=for-the-badge&logo=tailwindcss)
+![Storybook](https://img.shields.io/badge/Storybook-FF528C.svg?&style=for-the-badge&logo=Storybook&logoColor=white)
+![Three](https://img.shields.io/badge/Three.js-000000.svg?&style=for-the-badge&logo=three.js&logoColor=white)
+![Framer](https://img.shields.io/badge/FramerMotion-000000.svg?&style=for-the-badge&logo=Framer&logoColor=white)
+![LottieFiles](https://img.shields.io/badge/LottieFiles-00D6AC.svg?&style=for-the-badge&logo=LottieFiles&logoColor=white)
 
 
 ### Database
 ![MySQL](https://img.shields.io/badge/mysql-%2300f?style=for-the-badge&logo=mysql&logoColor=white)
-![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-thebadge&logo=redis&logoColor=white)
+![Redis](https://img.shields.io/badge/redis-red?style=for-the-badge&logo=redis&logoColor=white)
+![apachekafka](https://img.shields.io/badge/apachekafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
+![NCP](https://img.shields.io/badge/NCP-%23009639?style=for-the-badge&logo=Naver&logoColor=white)
 
 ### Infra
 
 ![EC2](https://img.shields.io/badge/EC2-E95420?style=for-the-badge&logo=amazonec2&logoColor=white)
-![NCP](https://img.shields.io/badge/NCP-%23009639?style=for-the-badge&logo=Naver&logoColor=white)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
@@ -62,9 +77,9 @@
 ## 3. 기능
 ### 메인 화면
 
-| <img src='./산출물/Images/main/Loading.gif' width='250px' height='500px'> | <img src='./산출물/Images/main/Main.gif' width='250px' height='500px'> | <img src='./산출물/Images/main/Profile.gif' width='250px' height='500px'> | <img src='./산출물/Images/main/ClickHabit.gif' width='250px' height='500px'> |
+| <img src='./산출물/Images/main/Loading.gif' width='250px' height='500px'> | <img src='./산출물/Images/main/Main.gif' width='250px' height='500px'> | <img src='./산출물/Images/main/Notification.gif' width='250px' height='500px'> | <img src='./산출물/Images/main/Profile.gif' width='250px' height='500px'> |
 | :----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: |
-|                                 **로딩 화면**                                 |                               **메인 화면**                                |                           **프로필 화면**                            |                                  **해빗 별 스트릭 확인 화면**                                  |
+|                                 **로딩 화면**                                 |                               **메인 화면**                                |                           **알림 화면**                            |                                  **프로필 화면**                                  |
 
 - 사용자 스트릭
     - 각 날짜마다 주어진 해빗 스트릭 중 하나라도 수행하면 채워짐
@@ -126,6 +141,8 @@
 - 애플리케이션 사용자들의 데이터 분석을 통하여 개인화된 사용자에게 습관 추천
 - 습관 내역을 제공하여 전문가에게 습관 코칭
 
+</br>
+
 # 설계 내용
 
 ## ERD
@@ -140,21 +157,59 @@
 
 # 팀원 소개
 
-| **Profile**  | <img src='./산출물/profile/KHJ.jpg' width='200px' height='200px'> | <img src='./산출물/profile/YHJ.jpg' width='200px' height='200px'> | <img src='./산출물/profile/BCJ.jpg' width='200px' height='200px'> | <img src='./산출물/profile/CJH.jpg' width='200px' height='200px'> | <img src='./산출물/profile/LSY.JPG' width='200px' height='200px'> | <img src='./산출물/profile/KHW.jpg' width='200px' height='200px'> |
+| **Profile**  | <img src='./산출물/Images/Profile/KHJ.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/YHJ.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/JSM.jpg' width='200px' height='200px'> | <img src='./산출물/Images/Profile/JYB.png' width='200px' height='200px'> | <img src='./산출물/Images/Profile/SJW.JPG' width='200px' height='200px'> | <img src='./산출물/Images/Profile/KHW.jpg' width='200px' height='200px'> |
 | :----------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------: |
-|   **Name**   |      <a href='https://github.com/HyeongjinKim98'>김형진</a>       |         <a href='https://github.com/YooHyunJi'>유현지</a>         |        <a href=''>장수민</a>         |         <a href=''>전영빈</a>          |         <a href=''>신종욱</a>          |          <a href='https://github.com/HiWoong'>곽희웅</a>          |
+|   **Name**   |      <a href='https://github.com/HyeongjinKim98'>김형진</a>       |         <a href='https://github.com/YooHyunJi'>유현지</a>         |        <a href=''>장수민</a>         |         <a href='https://github.com/iamyoungbin'>전영빈</a>          |         <a href='https://github.com/beyondthemist'>신종욱</a>          |          <a href='https://github.com/HiWoong'>곽희웅</a>          |
 | **Position** |                      Frontend                       |                      Frontend                       |                             Part Leader & Frontend                              |                       Backend & Infra                         |                              Part Leader & Backend                              |                          Team Leader & Backend                        |
 
 ## 업무 분장
 
 ### Frontend
 
-- 유현지: 
-- 김형진 :
-- 장수민 :
+- 유현지
+  - syncfusion 라이브러리 사용한 사용자 활동 내역 통계
+  - 사용자 월별 활동 요약 "리캡" 기능 제작
+  - FCM을 사용한 포그라운드/백그라운드 기능 적용(FE)
+  - kakao/google OAuth 인증/인가(Access Token, Refresh Token) 적용
+  - Figma 목업 최종 검수
+  - 중간 발표, 최종 발표 자료 제작
+  - 최종 발표 진행
+  - 서기
+- 김형진
+  -  월별 해빗 달성률에 따른 스트릭 페이지 구현
+  - Three.js를 이용해 3D나무 모델을 이용한 사용자 인터랙션 페이지 구현
+  - 해빗 달성에 따른 리워드를 통한 아이템 및 나무 모델 성장 
+  - 게이미피케이션 요소 설계 및 페이지 구현
+  - UCC 제작
+- 장수민
+  - 프론트엔드 구조 설계 및 구축
+  - Next.js 렌더링 전략(ISR) 수립 및 적용
+  - Storybook 활용 제안 및 컴포넌트 테스트 용이하도록 설계
+  - UI 컴포넌트 설계 및 구현
+  - 여러 폼에서 발생하는 데이터 유지와 흐름 파악에 강점이 있는 useFunnel 구현 및 활용
+  - 선언적으로 모달, 바텀시트, 토스트 메시지를 제어할 수 있는 useOverlay 구현 및 활용
+  - FCP와 LCP, CLS 위주로 성능을 개선하고 최초 웹 컨텐츠 렌더링 속도를 1.8초에서 0.8초로 단축
+  - 폰트로 인한 CLS 지표 악화를 막기 위해 Next.js의 로컬 폰트 캐싱 기능 활용
+  - 지연 로딩을 적극적으로 사용하여 처음 로딩하는 번들링한 JavaScript의 크기를 줄여 통신 비용을 절감
 
 ### Backend
 
-- 전영빈 : 
-- 신종욱 : 
-- 곽희웅 : 
+- 전영빈
+  - 스트릭 서비스 구현
+  - 백엔드 보일러플레이트 및 컨벤션 문서 작성
+  - 인프라 구축
+  - Jenkins CI/CD Pipeline 구축
+  - Multi Staging과 cache를 이용한 빌드 최적화
+- 신종욱
+  - Gamification 요소 기획 및 구현
+  - JWT와 Spring security를 활용한 인증/인가
+  - Spring security를 활용한 구글 및 카카오 소셜 로그인 구현
+  - 추천 서버 IaC 작성
+  - 코사인 유사도를 활용한 추천 기능
+  - 사용자 기능
+- 곽희웅
+  - 팀의 전체 일정 관리(PM)
+  - 실시간 해빗 랭킹을 산정하기 위한 ELK+Kafka 서버 구축
+  - 해빗 데이터 생성 및 해빗, 해빗 트래커 관련 API 구현
+  - 리캡 관련 API 구현
+  - 특정 상황마다 사용자를 위해 FCM을 통한 실시간 알림 구현
