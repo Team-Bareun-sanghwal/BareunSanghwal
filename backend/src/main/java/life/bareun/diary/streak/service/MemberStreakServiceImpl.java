@@ -246,7 +246,7 @@ public class MemberStreakServiceImpl implements MemberStreakService {
                         List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
 
                         // 인덱스 범위를 벗어나지 않도록 나무 인덱스를
-                        int treeIndex = Math.min(longestStreak%10 + 1, orderedTreeList.size() - 1);
+                        int treeIndex = Math.min(longestStreak/10, orderedTreeList.size() - 1);
 
                         // 변경사항을 반영한다.
                         member.updateTree(orderedTreeList.get(treeIndex));
