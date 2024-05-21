@@ -169,10 +169,9 @@ public class MemberStreakServiceImpl implements MemberStreakService {
 
             // 인덱스 범위를 벗어나지 않도록 1을 더한다.
             treeIndex = Math.min(treeIndex + 1, orderedTreeList.size() - 1);
-            member.updateTree(orderedTreeList.get(treeIndex));
 
-            // 바뀐 나무를 저장한다.
-            memberRepository.save(member);
+            // 반영한다.
+            member.updateTree(orderedTreeList.get(treeIndex));
         }
     }
 
@@ -234,9 +233,26 @@ public class MemberStreakServiceImpl implements MemberStreakService {
     @Override
     public void recoveryMemberTotalStreak(Member member, int longestStreak) {
         memberTotalStreakRepository.findByMember(member)
-            .ifPresent(memberTotalStreak -> {
-                memberTotalStreak.modifyLongestStreak(Math.max(memberTotalStreak.getLongestStreak(), longestStreak));
-            });
+            .ifPresent(
+                memberTotalStreak -> {
+                    // memberTotalStreak.modifyLongestStreak(
+                    //     Math.max(memberTotalStreak.getLongestStreak(), longestStreak)
+                    // );
+
+                    if (memberTotalStreak.getLongestStreak() < longestStreak) {
+                        memberTotalStreak.modifyLongestStreak(longestStreak);
+
+                        // 레벨을 기준으로 오름차순 정렬된 나무 리스트를 얻는다.
+                        List<Tree> orderedTreeList = treeRepository.findAllByOrderByLevelAsc();
+
+                        // 인덱스 범위를 벗어나지 않도록 나무 인덱스를
+                        int treeIndex = Math.min(longestStreak%10 + 1, orderedTreeList.size() - 1);
+
+                        // 변경사항을 반영한다.
+                        member.updateTree(orderedTreeList.get(treeIndex));
+                    }
+                }
+            );
     }
 
     @Override
