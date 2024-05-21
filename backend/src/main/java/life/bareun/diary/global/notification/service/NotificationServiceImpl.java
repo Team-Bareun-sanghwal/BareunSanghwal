@@ -121,11 +121,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendContinuousStreakMember(Member member, int continuousStreak) {
-        NotificationTokenDto notificationTokenDto = notificationTokenRepository.findNotificationTokenByMemberId(
-            member.getId());
+        NotificationTokenDto notificationTokenDto = notificationTokenRepository
+                .findNotificationTokenByMemberId(member.getId());
         NotificationCategory notificationCategory = notificationCategoryRepository.findById(5L)
             .orElseThrow();
         String content = notificationCategory.getContent();
+        log.info(String.valueOf(member.getId()));
+        log.info(notificationTokenDto.toString());
 
         // 랜덤 응원 문구
         SecureRandom secureRandom = new SecureRandom();
@@ -286,7 +288,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private NotificationCategory findNotificationCategory(Long notificationCategoryId) {
         return notificationCategoryRepository.findById(
-            notificationCategoryId).orElseThrow(
-            () -> new NotificationException(NotificationErrorCode.NOT_VALID_NOTIFICATION_CATEGORY));
+            notificationCategoryId).orElseThrow(() ->
+                new NotificationException(NotificationErrorCode.NOT_VALID_NOTIFICATION_CATEGORY));
     }
 }
