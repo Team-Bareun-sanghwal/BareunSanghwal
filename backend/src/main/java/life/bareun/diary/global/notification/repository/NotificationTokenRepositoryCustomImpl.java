@@ -30,10 +30,8 @@ public class NotificationTokenRepositoryCustomImpl implements NotificationTokenR
     }
 
     @Override
-    public NotificationTokenDto findNotificationTokenByMemberId(Long memberId) {
-        Map<String, Object> entries = hashOperations.entries("notificationToken:" + memberId);
-        return NotificationTokenDto.builder().id(memberId).token((String) entries.get("token"))
-            .build();
+    public NotificationTokenDto findNotificationTokenByMemberId(String memberId) {
+        return findNotificationTokenById(memberId);
     }
 
     @Override
