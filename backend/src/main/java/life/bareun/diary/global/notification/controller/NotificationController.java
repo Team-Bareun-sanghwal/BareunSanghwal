@@ -30,7 +30,7 @@ public class NotificationController {
             .body(BaseResponse.success(HttpStatus.CREATED.value(), "알림 토큰 생성이 완료되었습니다.", null));
     }
 
-    @GetMapping
+    @GetMapping("/send")
     public ResponseEntity<BaseResponse<String>> sendNotification() {
         notificationService.tempSendNotification();
         return ResponseEntity.status(HttpStatus.OK)
