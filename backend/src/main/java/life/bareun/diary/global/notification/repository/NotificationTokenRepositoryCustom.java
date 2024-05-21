@@ -4,7 +4,7 @@ import java.util.Map;
 import life.bareun.diary.global.notification.dto.NotificationTokenDto;
 
 public interface NotificationTokenRepositoryCustom {
-    NotificationTokenDto findNotificationTokenByMemberId(Long memberId);
+    NotificationTokenDto findNotificationTokenByMemberId(String memberId);
 
     Map<Long, String> findAllNotificationToken();
 }
