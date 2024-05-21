@@ -33,8 +33,8 @@ export const NotificationList = () => {
           <ErrorPage
             errorTitle="아직 도착한 알림이 없어요"
             errorDescription=""
-            buttonText="홈으로 가기"
-            nextPage="/main"
+            buttonText=""
+            nextPage=""
           />
         </div>
       ) : (

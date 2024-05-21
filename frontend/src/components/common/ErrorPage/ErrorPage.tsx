@@ -31,15 +31,19 @@ export const ErrorPage = ({
       />
 
       <span className="block custom-semibold-text">{errorTitle}</span>
-      <p className="text-custom-dark-gray custom-medium-text -m-[0.5rem]">
+      <p className="text-custom-dark-gray custom-medium-text mt-[0.5rem]">
         {errorDescription}
       </p>
-      <button
-        className="w-fit custom-medium-text px-[1rem] py-[0.5rem] text-custom-white bg-custom-matcha rounded-[1rem]"
-        onClick={() => router.push(nextPage)}
-      >
-        {buttonText}
-      </button>
+      {buttonText !== '' ? (
+        <button
+          className="w-fit custom-medium-text px-[1rem] py-[0.5rem] text-custom-white bg-custom-matcha rounded-[1rem]"
+          onClick={() => router.push(nextPage)}
+        >
+          {buttonText}
+        </button>
+      ) : (
+        <></>
+      )}
     </section>
   );
 };
