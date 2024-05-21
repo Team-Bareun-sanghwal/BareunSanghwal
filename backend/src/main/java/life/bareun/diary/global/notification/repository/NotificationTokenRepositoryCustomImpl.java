@@ -23,8 +23,7 @@ public class NotificationTokenRepositoryCustomImpl implements NotificationTokenR
         this.hashOperations = redisTemplate.opsForHash();
     }
 
-    @Override
-    public NotificationTokenDto findNotificationTokenById(String id) {
+    private NotificationTokenDto findNotificationTokenById(String id) {
         Map<String, Object> entries = hashOperations.entries(id);
         return NotificationTokenDto.builder().id(Long.parseLong(id.substring(18)))
             .token((String) entries.get("token")).build();
@@ -32,7 +31,7 @@ public class NotificationTokenRepositoryCustomImpl implements NotificationTokenR
 
     @Override
     public NotificationTokenDto findNotificationTokenByMemberId(Long memberId) {
-        Map<String, Object> entries = hashOperations.entries(String.valueOf(memberId));
+        Map<String, Object> entries = hashOperations.entries("notificationToken:" + memberId);
         return NotificationTokenDto.builder().id(memberId).token((String) entries.get("token"))
             .build();
     }

@@ -129,7 +129,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendContinuousStreakMember(Member member, int continuousStreak) {
         NotificationTokenDto notificationTokenDto = notificationTokenRepository
-                .findNotificationTokenById("notificationToken:" + member.getId());
+                .findNotificationTokenByMemberId(member.getId());
         NotificationCategory notificationCategory = notificationCategoryRepository.findById(5L)
             .orElseThrow();
         String content = notificationCategory.getContent();
