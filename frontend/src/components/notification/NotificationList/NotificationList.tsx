@@ -23,7 +23,7 @@ export const NotificationList = () => {
   };
 
   useEffect(() => {
-    // getConsistentList();
+    getConsistentList();
   }, []);
 
   return (
