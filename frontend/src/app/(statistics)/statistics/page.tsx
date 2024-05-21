@@ -1,4 +1,4 @@
-import { GuideBox, NavBar, RecapContentBox, TabBox } from '@/components';
+import { ErrorPage, NavBar, RecapContentBox, TabBox } from '@/components';
 import { StatisticsContent } from '@/components/statistics/StatisticsContent/StatisticsContent';
 import { getRecapList } from '../_apis/getRecapList';
 
@@ -15,7 +15,14 @@ export default async function Page() {
       title: '리캡',
       component:
         recapTotalData.length === 0 ? (
-          <GuideBox guideText="아직 리캡을 만들 충분한 데이터가 없어요! 해빗을 달성하고 리캡을 확인하실 수 있어요" />
+          <div className="h-full flex items-center">
+            <ErrorPage
+              errorTitle="리캡을 만들 충분한 데이터가 없어요"
+              errorDescription="모든 해빗 트래커를 2번 이상만 달성해보세요!"
+              buttonText=""
+              nextPage=""
+            />
+          </div>
         ) : (
           <RecapContentBox recapTotalData={recapTotalData} />
         ),
