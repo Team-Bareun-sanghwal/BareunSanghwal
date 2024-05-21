@@ -19,4 +19,6 @@ public interface NotificationService {
     void sendContinuousStreakMember(Member member, int continuousStreak);
 
     void modifyNotificationStatus();
+
+    void tempSendNotification();
 }

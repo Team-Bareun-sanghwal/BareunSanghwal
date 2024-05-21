@@ -120,6 +120,13 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void tempSendNotification() {
+        Member member = memberRepository.findById(AuthUtil.getMemberIdFromAuthentication())
+                .orElseThrow(() -> new NotificationException(NotificationErrorCode.NOT_FOUND_MEMBER));
+        sendContinuousStreakMember(member, 10);
+    }
+
+    @Override
     public void sendContinuousStreakMember(Member member, int continuousStreak) {
         NotificationTokenDto notificationTokenDto = notificationTokenRepository
                 .findNotificationTokenById(String.valueOf(member.getId()));

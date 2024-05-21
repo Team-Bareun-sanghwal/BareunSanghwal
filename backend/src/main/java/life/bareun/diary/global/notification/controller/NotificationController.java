@@ -31,6 +31,13 @@ public class NotificationController {
     }
 
     @GetMapping
+    public ResponseEntity<BaseResponse<String>> sendNotification() {
+        notificationService.tempSendNotification();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(BaseResponse.success(HttpStatus.OK.value(), "알림 전송이 완료되었습니다.", null));
+    }
+
+    @GetMapping
     public ResponseEntity<BaseResponse<NotificationListResDto>> findAllNotification() {
         return ResponseEntity.status(HttpStatus.OK)
             .body(BaseResponse.success(HttpStatus.OK.value(), "알림 목록 조회가 완료되었습니다.",
